@@ -241,7 +241,9 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
 | `/dialer/embed.js` | завантажувач |
 | `/dialer/sw.js` | логіка сервіс-воркера для пушів |
 
-- Збирає й публікує GitHub Actions після пушу в `dev`. У Vite треба вказати `base: '/dialer/'`.
+- Збирає й публікує GitHub Actions після пушу в `dev` (`.github/workflows/pages.yml`). У Vite треба вказати `base: '/dialer/'`.
+- Поки `web/` немає, workflow публікує прототипи: `demo/index.html` у `/dialer/`, `demo/embed.js` у `/dialer/embed.js`,
+  `index.html` у `/dialer/widget/`.
 - Pages віддає сайт по HTTPS, тож камера й мікрофон працюють.
 - Обмеження: не можна задати свої HTTP-заголовки (CSP, `Permissions-Policy`), а сторінка демо
   лежить на тому самому домені, що й віджет. Роботу з чужого домену треба окремо перевірити з іншого хостингу

@@ -21,7 +21,7 @@ dialer/
     backlog/         #   беклог задач
     changelog/       #   ченджлог, файл на день: YYYY-MM-DD.md
   web/               # фронтенд: віджет (Vue SPA) і сторінка демо з вбудованим віджетом (буде)
-  .github/workflows/ # CI: лінт, тести, збірка й публікація на GitHub Pages (буде)
+  .github/workflows/ # CI: зараз pages.yml публікує прототипи на GitHub Pages; далі лінт, тести, збірка web/
 ```
 
 ## Правила
