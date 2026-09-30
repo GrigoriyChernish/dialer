@@ -69,6 +69,7 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
   --color-accent: #6366f1;
   --color-call-ok: #22c55e;   /* кнопка «Прийняти» */
   --color-call-bad: #ef4444;  /* кнопка «Завершити» */
+  --color-warn: #fbbf24;      /* відновлення, слабкий сигнал */
 }
 ```
 
@@ -79,6 +80,8 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
 - Анімації з демо (пульсація аватара, хвиля голосу, спінер відновлення) описуємо через `@keyframes` у `main.css`
   і токени `--animate-*` у `@theme`.
 - Поважаємо `prefers-reduced-motion`: анімації вимикаються варіантом `motion-reduce:`.
+
+Повний перелік токенів — у [design-system.md](design-system.md), каталог компонентів — у [components.md](components.md).
 
 ### Теми
 Дві теми: **світла** й **темна**. Кольори обох узяті з демо.
