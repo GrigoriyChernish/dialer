@@ -24,7 +24,7 @@ dialer/
   pnpm-workspace.yaml
   tsconfig.base.json # спільні налаштування TypeScript
   apps/
-    server/          # бекенд: Node + TypeScript, поки каркас (є)
+    server/          # бекенд: Node + TypeScript, Fastify + ws + SQLite; демо-вхід, присутність (є), див. backend.md
   packages/
     shared/          # спільні типи й константи сигналізації, `src/signaling.ts` (є)
   web/               # фронтенд: віджет (Vue SPA) і сторінка демо з вбудованим віджетом (буде)

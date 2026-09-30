@@ -89,6 +89,8 @@ export interface Settings {
   dnd: boolean;
 }
 
+export const DEFAULT_SETTINGS: Settings = { waiting: true, dnd: false };
+
 export interface Contact {
   userId: UserId;
   name: string;

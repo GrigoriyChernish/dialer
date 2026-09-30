@@ -17,6 +17,17 @@
 
 Залежності мінімальні: `ws`, `fastify`, `better-sqlite3`, `jose` (JWT), `livekit-server-sdk`, `web-push`, `pino`.
 
+## Запуск
+```bash
+pnpm install                          # з кореня репозиторію
+cp apps/server/.env.example apps/server/.env   # без JWT_SECRET працює ключ для розробки
+pnpm --filter @dialer/server dev      # http://localhost:8787, WebSocket ws://localhost:8787/ws
+pnpm test                             # усі тести; лише сервер: pnpm --filter @dialer/server test
+pnpm typecheck
+```
+Сервер запускається через `tsx` без збірки, `start` робить те саме без перезапуску при змінах.
+У `production` без `JWT_SECRET` (від 32 символів) сервер не стартує.
+
 ## Структура `apps/server`
 ```
 apps/server/
@@ -43,11 +54,12 @@ apps/server/
 | Таблиця | Що зберігає |
 |---|---|
 | `sites` | сайти-господарі: `id`, назва, секрет, `allowed_origins`; окремий запис `demo` |
-| `users` | `id` (E.164 у демо), `site_id`, ім'я, `disabled`, `is_bot`, `settings` (JSON: `waiting`, `dnd`) |
+| `users` | ключ `(site_id, id)`, де `id` це E.164 у демо (а в демо-ботів `bot:olena`, `bot:andriy`, `bot:support`), ім'я, `disabled`, `is_bot`, `settings` (JSON: `waiting`, `dnd`) |
 | `calls` | дзвінки: `id`, учасники, стан, `created_at`, `answered_at`, `ended_at`, `reason` |
 | `recents` | історія: чий запис, `call_id`, співрозмовник, напрям, результат, `silent`, тривалість, `seen` |
 | `push_subscriptions` | підписка Web Push на пристрій: `user_id`, `device_id`, дані підписки |
 
+- Зараз у БД лише `sites` і `users` (міграція `001_init.sql`), решта таблиць додається з кроками 3–6.
 - Міграції простими SQL-файлами, що застосовуються за порядком при старті. Окремих ORM не беремо.
 - `better-sqlite3` синхронний, що для одного інстансу прийнятно, а код простіший. Режим WAL увімкнений.
 - Активні дзвінки пишемо в `calls` одразу (write-through) і читаємо при старті: так перезапуск чи деплой не губить
@@ -103,8 +115,8 @@ CORS для `/demo/login` обмежений origin демо-сторінки. `
   LiveKit замінено заглушкою, яка повертає фіксований токен.
 
 ## Порядок робіт
-1. Каркас моноrepo: `pnpm-workspace.yaml`, `packages/shared` з типами `signaling.ts`, порожній `apps/server`.
-2. Демо-вхід (`POST /demo/login`), JWT, присутність, `hello` / `hello.ok`, контакти.
+1. ✅ Каркас моноrepo: `pnpm-workspace.yaml`, `packages/shared` з типами `signaling.ts`, порожній `apps/server`.
+2. ✅ Демо-вхід (`POST /demo/login`), JWT, присутність, `hello` / `hello.ok`, контакти.
 3. Дзвінок без медіа: `call.invite`/`accept`/`reject`/`cancel`/`hangup`, таймаут, історія, боти.
 4. `waiting`, `dnd`, `settings`.
 5. LiveKit: токени кімнат, вебхук, правило `lost`.
