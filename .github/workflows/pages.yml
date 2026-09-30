@@ -1,0 +1,43 @@
+# Публікація прототипів на GitHub Pages після пушу в dev.
+# Розкладка як у docs/architecture.md, розділ «Хостинг»:
+#   /dialer/          сторінка демо (demo/index.html)
+#   /dialer/embed.js  імітація завантажувача
+#   /dialer/widget/   прототип віджета (index.html)
+name: Pages
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site
+        run: |
+          mkdir -p _site/widget
+          cp demo/embed.js _site/embed.js
+          cp index.html _site/widget/index.html
+          # віджет лежить у widget/, а не поруч у ../index.html, як у репозиторії
+          sed 's|<script src="embed.js"></script>|<script src="embed.js" data-widget="widget/"></script>|' demo/index.html > _site/index.html
+          grep -q 'data-widget="widget/"' _site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
