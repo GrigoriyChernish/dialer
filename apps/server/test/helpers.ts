@@ -3,12 +3,13 @@ import { PROTOCOL_VERSION } from '@dialer/shared';
 import { pino } from 'pino';
 import WebSocket from 'ws';
 import { loadConfig } from '../src/config';
+import type { Clock } from '../src/calls/types';
 import { createServer } from '../src/server';
 import type { GatewayTimeouts } from '../src/ws/gateway';
 
-export async function startServer(timeouts?: Partial<GatewayTimeouts>) {
-  const config = { ...loadConfig({ JWT_SECRET: 's'.repeat(32) }), port: 0, host: '127.0.0.1', dbPath: ':memory:' };
-  const server = await createServer({ config, logger: pino({ level: 'silent' }), timeouts });
+export async function startServer(timeouts?: Partial<GatewayTimeouts>, extra: { clock?: Clock; dbPath?: string } = {}) {
+  const config = { ...loadConfig({ JWT_SECRET: 's'.repeat(32) }), port: 0, host: '127.0.0.1', dbPath: extra.dbPath ?? ':memory:' };
+  const server = await createServer({ config, logger: pino({ level: 'silent' }), timeouts, clock: extra.clock });
   const port = await server.listen();
   return {
     ...server,

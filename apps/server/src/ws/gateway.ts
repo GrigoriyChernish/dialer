@@ -14,7 +14,10 @@ import {
 import { randomUUID } from 'node:crypto';
 import type { Server as HttpServer } from 'node:http';
 import { WebSocketServer, type RawData, type WebSocket } from 'ws';
+import { CallError, type CallService, type Result } from '../calls/service';
+import type { Actor, Effect } from '../calls/types';
 import { TokenError, type TokenClaims, type Tokens } from '../auth/tokens';
+import type { Recents } from '../db/recents';
 import type { Users } from '../db/users';
 import type { Logger } from '../logger';
 import type { Connection } from '../store/presence';
@@ -27,6 +30,9 @@ export interface GatewayTimeouts {
 
 export interface GatewayDeps {
   users: Users;
+  recents: Recents;
+  calls: CallService;
+  deliver(effects: Effect[]): void;
   hub: Hub;
   tokens: Tokens;
   logger: Logger;
@@ -148,9 +154,9 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         user: { userId: user.id, name: user.name },
         serverTime: Date.now(),
         settings: user.settings,
-        calls: [],
+        calls: deps.calls.callsFor(user.siteId, user.id),
         contacts: deps.hub.contactsFor(user.siteId, user.id),
-        recents: [],
+        recents: deps.recents.list(user.siteId, user.id),
       });
       scheduleExpiring(verified.expiresAt);
     }
@@ -175,6 +181,38 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       claims = fresh;
       scheduleExpiring(fresh.expiresAt);
       respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
+    }
+
+    const isString = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 64;
+
+    /** Команди дзвінка: виконує, відповідає `ack` і лише після нього розсилає події. */
+    function onCall(msg: Record<string, unknown>, id: string | undefined) {
+      if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
+      const actor: Actor = { siteId: conn.siteId, userId: conn.userId, deviceId: conn.deviceId };
+      try {
+        let result: Result;
+        switch (msg.type) {
+          case 'call.invite':
+            if (!isString(msg.to) || (msg.video !== undefined && typeof msg.video !== 'boolean')) throw new CallError('bad_request');
+            result = deps.calls.invite(actor, { to: msg.to, video: msg.video === true });
+            break;
+          case 'call.hold':
+            if (!isString(msg.callId) || typeof msg.hold !== 'boolean') throw new CallError('bad_request');
+            result = deps.calls.hold(actor, { callId: msg.callId, hold: msg.hold });
+            break;
+          default: {
+            if (!isString(msg.callId)) throw new CallError('bad_request');
+            const action = { 'call.cancel': 'cancel', 'call.accept': 'accept', 'call.reject': 'reject', 'call.hangup': 'hangup' } as const;
+            result = deps.calls[action[msg.type as keyof typeof action]](actor, { callId: msg.callId });
+          }
+        }
+        respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id, ...(result.call && { call: result.call }) });
+        deps.deliver(result.effects);
+      } catch (e) {
+        if (!(e instanceof CallError)) throw e;
+        log.info({ type: msg.type, code: e.code }, 'команду відхилено');
+        respond(id, errorFrame(e.code, id, e.message));
+      }
     }
 
     async function onMessage(data: RawData, isBinary: boolean) {
@@ -214,8 +252,15 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
           return send({ v: PROTOCOL_VERSION, type: 'pong' });
         case 'auth.refresh':
           return onRefresh(msg, id);
+        case 'call.invite':
+        case 'call.cancel':
+        case 'call.accept':
+        case 'call.reject':
+        case 'call.hangup':
+        case 'call.hold':
+          return onCall(msg, id);
         default:
-          // call.*, settings.*, recents.*, push.* з'являться на наступних кроках
+          // settings.*, recents.*, push.* з'являться на наступних кроках
           return respond(id, errorFrame('unknown_type', id));
       }
     }
