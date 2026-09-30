@@ -18,7 +18,7 @@ dialer/
     backlog/         #   беклог задач
     changelog/       #   ченджлог, файл на день: YYYY-MM-DD.md
   web/               # фронтенд, Vue SPA: віджет і демо (буде)
-  .github/workflows/ # CI: лінт, тести, збірка (буде)
+  .github/workflows/ # CI: лінт, тести, збірка й публікація на GitHub Pages (буде)
 ```
 
 ## Правила
