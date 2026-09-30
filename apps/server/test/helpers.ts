@@ -1,5 +1,7 @@
 import type { ServerMessage } from '@dialer/shared';
 import { PROTOCOL_VERSION } from '@dialer/shared';
+import { createHash } from 'node:crypto';
+import { AccessToken } from 'livekit-server-sdk';
 import { pino } from 'pino';
 import WebSocket from 'ws';
 import { loadConfig } from '../src/config';
@@ -7,12 +9,35 @@ import type { Clock } from '../src/calls/types';
 import { createServer } from '../src/server';
 import type { GatewayTimeouts } from '../src/ws/gateway';
 
-export async function startServer(timeouts?: Partial<GatewayTimeouts>, extra: { clock?: Clock; dbPath?: string } = {}) {
-  const config = { ...loadConfig({ JWT_SECRET: 's'.repeat(32) }), port: 0, host: '127.0.0.1', dbPath: extra.dbPath ?? ':memory:' };
-  const server = await createServer({ config, logger: pino({ level: 'silent' }), timeouts, clock: extra.clock });
+export const LIVEKIT_TEST = { url: 'wss://lk.test', apiKey: 'testkey', apiSecret: 'k'.repeat(32) };
+
+/** Підписаний вебхук LiveKit: Authorization це JWT з sha256 тіла. */
+export async function signedWebhook(body: object, cfg = LIVEKIT_TEST) {
+  const text = JSON.stringify(body);
+  const at = new AccessToken(cfg.apiKey, cfg.apiSecret);
+  at.sha256 = createHash('sha256').update(text).digest('base64');
+  return { text, auth: await at.toJwt() };
+}
+
+export async function startServer(
+  timeouts?: Partial<GatewayTimeouts>,
+  extra: { clock?: Clock; dbPath?: string; livekit?: boolean } = {},
+) {
+  const config = {
+    ...loadConfig({ JWT_SECRET: 's'.repeat(32) }),
+    port: 0,
+    host: '127.0.0.1',
+    dbPath: extra.dbPath ?? ':memory:',
+    livekit: extra.livekit ? LIVEKIT_TEST : null,
+  };
+  // REST-виклики LiveKit підмінено: запам'ятовуємо закриті кімнати
+  const closedRooms: string[] = [];
+  const livekitRooms = { deleteRoom: async (room: string) => void closedRooms.push(room), listParticipants: async () => [] };
+  const server = await createServer({ config, logger: pino({ level: 'silent' }), timeouts, clock: extra.clock, livekitRooms });
   const port = await server.listen();
   return {
     ...server,
+    closedRooms,
     http: `http://127.0.0.1:${port}`,
     ws: `ws://127.0.0.1:${port}/ws`,
   };

@@ -5,8 +5,10 @@ export function createFakeClock(start = 1_000_000) {
   let now = start;
   let seq = 0;
   const timers = new Map<number, { at: number; fn: () => void }>();
-  const clock: Clock & { advance(ms: number): void } = {
+  /** `clear` імітує загибель процесу: усі таймери зникають. */
+  const clock: Clock & { advance(ms: number): void; clear(): void } = {
     now: () => now,
+    clear: () => timers.clear(),
     after(ms, fn) {
       const id = ++seq;
       timers.set(id, { at: now + ms, fn });

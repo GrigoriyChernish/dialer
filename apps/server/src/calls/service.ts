@@ -1,5 +1,6 @@
 import {
   ENDED_CALL_TTL_MS,
+  LOST_GRACE_MS,
   MAX_INVITES_PER_MINUTE,
   PROTOCOL_VERSION as V,
   RING_TIMEOUT_MS,
@@ -11,6 +12,7 @@ import {
 import { botScenario } from '../bots/scenarios';
 import type { Recents } from '../db/recents';
 import type { Users } from '../db/users';
+import { liveKitIdentity, type LiveKit, type MediaEvent } from '../livekit';
 import type { Logger } from '../logger';
 import type { CallStore } from '../store/calls';
 import type { Actor, Call, Clock, Effect } from './types';
@@ -32,6 +34,8 @@ export interface CallServiceDeps {
   users: Users;
   recents: Recents;
   clock: Clock;
+  /** `null`: медіа вимкнено, дзвінки без токенів кімнат. */
+  livekit: LiveKit | null;
   isOnline(siteId: string, userId: string): boolean;
   /** Доставляє повідомлення, які виникли без команди (таймери, боти). */
   deliver(effects: Effect[]): void;
@@ -62,6 +66,10 @@ export function createCallService(deps: CallServiceDeps) {
   const { store, users, recents, clock, logger } = deps;
   const log = logger.child({ module: 'calls' });
   const timers = new Map<string, () => void>();
+  /** Хто зараз у кімнаті LiveKit (ідентичності за вебхуками). */
+  const media = new Map<string, Set<string>>();
+  /** Дзвінки, що були `connected` до перезапуску: їхні кімнати перевіримо в LiveKit. */
+  const restoredConnected: Call[] = [];
   const invites = new Map<string, number[]>();
 
   const armTimer = (id: string, ms: number, fn: () => void) => {
@@ -69,23 +77,41 @@ export function createCallService(deps: CallServiceDeps) {
     timers.set(id, clock.after(ms, fn));
   };
   const clearTimer = (id: string) => {
-    for (const key of [id, `bot:${id}`]) {
+    for (const key of [id, `bot:${id}`, `lost:${id}`]) {
       timers.get(key)?.();
       timers.delete(key);
     }
   };
+
+  /** Медіа відстежуємо, якщо є LiveKit і це дзвінок між людьми (боти в кімнату не заходять). */
+  const tracked = (call: Call): boolean =>
+    deps.livekit !== null &&
+    !users.get(call.siteId, call.callerId)?.isBot &&
+    !users.get(call.siteId, call.calleeId)?.isBot;
+
+  /** Ідентичності, які мають бути в кімнаті, щоб розмова жила. */
+  const expectedIdentities = (call: Call): string[] => [
+    liveKitIdentity(call.callerId, call.callerDevice),
+    liveKitIdentity(call.calleeId, call.answeredDevice ?? ''),
+  ];
 
   /** Дзвінок очікує: адресат уже в розмові. */
   const isWaiting = (call: Call): boolean =>
     call.state === 'ringing' &&
     store.activeFor(call.siteId, call.calleeId).some((c) => c.id !== call.id && c.state === 'connected');
 
-  const info = (call: Call, forUserId: string): CallInfo => {
+  const info = (call: Call, forUserId: string, forDevice?: string): CallInfo => {
     const outgoing = call.callerId === forUserId;
     const peerId = outgoing ? call.calleeId : call.callerId;
     const peer = users.get(call.siteId, peerId);
     const mine = outgoing ? call.holdCaller : call.holdCallee;
     const theirs = outgoing ? call.holdCallee : call.holdCaller;
+    // токен кімнати лише пристрою, який бере участь у розмові
+    const mediaDevice = outgoing ? call.callerDevice : call.answeredDevice;
+    const livekit =
+      call.state === 'connected' && forDevice !== undefined && forDevice === mediaDevice && tracked(call)
+        ? deps.livekit!.accessFor(call.id, liveKitIdentity(forUserId, forDevice), users.get(call.siteId, forUserId)?.name ?? forUserId)
+        : undefined;
     return {
       callId: call.id,
       direction: outgoing ? 'out' : 'in',
@@ -94,6 +120,7 @@ export function createCallService(deps: CallServiceDeps) {
       ...(isWaiting(call) && { waiting: true }),
       ...(call.state === 'ringing' && { expiresAt: call.expiresAt }),
       ...(call.state === 'connected' && { startedAt: call.answeredAt, hold: mine, peerHold: theirs }),
+      ...(livekit && { livekit }),
     };
   };
 
@@ -125,8 +152,12 @@ export function createCallService(deps: CallServiceDeps) {
     call.endedAt = now;
     call.reason = reason;
     clearTimer(call.id);
+    media.delete(call.id);
     store.save(call);
     clock.after(ENDED_CALL_TTL_MS, () => store.remove(call.id));
+    if (wasConnected && tracked(call)) {
+      deps.livekit!.closeRoom(call.id).catch((err) => log.warn({ err, callId: call.id }, 'не вдалося закрити кімнату'));
+    }
 
     const duration = wasConnected && call.answeredAt ? Math.round((now - call.answeredAt) / 1000) : undefined;
     const ended = { v: V, type: 'call.ended', callId: call.id, reason, ...(duration !== undefined && { duration }) } as const;
@@ -212,12 +243,44 @@ export function createCallService(deps: CallServiceDeps) {
     clearTimer(call.id);
     store.save(call);
     log.info({ callId: call.id, deviceId }, 'дзвінок прийнято');
+
+    // учасники мають зайти в кімнату; якщо не зайдуть, `lost`
+    if (tracked(call)) {
+      media.set(call.id, new Set());
+      refreshLost(call.id);
+    }
+
+    const callerMsg = (device?: string) => ({ v: V, type: 'call.connected', call: info(call, call.callerId, device) }) as const;
     return [
-      toCaller(call, { v: V, type: 'call.connected', call: info(call, call.callerId) }),
-      toCallee(call, { v: V, type: 'call.connected', call: info(call, call.calleeId) }, { deviceId }),
+      // токен кімнати лише пристрою, з якого дзвонили; інші пристрої бачать дзвінок без медіа
+      ...(tracked(call)
+        ? [
+            { ...toCaller(call, callerMsg(call.callerDevice)), deviceId: call.callerDevice },
+            { ...toCaller(call, callerMsg()), exceptDeviceId: call.callerDevice },
+          ]
+        : [toCaller(call, callerMsg())]),
+      toCallee(call, { v: V, type: 'call.connected', call: info(call, call.calleeId, deviceId) }, { deviceId }),
       // решта пристроїв адресата припиняє дзвонити
       toCallee(call, { v: V, type: 'call.ended', callId: call.id, reason: 'answered_elsewhere' }, { exceptDeviceId: deviceId }),
     ];
+  }
+
+  /** Запускає чи скасовує відлік `lost`: у кімнаті мають бути обидва учасники. */
+  function refreshLost(id: string) {
+    const call = store.get(id);
+    if (!call || call.state !== 'connected') return;
+    const present = media.get(id) ?? new Set<string>();
+    const key = `lost:${id}`;
+    if (expectedIdentities(call).every((identity) => present.has(identity))) {
+      timers.get(key)?.();
+      timers.delete(key);
+    } else if (!timers.has(key)) {
+      armTimer(key, LOST_GRACE_MS, () => {
+        timers.delete(key);
+        const current = store.get(id);
+        if (current?.state === 'connected') deps.deliver(end(current, 'lost'));
+      });
+    }
   }
 
   function expire(id: string) {
@@ -245,8 +308,34 @@ export function createCallService(deps: CallServiceDeps) {
   }
 
   return {
-    callsFor: (siteId: string, userId: string): CallInfo[] =>
-      store.activeFor(siteId, userId).map((c) => info(c, userId)),
+    /** Дзвінки користувача; токен кімнати отримує лише пристрій, що бере участь у розмові. */
+    callsFor: (siteId: string, userId: string, deviceId?: string): CallInfo[] =>
+      store.activeFor(siteId, userId).map((c) => info(c, userId, deviceId)),
+
+    /** Подія з вебхука LiveKit: хто зайшов у кімнату чи вийшов з неї. */
+    onMedia(event: MediaEvent): void {
+      const call = store.get(event.callId);
+      if (!call || call.state !== 'connected' || !tracked(call)) return;
+      const present = media.get(call.id) ?? new Set<string>();
+      media.set(call.id, present);
+      if (event.kind === 'joined' && event.identity) present.add(event.identity);
+      else if (event.kind === 'left' && event.identity) present.delete(event.identity);
+      else if (event.kind === 'finished') present.clear();
+      refreshLost(call.id);
+    },
+
+    /** Після перезапуску питає LiveKit, хто в кімнатах відновлених розмов. Помилка не завершує дзвінок. */
+    async restoreMedia(): Promise<void> {
+      for (const call of restoredConnected.splice(0)) {
+        if (store.get(call.id)?.state !== 'connected') continue;
+        try {
+          media.set(call.id, new Set(await deps.livekit!.listParticipants(call.id)));
+          refreshLost(call.id);
+        } catch (err) {
+          log.warn({ err, callId: call.id }, 'не вдалося отримати учасників кімнати');
+        }
+      }
+    },
 
     invite(actor: Actor, req: { to: string; video: boolean }): Result {
       const callee = users.get(actor.siteId, req.to);
@@ -365,6 +454,7 @@ export function createCallService(deps: CallServiceDeps) {
     /** Після перезапуску: відновлює незавершені дзвінки з БД і таймери очікування. */
     restore(): void {
       for (const call of store.loadActive()) {
+        if (call.state === 'connected' && tracked(call)) restoredConnected.push(call);
         if (call.state !== 'ringing') continue;
         const left = call.expiresAt - clock.now();
         if (left <= 0) {

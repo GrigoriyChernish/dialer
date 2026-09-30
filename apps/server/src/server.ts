@@ -4,6 +4,7 @@ import { createCallService } from './calls/service';
 import { realClock, type Clock } from './calls/types';
 import type { Config } from './config';
 import { openDb } from './db';
+import { createLiveKit, type RoomApi } from './livekit';
 import { createRecents } from './db/recents';
 import { createUsers } from './db/users';
 import { buildHttp } from './http/app';
@@ -21,10 +22,12 @@ export interface ServerOptions {
   /** Годинник і генератор id підміняються в тестах. */
   clock?: Clock;
   newId?: () => string;
+  /** Підміна REST-викликів LiveKit у тестах. */
+  livekitRooms?: RoomApi;
 }
 
 /** Збирає сервер: БД, токени, присутність, HTTP і WebSocket. */
-export async function createServer({ config, logger, timeouts, clock = realClock, newId = ulid }: ServerOptions) {
+export async function createServer({ config, logger, timeouts, clock = realClock, newId = ulid, livekitRooms }: ServerOptions) {
   const db = openDb(config.dbPath);
   const users = createUsers(db);
   users.seedBots();
@@ -33,19 +36,23 @@ export async function createServer({ config, logger, timeouts, clock = realClock
   const hub = createHub(presence, users);
   const recents = createRecents(db);
   const deliver = createDeliver(presence);
+  const livekit = config.livekit ? createLiveKit(config.livekit, livekitRooms) : null;
   const calls = createCallService({
     store: createCallStore(db),
     users,
     recents,
     clock,
+    livekit,
     isOnline: presence.isOnline,
     deliver,
     newId,
     logger,
   });
   calls.restore();
+  // перевірка кімнат у LiveKit не блокує запуск; помилки логуються всередині
+  void calls.restoreMedia();
 
-  const app = buildHttp({ config, users, tokens, hub, logger });
+  const app = buildHttp({ config, users, tokens, hub, calls, livekit, logger });
   const gateway = attachGateway(app.server, { users, recents, calls, deliver, hub, tokens, logger, timeouts });
 
   return {

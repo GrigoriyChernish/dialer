@@ -155,7 +155,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         user: { userId: user.id, name: user.name },
         serverTime: Date.now(),
         settings: user.settings,
-        calls: deps.calls.callsFor(user.siteId, user.id),
+        calls: deps.calls.callsFor(user.siteId, user.id, deviceId),
         contacts: deps.hub.contactsFor(user.siteId, user.id),
         recents: deps.recents.list(user.siteId, user.id),
       });

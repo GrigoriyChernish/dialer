@@ -3,6 +3,8 @@ import { normalizeName, normalizePhone } from '../auth/phone';
 import type { Tokens } from '../auth/tokens';
 import type { Config } from '../config';
 import { DEMO_SITE_ID, type Users } from '../db/users';
+import type { CallService } from '../calls/service';
+import type { LiveKit } from '../livekit';
 import type { Logger } from '../logger';
 import type { Hub } from '../ws/hub';
 
@@ -11,10 +13,12 @@ export interface HttpDeps {
   users: Users;
   tokens: Tokens;
   hub: Hub;
+  calls: CallService;
+  livekit: LiveKit | null;
   logger: Logger;
 }
 
-export function buildHttp({ config, users, tokens, hub, logger }: HttpDeps) {
+export function buildHttp({ config, users, tokens, hub, calls, livekit, logger }: HttpDeps) {
   const app = Fastify({ loggerInstance: logger.child({ module: 'http' }) });
 
   // CORS лише для сторінки демо
@@ -49,6 +53,22 @@ export function buildHttp({ config, users, tokens, hub, logger }: HttpDeps) {
     req.log.info({ userId: user.id }, 'демо-вхід');
     return { token, expiresAt, user: { userId: user.id, name: user.name } };
   });
+
+  // Вебхук LiveKit: хто зайшов у кімнату й вийшов із неї (правило `lost`). Тіло потрібне «сирим» для перевірки підпису.
+  if (livekit) {
+    app.addContentTypeParser('application/webhook+json', { parseAs: 'string' }, (_req, body, done) => done(null, body));
+    app.post('/livekit/webhook', async (req, reply) => {
+      let event;
+      try {
+        event = await livekit.parseWebhook(String(req.body ?? ''), req.headers.authorization);
+      } catch (err) {
+        req.log.warn({ err }, 'вебхук LiveKit відхилено');
+        return reply.code(401).send({ error: 'invalid_signature' });
+      }
+      if (event) calls.onMedia(event);
+      return { ok: true };
+    });
+  }
 
   return app;
 }

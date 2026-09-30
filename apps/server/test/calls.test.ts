@@ -7,6 +7,7 @@ import { createRecents } from '../src/db/recents';
 import { createUsers } from '../src/db/users';
 import { createCallStore } from '../src/store/calls';
 import { createFakeClock } from './fake-clock';
+import { createFakeLiveKit } from './fake-livekit';
 
 const SITE = 'demo';
 const anna: Actor = { siteId: SITE, userId: '+380500000001', deviceId: 'a1' };
@@ -14,8 +15,9 @@ const bohdan: Actor = { siteId: SITE, userId: '+380500000002', deviceId: 'b1' };
 const bohdan2: Actor = { ...bohdan, deviceId: 'b2' };
 const clara: Actor = { siteId: SITE, userId: '+380500000003', deviceId: 'c1' };
 
-function setup(dbPath = ':memory:') {
-  const db = openDb(dbPath);
+function setup(opts: { livekit?: boolean } = {}) {
+  const db = openDb(':memory:');
+  const lk = createFakeLiveKit();
   const users = createUsers(db);
   users.seedBots();
   for (const [a, name] of [[anna, 'Анна'], [bohdan, 'Богдан'], [clara, 'Клара']] as const) users.upsertDemoUser(a.userId, name);
@@ -30,12 +32,13 @@ function setup(dbPath = ':memory:') {
       users,
       recents,
       clock,
+      livekit: opts.livekit ? lk.livekit : null,
       isOnline: (_s, u) => online.has(u),
       deliver: (e) => void delivered.push(...e),
       newId: () => `call${++n}`,
       logger: pino({ level: 'silent' }),
     });
-  return { db, calls: make(), make, clock, online, delivered, recents, users };
+  return { db, calls: make(), make, clock, online, delivered, recents, users, lk };
 }
 
 /** Повідомлення типу `type` серед effects, з адресатами. */
@@ -411,5 +414,157 @@ describe('другий вхідний (waiting)', () => {
     t.clock.advance(3_500);
     const r = t.calls.invite(clara, { to: 'bot:olena', video: false });
     expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('busy');
+  });
+});
+
+describe('LiveKit і правило lost', () => {
+  let t: ReturnType<typeof setup>;
+  const id = (a: Actor) => `${a.userId}:${a.deviceId}`;
+  beforeEach(() => void (t = setup({ livekit: true })));
+
+  function connected() {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    const r = t.calls.accept(bohdan, { callId: 'call1' });
+    t.delivered.length = 0;
+    return r;
+  }
+
+  it('токен кімнати отримує лише пристрій, що бере участь у розмові', () => {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    const r = t.calls.accept(bohdan, { callId: 'call1' });
+    const connectedMsgs = find(r.effects, 'call.connected');
+    const forCallerDevice = connectedMsgs.find((e) => e.user === anna.userId && e.device === 'a1')!;
+    const forCallerOthers = connectedMsgs.find((e) => e.user === anna.userId && e.except === 'a1')!;
+    const forCallee = connectedMsgs.find((e) => e.user === bohdan.userId)!;
+    expect(forCallerDevice.msg.call.livekit).toEqual({ url: 'wss://lk.test', token: `call1|${id(anna)}|Анна` });
+    expect(forCallerOthers.msg.call.livekit).toBeUndefined();
+    expect(forCallee.device).toBe('b1');
+    expect(forCallee.msg.call.livekit).toEqual({ url: 'wss://lk.test', token: `call1|${id(bohdan)}|Богдан` });
+  });
+
+  it('hello.ok.calls: токен лише для пристрою розмови', () => {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    t.calls.accept(bohdan, { callId: 'call1' });
+    expect(t.calls.callsFor(SITE, bohdan.userId, 'b1')[0]!.livekit?.token).toBe(`call1|${id(bohdan)}|Богдан`);
+    expect(t.calls.callsFor(SITE, bohdan.userId, 'b2')[0]!.livekit).toBeUndefined();
+    expect(t.calls.callsFor(SITE, bohdan.userId)[0]!.livekit).toBeUndefined();
+    expect(t.calls.callsFor(SITE, anna.userId, 'a1')[0]!.livekit).toBeDefined();
+  });
+
+  it('дзвінки з ботами без токенів кімнати', () => {
+    t.calls.invite(anna, { to: 'bot:olena', video: false });
+    t.clock.advance(3_500);
+    const connectedMsg = find(t.delivered, 'call.connected').find((e) => e.user === anna.userId)!;
+    expect(connectedMsg.msg.call.livekit).toBeUndefined();
+    t.clock.advance(120_000); // і lost не спрацьовує
+    expect(find(t.delivered, 'call.ended').filter((e) => e.msg.reason === 'lost')).toEqual([]);
+  });
+
+  it('lost: ніхто не зайшов у кімнату за 30 с', () => {
+    connected();
+    t.clock.advance(29_999);
+    expect(t.delivered).toEqual([]);
+    t.clock.advance(1);
+    expect(find(t.delivered, 'call.ended').map((e) => [e.user, e.msg.reason, e.msg.duration])).toEqual([
+      [anna.userId, 'lost', 30],
+      [bohdan.userId, 'lost', 30],
+    ]);
+    expect(t.recents.list(SITE, anna.userId)[0]).toMatchObject({ result: 'completed', duration: 30 });
+    expect(t.lk.closed).toEqual(['call1']);
+  });
+
+  it('обидва в кімнаті: lost не спрацьовує; вихід одного запускає відлік, повернення скасовує', () => {
+    connected();
+    t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(anna) });
+    t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(bohdan) });
+    t.clock.advance(300_000);
+    expect(t.delivered).toEqual([]);
+
+    t.calls.onMedia({ kind: 'left', callId: 'call1', identity: id(bohdan) });
+    t.clock.advance(20_000);
+    t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(bohdan) });
+    t.clock.advance(300_000);
+    expect(t.delivered).toEqual([]);
+
+    t.calls.onMedia({ kind: 'left', callId: 'call1', identity: id(anna) });
+    t.clock.advance(30_000);
+    expect(find(t.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['lost', 'lost']);
+  });
+
+  it('сторонні ідентичності не рахуються, room_finished запускає відлік', () => {
+    connected();
+    t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(anna) });
+    t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: `${bohdan.userId}:інший` });
+    t.clock.advance(30_000);
+    expect(find(t.delivered, 'call.ended')).toHaveLength(2);
+
+    const t2 = setup({ livekit: true });
+    t2.calls.invite(anna, { to: bohdan.userId, video: false });
+    t2.calls.accept(bohdan, { callId: 'call1' });
+    t2.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(anna) });
+    t2.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(bohdan) });
+    t2.calls.onMedia({ kind: 'finished', callId: 'call1' });
+    t2.clock.advance(30_000);
+    expect(find(t2.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['lost', 'lost']);
+  });
+
+  it('події про невідомий чи неприйнятий дзвінок ігноруються', () => {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    t.calls.onMedia({ kind: 'left', callId: 'call1', identity: id(anna) });
+    t.calls.onMedia({ kind: 'left', callId: 'нема', identity: 'x' });
+    t.clock.advance(120_000);
+    expect(find(t.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['timeout', 'timeout']);
+  });
+
+  it('hangup закриває кімнату, cancel і timeout не чіпають LiveKit', () => {
+    connected();
+    t.calls.hangup(anna, { callId: 'call1' });
+    expect(t.lk.closed).toEqual(['call1']);
+
+    t.calls.invite(anna, { to: clara.userId, video: false });
+    t.calls.cancel(anna, { callId: 'call2' });
+    expect(t.lk.closed).toEqual(['call1']);
+  });
+
+  it('після перезапуску кімнати перевіряються в LiveKit', async () => {
+    const t1 = setup({ livekit: true });
+    t1.calls.invite(anna, { to: bohdan.userId, video: false });
+    t1.calls.accept(bohdan, { callId: 'call1' });
+    t1.lk.participants.set('call1', [id(anna), id(bohdan)]);
+
+    t1.clock.clear();
+    const restarted = t1.make();
+    restarted.restore();
+    await restarted.restoreMedia();
+    t1.delivered.length = 0;
+    t1.clock.advance(120_000);
+    expect(t1.delivered).toEqual([]); // обидва в кімнаті
+
+    // один вийшов поки сервера не було
+    const t3 = setup({ livekit: true });
+    t3.calls.invite(anna, { to: bohdan.userId, video: false });
+    t3.calls.accept(bohdan, { callId: 'call1' });
+    t3.lk.participants.set('call1', [id(anna)]);
+    t3.clock.clear();
+    const restarted3 = t3.make();
+    restarted3.restore();
+    await restarted3.restoreMedia();
+    t3.delivered.length = 0;
+    t3.clock.advance(30_000);
+    expect(find(t3.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['lost', 'lost']);
+  });
+
+  it('збій LiveKit під час відновлення не завершує дзвінок', async () => {
+    const t4 = setup({ livekit: true });
+    t4.calls.invite(anna, { to: bohdan.userId, video: false });
+    t4.calls.accept(bohdan, { callId: 'call1' });
+    t4.lk.failListing();
+    t4.clock.clear();
+    const restarted = t4.make();
+    restarted.restore();
+    await restarted.restoreMedia();
+    t4.delivered.length = 0;
+    t4.clock.advance(300_000);
+    expect(t4.delivered).toEqual([]);
   });
 });
