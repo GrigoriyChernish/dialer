@@ -305,5 +305,4 @@ idle ◀─reject / timeout── incoming
 
 ## 2. Бекенд
 Живе в цьому ж репозиторії (моноrepo): `apps/server`, спільні типи в `packages/shared`.
-Контракт сигналізації описано в [signaling.md](signaling.md). Решта (API отримання токенів, демо-ендпоінт входу,
-розгортання) буде додана поступово.
+Стек, структура, БД, токени й розгортання описано в [backend.md](backend.md), контракт сигналізації в [signaling.md](signaling.md).

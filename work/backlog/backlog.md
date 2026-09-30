@@ -49,7 +49,7 @@ Workflow `pages.yml` уже публікує прототипи. Коли з'я�
 ## 12. Моноrepo і каркас сервера
 Перейти на pnpm workspaces: `apps/web`, `apps/server`, `packages/shared`. У `apps/server` зробити WebSocket за
 [`docs/signaling.md`](../../docs/signaling.md): спершу демо-вхід і присутність, потім дзвінок без медіа, далі LiveKit, історія, пуші.
-Типи подій лежать у `packages/shared/src/signaling.ts`.
+Типи подій лежать у `packages/shared/src/signaling.ts`. Стек і порядок робіт: [`docs/backend.md`](../../docs/backend.md).
 
 ---
 
