@@ -126,6 +126,7 @@ svg .f{fill:currentColor;stroke:none}
 .sc button{all:unset;text-align:center;padding:10px 8px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:13px;cursor:pointer}
 .sc button[disabled]{opacity:.4;pointer-events:none}
 .sc button:hover{border-color:var(--acc)}
+.empty{margin:10px 10px 6px;color:#98a2b6;font-size:14px;line-height:1.45}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .snd{margin-top:8px;font-size:12px;color:var(--mute);min-height:16px}
 </style>
@@ -138,10 +139,23 @@ svg .f{fill:currentColor;stroke:none}
   <div class="sc" id="sc"></div>
 </div>
 <script>
-const contacts=[
+/* ---------- режим віджета: відкрито з demo/embed.js з токеном у URL ---------- */
+const Q=new URLSearchParams(location.search),EMB=Q.has('token'),HOST=Q.get('host')||location.origin;
+let token=Q.get('token'),expSent=0;
+const toHost=m=>EMB&&parent!==window&&parent.postMessage(m,HOST);
+const setTheme=t=>t&&t!=='auto'?document.documentElement.dataset.theme=t:delete document.documentElement.dataset.theme;
+const fmt=p=>p.replace(/^\+380(\d\d)(\d{3})(\d\d)(\d\d)$/,'+380 $1 $2 $3 $4');
+// контакти з «бекенду»: усі демо-користувачі, крім себе (імітація: спільний localStorage з demo/index.html)
+function demoContacts(){let u=[];try{u=JSON.parse(localStorage.getItem('dialer.demo.users'))||[]}catch(e){}
+  const me=token.split('.')[1];
+  return u.filter(x=>x.phone!==me).map(x=>({id:x.phone,name:x.name.replace(/[<>&]/g,''),s:fmt(x.phone)+' · відповість'}));}
+// демо-співрозмовники зі сценаріями: є завжди, щоб демо працювало й для однієї людини
+const BOTS=[
  {id:'u2',name:'Олена Коваль',g:'f',s:'онлайн · відповість'},
  {id:'u3',name:'Андрій Мельник',g:'m',s:'онлайн · не відповість'},
  {id:'u4',name:'Support',g:'m',s:'у розмові · зайнято'}];
+const allContacts=()=>EMB?[...demoContacts(),...BOTS]:BOTS;
+let contacts=allContacts();
 const S={state:'idle',peer:null,missed:null,mic:1,cam:1,hold:0,peerHold:0,conn:'ok',away:0,q:'excellent',sec:0,left:0,stream:null,pip:1,peerMic:1,peerCam:0};
 const T={};let soundOn=true,ac,stopSnd=()=>{},sndLabel='',gen=0,inCnt=0;
 const vid=Object.assign(document.createElement('video'),{autoplay:true,muted:true,playsInline:true});  // один елемент на весь дзвінок: прев'ю не миготить
@@ -185,7 +199,7 @@ function call(id){if(S.state!=='idle')return;const c=contacts.find(x=>x.id===id)
   if(id==='u4'){S.state='ringing';S.left=0;render();play(null);
     T.ans=setTimeout(()=>{S.state='idle';S.missed={c,reason:'busy'};play('busy',4000);render();},500);return;}  // сервер: {busy:true}
   S.state='ringing';S.left=8;play('ringback');render();
-  if(id==='u2')T.ans=setTimeout(connect,3500);
+  if(id==='u2'||id[0]==='+')T.ans=setTimeout(connect,3500);
   T.tick=setInterval(()=>{S.left--;$('left')&&($('left').textContent=mm(S.left));
     if(S.left<=0){clearInterval(T.tick);S.state='idle';S.missed={c,reason:'timeout'};play(null);render();}},1000);}  // call:timeout
 function incoming(){if(S.state!=='idle')return;const pool=contacts.filter(c=>c.id!=='u4'),c=pool[inCnt++%pool.length];S.peer=c;S.missed=null;S.state='incoming';S.left=10;play('ringtone');render();
@@ -215,7 +229,8 @@ function render(){
   if(S.state==='idle'&&!S.missed){
     r.innerHTML=`<section class="list"><h2>Дзвінки</h2>`+contacts.map(c=>`<button class="row" data-c="${c.id}">
       <span class="avatar">${ini(c.name)}</span><span class="meta"><b>${c.name}</b><small>${c.s}</small></span>
-      <span class="dial">${svg(PHONE)}</span></button>`).join('')+`</section>`;
+      <span class="dial">${svg(PHONE)}</span></button>`).join('')
+      +(EMB&&!contacts.some(c=>c.id[0]==='+')?`<p class="empty">Інші люди з'являться тут, коли увійдуть у демо. Спробуйте: відкрийте демо в іншій вкладці цього браузера й увійдіть з іншим номером.</p>`:'')+`</section>`;
     r.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>call(b.dataset.c));
   } else if(S.state==='idle'){
     const m=S.missed,M={busy:['Зайнято','Абонент зараз розмовляє'],timeout:['Без відповіді','Абонент не відповів (у демо 8 с, у реалі 60 с)'],incoming:['Пропущений дзвінок','Ви не відповіли на вхідний']}[m.reason];
@@ -266,6 +281,7 @@ function render(){
   }
   announce();
   sc();
+  toHost({type:'state',state:S.state});
 }
 // коротке зведення стану для скрінрідерів (live-регіон поза #root, тому не перестворюється)
 function announce(){
@@ -295,7 +311,21 @@ function sc(){
   $('s1').onclick=incoming;$('s2').onclick=dropConn;$('s3').onclick=peerAway;$('s4').onclick=peerHold;$('s5').onclick=poorQ;$('s6').onclick=peerMute;$('s7').onclick=peerCamToggle;
 }
 $('snd').onclick=()=>{soundOn=!soundOn;if(!soundOn)play(null);sc();};
+if(EMB){
+  setTheme(Q.get('theme'));
+  // повідомлення лише від сайту-господаря, який нас вбудував
+  addEventListener('message',e=>{if(e.source!==parent||e.origin!==HOST)return;const m=e.data||{};
+    if(m.type==='theme')setTheme(m.theme);
+    if(m.type==='token'){token=m.token;expSent=0;}
+    if(m.type==='call'&&contacts.some(c=>c.id===m.id))call(m.id);});
+  // хтось увійшов в іншій вкладці: оновлюємо контакти
+  addEventListener('storage',e=>{if(e.key!=='dialer.demo.users')return;contacts=allContacts();if(S.state==='idle'&&!S.missed)render();});
+  addEventListener('keydown',e=>{if(e.key==='Escape')toHost({type:'close'});});  // Esc згортає панель, дзвінок триває
+  const chk=()=>{if(!expSent&&+token.split('.')[2]<Date.now()){expSent=1;toHost({type:'token:expired'});}};
+  setInterval(chk,15000);chk();
+}
 render();
+toHost({type:'ready'});
 </script>
 </body>
 </html>
