@@ -9,6 +9,7 @@ import {
   TOKEN_EXPIRING_MS,
   type ErrorCode,
   type ErrorReply,
+  type Settings,
   type ServerMessage,
 } from '@dialer/shared';
 import { randomUUID } from 'node:crypto';
@@ -196,13 +197,19 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
             if (!isString(msg.to) || (msg.video !== undefined && typeof msg.video !== 'boolean')) throw new CallError('bad_request');
             result = deps.calls.invite(actor, { to: msg.to, video: msg.video === true });
             break;
+          case 'call.accept':
+            if (!isString(msg.callId) || (msg.action !== undefined && msg.action !== 'hold' && msg.action !== 'end')) {
+              throw new CallError('bad_request');
+            }
+            result = deps.calls.accept(actor, { callId: msg.callId, action: msg.action });
+            break;
           case 'call.hold':
             if (!isString(msg.callId) || typeof msg.hold !== 'boolean') throw new CallError('bad_request');
             result = deps.calls.hold(actor, { callId: msg.callId, hold: msg.hold });
             break;
           default: {
             if (!isString(msg.callId)) throw new CallError('bad_request');
-            const action = { 'call.cancel': 'cancel', 'call.accept': 'accept', 'call.reject': 'reject', 'call.hangup': 'hangup' } as const;
+            const action = { 'call.cancel': 'cancel', 'call.reject': 'reject', 'call.hangup': 'hangup' } as const;
             result = deps.calls[action[msg.type as keyof typeof action]](actor, { callId: msg.callId });
           }
         }
@@ -213,6 +220,25 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         log.info({ type: msg.type, code: e.code }, 'команду відхилено');
         respond(id, errorFrame(e.code, id, e.message));
       }
+    }
+
+    /** Налаштування користувача: зберігає й повідомляє інші пристрої. */
+    function onSettings(msg: Record<string, unknown>, id: string | undefined) {
+      if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
+      const patch = msg.settings;
+      if (!isRecord(patch)) return respond(id, errorFrame('bad_request', id, 'settings: очікується об\'єкт'));
+      const clean: Partial<Settings> = {};
+      for (const key of ['waiting', 'dnd'] as const) {
+        if (!(key in patch)) continue;
+        if (typeof patch[key] !== 'boolean') return respond(id, errorFrame('bad_request', id, `settings.${key}: очікується boolean`));
+        clean[key] = patch[key];
+      }
+      const settings = deps.users.updateSettings(conn.siteId, conn.userId, clean);
+      log.info({ userId: conn.userId, ...clean }, 'налаштування змінено');
+      respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id, settings });
+      deps.deliver([
+        { siteId: conn.siteId, userId: conn.userId, exceptDeviceId: conn.deviceId, msg: { v: PROTOCOL_VERSION, type: 'settings.updated', settings } },
+      ]);
     }
 
     async function onMessage(data: RawData, isBinary: boolean) {
@@ -259,8 +285,10 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         case 'call.hangup':
         case 'call.hold':
           return onCall(msg, id);
+        case 'settings.update':
+          return onSettings(msg, id);
         default:
-          // settings.*, recents.*, push.* з'являться на наступних кроках
+          // recents.*, push.* з'являться на наступних кроках
           return respond(id, errorFrame('unknown_type', id));
       }
     }

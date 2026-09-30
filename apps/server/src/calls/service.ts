@@ -75,6 +75,11 @@ export function createCallService(deps: CallServiceDeps) {
     }
   };
 
+  /** Дзвінок очікує: адресат уже в розмові. */
+  const isWaiting = (call: Call): boolean =>
+    call.state === 'ringing' &&
+    store.activeFor(call.siteId, call.calleeId).some((c) => c.id !== call.id && c.state === 'connected');
+
   const info = (call: Call, forUserId: string): CallInfo => {
     const outgoing = call.callerId === forUserId;
     const peerId = outgoing ? call.calleeId : call.callerId;
@@ -86,6 +91,7 @@ export function createCallService(deps: CallServiceDeps) {
       direction: outgoing ? 'out' : 'in',
       peer: { userId: peerId, name: peer?.name ?? peerId },
       state: call.state === 'connected' ? 'connected' : 'ringing',
+      ...(isWaiting(call) && { waiting: true }),
       ...(call.state === 'ringing' && { expiresAt: call.expiresAt }),
       ...(call.state === 'connected' && { startedAt: call.answeredAt, hold: mine, peerHold: theirs }),
     };
@@ -107,7 +113,12 @@ export function createCallService(deps: CallServiceDeps) {
   };
 
   /** Завершує дзвінок: стан, історія, повідомлення. */
-  function end(call: Call, reason: EndReason, actorDevice?: string, calleeNotified = true): Effect[] {
+  function end(
+    call: Call,
+    reason: EndReason,
+    opts: { actorDevice?: string; calleeNotified?: boolean; silentMissed?: boolean } = {},
+  ): Effect[] {
+    const { actorDevice, calleeNotified = true, silentMissed = false } = opts;
     const now = clock.now();
     const wasConnected = call.state === 'connected';
     call.state = 'ended';
@@ -134,7 +145,10 @@ export function createCallService(deps: CallServiceDeps) {
       effects.push(toCallee(call, ended));
     }
 
-    const [callerResult, calleeResult] = RECENT_RESULTS[reason];
+    // розмова закінчилась: дзвінок, що чекав, стає звичайним
+    if (wasConnected) effects.push(...releaseWaiting(call));
+
+    const [callerResult, calleeResult] = silentMissed ? (['busy', 'missed'] as const) : RECENT_RESULTS[reason];
     const sides = [
       { userId: call.callerId, peer: call.calleeId, direction: 'out', result: callerResult },
       { userId: call.calleeId, peer: call.callerId, direction: 'in', result: calleeResult },
@@ -148,12 +162,47 @@ export function createCallService(deps: CallServiceDeps) {
         result: side.result,
         startedAt: call.createdAt,
         ...(duration !== undefined && { duration }),
+        ...(silentMissed && side.direction === 'in' && { silent: true }),
       };
       recents.add(call.siteId, side.userId, entry);
       effects.push({ siteId: call.siteId, userId: side.userId, msg: { v: V, type: 'recents.add', entry } });
     }
     return effects;
   }
+
+  /** Повідомляє, що дзвінок більше не «очікує», якщо в адресата не лишилось розмов. */
+  function releaseWaiting(ended: Call): Effect[] {
+    const effects: Effect[] = [];
+    for (const userId of [ended.callerId, ended.calleeId]) {
+      for (const call of store.activeFor(ended.siteId, userId)) {
+        if (call.state !== 'ringing' || call.calleeId !== userId || isWaiting(call)) continue;
+        const msg = { v: V, type: 'call.updated', callId: call.id, waiting: false } as const;
+        effects.push(toCallee(call, msg), toCaller(call, msg));
+      }
+    }
+    return effects;
+  }
+
+  /** Ставить чи знімає утримання з боку `userId`; повідомляє співрозмовника й пристрої користувача. */
+  function setHold(call: Call, userId: string, hold: boolean, exceptDevice?: string): Effect[] {
+    const isCaller = call.callerId === userId;
+    if (isCaller) call.holdCaller = hold;
+    else call.holdCallee = hold;
+    store.save(call);
+    const peerId = isCaller ? call.calleeId : call.callerId;
+    return [
+      { siteId: call.siteId, userId: peerId, msg: { v: V, type: 'call.peer', callId: call.id, hold } },
+      {
+        siteId: call.siteId,
+        userId,
+        ...(exceptDevice && { exceptDeviceId: exceptDevice }),
+        msg: { v: V, type: 'call.updated', callId: call.id, hold },
+      },
+    ];
+  }
+
+  const connectedCalls = (siteId: string, userId: string, except: string): Call[] =>
+    store.activeFor(siteId, userId).filter((c) => c.id !== except && c.state === 'connected');
 
   /** Переводить дзвінок у `connected` і повідомляє обидві сторони. */
   function connect(call: Call, deviceId: string): Effect[] {
@@ -208,6 +257,8 @@ export function createCallService(deps: CallServiceDeps) {
       const scenario = callee.isBot ? botScenario(callee.id) : null;
       const now = clock.now();
       const timeoutMs = scenario?.kind === 'ignore' ? scenario.timeoutMs : RING_TIMEOUT_MS;
+      // дзвінки адресата до створення цього
+      const others = store.activeFor(actor.siteId, callee.id);
       const call: Call = {
         id: deps.newId(),
         siteId: actor.siteId,
@@ -223,14 +274,25 @@ export function createCallService(deps: CallServiceDeps) {
       };
       store.save(call);
       log.info({ callId: call.id, from: actor.userId, to: callee.id }, 'новий дзвінок');
-      const ack = info(call, actor.userId);
 
-      // правила в порядку з docs/signaling.md; dnd і waiting додамо на кроці 4
-      if (scenario?.kind === 'busy' || store.activeFor(actor.siteId, callee.id).length > 1) {
-        return { call: ack, effects: end(call, 'busy', undefined, false) };
+      // порядок перевірок із docs/signaling.md; перші три виконано вище
+      let refusal: { reason: 'busy' | 'offline'; silent?: boolean } | null = null;
+      if (callee.isBot) {
+        // боти не мають очікування: зайнятий бот або сценарій «зайнято» дає busy
+        if (scenario?.kind === 'busy' || others.length > 0) refusal = { reason: 'busy' };
+      } else if (callee.settings.dnd) {
+        refusal = { reason: 'busy', silent: true };
+      } else if (others.some((c) => c.state === 'ringing') || others.length >= 2) {
+        refusal = { reason: 'busy' };
+      } else if (others.length === 1 && !callee.settings.waiting) {
+        refusal = { reason: 'busy', silent: true };
+      } else if (!deps.isOnline(actor.siteId, callee.id)) {
+        refusal = { reason: 'offline' };
       }
-      if (!callee.isBot && !deps.isOnline(actor.siteId, callee.id)) {
-        return { call: ack, effects: end(call, 'offline', undefined, false) };
+      const ack = info(call, actor.userId);
+      if (refusal) {
+        const effects = end(call, refusal.reason, { calleeNotified: false, silentMissed: refusal.silent });
+        return { call: ack, effects };
       }
 
       armTimer(call.id, timeoutMs, () => expire(call.id));
@@ -250,19 +312,30 @@ export function createCallService(deps: CallServiceDeps) {
       return { effects: end(call, 'cancelled') };
     },
 
-    accept(actor: Actor, req: { callId: string }): Result {
+    /** `action` обов'язкове, якщо в користувача вже є розмова: `hold` утримує її, `end` завершує. */
+    accept(actor: Actor, req: { callId: string; action?: 'hold' | 'end' }): Result {
       const call = load(req.callId);
       if (call.calleeId !== actor.userId) throw new CallError('not_allowed');
       // дзвінок уже прийнято на іншому пристрої
       if (call.state === 'connected' && call.answeredDevice !== actor.deviceId) throw new CallError('call_ended');
       if (call.state !== 'ringing') throw new CallError('not_allowed');
-      return { effects: connect(call, actor.deviceId) };
+
+      const current = connectedCalls(actor.siteId, actor.userId, call.id)[0];
+      if (current && req.action !== 'hold' && req.action !== 'end') {
+        throw new CallError('bad_request', 'call.accept: потрібне action, бо є розмова');
+      }
+      const effects: Effect[] = [];
+      if (current) {
+        effects.push(...(req.action === 'hold' ? setHold(current, actor.userId, true) : end(current, 'hangup')));
+      }
+      effects.push(...connect(call, actor.deviceId));
+      return { effects };
     },
 
     reject(actor: Actor, req: { callId: string }): Result {
       const call = load(req.callId);
       if (call.calleeId !== actor.userId || call.state !== 'ringing') throw new CallError('not_allowed');
-      return { effects: end(call, 'rejected', actor.deviceId) };
+      return { effects: end(call, 'rejected', { actorDevice: actor.deviceId }) };
     },
 
     hangup(actor: Actor, req: { callId: string }): Result {
@@ -273,23 +346,20 @@ export function createCallService(deps: CallServiceDeps) {
       return { effects: end(call, 'hangup') };
     },
 
+    /** `hold: false` на утримуваному дзвінку ставить на утримання іншу розмову користувача (перемикання). */
     hold(actor: Actor, req: { callId: string; hold: boolean }): Result {
       const call = load(req.callId);
       if (![call.callerId, call.calleeId].includes(actor.userId) || call.state !== 'connected') {
         throw new CallError('not_allowed');
       }
-      const isCaller = call.callerId === actor.userId;
-      if (isCaller) call.holdCaller = req.hold;
-      else call.holdCallee = req.hold;
-      store.save(call);
-      const peerId = isCaller ? call.calleeId : call.callerId;
-      return {
-        effects: [
-          { siteId: call.siteId, userId: peerId, msg: { v: V, type: 'call.peer', callId: call.id, hold: req.hold } },
-          // інші пристрої того, хто тримає, теж оновлюють екран
-          { siteId: call.siteId, userId: actor.userId, exceptDeviceId: actor.deviceId, msg: { v: V, type: 'call.updated', callId: call.id, hold: req.hold } },
-        ],
-      };
+      const effects = setHold(call, actor.userId, req.hold, actor.deviceId);
+      if (!req.hold) {
+        for (const other of connectedCalls(actor.siteId, actor.userId, call.id)) {
+          const mine = other.callerId === actor.userId ? other.holdCaller : other.holdCallee;
+          if (!mine) effects.push(...setHold(other, actor.userId, true));
+        }
+      }
+      return { effects };
     },
 
     /** Після перезапуску: відновлює незавершені дзвінки з БД і таймери очікування. */

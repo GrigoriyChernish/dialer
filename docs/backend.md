@@ -61,6 +61,11 @@ apps/server/
 - Історія (`recents`) пишеться при завершенні за таблицею результатів із `signaling.md`; для ботів записів немає.
 - Демо-боти (`bots/scenarios.ts`): Олена приймає через 3,5 с, Андрій одразу `busy`, Support не відповідає й очікування
   для нього 8 с (`expiresAt` коротший за 60 с), як у демо.
+- Налаштування (`waiting`, `dnd`) лежать у `users.settings` (JSON) і змінюються командою `settings.update`; у `call.invite` порядок
+  перевірок повністю відповідає `signaling.md`. `busy` через `dnd` чи `waiting: false` пише адресату тихий `missed` (`silent`).
+- Другий вхідний: `waiting` не зберігається, а обчислюється (дзвінок `ringing`, а в адресата є `connected`), тому однаково
+  працює в `hello.ok` і після перезапуску. `call.accept` з `action`, перемикання через `call.hold` з `hold: false` і
+  `call.updated { waiting: false }`, коли перша розмова закінчилась, реалізовані в `calls/service.ts`.
 - Виклик до адресата, який не в мережі, одразу завершується з `offline` (пуші з'являться на кроці 6). Адресат, який
   зайнятий чи не в мережі, не отримує ні `call.incoming`, ні `call.ended`.
 
@@ -132,7 +137,7 @@ CORS для `/demo/login` обмежений origin демо-сторінки. `
 1. ✅ Каркас моноrepo: `pnpm-workspace.yaml`, `packages/shared` з типами `signaling.ts`, порожній `apps/server`.
 2. ✅ Демо-вхід (`POST /demo/login`), JWT, присутність, `hello` / `hello.ok`, контакти.
 3. ✅ Дзвінок без медіа: `call.invite`/`accept`/`reject`/`cancel`/`hangup`/`hold`, таймаут, історія, боти, відновлення після перезапуску.
-4. `waiting`, `dnd`, `settings`.
+4. ✅ `waiting`, `dnd`, `settings`.
 5. LiveKit: токени кімнат, вебхук, правило `lost`.
 6. Web Push і `POST /tokens` для справжніх сайтів-господарів.
 7. Розгортання на Fly.io (можна раніше, після кроку 2, щоб віджет на Pages працював з живим сервером).

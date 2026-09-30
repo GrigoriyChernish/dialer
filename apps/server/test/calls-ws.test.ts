@@ -120,4 +120,83 @@ describe('дзвінок через WebSocket', () => {
     a.client.close();
     b.client.close();
   });
+
+  it('settings.update: ack з повними налаштуваннями, інші пристрої отримують settings.updated, значення переживають перепідключення', async () => {
+    const p = phone();
+    const d1 = await connectUser(server, 'Лілія', p, 'phone');
+    const d2 = await connectUser(server, 'Лілія', p, 'laptop');
+    d1.client.send({ type: 'settings.update', id: 's1', settings: { dnd: true, невідоме: 1 } });
+    expect(await d1.client.next('ack')).toMatchObject({ reqId: 's1', settings: { waiting: true, dnd: true } });
+    expect((await d2.client.next('settings.updated')).settings).toEqual({ waiting: true, dnd: true });
+    expect(d1.client.frames.filter((f) => f.type === 'settings.updated')).toEqual([]);
+
+    d1.client.send({ type: 'settings.update', id: 's2', settings: { waiting: 'так' } });
+    expect(await d1.client.next('error')).toMatchObject({ reqId: 's2', code: 'bad_request' });
+    d1.client.send({ type: 'settings.update', id: 's3', settings: 5 });
+    expect((await d1.client.next('error')).code).toBe('bad_request');
+
+    const again = await connectUser(server, 'Лілія', p, 'tablet');
+    expect(again.hello.settings).toEqual({ waiting: true, dnd: true });
+    for (const c of [d1, d2, again]) c.client.close();
+  });
+
+  it('dnd: дзвінок отримує busy, а адресат тихий пропущений', async () => {
+    const pb = phone();
+    const a = await connectUser(server, 'Максим', phone());
+    const b = await connectUser(server, 'Надія', pb);
+    b.client.send({ type: 'settings.update', id: 's1', settings: { dnd: true } });
+    await b.client.next('ack');
+
+    a.client.send({ type: 'call.invite', id: 'd1', to: `+38${pb}`, video: false });
+    await a.client.next('ack');
+    expect(await a.client.next('call.ended')).toMatchObject({ reason: 'busy' });
+    expect((await b.client.next('recents.add')).entry).toMatchObject({ result: 'missed', silent: true });
+    expect(b.client.frames.filter((f) => f.type === 'call.incoming')).toEqual([]);
+    a.client.close();
+    b.client.close();
+  });
+
+  it('другий вхідний: waiting, «Утримати й прийняти», call.updated і третій дзвінок busy', async () => {
+    const [pa, pb, pc, pd] = [phone(), phone(), phone(), phone()];
+    const a = await connectUser(server, 'Оля', pa);
+    const b = await connectUser(server, 'Павло', pb);
+    const c = await connectUser(server, 'Руслан', pc);
+    const d = await connectUser(server, 'Саша', pd);
+
+    a.client.send({ type: 'call.invite', id: 'w1', to: `+38${pb}`, video: false });
+    const first = (await a.client.next('ack')).call!.callId;
+    await b.client.next('call.incoming');
+    b.client.send({ type: 'call.accept', id: 'w2', callId: first });
+    await b.client.next('ack');
+    await b.client.next('call.connected');
+
+    c.client.send({ type: 'call.invite', id: 'w3', to: `+38${pb}`, video: false });
+    const second = (await c.client.next('ack')).call!;
+    expect(second.waiting).toBe(true);
+    expect((await b.client.next('call.incoming')).call).toMatchObject({ callId: second.callId, waiting: true });
+
+    // без action: помилка
+    b.client.send({ type: 'call.accept', id: 'w4', callId: second.callId });
+    expect(await b.client.next('error')).toMatchObject({ reqId: 'w4', code: 'bad_request' });
+    b.client.send({ type: 'call.accept', id: 'w5', callId: second.callId, action: 'перехрестя' });
+    expect((await b.client.next('error')).code).toBe('bad_request');
+
+    b.client.send({ type: 'call.accept', id: 'w6', callId: second.callId, action: 'hold' });
+    await b.client.next('ack');
+    expect(await a.client.next('call.peer')).toMatchObject({ callId: first, hold: true });
+    expect(await b.client.next('call.updated')).toMatchObject({ callId: first, hold: true });
+    expect((await c.client.next('call.connected')).call.state).toBe('connected');
+
+    // третій: зайнято
+    d.client.send({ type: 'call.invite', id: 'w7', to: `+38${pb}`, video: false });
+    await d.client.next('ack');
+    expect(await d.client.next('call.ended')).toMatchObject({ reason: 'busy' });
+
+    // перемикання назад на першу розмову
+    b.client.send({ type: 'call.hold', id: 'w8', callId: first, hold: false });
+    await b.client.next('ack');
+    expect(await c.client.next('call.peer')).toMatchObject({ callId: second.callId, hold: true });
+    expect(await a.client.next('call.peer')).toMatchObject({ callId: first, hold: false });
+    for (const x of [a, b, c, d]) x.client.close();
+  });
 });

@@ -46,6 +46,7 @@ export function createUsers(db: Db) {
     `INSERT OR IGNORE INTO users (site_id, id, name, is_bot, created_at) VALUES (?, ?, ?, 1, ?)`,
   );
   const select = db.prepare('SELECT * FROM users WHERE site_id = ? AND id = ?');
+  const updateSettingsStmt = db.prepare('UPDATE users SET settings = ? WHERE site_id = ? AND id = ?');
   const selectOthers = db.prepare('SELECT * FROM users WHERE site_id = ? AND id != ? AND disabled = 0 ORDER BY is_bot, name');
 
   const get = (siteId: string, id: string): UserRow | null => {
@@ -59,6 +60,13 @@ export function createUsers(db: Db) {
     upsertDemoUser(id: string, name: string): UserRow {
       upsert.run(DEMO_SITE_ID, id, name, Date.now());
       return get(DEMO_SITE_ID, id)!;
+    },
+    /** Зберігає змінені налаштування; повертає повний набір із типовими значеннями. */
+    updateSettings(siteId: string, id: string, patch: Partial<Settings>): Settings {
+      const row = select.get(siteId, id) as RawUser;
+      const stored = { ...JSON.parse(row.settings), ...patch };
+      updateSettingsStmt.run(JSON.stringify(stored), siteId, id);
+      return { ...DEFAULT_SETTINGS, ...stored };
     },
     /** Усі користувачі сайту, крім самого (у демо це контакти). */
     listOthers(siteId: string, exceptId: string): UserRow[] {

@@ -257,3 +257,159 @@ describe('відновлення після перезапуску', () => {
     expect(find(t.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['timeout', 'timeout']);
   });
 });
+
+describe('dnd', () => {
+  let t: ReturnType<typeof setup>;
+  beforeEach(() => {
+    t = setup();
+    t.users.updateSettings(SITE, bohdan.userId, { dnd: true });
+  });
+
+  it('будь-який вхідний дає busy без сповіщення адресата, адресат отримує тихий missed', () => {
+    const r = t.calls.invite(anna, { to: bohdan.userId, video: false });
+    expect(find(r.effects, 'call.incoming')).toEqual([]);
+    expect(find(r.effects, 'call.ended').map((e) => [e.user, e.msg.reason])).toEqual([[anna.userId, 'busy']]);
+    expect(t.recents.list(SITE, anna.userId)).toMatchObject([{ result: 'busy', direction: 'out' }]);
+    expect(t.recents.list(SITE, bohdan.userId)).toEqual([{ callId: 'call1', peer: anna.userId, direction: 'in', result: 'missed', startedAt: t.clock.now(), silent: true }]);
+    expect(find(r.effects, 'recents.add').find((e) => e.user === bohdan.userId)!.msg.entry.silent).toBe(true);
+    expect(t.calls.callsFor(SITE, anna.userId)).toEqual([]);
+  });
+
+  it('dnd діє й коли користувач вільний офлайн, і сильніший за waiting', () => {
+    t.online.delete(bohdan.userId);
+    const r = t.calls.invite(anna, { to: bohdan.userId, video: false });
+    expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('busy'); // не offline: стан не розкривається
+  });
+
+  it('власні виклики користувача з dnd працюють', () => {
+    const r = t.calls.invite(bohdan, { to: clara.userId, video: false });
+    expect(find(r.effects, 'call.incoming')).toHaveLength(1);
+  });
+
+  it('зняття dnd повертає звичайні вхідні', () => {
+    t.users.updateSettings(SITE, bohdan.userId, { dnd: false });
+    const r = t.calls.invite(anna, { to: bohdan.userId, video: false });
+    expect(find(r.effects, 'call.incoming')).toHaveLength(1);
+  });
+});
+
+describe('другий вхідний (waiting)', () => {
+  let t: ReturnType<typeof setup>;
+  /** Анна і Богдан розмовляють; Клара дзвонить Богданові. */
+  function waitingCall() {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    t.calls.accept(bohdan, { callId: 'call1' });
+    t.delivered.length = 0;
+    return t.calls.invite(clara, { to: bohdan.userId, video: false });
+  }
+  beforeEach(() => void (t = setup()));
+
+  it('очікуючий вхідний має waiting у всіх повідомленнях', () => {
+    const r = waitingCall();
+    expect(r.call).toMatchObject({ callId: 'call2', state: 'ringing', waiting: true });
+    expect(find(r.effects, 'call.incoming')).toMatchObject([{ user: bohdan.userId, msg: { call: { waiting: true, direction: 'in' } } }]);
+    expect(find(r.effects, 'call.ringing')).toMatchObject([{ user: clara.userId, msg: { call: { waiting: true } } }]);
+    expect(t.calls.callsFor(SITE, bohdan.userId).map((c) => [c.callId, c.waiting ?? false])).toEqual([['call1', false], ['call2', true]]);
+  });
+
+  it('accept без action відхиляється й нічого не змінює', () => {
+    waitingCall();
+    expect(() => t.calls.accept(bohdan, { callId: 'call2' })).toThrow(expect.objectContaining({ code: 'bad_request' }));
+    expect(t.calls.callsFor(SITE, bohdan.userId).map((c) => c.state)).toEqual(['connected', 'ringing']);
+  });
+
+  it('«Утримати й прийняти»: перша розмова утримується, друга connected', () => {
+    waitingCall();
+    const r = t.calls.accept(bohdan, { callId: 'call2', action: 'hold' });
+    expect(find(r.effects, 'call.peer')).toMatchObject([{ user: anna.userId, msg: { callId: 'call1', hold: true } }]);
+    expect(find(r.effects, 'call.updated')).toMatchObject([{ user: bohdan.userId, except: undefined, msg: { callId: 'call1', hold: true } }]);
+    expect(find(r.effects, 'call.connected').map((e) => e.user).sort()).toEqual([bohdan.userId, clara.userId].sort());
+    const calls = t.calls.callsFor(SITE, bohdan.userId);
+    expect(calls.map((c) => [c.callId, c.state, c.hold])).toEqual([['call1', 'connected', true], ['call2', 'connected', false]]);
+    // третій дзвінок: уже два
+    const third = t.calls.invite({ siteId: SITE, userId: 'bot:olena', deviceId: 'x' } as Actor, { to: bohdan.userId, video: false });
+    expect(find(third.effects, 'call.ended')[0]!.msg.reason).toBe('busy');
+  });
+
+  it('«Завершити й прийняти»: перша розмова завершується', () => {
+    waitingCall();
+    t.clock.advance(10_000);
+    const r = t.calls.accept(bohdan, { callId: 'call2', action: 'end' });
+    expect(find(r.effects, 'call.ended').filter((e) => e.msg.callId === 'call1').map((e) => [e.user, e.msg.callId, e.msg.reason, e.msg.duration])).toEqual([
+      [anna.userId, 'call1', 'hangup', 10],
+      [bohdan.userId, 'call1', 'hangup', 10],
+    ]);
+    expect(t.calls.callsFor(SITE, bohdan.userId).map((c) => [c.callId, c.state])).toEqual([['call2', 'connected']]);
+  });
+
+  it('«Відхилити» не чіпає першу розмову', () => {
+    waitingCall();
+    const r = t.calls.reject(bohdan, { callId: 'call2' });
+    expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('rejected');
+    expect(t.calls.callsFor(SITE, bohdan.userId).map((c) => c.callId)).toEqual(['call1']);
+  });
+
+  it('action без розмови ігнорується', () => {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    expect(() => t.calls.accept(bohdan, { callId: 'call1', action: 'end' })).not.toThrow();
+  });
+
+  it('завершення першої розмови знімає waiting з другого дзвінка', () => {
+    waitingCall();
+    const r = t.calls.hangup(anna, { callId: 'call1' });
+    expect(find(r.effects, 'call.updated').map((e) => [e.user, e.msg.callId, e.msg.waiting]).sort()).toEqual(
+      [[bohdan.userId, 'call2', false], [clara.userId, 'call2', false]].sort(),
+    );
+    expect(t.calls.callsFor(SITE, bohdan.userId)[0]!.waiting).toBeUndefined();
+    // звичайний вхідний далі можна прийняти без action
+    expect(() => t.calls.accept(bohdan, { callId: 'call2' })).not.toThrow();
+  });
+
+  it('перемикання: hold:false на утримуваному ставить іншу розмову на утримання', () => {
+    waitingCall();
+    t.calls.accept(bohdan, { callId: 'call2', action: 'hold' });
+    const r = t.calls.hold(bohdan, { callId: 'call1', hold: false });
+    const peers = find(r.effects, 'call.peer').map((e) => [e.user, e.msg.callId, e.msg.hold]);
+    expect(peers).toEqual([[anna.userId, 'call1', false], [clara.userId, 'call2', true]]);
+    expect(t.calls.callsFor(SITE, bohdan.userId).map((c) => [c.callId, c.hold])).toEqual([['call1', false], ['call2', true]]);
+  });
+
+  it('busy, коли уже дзвонить інший вхідний', () => {
+    const t2 = setup();
+    t2.users.upsertDemoUser('+380500000004', 'Дмитро');
+    t2.online.add('+380500000004');
+    const d: Actor = { siteId: SITE, userId: '+380500000004', deviceId: 'd1' };
+    t2.calls.invite(anna, { to: bohdan.userId, video: false });
+    t2.calls.accept(bohdan, { callId: 'call1' });
+    t2.calls.invite(clara, { to: bohdan.userId, video: false }); // waiting
+    const r = t2.calls.invite(d, { to: bohdan.userId, video: false });
+    expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('busy');
+    expect(t2.recents.list(SITE, bohdan.userId)).toEqual([]);
+  });
+
+  it('waiting: false дає busy з тихим missed', () => {
+    t.users.updateSettings(SITE, bohdan.userId, { waiting: false });
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    t.calls.accept(bohdan, { callId: 'call1' });
+    t.delivered.length = 0;
+    const r = t.calls.invite(clara, { to: bohdan.userId, video: false });
+    expect(find(r.effects, 'call.incoming')).toEqual([]);
+    expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('busy');
+    expect(t.recents.list(SITE, bohdan.userId)[0]).toMatchObject({ result: 'missed', silent: true, peer: clara.userId });
+  });
+
+  it('очікуючий дзвінок без відповіді завершується звичайним missed', () => {
+    waitingCall();
+    t.clock.advance(60_000);
+    expect(find(t.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['timeout', 'timeout']);
+    expect(t.recents.list(SITE, bohdan.userId)[0]).toMatchObject({ result: 'missed', peer: clara.userId });
+    expect(t.recents.list(SITE, bohdan.userId)[0]!.silent).toBeUndefined();
+  });
+
+  it('боти не мають очікування: зайнятий бот дає busy', () => {
+    t.calls.invite(anna, { to: 'bot:olena', video: false });
+    t.clock.advance(3_500);
+    const r = t.calls.invite(clara, { to: 'bot:olena', video: false });
+    expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('busy');
+  });
+});
