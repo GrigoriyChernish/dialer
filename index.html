@@ -126,7 +126,7 @@ svg .f{fill:currentColor;stroke:none}
 .sc button{all:unset;text-align:center;padding:10px 8px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:13px;cursor:pointer}
 .sc button[disabled]{opacity:.4;pointer-events:none}
 .sc button:hover{border-color:var(--acc)}
-.empty{margin:4px 8px 12px;color:#98a2b6;font-size:14px;line-height:1.45}
+.empty{margin:10px 10px 6px;color:#98a2b6;font-size:14px;line-height:1.45}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .snd{margin-top:8px;font-size:12px;color:var(--mute);min-height:16px}
 </style>
@@ -149,10 +149,13 @@ const fmt=p=>p.replace(/^\+380(\d\d)(\d{3})(\d\d)(\d\d)$/,'+380 $1 $2 $3 $4');
 function demoContacts(){let u=[];try{u=JSON.parse(localStorage.getItem('dialer.demo.users'))||[]}catch(e){}
   const me=token.split('.')[1];
   return u.filter(x=>x.phone!==me).map(x=>({id:x.phone,name:x.name.replace(/[<>&]/g,''),s:fmt(x.phone)+' · відповість'}));}
-let contacts=EMB?demoContacts():[
+// демо-співрозмовники зі сценаріями: є завжди, щоб демо працювало й для однієї людини
+const BOTS=[
  {id:'u2',name:'Олена Коваль',g:'f',s:'онлайн · відповість'},
  {id:'u3',name:'Андрій Мельник',g:'m',s:'онлайн · не відповість'},
  {id:'u4',name:'Support',g:'m',s:'у розмові · зайнято'}];
+const allContacts=()=>EMB?[...demoContacts(),...BOTS]:BOTS;
+let contacts=allContacts();
 const S={state:'idle',peer:null,missed:null,mic:1,cam:1,hold:0,peerHold:0,conn:'ok',away:0,q:'excellent',sec:0,left:0,stream:null,pip:1,peerMic:1,peerCam:0};
 const T={};let soundOn=true,ac,stopSnd=()=>{},sndLabel='',gen=0,inCnt=0;
 const vid=Object.assign(document.createElement('video'),{autoplay:true,muted:true,playsInline:true});  // один елемент на весь дзвінок: прев'ю не миготить
@@ -196,10 +199,10 @@ function call(id){if(S.state!=='idle')return;const c=contacts.find(x=>x.id===id)
   if(id==='u4'){S.state='ringing';S.left=0;render();play(null);
     T.ans=setTimeout(()=>{S.state='idle';S.missed={c,reason:'busy'};play('busy',4000);render();},500);return;}  // сервер: {busy:true}
   S.state='ringing';S.left=8;play('ringback');render();
-  if(id==='u2'||EMB)T.ans=setTimeout(connect,3500);
+  if(id==='u2'||id[0]==='+')T.ans=setTimeout(connect,3500);
   T.tick=setInterval(()=>{S.left--;$('left')&&($('left').textContent=mm(S.left));
     if(S.left<=0){clearInterval(T.tick);S.state='idle';S.missed={c,reason:'timeout'};play(null);render();}},1000);}  // call:timeout
-function incoming(){if(S.state!=='idle')return;const pool=contacts.filter(c=>c.id!=='u4');if(!pool.length)return;const c=pool[inCnt++%pool.length];S.peer=c;S.missed=null;S.state='incoming';S.left=10;play('ringtone');render();
+function incoming(){if(S.state!=='idle')return;const pool=contacts.filter(c=>c.id!=='u4'),c=pool[inCnt++%pool.length];S.peer=c;S.missed=null;S.state='incoming';S.left=10;play('ringtone');render();
   T.tick=setInterval(()=>{S.left--;$('left')&&($('left').textContent=mm(S.left));
     if(S.left<=0){clearInterval(T.tick);S.state='idle';S.missed={c,reason:'incoming'};play(null);render();}},1000);}
 async function connect(){clearInterval(T.tick);clearTimeout(T.ans);play(null);S.state='connected';S.sec=0;S.mic=1;S.cam=1;
@@ -224,9 +227,10 @@ function poorQ(){if(S.state!=='connected')return;S.q=S.q==='poor'?'excellent':'p
 function render(){
   const r=$('root'),p=S.peer;
   if(S.state==='idle'&&!S.missed){
-    r.innerHTML=`<section class="list"><h2>Дзвінки</h2>`+(contacts.length?'':`<p class="empty">Поки тут лише ви. Відкрийте демо в іншій вкладці цього браузера й увійдіть з іншим номером: він з'явиться тут.</p>`)+contacts.map(c=>`<button class="row" data-c="${c.id}">
+    r.innerHTML=`<section class="list"><h2>Дзвінки</h2>`+contacts.map(c=>`<button class="row" data-c="${c.id}">
       <span class="avatar">${ini(c.name)}</span><span class="meta"><b>${c.name}</b><small>${c.s}</small></span>
-      <span class="dial">${svg(PHONE)}</span></button>`).join('')+`</section>`;
+      <span class="dial">${svg(PHONE)}</span></button>`).join('')
+      +(EMB&&!contacts.some(c=>c.id[0]==='+')?`<p class="empty">Інші люди з'являться тут, коли увійдуть у демо. Спробуйте: відкрийте демо в іншій вкладці цього браузера й увійдіть з іншим номером.</p>`:'')+`</section>`;
     r.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>call(b.dataset.c));
   } else if(S.state==='idle'){
     const m=S.missed,M={busy:['Зайнято','Абонент зараз розмовляє'],timeout:['Без відповіді','Абонент не відповів (у демо 8 с, у реалі 60 с)'],incoming:['Пропущений дзвінок','Ви не відповіли на вхідний']}[m.reason];
@@ -296,7 +300,7 @@ function sc(){
   $('snd').textContent=soundOn?'🔊 Звук: вкл':'🔇 Звук: вимк';
   $('sc').innerHTML=`<h4>Сценарії</h4><p>Натискайте, щоб побачити фічі. Усе імітується: сервера й LiveKit тут немає.</p>
    <div class="g">
-    <button id="s1" ${idle&&contacts.some(c=>c.id!=='u4')?'':'disabled'}>📲 Вхідний дзвінок</button>
+    <button id="s1" ${idle?'':'disabled'}>📲 Вхідний дзвінок</button>
     <button id="s2" ${con?'':'disabled'}>📡 Обрив зв'язку</button>
     <button id="s3" ${con?'':'disabled'}>👤 Співрозмовник зник</button>
     <button id="s4" ${con?'':'disabled'}>⏸ Співрозмовник тримає</button>
@@ -315,7 +319,7 @@ if(EMB){
     if(m.type==='token'){token=m.token;expSent=0;}
     if(m.type==='call'&&contacts.some(c=>c.id===m.id))call(m.id);});
   // хтось увійшов в іншій вкладці: оновлюємо контакти
-  addEventListener('storage',e=>{if(e.key!=='dialer.demo.users')return;contacts=demoContacts();if(S.state==='idle'&&!S.missed)render();});
+  addEventListener('storage',e=>{if(e.key!=='dialer.demo.users')return;contacts=allContacts();if(S.state==='idle'&&!S.missed)render();});
   addEventListener('keydown',e=>{if(e.key==='Escape')toHost({type:'close'});});  // Esc згортає панель, дзвінок триває
   const chk=()=>{if(!expSent&&+token.split('.')[2]<Date.now()){expSent=1;toHost({type:'token:expired'});}};
   setInterval(chk,15000);chk();
