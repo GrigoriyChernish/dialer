@@ -1,0 +1,36 @@
+# Деплой з кореня репозиторію:
+#   fly deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --ha=false .
+# Одна машина й том /data: SQLite і стан дзвінків локальні (docs/backend.md).
+app = "dialer-server"
+primary_region = "waw"
+kill_signal = "SIGINT"
+kill_timeout = 10
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  DB_PATH = "/data/dialer.db"
+  DEMO_ORIGIN = "https://grigoriychernish.github.io"
+
+[mounts]
+  source = "dialer_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # машина не має засинати, інакше вхідні не дійдуть
+  auto_stop_machines = "off"
+  auto_start_machines = false
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    method = "GET"
+    path = "/health"
+    interval = "15s"
+    timeout = "3s"
+    grace_period = "10s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

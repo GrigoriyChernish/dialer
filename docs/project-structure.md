@@ -24,11 +24,12 @@ dialer/
   pnpm-workspace.yaml
   tsconfig.base.json # спільні налаштування TypeScript
   apps/
-    server/          # бекенд: Node + TypeScript, Fastify + ws + SQLite; демо-вхід, присутність (є), див. backend.md
+    server/          # бекенд: Node + TypeScript, Fastify + ws + SQLite, LiveKit; Dockerfile і fly.toml (є), див. backend.md
   packages/
     shared/          # спільні типи й константи сигналізації, `src/signaling.ts` (є)
   web/               # фронтенд: віджет (Vue SPA) і сторінка демо з вбудованим віджетом (буде)
-  .github/workflows/ # CI: зараз pages.yml публікує прототипи на GitHub Pages; далі лінт, тести, збірка web/
+  .dockerignore      # що не потрапляє в образ сервера
+  .github/workflows/ # CI: pages.yml публікує прототипи на GitHub Pages, ci.yml перевіряє типи й тести; далі лінт, збірка web/
 ```
 
 ## Правила

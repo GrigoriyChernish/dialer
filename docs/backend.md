@@ -142,8 +142,32 @@ CORS для `/demo/login` обмежений origin демо-сторінки. `
 - Fly.io тримає WebSocket-з'єднання, але деплой їх розриває: клієнти перепідключаються за паузами з `signaling.md`,
   а дзвінки відновлюються з БД.
 - Вебхук LiveKit Cloud спрямований на публічну адресу `https://<застосунок>.fly.dev/livekit/webhook`.
+- Файли: `apps/server/Dockerfile` (збірка з кореня, `pnpm install --prod`, запуск через `tsx` без компіляції), `apps/server/fly.toml`,
+  `.dockerignore` у корені. `DEMO_ORIGIN` у `fly.toml` це origin GitHub Pages (`https://grigoriychernish.github.io`).
 - Резервні копії: щоденні знімки тому Fly.io. Litestream не використовуємо: для демо й одного інстансу знімків достатньо.
 - Збірка: Dockerfile у `apps/server`, контекст від кореня моноrepo, щоб потрапив `packages/shared`.
+
+### Перший деплой (вручну)
+Потрібні `flyctl` і акаунт Fly.io. Назва застосунку `dialer-server` у `fly.toml` це заглушка: якщо зайнята, замініть.
+```bash
+fly apps create dialer-server
+fly volumes create dialer_data --size 1 --region waw --app dialer-server   # том для SQLite
+fly secrets set --app dialer-server \
+  JWT_SECRET="$(openssl rand -hex 32)" \
+  LIVEKIT_URL="wss://<проєкт>.livekit.cloud" \
+  LIVEKIT_API_KEY="…" LIVEKIT_API_SECRET="…"
+fly deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --ha=false .   # з кореня репозиторію
+curl https://dialer-server.fly.dev/health
+```
+`--ha=false` потрібен, щоб Fly не створив другу машину: кілька інстансів не підтримуються. Далі в панелі LiveKit Cloud
+додайте вебхук `https://dialer-server.fly.dev/livekit/webhook`. Наступні деплої: та сама команда `fly deploy`.
+Автодеплой з GitHub Actions поки не налаштовано (пункт 16 беклогу).
+
+### Що перевірено без Fly.io
+У середовищі розробки немає ні `flyctl`, ні запущеного Docker-демона, тож образ не збирався. Перевірено лише те, що робить
+Dockerfile: чиста копія файлів, `pnpm install --frozen-lockfile --prod --filter @dialer/server...`, запуск `tsx src/main.ts` з
+`NODE_ENV=production`. `/health`, `POST /demo/login` і вебхук (`401` без підпису) відповідають, БД створюється, а без
+`JWT_SECRET` сервер не стартує. Першу збірку образу й деплой варто перевірити на CI чи локально з Docker.
 
 ## Тести
 - **Юніт (Vitest).** `calls/`: таблиця правил `call.invite`, таймери на фейковому часі, машина станів, `waiting`, `dnd`.
@@ -157,8 +181,8 @@ CORS для `/demo/login` обмежений origin демо-сторінки. `
 3. ✅ Дзвінок без медіа: `call.invite`/`accept`/`reject`/`cancel`/`hangup`/`hold`, таймаут, історія, боти, відновлення після перезапуску.
 4. ✅ `waiting`, `dnd`, `settings`.
 5. ✅ LiveKit: токени кімнат, вебхук, правило `lost`.
-6. Web Push і `POST /tokens` для справжніх сайтів-господарів.
-7. Розгортання на Fly.io (можна раніше, після кроку 2, щоб віджет на Pages працював з живим сервером).
+6. ⏸ Web Push і `POST /tokens` для справжніх сайтів-господарів: поки пропущено (пункт 15 беклогу).
+7. ✅ Розгортання на Fly.io: `Dockerfile`, `fly.toml`, CI (перший деплой робиться вручну, див. «Розгортання на Fly.io»).
 
 ## Логи
 Бібліотека `pino`, JSON у stdout (Fly.io збирає їх сам, `fly logs`).

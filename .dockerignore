@@ -1,0 +1,11 @@
+**/node_modules
+.git
+.github
+.claude
+docs
+work
+demo
+index.html
+**/data
+**/.env
+**/test
