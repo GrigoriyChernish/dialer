@@ -20,6 +20,13 @@ dialer/
   work/              # робочі матеріали команди й агентів (є)
     backlog/         #   беклог задач
     changelog/       #   ченджлог, файл на день: YYYY-MM-DD.md
+  package.json       # корінь pnpm workspaces: скрипти `typecheck` тощо (є)
+  pnpm-workspace.yaml
+  tsconfig.base.json # спільні налаштування TypeScript
+  apps/
+    server/          # бекенд: Node + TypeScript, поки каркас (є)
+  packages/
+    shared/          # спільні типи й константи сигналізації, `src/signaling.ts` (є)
   web/               # фронтенд: віджет (Vue SPA) і сторінка демо з вбудованим віджетом (буде)
   .github/workflows/ # CI: зараз pages.yml публікує прототипи на GitHub Pages; далі лінт, тести, збірка web/
 ```
@@ -31,6 +38,8 @@ dialer/
 - **`web/`** — фронтенд зі своїм `package.json` і `README.md` з командами запуску.
   Внутрішня структура описана в [architecture.md](architecture.md#структура-папок).
 - **Бекенд** (`apps/server`) і спільні типи сигналізації (`packages/shared`) житимуть у цьому ж репозиторії.
+- **Workspaces.** Залежності ставимо з кореня (`pnpm install`), перевірка типів усіх пакетів: `pnpm typecheck`.
+  Пакет `@dialer/shared` віддається як TypeScript-код (без збірки), його імпортують Vite і `tsx`.
 - **Прототипи** `index.html` і `demo/` лишаються, поки не з'явиться `web/`. Потім сторінка демо переїде в `web/demo/`.
 
 ## Рішення

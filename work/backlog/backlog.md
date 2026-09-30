@@ -47,9 +47,8 @@ Workflow `pages.yml` уже публікує прототипи. Коли з'я�
 з однієї вкладки приходив вхідним в іншу: так демо покаже обидві сторони розмови.
 
 ## 12. Моноrepo і каркас сервера
-Перейти на pnpm workspaces: `apps/web`, `apps/server`, `packages/shared`. У `apps/server` зробити WebSocket за
-[`docs/signaling.md`](../../docs/signaling.md): спершу демо-вхід і присутність, потім дзвінок без медіа, далі LiveKit, історія, пуші.
-Типи подій лежать у `packages/shared/src/signaling.ts`. Стек і порядок робіт: [`docs/backend.md`](../../docs/backend.md).
+Каркас workspaces є (`apps/server`, `packages/shared`). Далі за [`docs/backend.md`](../../docs/backend.md), «Порядок робіт», кроки 2–7:
+демо-вхід і присутність, дзвінок без медіа, `waiting`/`dnd`, LiveKit, пуші, Fly.io. Окремо перенести `web/` у `apps/web`, коли він з'явиться.
 
 ---
 
