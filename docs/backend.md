@@ -163,14 +163,16 @@ curl https://dialer-chat-server.fly.dev/health
 додайте вебхук `https://dialer-chat-server.fly.dev/livekit/webhook`.
 
 ### Автодеплой (GitHub Actions)
-`.github/workflows/deploy.yml` запускається, коли CI на `dev` завершився успішно після пушу (і вручну через `workflow_dispatch`):
+Job `deploy` у `.github/workflows/ci.yml` іде після зеленого job `check` на пуші в `dev` (і при ручному запуску CI на `dev`):
 `flyctl deploy --remote-only --ha=false` (образ збирає Fly.io), потім перевіряє `GET /health`.
-- Деплой рве WebSocket-з'єднання, тож він іде, лише якщо з минулого успішного деплою змінились файли сервера:
+Окремий workflow з тригером `workflow_run` не підходить: він спрацьовує лише для файлу з гілки за замовчуванням (`main`), а працюємо в `dev`.
+- Деплой рве WebSocket-з'єднання, тож після пушу він іде, лише якщо в пуші (`before..sha`) змінились файли сервера:
   `apps/server`, `packages/shared`, кореневі `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `.dockerignore`
-  або сам workflow. Зміни дизайну, документації чи `apps/web` деплой не запускають. Ручний запуск деплоїть завжди.
-- Деплої йдуть по черзі (`concurrency: fly-deploy`) і не перериваються новим пушем.
+  або `ci.yml`. Зміни дизайну, документації чи `apps/web` деплой не запускають. Ручний запуск деплоїть завжди: так само
+  повторюють деплой, що впав.
+- Деплої йдуть по черзі (`concurrency: fly-deploy`), і новий пуш у `dev` не скасовує попередній запуск CI (скасовуються лише PR).
 - Потрібен секрет репозиторію `FLY_API_TOKEN`: `fly tokens create deploy --app dialer-chat-server`, далі GitHub → Settings → Secrets → Actions.
-  Без секрету workflow завершується успішно й нічого не деплоїть, тож до першого ручного деплою він не заважає.
+  Без секрету job завершується успішно й нічого не деплоїть.
 
 ### Що перевірено без Fly.io
 Образ зібрано локально в Docker для `linux/amd64` (як на Fly.io) і запущено з томом `/data`: `/health` відповідає `{"ok":true}`,
@@ -191,7 +193,7 @@ curl https://dialer-chat-server.fly.dev/health
 4. ✅ `waiting`, `dnd`, `settings`.
 5. ✅ LiveKit: токени кімнат, вебхук, правило `lost`.
 6. ⏸ Web Push і `POST /tokens` для справжніх сайтів-господарів: поки пропущено (пункт 15 беклогу).
-7. ✅ Розгортання на Fly.io: `Dockerfile`, `fly.toml`, автодеплой `.github/workflows/deploy.yml` (перший деплой робиться вручну, див. «Розгортання на Fly.io»).
+7. ✅ Розгортання на Fly.io: `Dockerfile`, `fly.toml`, автодеплой (job `deploy` у `.github/workflows/ci.yml`) (перший деплой робиться вручну, див. «Розгортання на Fly.io»).
 
 ## Логи
 Бібліотека `pino`, JSON у stdout (Fly.io збирає їх сам, `fly logs`).

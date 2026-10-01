@@ -33,7 +33,8 @@ jobs:
           cp demo/embed.js _site/embed.js
           cp index.html _site/widget/index.html
           # віджет лежить у widget/, а не поруч у ../index.html, як у репозиторії
-          sed 's|<script src="embed.js"></script>|<script src="embed.js" data-widget="widget/"></script>|' demo/index.html > _site/index.html
+          # src може мати параметр версії (embed.js?v=2), його зберігаємо
+          sed -E 's|<script src="embed\.js([^"]*)"></script>|<script src="embed.js\1" data-widget="widget/"></script>|' demo/index.html > _site/index.html
           grep -q 'data-widget="widget/"' _site/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

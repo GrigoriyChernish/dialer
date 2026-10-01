@@ -37,7 +37,7 @@ dialer/
     shared/          # спільні типи й константи сигналізації, `src/signaling.ts` (є)
   apps/web/          # фронтенд: віджет на Vue 3 (Vite, Tailwind 4, Pinia): дзвінок через сервер і LiveKit; екрани лише контакти й дзвінок
   .dockerignore      # що не потрапляє в образ сервера
-  .github/workflows/ # CI: pages.yml публікує прототипи на GitHub Pages, ci.yml перевіряє типи й тести, deploy.yml деплоїть сервер на Fly.io після зеленого CI; далі лінт, збірка web/
+  .github/workflows/ # CI: pages.yml публікує прототипи на GitHub Pages, ci.yml перевіряє типи й тести, а після зеленої перевірки в dev деплоїть сервер на Fly.io; далі лінт, збірка web/
 ```
 
 ## Правила
