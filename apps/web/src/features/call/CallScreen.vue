@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Avatar from '@/shared/ui/Avatar.vue';
 import Icon from '@/shared/ui/Icon.vue';
 import BannerStack, { type BannerItem } from '@/shared/ui/BannerStack.vue';
 import { banner } from '@/shared/ui/banners';
 import RoundButton from '@/shared/ui/RoundButton.vue';
 import SelfStatusChip, { type SelfStatus } from '@/shared/ui/SelfStatusChip.vue';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
+import VoiceWave from '@/shared/ui/VoiceWave.vue';
+import Peer from './Peer.vue';
 import { useCallStore } from './store';
 
 const { t } = useI18n();
@@ -34,7 +35,7 @@ const peerBanners = computed<BannerItem[]>(() => {
 const talking = computed(() => peerBanners.value.length === 0);
 // дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена чи співрозмовник втратив зв'язок
 const dimmed = computed(() => call.hold || call.peerHold || call.link.peerAway);
-// смужки під шапкою (дизайн: Network Banner, Status Banner): наша мережа, потім сповіщення про наші пристрої
+// смужки під шапкою (дизайн: Self Banner): наша мережа, потім сповіщення про наші пристрої
 const banners = computed<BannerItem[]>(() => {
   if (!connected.value) return [];
   const list: BannerItem[] = [];
@@ -45,7 +46,6 @@ const banners = computed<BannerItem[]>(() => {
   return list;
 });
 const missedIcon = computed(() => (call.missed?.reason === 'incoming' || call.missed?.reason === 'timeout' ? 'phoneMissed' : 'phoneOff'));
-const WAVE = [8, 16, 26, 16, 8];
 // наші статуси в шапці (дизайн: Self Status), зліва направо: утримання, мікрофон, камера; «недоступно» сильніше за «вимкнено»
 const selfStatuses = computed<{ status: SelfStatus; label: string }[]>(() => {
   const list: { status: SelfStatus; label: string }[] = [];
@@ -61,19 +61,12 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
 
 <template>
   <!-- пропущений / зайнято / без відповіді / помилка -->
-  <section
-    v-if="call.status === 'idle' && call.missed"
-    class="flex h-full flex-col px-6 pb-10 text-center"
-    style="background: linear-gradient(180deg, var(--stage-missed-glow), var(--bg))"
-  >
-    <div class="flex flex-1 flex-col items-center justify-center gap-2.5">
-      <!-- 200 × 200, як у дизайні (прозорі кільця), щоб аватар стояв там само, що на екрані виклику -->
-      <span class="grid size-[200px] place-items-center"><Avatar :name="name" size="xl" muted /></span>
-      <h3 class="text-[26px] font-bold">{{ name }}</h3>
+  <section v-if="call.status === 'idle' && call.missed" class="relative h-full" style="background: linear-gradient(180deg, var(--stage-missed-glow), var(--bg))">
+    <Peer class="peer-pos" :name="name" variant="result">
       <p class="flex items-center gap-2 text-lg font-semibold text-call-bad"><Icon :name="missedIcon" class="size-[18px]" />{{ t(`call.missed.${call.missed.reason}`) }}</p>
       <small class="text-[13px] text-mute">{{ call.missed.note ? t(call.missed.note) : t(`call.missedNote.${call.missed.reason}`) }}</small>
-    </div>
-    <div class="flex justify-center gap-[72px]">
+    </Peer>
+    <div class="absolute inset-x-0 bottom-10 flex justify-center gap-[72px]">
       <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton :label="t('call.close')" @click="call.dismissMissed()"><Icon name="x" /></RoundButton>{{ t('call.close') }}</div>
       <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton variant="ok" :label="t('call.redial')" @click="call.call(call.missed.peer.userId)"><Icon name="phone" /></RoundButton>{{ t('call.redial') }}</div>
     </div>
@@ -126,23 +119,15 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
         </button>
       </template>
 
-      <div v-if="!video" class="flex flex-1 flex-col items-center justify-center gap-3 px-6">
-        <span class="grid size-[200px] place-items-center rounded-full bg-accent/[.08]">
-          <span class="grid size-[152px] place-items-center rounded-full bg-accent/[.14]" :class="!connected && 'animate-ring'">
-            <Avatar :name="name" size="xl" :opacity="dimmed ? 0.6 : undefined" />
-          </span>
-        </span>
-        <h3 class="mt-1 text-[26px] font-bold">{{ name }}</h3>
-
-        <p v-if="call.status === 'ringing'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}</p>
-        <p v-else-if="call.status === 'incoming'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}</p>
-        <div v-else-if="talking" class="flex h-7 items-center gap-1" aria-hidden="true">
-          <i v-for="(h, i) in WAVE" :key="i" class="w-1 origin-center rounded-sm bg-accent motion-safe:animate-wave" :style="{ height: h + 'px', animationDelay: i * 0.12 + 's' }" />
-        </div>
-        <small v-if="!connected && call.left" class="text-xs text-mute">{{ t('call.left', { time: mm(call.left) }) }}</small>
-      </div>
-      <div v-else class="flex-1" />
+      <div class="flex-1" />
     </div>
+    <!-- блок співрозмовника на одній висоті в усіх станах (поза потоком, тож шапка й кнопки його не зсувають) -->
+    <Peer v-if="!video" class="peer-pos" :name="name" :variant="dimmed ? 'dimmed' : 'default'" :ringing="!connected">
+      <p v-if="call.status === 'ringing'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}</p>
+      <p v-else-if="call.status === 'incoming'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}</p>
+      <VoiceWave v-else :silent="!talking || call.hold" />
+      <small v-if="!connected && call.left" class="text-xs text-mute">{{ t('call.left', { time: mm(call.left) }) }}</small>
+    </Peer>
 
     <div class="relative z-10 flex justify-center pb-10">
       <div v-if="connected" class="flex gap-2.5 rounded-[40px] border border-line bg-surface p-2.5">
@@ -159,3 +144,17 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
     </div>
   </section>
 </template>
+
+<style scoped>
+/*
+ * Блок співрозмовника стоїть на одній висоті в усіх станах (дизайн: 220 від верху екрана 844, тобто 158 під системною смугою).
+ * У низькій панелі опускаємо його рівно настільки, щоб лишилось місце під кнопки (114) і смужку співрозмовника (56): висота
+ * панелі не змінюється між станами, тож блок і тоді не стрибає.
+ */
+.peer-pos {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  top: clamp(16px, calc(100% - 506px), 158px);
+}
+</style>
