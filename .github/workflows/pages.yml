@@ -1,8 +1,9 @@
-# Публікація прототипів на GitHub Pages після пушу в dev.
+# Публікація демо на GitHub Pages після пушу в dev.
 # Розкладка як у docs/architecture.md, розділ «Хостинг»:
-#   /dialer/          сторінка демо (demo/index.html)
-#   /dialer/embed.js  імітація завантажувача
-#   /dialer/widget/   прототип віджета (index.html)
+#   /dialer/            сторінка демо (demo/index.html), за замовчуванням працює з бекендом на Fly.io
+#   /dialer/embed.js    завантажувач
+#   /dialer/widget/     Vue-віджет (збірка apps/web)
+#   /dialer/prototype/  старий прототип віджета (index.html), відкривається з демо через ?widget=prototype/
 name: Pages
 
 on:
@@ -19,6 +20,9 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  SERVER: https://dialer-chat-server.fly.dev
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -27,15 +31,28 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @dialer/web...
+      - run: pnpm --filter @dialer/web build
+        env:
+          VITE_SERVER_URL: ${{ env.SERVER }}
       - name: Build site
         run: |
-          mkdir -p _site/widget
+          mkdir -p _site/prototype
+          cp -r apps/web/dist _site/widget
           cp demo/embed.js _site/embed.js
-          cp index.html _site/widget/index.html
-          # віджет лежить у widget/, а не поруч у ../index.html, як у репозиторії
-          # src може мати параметр версії (embed.js?v=2), його зберігаємо
-          sed -E 's|<script src="embed\.js([^"]*)"></script>|<script src="embed.js\1" data-widget="widget/"></script>|' demo/index.html > _site/index.html
+          cp index.html _site/prototype/index.html
+          # віджет лежить у widget/, а не поруч у ../index.html, як у репозиторії;
+          # src може мати параметр версії (embed.js?v=2), його зберігаємо; сервер за замовчуванням — бекенд на Fly.io
+          sed -E -e 's|<script src="embed\.js([^"]*)"></script>|<script src="embed.js\1" data-widget="widget/"></script>|' \
+            -e "s|<meta name=\"dialer-server\" content=\"\">|<meta name=\"dialer-server\" content=\"$SERVER\">|" demo/index.html > _site/index.html
           grep -q 'data-widget="widget/"' _site/index.html
+          grep -q "content=\"$SERVER\"" _site/index.html
+          test -f _site/widget/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
