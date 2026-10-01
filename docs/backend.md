@@ -15,7 +15,7 @@
 | Хостинг | Fly.io | WebSocket і HTTPS з коробки, публічна адреса для вебхуків LiveKit, томи для SQLite |
 | Тести | Vitest | юніт-тести логіки дзвінків, інтеграційні з двома WebSocket-клієнтами |
 
-Залежності мінімальні: `ws`, `fastify`, `better-sqlite3`, `jose` (JWT), `livekit-server-sdk`, `web-push`, `pino`.
+Залежності мінімальні: `ws`, `fastify`, `better-sqlite3`, `jose` (JWT), `livekit-server-sdk`, `pino`; `web-push` додамо з кроком 6 (Web Push).
 
 ## Запуск
 ```bash
@@ -59,8 +59,8 @@ apps/server/
 - Стан дзвінка пишеться в `calls` при кожній зміні (`store/calls.ts`), на старті `service.restore()` повертає незавершені:
   `ringing` отримує таймер із залишком часу, прострочений завершується з `timeout`, `connected` просто лишається.
 - Історія (`recents`) пишеться при завершенні за таблицею результатів із `signaling.md`; для ботів записів немає.
-- Демо-боти (`bots/scenarios.ts`): Олена приймає через 3,5 с, Андрій одразу `busy`, Support не відповідає й очікування
-  для нього 8 с (`expiresAt` коротший за 60 с), як у демо.
+- Демо-боти (`bots/scenarios.ts`): Олена приймає через 3,5 с, Андрій не відповідає й очікування
+  для нього 8 с, Support одразу `busy` (`expiresAt` коротший за 60 с), як у демо.
 - Налаштування (`waiting`, `dnd`) лежать у `users.settings` (JSON) і змінюються командою `settings.update`; у `call.invite` порядок
   перевірок повністю відповідає `signaling.md`. `busy` через `dnd` чи `waiting: false` пише адресату тихий `missed` (`silent`).
 - Другий вхідний: `waiting` не зберігається, а обчислюється (дзвінок `ringing`, а в адресата є `connected`), тому однаково

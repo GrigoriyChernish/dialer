@@ -31,7 +31,7 @@ Vue-застосунок один: віджет. Демо — окрема не�
 | Якість коду | ESLint, Prettier | єдиний стиль |
 
 ### Структура папок
-Код SPA лежить у `web/`:
+Код SPA лежить у `web/` (після міграції в `apps/web`, див. [project-structure.md](project-structure.md)):
 ```
 web/
   demo/           # сторінка демо: вхід за ім'ям і номером, підключає віджет через embed.js (без Vue)
@@ -304,5 +304,5 @@ idle ◀─reject / timeout── incoming
 - У демо в контактах усі демо-користувачі.
 
 ## 2. Бекенд
-Живе в цьому ж репозиторії (моноrepo): `apps/server`, спільні типи в `packages/shared`.
+Живе в цьому ж репозиторії (монорепозиторій): `apps/server`, спільні типи в `packages/shared`.
 Стек, структура, БД, токени й розгортання описано в [backend.md](backend.md), контракт сигналізації в [signaling.md](signaling.md).
