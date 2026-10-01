@@ -1,0 +1,6106 @@
+{
+  "version": "2.20",
+  "children": [
+    {
+      "type": "frame",
+      "id": "ahjhz",
+      "x": 0,
+      "y": -140,
+      "name": "Contact Row",
+      "reusable": true,
+      "width": 342,
+      "cornerRadius": 18,
+      "gap": 14,
+      "padding": [
+        11,
+        10
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "dhYFg",
+          "name": "Avatar",
+          "width": 48,
+          "height": 48,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 135,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#6366F1",
+                "position": 0
+              },
+              {
+                "color": "#A855F7",
+                "position": 1
+              }
+            ]
+          },
+          "cornerRadius": 24,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "P4LlfF",
+              "name": "Initials",
+              "fill": "#FFFFFF",
+              "content": "ОК",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "x6ZWRS",
+          "type": "ref",
+          "ref": "mN0qk",
+          "name": "Meta",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "x3sUSs",
+          "name": "Chat Button",
+          "width": 36,
+          "height": 36,
+          "fill": "$accent-soft",
+          "cornerRadius": 18,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "gyKrd",
+              "name": "Chat",
+              "width": 16,
+              "height": 16,
+              "icon": "message-circle",
+              "library": "lucide",
+              "fill": "$accent-icon"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "U6KSa",
+          "name": "Call Button",
+          "width": 36,
+          "height": 36,
+          "fill": "$ok-soft",
+          "cornerRadius": 18,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "X873yM",
+              "name": "Phone",
+              "width": 16,
+              "height": 16,
+              "icon": "phone",
+              "library": "lucide",
+              "fill": "$ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DGJz8",
+      "x": 0,
+      "y": 0,
+      "name": "Contacts",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": "$bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "R6h6Lg",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "zZ044",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "h15bN",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Zscx2",
+          "name": "Content",
+          "width": "fill_container",
+          "height": 262,
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            0,
+            16,
+            16,
+            16
+          ],
+          "children": [
+            {
+              "id": "X4JB4Z",
+              "type": "ref",
+              "ref": "LpeSn",
+              "name": "Contact List",
+              "width": "fill_container"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LpeSn",
+      "x": 388,
+      "y": -316,
+      "name": "Contact List",
+      "reusable": true,
+      "width": 343,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 160,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$card-top",
+            "position": 0
+          },
+          {
+            "color": "$card-bottom",
+            "position": 1
+          }
+        ]
+      },
+      "cornerRadius": 28,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 4,
+      "padding": [
+        18,
+        12,
+        10,
+        12
+      ],
+      "children": [
+        {
+          "id": "nwnvp",
+          "type": "ref",
+          "ref": "ahjhz",
+          "name": "Олена Коваль",
+          "width": "fill_container",
+          "descendants": {
+            "dhYFg": {
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 135,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#6366F1",
+                    "position": 0
+                  },
+                  {
+                    "color": "#A855F7",
+                    "position": 1
+                  }
+                ]
+              }
+            },
+            "P4LlfF": {
+              "content": "ОК"
+            },
+            "x6ZWRS/a63lt": {
+              "content": "Олена Коваль"
+            },
+            "x6ZWRS/ZYWNw": {
+              "width": "fit_content"
+            },
+            "x6ZWRS/T2L4QA": {
+              "fill": "$ok"
+            },
+            "x6ZWRS/RpOJ4": {
+              "content": "онлайн · відповість",
+              "textGrowth": "auto"
+            }
+          }
+        },
+        {
+          "id": "hqwLa",
+          "type": "ref",
+          "ref": "ahjhz",
+          "name": "Андрій Мельник",
+          "width": "fill_container",
+          "descendants": {
+            "dhYFg": {
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 135,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#14B8A6",
+                    "position": 0
+                  },
+                  {
+                    "color": "#3B82F6",
+                    "position": 1
+                  }
+                ]
+              }
+            },
+            "P4LlfF": {
+              "content": "АМ"
+            },
+            "x6ZWRS/a63lt": {
+              "content": "Андрій Мельник"
+            },
+            "x6ZWRS/ZYWNw": {
+              "width": "fit_content"
+            },
+            "x6ZWRS/T2L4QA": {
+              "fill": "$warn"
+            },
+            "x6ZWRS/RpOJ4": {
+              "content": "онлайн · не відповість",
+              "textGrowth": "auto"
+            }
+          }
+        },
+        {
+          "id": "Z1wP5D",
+          "type": "ref",
+          "ref": "ahjhz",
+          "name": "Support",
+          "width": "fill_container",
+          "descendants": {
+            "dhYFg": {
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 135,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F59E0B",
+                    "position": 0
+                  },
+                  {
+                    "color": "#EF4444",
+                    "position": 1
+                  }
+                ]
+              }
+            },
+            "P4LlfF": {
+              "content": "S"
+            },
+            "x6ZWRS/a63lt": {
+              "content": "Support"
+            },
+            "x6ZWRS/ZYWNw": {
+              "width": "fit_content"
+            },
+            "x6ZWRS/T2L4QA": {
+              "fill": "$bad"
+            },
+            "x6ZWRS/RpOJ4": {
+              "content": "у розмові · зайнято",
+              "textGrowth": "auto"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mN0qk",
+      "x": 0,
+      "y": -222,
+      "name": "Meta",
+      "reusable": true,
+      "width": 200,
+      "height": 30,
+      "layout": "vertical",
+      "gap": 2,
+      "justifyContent": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "a63lt",
+          "name": "Name",
+          "fill": "$fg",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Ім'я",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "ZYWNw",
+          "name": "Status Row",
+          "width": 160,
+          "height": 10,
+          "gap": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "T2L4QA",
+              "name": "Dot",
+              "fill": "$ok",
+              "width": 7,
+              "height": 7
+            },
+            {
+              "type": "text",
+              "id": "RpOJ4",
+              "name": "Status",
+              "fill": "$mute",
+              "textGrowth": "fixed-width-height",
+              "width": "fit_content(94)",
+              "height": 10,
+              "content": "онлайн · відповість",
+              "lineHeight": 1,
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "JfOe5",
+      "x": 0,
+      "y": -389,
+      "name": "Action Button",
+      "reusable": true,
+      "width": 54,
+      "height": 54,
+      "fill": "$bad",
+      "cornerRadius": 27,
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#EF444466",
+        "offset": {
+          "x": 0,
+          "y": 8
+        },
+        "blur": 24
+      },
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "gcrxy",
+          "name": "Icon",
+          "width": 24,
+          "height": 24,
+          "icon": "x",
+          "library": "lucide",
+          "fill": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Oy2Mz",
+      "x": 455,
+      "y": 0,
+      "name": "Outgoing Call",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "yZJ5g",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "LGvmW",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "p8YNH",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Mtsfj",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "FuZHw",
+              "name": "Caller",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "w2OhWv",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cmuNk",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "OjFHO",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "dGNOh",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mqnmJ",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.5
+                },
+                {
+                  "type": "frame",
+                  "id": "z4Ift",
+                  "name": "Call Status",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "O2ZwN",
+                      "name": "Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "phone-outgoing",
+                      "library": "lucide",
+                      "fill": "$accent-icon"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VY6Hz",
+                      "name": "Label",
+                      "fill": "$accent-icon",
+                      "content": "ВИХІДНИЙ ВИКЛИК",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "l74k1",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "id": "JeHZU",
+                  "type": "ref",
+                  "ref": "JfOe5",
+                  "name": "Cancel Call"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "p3sy7Z",
+      "x": 910,
+      "y": 0,
+      "name": "In Call",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "T0ty0l",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "S2dpD1",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "l2BMuu",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "seZ0g",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "NhKiM",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "kuRhV",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "BjA3d",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "eglr4",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ve0qu",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "l2WEJ",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "R2tfK",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "z9nYZ",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yHVtx",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "VdAsF",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "type": "frame",
+                  "id": "kO7lg",
+                  "name": "Voice Wave",
+                  "height": 28,
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "u7gbzB",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "ywlY8",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "JtXVo",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 26
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "v7PhJZ",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "s3TNLB",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dyIZY",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "D7Zmp",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "rv6kE",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "K8I4gN",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "CqDTu",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "v4Oca",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "TiGNw",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "F7KUSQ",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "u5nUR",
+      "x": 1340,
+      "y": -554,
+      "name": "Call State / hold",
+      "reusable": true,
+      "fill": "#FFFFFF14",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "Hwfeo",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "pause",
+          "library": "lucide",
+          "fill": "$warn"
+        },
+        {
+          "type": "text",
+          "id": "M5EZC",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Ви поставили на утримання",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LCr1w",
+      "x": 840,
+      "y": -554,
+      "name": "Call State / peer-hold",
+      "reusable": true,
+      "fill": "#FFFFFF14",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "K0bX6d",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "pause",
+          "library": "lucide",
+          "fill": "$warn"
+        },
+        {
+          "type": "text",
+          "id": "p4JCx",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Олена поставила на утримання",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ohQ2u",
+      "x": 840,
+      "y": -471,
+      "name": "Call State / connection-lost",
+      "reusable": true,
+      "fill": "#FFFFFF14",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "Pa8is",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "wifi-off",
+          "library": "lucide",
+          "fill": "$bad"
+        },
+        {
+          "type": "text",
+          "id": "aNOt7",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Олена втратила з'єднання · чекаємо до 30 с",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rK2YW",
+      "x": 1340,
+      "y": -471,
+      "name": "Call State / reconnecting",
+      "reusable": true,
+      "fill": "#FFFFFF14",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "Lvzmh",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "loader",
+          "library": "lucide",
+          "fill": "$accent-icon"
+        },
+        {
+          "type": "text",
+          "id": "MUlsO",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Відновлюємо ваше з'єднання",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "WTm0T",
+      "x": 1340,
+      "y": -394,
+      "name": "Call State / poor-signal",
+      "reusable": true,
+      "fill": "#FFFFFF14",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "RDB7j",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "signal-low",
+          "library": "lucide",
+          "fill": "$warn"
+        },
+        {
+          "type": "text",
+          "id": "Fr8tK",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Слабкий сигнал",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "NRFva",
+      "x": 840,
+      "y": -394,
+      "name": "Call State / mic-off",
+      "reusable": true,
+      "fill": "#FFFFFF14",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "yhMUT",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "mic-off",
+          "library": "lucide",
+          "fill": "$mute"
+        },
+        {
+          "type": "text",
+          "id": "J2Tk9",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Олена вимкнула мікрофон",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lRcAn",
+      "x": 1365,
+      "y": 0,
+      "name": "In Call · hold",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ZBsRA",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "TBqOh",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "m6EPIz",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rKhEe",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "R2js1Q",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "u25pGm",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TF3Ff",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "g3vDM",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "NFN1m",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qZfqi",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "j5xXln",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "lwCAh",
+                          "name": "Avatar",
+                          "opacity": 0.6,
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nh9wg",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mvMrB",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "id": "awzeB",
+                  "type": "ref",
+                  "ref": "u5nUR",
+                  "name": "State"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "IRA5f",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "d6qd9",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "CbgYJ",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Lo6Ob",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "w84Dm",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ADR5b",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "QItzr",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "d2I96",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "EYWtT",
+      "x": 1820,
+      "y": 0,
+      "name": "In Call · peer-hold",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "WW5Uf",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "KORh9",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "yle5E",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xJXeq",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "C3mpN",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "aal3c",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "rpB1W",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hmLQ1",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "yVctY",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ueYkA",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qlW6d",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "N464U",
+                          "name": "Avatar",
+                          "opacity": 0.6,
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mbI9K",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "bZT7q",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "id": "RbLsY",
+                  "type": "ref",
+                  "ref": "LCr1w",
+                  "name": "State"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "n06mdN",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "z3rKx",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "rxiCj",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "PQFNj",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "bPj9j",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "g42R9",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "e7OWQl",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "z6zBp",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Dp2i9",
+      "x": 2275,
+      "y": 0,
+      "name": "In Call · connection-lost",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ax7y8",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "pT0L8",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "ekMuA",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZGERZ",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "It14S",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "YUaCc",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Rvos1",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "zqa6t",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "rjx08",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "M61xOD",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "k4V6K8",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "I4TTLF",
+                          "name": "Avatar",
+                          "opacity": 0.6,
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ARDlV",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "evO2M",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "id": "d294X0",
+                  "type": "ref",
+                  "ref": "ohQ2u",
+                  "name": "State"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pLAp3",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sg6YU",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "mcbb2",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "z7Bols",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "oU4Qo",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ELWof",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "K1EhcA",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "JElrJ",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ZPu0c",
+      "x": 2730,
+      "y": 0,
+      "name": "In Call · reconnecting",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "i8iMVn",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "bcMsH",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "baHvf",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "BKqik",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "DeCWU",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "Huxpb",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "K7WrUT",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "SoOTi",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "xFsnZ",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "AkTqb",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kzXQ3",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "raMT0",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "X6EKg",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Sz6of",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "id": "r1cY93",
+                  "type": "ref",
+                  "ref": "rK2YW",
+                  "name": "State"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dBtyg",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Rfvym",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "y9Wgb",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "YVxwM",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "fXmF5",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "TE3uD",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KFGOr",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "eazO2",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "XLnPU",
+      "x": 3185,
+      "y": 0,
+      "name": "In Call · poor-signal",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "w0hBfq",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "AyvTI",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "oloE6",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "mPDmf",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "ausk9",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "kw9Ni",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tMZoW",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "tjM5w",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "F84L1v",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fOVer",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "IC0pA",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "vED1O",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "GG68b",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "k5T7o",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "id": "ppq8h",
+                  "type": "ref",
+                  "ref": "WTm0T",
+                  "name": "State"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nNOI0",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dg6P7",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "GPQxL",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "TvgdW",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "cRoGX",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "tog62",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "C7yWk",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "uhLPa",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "D3VBxA",
+      "x": 3640,
+      "y": 0,
+      "name": "In Call · mic-off",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "xbadg",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "z6sef",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "TNPJJ",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "qLCNp",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Mpq8M",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "nkSxp",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "GhdQn",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "v86fJ",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Q4Gkz",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mMpGP",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kuL5K",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "CW8Ym",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Vch6H",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "nnFys",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "id": "nDYJJ",
+                  "type": "ref",
+                  "ref": "NRFva",
+                  "name": "State"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ev05b",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "RGR90",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "aSixr",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "lhoNl",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "TYnKV",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Kk9yP",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OoBh0",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "grv8D",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "P3DRA",
+      "x": 0,
+      "y": 1000,
+      "name": "Incoming Call",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "UUJ5m",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "kj8vA",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "cfxgz",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "P7Xfwp",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ClOaZ",
+              "name": "Caller",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "vWipk",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "GBxhJ",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "VPjRs",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "xmWr5",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "kVyma",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.5
+                },
+                {
+                  "type": "frame",
+                  "id": "c1k4LW",
+                  "name": "Call Status",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "W688ep",
+                      "name": "Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "phone-incoming",
+                      "library": "lucide",
+                      "fill": "$accent-icon"
+                    },
+                    {
+                      "type": "text",
+                      "id": "uL2R8",
+                      "name": "Label",
+                      "fill": "$accent-icon",
+                      "content": "ВХІДНИЙ ВИКЛИК",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 2
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Ik8Vm",
+                  "name": "Countdown",
+                  "fill": "$mute",
+                  "content": "Залишилось 00:08",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mwxwS",
+              "name": "Controls",
+              "width": "fill_container",
+              "gap": 72,
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "n96Y1Y",
+                  "name": "Decline",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "MHhxP",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Decline Button",
+                      "fill": "$bad",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#EF444466",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "blur": 24
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "x"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "U5lID",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Відхилити",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WhDji",
+                  "name": "Accept",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "bLcPn",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Accept Button",
+                      "fill": "$ok",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#22C55E73",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "blur": 24
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "phone"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "Ifls4",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Прийняти",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "N6JCS",
+      "x": 455,
+      "y": 1000,
+      "name": "Result · Busy",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-missed-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ARWf6",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "ZjX1t",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "DBpv2",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "S97brw",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "V4zz2",
+              "name": "Caller",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "pdAy8",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#00000000",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "rzjyX",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#00000000",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "movNp",
+                          "name": "Avatar",
+                          "opacity": 0.55,
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6B7080",
+                                "position": 0
+                              },
+                              {
+                                "color": "#7A6E86",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "NysTB",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "S",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "FYwGs",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Support",
+                  "fontFamily": "Inter",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.5
+                },
+                {
+                  "type": "frame",
+                  "id": "Ot4pt",
+                  "name": "Call Status",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "qjRa6",
+                      "name": "Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "phone-off",
+                      "library": "lucide",
+                      "fill": "$bad"
+                    },
+                    {
+                      "type": "text",
+                      "id": "AL9fr",
+                      "name": "Label",
+                      "fill": "$bad",
+                      "content": "Зайнято",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mF6wz",
+                  "name": "Reason",
+                  "fill": "$mute",
+                  "content": "Абонент зараз розмовляє",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "I135hf",
+              "name": "Controls",
+              "width": "fill_container",
+              "gap": 72,
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "j4rQos",
+                  "name": "Close",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "D6Tlk",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Close Button",
+                      "fill": "#FFFFFF1A",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "enabled": false,
+                        "color": "#00000000"
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "x"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "XQLql",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Закрити",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ntJP0",
+                  "name": "Redial",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "l4TLB",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Redial Button",
+                      "fill": "$ok",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#22C55E73",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "blur": 24
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "phone"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "VdCTB",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Передзвонити",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "wSSrD",
+      "x": 910,
+      "y": 1000,
+      "name": "Result · No Answer",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-missed-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "x6vGgd",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "VtPJS",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "VJZDq",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M3gAp5",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "q2Jto5",
+              "name": "Caller",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "klmnx",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#00000000",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "v84Ewg",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#00000000",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "d04Dd",
+                          "name": "Avatar",
+                          "opacity": 0.55,
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6B7080",
+                                "position": 0
+                              },
+                              {
+                                "color": "#7A6E86",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "bCugp",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "АМ",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Nij2E",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Андрій Мельник",
+                  "fontFamily": "Inter",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.5
+                },
+                {
+                  "type": "frame",
+                  "id": "n2Pr2",
+                  "name": "Call Status",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "oe8p2",
+                      "name": "Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "phone-missed",
+                      "library": "lucide",
+                      "fill": "$bad"
+                    },
+                    {
+                      "type": "text",
+                      "id": "w8eYL8",
+                      "name": "Label",
+                      "fill": "$bad",
+                      "content": "Без відповіді",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "rhiSe",
+                  "name": "Reason",
+                  "fill": "$mute",
+                  "content": "Абонент не відповів",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QkigJ",
+              "name": "Controls",
+              "width": "fill_container",
+              "gap": 72,
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T4pbq",
+                  "name": "Close",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "J1rYkK",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Close Button",
+                      "fill": "#FFFFFF1A",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "enabled": false,
+                        "color": "#00000000"
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "x"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "VtJX9",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Закрити",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "iYA7L",
+                  "name": "Redial",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "WQihE",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Redial Button",
+                      "fill": "$ok",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#22C55E73",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "blur": 24
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "phone"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "yX8iZ",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Передзвонити",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "s2zeC",
+      "x": 1365,
+      "y": 1000,
+      "name": "Result · Missed",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-missed-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "xP2zv",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "C7mMsS",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "p4gTP",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "h0e6Y9",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "qpIee",
+              "name": "Caller",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Rwn9Q",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#00000000",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "CpQOV",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#00000000",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "i6juB",
+                          "name": "Avatar",
+                          "opacity": 0.55,
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6B7080",
+                                "position": 0
+                              },
+                              {
+                                "color": "#7A6E86",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "A1ooF2",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "yeyhb",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.5
+                },
+                {
+                  "type": "frame",
+                  "id": "ovFwZ",
+                  "name": "Call Status",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "W02an",
+                      "name": "Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "phone-missed",
+                      "library": "lucide",
+                      "fill": "$bad"
+                    },
+                    {
+                      "type": "text",
+                      "id": "thix2",
+                      "name": "Label",
+                      "fill": "$bad",
+                      "content": "Пропущений дзвінок",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "FBhSD",
+                  "name": "Reason",
+                  "fill": "$mute",
+                  "content": "Ви не відповіли на вхідний",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i5uaWf",
+              "name": "Controls",
+              "width": "fill_container",
+              "gap": 72,
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "SASfD",
+                  "name": "Close",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "poQQf",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Close Button",
+                      "fill": "#FFFFFF1A",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "enabled": false,
+                        "color": "#00000000"
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "x"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "iAg3k",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Закрити",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "EpIkJ",
+                  "name": "Redial",
+                  "width": 88,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "gIV1V",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Redial Button",
+                      "fill": "$ok",
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#22C55E73",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "blur": 24
+                      },
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "phone"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "USJS4",
+                      "name": "Label",
+                      "fill": "$mute",
+                      "content": "Передзвонити",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DkelC",
+      "x": 0,
+      "y": 2000,
+      "name": "In Call · video",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "CFqVy",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Remote Video",
+          "metadata": {
+            "type": "unsplash",
+            "username": "silverkblack",
+            "link": "https://unsplash.com/@silverkblack",
+            "author": "Vitaly Gariev"
+          },
+          "width": 375,
+          "height": 844,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
+            "mode": "cover"
+          }
+        },
+        {
+          "type": "frame",
+          "id": "a68VX4",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Top Scrim",
+          "width": 375,
+          "height": 180,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 180,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#000000A0",
+                "position": 0
+              },
+              {
+                "color": "#00000000",
+                "position": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "frame",
+          "id": "WtlaC",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 624,
+          "name": "Bottom Scrim",
+          "width": 375,
+          "height": 220,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 0,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#000000A0",
+                "position": 0
+              },
+              {
+                "color": "#00000000",
+                "position": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "frame",
+          "id": "YcN08",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "i7BtkU",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "f4rZOo",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "FfOo6",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "ndORO",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "m26Wnp",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "z8f0SL",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Jz7H3",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "i580PA",
+              "name": "Controls",
+              "width": "fill_container",
+              "height": "fill_container",
+              "justifyContent": "center",
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "s4HjJ",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "gieL3",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "OIcY3",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "bw3AT",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "bcasC",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "c7CcaG",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "metadata": {
+            "type": "unsplash",
+            "username": "roscoadrian",
+            "link": "https://unsplash.com/@roscoadrian",
+            "author": "Adrian \"Rosco\" Stef"
+          },
+          "width": 92,
+          "height": 122,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "https://images.unsplash.com/photo-1654432673538-ae403ce9d457?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NzN8&ixlib=rb-4.1.0&q=80&w=1080",
+            "mode": "cover"
+          },
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000066",
+            "offset": {
+              "x": 0,
+              "y": 10
+            },
+            "blur": 24
+          },
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "YFmF3",
+              "x": 37.5,
+              "y": 53,
+              "name": "Label",
+              "enabled": false,
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "x1plxJ",
+      "x": 455,
+      "y": 2000,
+      "name": "In Call · video · peer-mic-off",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "kB7II",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Remote Video",
+          "metadata": {
+            "type": "unsplash",
+            "username": "silverkblack",
+            "link": "https://unsplash.com/@silverkblack",
+            "author": "Vitaly Gariev"
+          },
+          "width": 375,
+          "height": 844,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
+            "mode": "cover"
+          }
+        },
+        {
+          "type": "frame",
+          "id": "I6TZy",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Top Scrim",
+          "width": 375,
+          "height": 180,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 180,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#000000A0",
+                "position": 0
+              },
+              {
+                "color": "#00000000",
+                "position": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "frame",
+          "id": "WumKu",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 624,
+          "name": "Bottom Scrim",
+          "width": 375,
+          "height": 220,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 0,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#000000A0",
+                "position": 0
+              },
+              {
+                "color": "#00000000",
+                "position": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "frame",
+          "id": "HCN1Z",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "OOo36",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "qe4cv",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "WX8KX",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "A2KEy",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "GWBQy",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "KqoA2",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "BIo1h",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "TtTiv",
+              "name": "Controls",
+              "width": "fill_container",
+              "height": "fill_container",
+              "justifyContent": "center",
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "GcBnU",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "b9WxPk",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "CgTES",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "JLJ3x",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "T6Psu",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ND3J4",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "metadata": {
+            "type": "unsplash",
+            "username": "noorvoux",
+            "link": "https://unsplash.com/@noorvoux",
+            "author": "Frankie Cordoba"
+          },
+          "width": 92,
+          "height": 122,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "https://images.unsplash.com/photo-1654432673538-ae403ce9d457?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NzN8&ixlib=rb-4.1.0&q=80&w=1080",
+            "mode": "cover"
+          },
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000066",
+            "offset": {
+              "x": 0,
+              "y": 10
+            },
+            "blur": 24
+          },
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "DVCGj",
+              "x": 37.5,
+              "y": 53,
+              "name": "Label",
+              "enabled": false,
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "ORBew",
+          "type": "ref",
+          "ref": "NRFva",
+          "name": "State",
+          "layoutPosition": "absolute",
+          "x": 20,
+          "y": 110
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "j8WFD6",
+      "x": 910,
+      "y": 2000,
+      "name": "In Call · my mic & cam off",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "mMUdy",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "TbJrk",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "zDMQb",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "e0hGOz",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "lxCmQ",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "MO42P",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Vph42",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cE18F",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "D7LHH",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OlHxp",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "bPQch",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "b8OlAf",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "KbHkO",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "hRAs3",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "type": "frame",
+                  "id": "KGYdL",
+                  "name": "Voice Wave",
+                  "height": 28,
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "AXa89",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "EpOEk",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "WrmN3",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 26
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "FGM14",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "PLVqB",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Z3jnG",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "DEeVR",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "c2KW1",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic-off",
+                          "fill": "#111111"
+                        }
+                      }
+                    },
+                    {
+                      "id": "jh9ZD",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video-off",
+                          "fill": "#111111"
+                        }
+                      }
+                    },
+                    {
+                      "id": "EoTCe",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Hur3z",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kqa9O",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "DEy5d",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Камера вимк.",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "ArcqV",
+              "layoutPosition": "absolute",
+              "x": 64,
+              "y": 6,
+              "name": "My Mic Off",
+              "width": 22,
+              "height": 22,
+              "fill": "$bad",
+              "cornerRadius": 11,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "U4C7q",
+                  "name": "Icon",
+                  "width": 12,
+                  "height": 12,
+                  "icon": "mic-off",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Y4fVG",
+      "x": 1365,
+      "y": 2000,
+      "name": "In Call · self view hidden",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "nOHsb",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            0,
+            28
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "RyrCR",
+              "name": "Time",
+              "fill": "$fg",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "n3gXU7",
+              "name": "Indicators",
+              "fill": "$fg",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "C1XwG",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            8,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "jg2bJ",
+              "name": "Peer Name",
+              "fill": "$fg",
+              "content": "Олена Коваль",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "R3tPl",
+              "name": "Timer",
+              "fill": "#FFFFFF1A",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Nt55v",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KRHH1",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "pRAMf",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "trwDA",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "#6366F114",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ACG6U",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "#6366F124",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "BtYww",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Twdl0",
+                              "name": "Initials",
+                              "fill": "#FFFFFF",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "xpBKo",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "type": "frame",
+                  "id": "p7cRE1",
+                  "name": "Voice Wave",
+                  "height": 28,
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "QLx9b",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "Mdu8I",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "D1yrlQ",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 26
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "VYpwD",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "G3fb6b",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "VJgg0",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sxuW5",
+                  "name": "Controls Pill",
+                  "fill": "#FFFFFF1A",
+                  "cornerRadius": 40,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "id": "dsYnX",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Mic",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "mic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "S8Oj4R",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Camera",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "video"
+                        }
+                      }
+                    },
+                    {
+                      "id": "JU7mG",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "Hold",
+                      "fill": "#FFFFFF1F",
+                      "effect": [],
+                      "descendants": {
+                        "gcrxy": {
+                          "icon": "pause"
+                        }
+                      }
+                    },
+                    {
+                      "id": "O7EUvW",
+                      "type": "ref",
+                      "ref": "JfOe5",
+                      "name": "End Call"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "XFP66",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "name": "Self View",
+          "enabled": false,
+          "width": 92,
+          "height": 122,
+          "fill": "#1B2030",
+          "cornerRadius": 16,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "lvIU6",
+              "name": "Label",
+              "fill": "$mute",
+              "content": "Ви",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "C4lHX",
+          "layoutPosition": "absolute",
+          "x": 311,
+          "y": 118,
+          "name": "Show Self",
+          "width": 44,
+          "height": 44,
+          "fill": "#FFFFFF1A",
+          "cornerRadius": 22,
+          "stroke": "$line",
+          "strokeWidth": 1,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "VExHn",
+              "name": "Icon",
+              "width": 20,
+              "height": 20,
+              "icon": "video",
+              "library": "lucide",
+              "fill": "$fg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "J0Pa5A",
+      "type": "ref",
+      "ref": "JfOe5",
+      "x": 4055,
+      "y": -554
+    },
+    {
+      "id": "oCX8h",
+      "type": "ref",
+      "ref": "JfOe5",
+      "x": 4149,
+      "y": -554
+    },
+    {
+      "id": "QvIas",
+      "type": "ref",
+      "ref": "JfOe5",
+      "x": 4243,
+      "y": -554
+    },
+    {
+      "id": "DXN9T",
+      "type": "ref",
+      "ref": "JfOe5",
+      "x": 4337,
+      "y": -554
+    },
+    {
+      "id": "z4P4kb",
+      "type": "ref",
+      "ref": "JfOe5",
+      "x": 4431,
+      "y": -554
+    }
+  ],
+  "variables": {
+    "bg": {
+      "type": "color",
+      "value": "#0A0C14"
+    },
+    "card-top": {
+      "type": "color",
+      "value": "#1C2338"
+    },
+    "fg": {
+      "type": "color",
+      "value": "#F3F5FA"
+    },
+    "mute": {
+      "type": "color",
+      "value": "#B4BCCD"
+    },
+    "ok": {
+      "type": "color",
+      "value": "#22C55E"
+    },
+    "ok-soft": {
+      "type": "color",
+      "value": "#22C55E26"
+    },
+    "line": {
+      "type": "color",
+      "value": "#FFFFFF2E"
+    },
+    "card-bottom": {
+      "type": "color",
+      "value": "#121726"
+    },
+    "accent": {
+      "type": "color",
+      "value": "#6366F1"
+    },
+    "accent-soft": {
+      "type": "color",
+      "value": "#6366F12E"
+    },
+    "accent-icon": {
+      "type": "color",
+      "value": "#A5A8FF"
+    },
+    "warn": {
+      "type": "color",
+      "value": "#F5B84B"
+    },
+    "bad": {
+      "type": "color",
+      "value": "#F0626B"
+    },
+    "stage-glow": {
+      "type": "color",
+      "value": "#1E2340"
+    },
+    "stage-missed-glow": {
+      "type": "color",
+      "value": "#2A1E28"
+    }
+  },
+  "fileToken": "8dbbdd0a-a14f-400d-a6f9-149ce907ef90"
+}
