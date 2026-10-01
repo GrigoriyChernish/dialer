@@ -14,7 +14,7 @@
   50% { transform: scaleY(1); }
 }
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; }
+  * { animation: none !important; transition: none !important; }
 }
 
 html, body, #app { height: 100%; margin: 0; }

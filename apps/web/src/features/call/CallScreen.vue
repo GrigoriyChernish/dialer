@@ -100,7 +100,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
           v-if="!call.selfHidden"
           type="button"
           :aria-label="t('call.hideSelf')"
-          class="absolute right-4 top-8 z-10 grid h-[122px] w-[92px] place-items-center overflow-hidden rounded-2xl border border-line bg-pip text-[13px] text-mute"
+          class="absolute right-4 top-8 z-10 grid h-[122px] w-[92px] cursor-pointer place-items-center overflow-hidden rounded-2xl border border-line bg-pip text-[13px] text-mute transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 active:scale-[0.98]"
           :class="selfVideo && 'shadow-[0_10px_24px_#00000066]'"
           @click="call.selfHidden = true"
         >
@@ -112,7 +112,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
           v-else
           type="button"
           :aria-label="t('call.showSelf')"
-          class="absolute right-5 top-4 z-10 grid size-11 place-items-center rounded-full border border-line bg-surface text-fg"
+          class="absolute right-5 top-4 z-10 grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-fg transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 hover:bg-surface-strong active:scale-95"
           @click="call.selfHidden = false"
         >
           <Icon name="video" class="size-5" />

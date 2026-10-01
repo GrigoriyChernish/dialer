@@ -17,6 +17,22 @@
   --surface-strong: rgba(20, 24, 38, .1);
   --pip: #e4e7f1;
   color-scheme: light;
+
+  /* Токени анімацій та переходів (поза дизайном) */
+  --duration-ring: 1.6s;
+  --duration-wave: 1s;
+  --duration-wave-stagger: 0.12s;
+  --duration-banner-enter: 220ms;
+  --duration-banner-leave: 180ms;
+  --duration-press: 100ms;
+
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --transition-banner-enter: height var(--duration-banner-enter) var(--ease-out), opacity var(--duration-banner-enter) var(--ease-out), translate var(--duration-banner-enter) var(--ease-out);
+  --transition-banner-leave: height var(--duration-banner-leave) var(--ease-in), opacity var(--duration-banner-leave) var(--ease-in), translate var(--duration-banner-leave) var(--ease-in);
+  --transition-press: transform var(--duration-press) var(--ease-out);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -68,6 +84,6 @@
   --color-call-ok: #22c55e;
   --color-call-bad: #f0626b;
   --color-warn: #f5b84b;
-  --animate-ring: ring 1.6s ease-out infinite;
-  --animate-wave: wave 1s ease-in-out infinite;
+  --animate-ring: ring var(--duration-ring) var(--ease-out) infinite;
+  --animate-wave: wave var(--duration-wave) var(--ease-in-out) infinite;
 }

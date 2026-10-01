@@ -18,13 +18,17 @@ const BOTS: Record<string, { dot: string; text: string }> = {
 const ORDER = ['bot:olena', 'bot:andriy', 'bot:support'];
 const sorted = computed(() =>
   [...call.contacts].sort((a, b) => {
-    const ia = ORDER.indexOf(a.userId), ib = ORDER.indexOf(b.userId);
+    const ia = ORDER.indexOf(a.userId),
+      ib = ORDER.indexOf(b.userId);
     if (ia >= 0 || ib >= 0) return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
     return Number(b.online) - Number(a.online) || a.name.localeCompare(b.name, 'uk');
   }),
 );
 const dot = (id: string, online: boolean) => BOTS[id]?.dot ?? (online ? 'bg-call-ok' : 'bg-mute');
-const sub = (id: string, online: boolean) => (BOTS[id] ? t(BOTS[id].text) : `${fmt(id)} · ${online ? t('contacts.online') : t('contacts.offline')}`);
+const sub = (id: string, online: boolean) => {
+  const bot = BOTS[id];
+  return bot ? t(bot.text) : `${fmt(id)} · ${online ? t('contacts.online') : t('contacts.offline')}`;
+};
 </script>
 
 <template>
@@ -38,7 +42,7 @@ const sub = (id: string, online: boolean) => (BOTS[id] ? t(BOTS[id].text) : `${f
         v-for="c in sorted"
         :key="c.userId"
         type="button"
-        class="flex w-full items-center gap-3.5 rounded-[18px] px-2.5 py-[11px] text-left hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
+        class="group flex w-full cursor-pointer items-center gap-3.5 rounded-[18px] px-2.5 py-[11px] text-left transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:bg-surface active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-accent"
         :aria-label="`${t('contacts.call')}: ${c.name}`"
         @click="call.call(c.userId)"
       >
@@ -50,7 +54,10 @@ const sub = (id: string, online: boolean) => (BOTS[id] ? t(BOTS[id].text) : `${f
             <span class="truncate">{{ sub(c.userId, c.online) }}</span>
           </small>
         </span>
-        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-call-ok/15 text-call-ok"><Icon name="phone" class="size-4" /></span>
+        <span
+          class="grid size-9 shrink-0 place-items-center rounded-full bg-call-ok/15 text-call-ok transition-colors duration-150 group-hover:bg-call-ok group-hover:text-white"
+          ><Icon name="phone" class="size-4"
+        /></span>
       </button>
     </div>
     <p v-if="!call.online" class="px-3 pt-3 text-sm text-mute" role="status">

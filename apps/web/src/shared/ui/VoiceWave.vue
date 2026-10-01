@@ -11,7 +11,7 @@ const BARS = [8, 16, 26, 16, 8];
       :key="i"
       class="w-1 origin-center rounded-sm"
       :class="silent ? 'h-1 bg-mute/50' : 'bg-accent motion-safe:animate-wave'"
-      :style="silent ? undefined : { height: h + 'px', animationDelay: i * 0.12 + 's' }"
+      :style="silent ? undefined : { height: h + 'px', animationDelay: `calc(${i} * var(--duration-wave-stagger))` }"
     />
   </div>
 </template>

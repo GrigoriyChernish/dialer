@@ -17,7 +17,7 @@ export interface BannerItem {
 defineProps<{ items: BannerItem[] }>();
 
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-const MOVE = 'height 220ms ease-out, opacity 220ms ease-out, translate 220ms ease-out';
+const MOVE = 'var(--transition-banner-enter)';
 
 function enter(el: Element, done: () => void) {
   const e = el as HTMLElement;
@@ -41,7 +41,7 @@ function leave(el: Element, done: () => void) {
   if (reduced()) return done();
   e.style.height = e.offsetHeight + 'px';
   void e.offsetHeight;
-  e.style.transition = 'height 180ms ease-in, opacity 180ms ease-in, translate 180ms ease-in';
+  e.style.transition = 'var(--transition-banner-leave)';
   e.style.height = '0px';
   e.style.opacity = '0';
   e.style.translate = '0 -4px';

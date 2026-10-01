@@ -9,9 +9,21 @@
   "scripts": {
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r --if-present test",
+    "lint": "eslint apps packages scripts",
+    "lint:fix": "eslint --fix apps packages scripts",
+    "format": "prettier --write apps packages scripts",
+    "format:check": "prettier --check apps packages scripts",
     "check:design": "node scripts/check-design-tokens.mjs"
   },
   "devDependencies": {
-    "typescript": "^5.9.0"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.11.1",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.71.0",
+    "vue-eslint-parser": "^10.4.1"
   }
 }
