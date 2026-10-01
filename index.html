@@ -148,7 +148,7 @@ const fmt=p=>p.replace(/^\+380(\d\d)(\d{3})(\d\d)(\d\d)$/,'+380 $1 $2 $3 $4');
 // контакти з «бекенду»: усі демо-користувачі, крім себе (імітація: спільний localStorage з demo/index.html)
 function demoContacts(){let u=[];try{u=JSON.parse(localStorage.getItem('dialer.demo.users'))||[]}catch(e){}
   const me=token.split('.')[1];
-  return u.filter(x=>x.phone!==me).map(x=>({id:x.phone,name:x.name.replace(/[<>&]/g,''),s:fmt(x.phone)+' · відповість'}));}
+  return u.filter(x=>/^\+380\d{9}$/.test(x.phone)&&x.phone!==me).map(x=>({id:x.phone,name:x.name.replace(/[<>&]/g,''),s:fmt(x.phone)+' · відповість'}));}
 // демо-співрозмовники зі сценаріями: є завжди, щоб демо працювало й для однієї людини
 const BOTS=[
  {id:'u2',name:'Олена Коваль',g:'f',s:'онлайн · відповість'},

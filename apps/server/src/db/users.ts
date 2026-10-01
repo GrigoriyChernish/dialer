@@ -30,7 +30,7 @@ const toUser = (r: RawUser): UserRow => ({
   settings: { ...DEFAULT_SETTINGS, ...JSON.parse(r.settings) },
 });
 
-/** Демо-співрозмовники зі сценаріями з docs/demo.md; поведінку отримають на кроці 3. */
+/** Демо-співрозмовники зі сценаріями з docs/demo.md; поведінка в `bots/scenarios.ts`. */
 export const DEMO_BOTS = [
   { id: 'bot:olena', name: 'Олена' },
   { id: 'bot:andriy', name: 'Андрій' },

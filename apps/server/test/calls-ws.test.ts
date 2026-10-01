@@ -52,14 +52,14 @@ describe('дзвінок через WebSocket', () => {
     a.client.send({ type: 'call.invite', id: 'e1', to: '+380999999999', video: false });
     expect(await a.client.next('error')).toMatchObject({ reqId: 'e1', code: 'invalid_target' });
 
-    a.client.send({ type: 'call.invite', to: 'bot:support' });
+    a.client.send({ type: 'call.invite', to: 'bot:andriy' });
     expect((await a.client.next('error')).code).toBe('bad_request');
     a.client.send({ type: 'call.invite', id: 'e2', to: 5 });
     expect(await a.client.next('error')).toMatchObject({ reqId: 'e2', code: 'bad_request' });
 
-    a.client.send({ type: 'call.invite', id: 'e3', to: 'bot:support', video: false });
+    a.client.send({ type: 'call.invite', id: 'e3', to: 'bot:andriy', video: false });
     const first = await a.client.next('ack');
-    a.client.send({ type: 'call.invite', id: 'e3', to: 'bot:support', video: false });
+    a.client.send({ type: 'call.invite', id: 'e3', to: 'bot:andriy', video: false });
     expect(await a.client.next('ack')).toEqual(first);
     a.client.send({ type: 'call.invite', id: 'e4', to: 'bot:olena', video: false });
     expect((await a.client.next('error')).code).toBe('already_in_call');
@@ -68,7 +68,7 @@ describe('дзвінок через WebSocket', () => {
     a.client.close();
   });
 
-  it('Олена відповідає через 3,5 с, Андрій зайнятий', async () => {
+  it('Олена відповідає через 3,5 с, Support зайнятий', async () => {
     const a = await connectUser(server, 'Олег', phone());
     a.client.send({ type: 'call.invite', id: 'b1', to: 'bot:olena', video: false });
     const { call } = await a.client.next('ack');
@@ -80,7 +80,7 @@ describe('дзвінок через WebSocket', () => {
     a.client.close();
 
     const b = await connectUser(server, 'Павло', phone());
-    b.client.send({ type: 'call.invite', id: 'b3', to: 'bot:andriy', video: false });
+    b.client.send({ type: 'call.invite', id: 'b3', to: 'bot:support', video: false });
     expect((await b.client.next('ack')).call!.state).toBe('ringing');
     expect(await b.client.next('call.ended')).toMatchObject({ reason: 'busy' });
     expect((await b.client.next('recents.add')).entry.result).toBe('busy');

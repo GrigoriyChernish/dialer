@@ -17,7 +17,6 @@ ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=deps /app/node_modules node_modules
 COPY --from=deps /app/apps/server/node_modules apps/server/node_modules
-COPY --from=deps /app/packages/shared/node_modules packages/shared/node_modules
 COPY package.json pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/shared packages/shared
 COPY apps/server/package.json apps/server/tsconfig.json apps/server/

@@ -209,13 +209,13 @@ describe('демо-боти', () => {
     expect(find(r.effects, 'recents.add')).toHaveLength(1); // лише для людини
   });
 
-  it('Андрій одразу зайнятий', () => {
-    const r = t.calls.invite(anna, { to: 'bot:andriy', video: false });
+  it('Support одразу зайнятий', () => {
+    const r = t.calls.invite(anna, { to: 'bot:support', video: false });
     expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('busy');
   });
 
-  it('Support не відповідає, без відповіді через 8 с', () => {
-    const r = t.calls.invite(anna, { to: 'bot:support', video: false });
+  it('Андрій не відповідає, без відповіді через 8 с', () => {
+    const r = t.calls.invite(anna, { to: 'bot:andriy', video: false });
     expect(r.call!.expiresAt).toBe(t.clock.now() + 8_000);
     t.clock.advance(8_000);
     expect(find(t.delivered, 'call.ended')[0]!.msg.reason).toBe('timeout');
@@ -235,7 +235,7 @@ describe('відновлення після перезапуску', () => {
   it('ringing повертається з таймером, connected лишається', () => {
     const t = setup();
     t.calls.invite(anna, { to: bohdan.userId, video: false });
-    t.calls.invite(clara, { to: 'bot:support', video: false });
+    t.calls.invite(clara, { to: 'bot:andriy', video: false });
     t.calls.accept(bohdan, { callId: 'call1' });
 
     // «перезапуск»: новий сервіс і нове сховище над тією самою БД
