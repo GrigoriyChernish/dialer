@@ -60,7 +60,11 @@ const WAVE = [8, 16, 26, 16, 8];
     </header>
 
     <!-- «Ви»: мініатюра себе, як у дизайні -->
-    <div v-if="connected" class="absolute right-4 top-[104px] z-10 grid h-[122px] w-[92px] place-items-center rounded-2xl border border-line bg-pip text-[13px] text-mute">{{ t('call.you') }}</div>
+    <div v-if="connected" class="absolute right-4 top-[104px] z-10 grid h-[122px] w-[92px] place-items-center rounded-2xl border border-line bg-pip text-[13px] text-mute">
+      {{ t('call.you') }}
+      <!-- бейдж «мій мікрофон вимкнено»: 22 × 22, праворуч угорі, відступ 6 (дизайн: My Mic Off) -->
+      <span v-if="!call.mic" class="absolute right-1.5 top-1.5 grid size-[22px] place-items-center rounded-full bg-call-bad text-white" :title="t('call.myMicOff')"><Icon name="micOff" class="size-3" /></span>
+    </div>
 
     <div class="flex flex-1 flex-col items-center justify-center gap-3 px-6">
       <span class="grid size-[200px] place-items-center rounded-full bg-accent/[.08]">
