@@ -236,7 +236,8 @@
                   "fill": "$mute",
                   "content": "Залишилось 00:58",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -285,7 +286,8 @@
                   "fill": "$mute",
                   "content": "Абонент зараз розмовляє",
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -433,7 +435,8 @@
                   "fill": "$mute",
                   "content": "ringing · вихідний / вхідний",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -461,7 +464,8 @@
                   "fill": "$mute",
                   "content": "talking · розмова (без кілець)",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -504,7 +508,8 @@
                   "fill": "$mute",
                   "content": "silent · утримання, обрив, мікрофон (пласка хвиля)",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -577,7 +582,8 @@
                   "fill": "$mute",
                   "content": "result · зайнято, без відповіді, пропущений",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -802,7 +808,8 @@
                   "fill": "$mute",
                   "content": "Ви",
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "icon",
@@ -1054,7 +1061,8 @@
                       "lineHeight": 1,
                       "textAlignVertical": "middle",
                       "fontFamily": "Inter",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -2325,7 +2333,7 @@
       "type": "frame",
       "id": "YgfZO",
       "x": 0,
-      "y": 0,
+      "y": 1000,
       "name": "Flow · Contacts",
       "layout": "vertical",
       "gap": 16,
@@ -2365,6 +2373,13 @@
                   "width": "fill_container"
                 },
                 {
+                  "id": "TEcUb",
+                  "type": "ref",
+                  "ref": "G22IM",
+                  "name": "App Header",
+                  "width": "fill_container"
+                },
+                {
                   "type": "frame",
                   "id": "Zscx2",
                   "name": "Content",
@@ -2398,7 +2413,7 @@
       "type": "frame",
       "id": "p4gnB",
       "x": 0,
-      "y": 1000,
+      "y": 2000,
       "name": "Flow · Outgoing call",
       "layout": "vertical",
       "gap": 16,
@@ -2931,7 +2946,7 @@
       "type": "frame",
       "id": "IOUyf",
       "x": 0,
-      "y": 2000,
+      "y": 3000,
       "name": "Flow · Incoming call",
       "layout": "vertical",
       "gap": 16,
@@ -3317,7 +3332,7 @@
       "type": "frame",
       "id": "V6OpNq",
       "x": 0,
-      "y": 3000,
+      "y": 4000,
       "name": "Flow · In call · base",
       "layout": "vertical",
       "gap": 16,
@@ -3671,7 +3686,7 @@
       "type": "frame",
       "id": "ZEfmn",
       "x": 0,
-      "y": 4000,
+      "y": 5000,
       "name": "Flow · In call · peer",
       "layout": "vertical",
       "gap": 16,
@@ -4208,7 +4223,7 @@
       "type": "frame",
       "id": "rXLWO",
       "x": 0,
-      "y": 5000,
+      "y": 6000,
       "name": "Flow · In call · self devices",
       "layout": "vertical",
       "gap": 16,
@@ -4913,7 +4928,7 @@
       "type": "frame",
       "id": "yPvc7",
       "x": 0,
-      "y": 6000,
+      "y": 7000,
       "name": "Flow · In call · self network",
       "layout": "vertical",
       "gap": 16,
@@ -5423,7 +5438,7 @@
       "type": "frame",
       "id": "myQsn",
       "x": 0,
-      "y": 7000,
+      "y": 8000,
       "name": "Flow · In call · video",
       "layout": "vertical",
       "gap": 16,
@@ -5871,6 +5886,962 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "V0Pexm",
+      "x": -3000,
+      "y": -1000,
+      "name": "Components · Auth",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "RyVD7",
+          "name": "Title",
+          "fill": "$mute",
+          "content": "Components · Auth",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "can2H",
+          "name": "Row",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "yTfwO",
+              "name": "Text Field",
+              "reusable": true,
+              "width": 327,
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Btp0b",
+                  "name": "Label",
+                  "fill": "$mute",
+                  "content": "Номер телефону",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "b1dFg",
+                  "name": "Box",
+                  "width": "fill_container",
+                  "height": 56,
+                  "fill": "$surface-2",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "gap": 8,
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tEDQd",
+                      "name": "Prefix",
+                      "fill": "$mute",
+                      "content": "+380",
+                      "fontFamily": "Inter",
+                      "fontSize": 17,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qwwAZ",
+                      "name": "Value",
+                      "fill": "$fg",
+                      "content": "67 123 45 67",
+                      "fontFamily": "Inter",
+                      "fontSize": 17,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "TtoUG",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Message",
+                  "enabled": false,
+                  "fill": "$bad",
+                  "content": "Номер у форматі +380 XX XXX XX XX",
+                  "fontFamily": "Inter",
+                  "fontSize": 13
+                }
+              ]
+            },
+            {
+              "id": "OBnMR",
+              "type": "ref",
+              "reusable": true,
+              "ref": "yTfwO",
+              "name": "Text Field / focused",
+              "descendants": {
+                "b1dFg": {
+                  "stroke": "$accent",
+                  "strokeWidth": 2
+                }
+              }
+            },
+            {
+              "id": "crkxK",
+              "type": "ref",
+              "reusable": true,
+              "ref": "yTfwO",
+              "name": "Text Field / error",
+              "descendants": {
+                "b1dFg": {
+                  "stroke": "$bad",
+                  "strokeWidth": 2
+                },
+                "TtoUG": {
+                  "enabled": true
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "jDcsi",
+              "name": "Primary Button",
+              "reusable": true,
+              "width": 327,
+              "height": 56,
+              "fill": "$accent",
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "oMRUk",
+                  "name": "Label",
+                  "fill": "$on-solid",
+                  "content": "Далі",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "id": "v0hdm",
+              "type": "ref",
+              "reusable": true,
+              "ref": "jDcsi",
+              "name": "Primary Button / disabled",
+              "opacity": 0.4
+            },
+            {
+              "type": "frame",
+              "id": "pOMzN",
+              "name": "Code Cell",
+              "reusable": true,
+              "width": 64,
+              "height": 72,
+              "fill": "$surface-2",
+              "cornerRadius": "$radius-md",
+              "stroke": "$line",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zyoiV",
+                  "name": "Digit",
+                  "fill": "$fg",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "id": "YPRmm",
+              "type": "ref",
+              "reusable": true,
+              "ref": "pOMzN",
+              "name": "Code Cell / focused",
+              "stroke": "$accent",
+              "strokeWidth": 2
+            },
+            {
+              "id": "ZH4Ep",
+              "type": "ref",
+              "reusable": true,
+              "ref": "pOMzN",
+              "name": "Code Cell / error",
+              "stroke": "$bad",
+              "strokeWidth": 2
+            },
+            {
+              "type": "frame",
+              "id": "VVS2J",
+              "name": "Icon Button",
+              "reusable": true,
+              "width": 44,
+              "height": 44,
+              "fill": "$surface-2",
+              "cornerRadius": 22,
+              "stroke": "$line",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "s1YE6y",
+                  "name": "Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "chevron-left",
+                  "library": "lucide",
+                  "fill": "$fg"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "G22IM",
+              "name": "App Header",
+              "reusable": true,
+              "width": 375,
+              "height": 56,
+              "padding": [
+                0,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "w1gVsc",
+                  "name": "Title",
+                  "fill": "$fg",
+                  "content": "Дзвонілка",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                },
+                {
+                  "id": "s2Mnc",
+                  "type": "ref",
+                  "ref": "VVS2J",
+                  "name": "Log Out",
+                  "descendants": {
+                    "s1YE6y": {
+                      "icon": "log-out"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "G7ioNP",
+      "x": 0,
+      "y": 0,
+      "name": "Flow · Auth",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "fJWXu",
+          "name": "Title",
+          "fill": "$mute",
+          "content": "Flow · Auth",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "H93L4",
+          "name": "Screens",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "j5I9O",
+              "name": "Auth · Phone",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "DeOjW",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "XRsyn",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 32,
+                  "padding": [
+                    72,
+                    24,
+                    40,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kRili",
+                      "name": "Heading",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "AQn0D",
+                          "name": "Title",
+                          "fill": "$fg",
+                          "content": "Вхід",
+                          "fontFamily": "Inter",
+                          "fontSize": 26,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "QUQX4",
+                          "name": "Subtitle",
+                          "fill": "$mute",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Введіть номер телефону. Якщо ви тут уперше, створимо обліковий запис.",
+                          "fontFamily": "Inter",
+                          "fontSize": 15
+                        }
+                      ]
+                    },
+                    {
+                      "id": "AzEJD",
+                      "type": "ref",
+                      "ref": "OBnMR",
+                      "name": "Field",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Btp0b": {
+                          "content": "Номер телефону"
+                        },
+                        "tEDQd": {
+                          "content": "+380"
+                        },
+                        "qwwAZ": {
+                          "content": "67 123 45 67"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gtRPb",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "id": "r5Qfs0",
+                      "type": "ref",
+                      "ref": "jDcsi",
+                      "name": "Submit",
+                      "width": "fill_container",
+                      "descendants": {
+                        "oMRUk": {
+                          "content": "Далі"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CW1lC",
+              "name": "Auth · Phone error",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "GjvbL",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "X7rOdM",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 32,
+                  "padding": [
+                    72,
+                    24,
+                    40,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Y98hSV",
+                      "name": "Heading",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "f3wL5Z",
+                          "name": "Title",
+                          "fill": "$fg",
+                          "content": "Вхід",
+                          "fontFamily": "Inter",
+                          "fontSize": 26,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "WOpZy",
+                          "name": "Subtitle",
+                          "fill": "$mute",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Введіть номер телефону. Якщо ви тут уперше, створимо обліковий запис.",
+                          "fontFamily": "Inter",
+                          "fontSize": 15
+                        }
+                      ]
+                    },
+                    {
+                      "id": "Dpuvp",
+                      "type": "ref",
+                      "ref": "crkxK",
+                      "name": "Field",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Btp0b": {
+                          "content": "Номер телефону"
+                        },
+                        "tEDQd": {
+                          "content": "+380"
+                        },
+                        "qwwAZ": {
+                          "content": "67 123 45"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Xb7v8",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "id": "btjLL",
+                      "type": "ref",
+                      "ref": "jDcsi",
+                      "name": "Submit",
+                      "width": "fill_container",
+                      "descendants": {
+                        "oMRUk": {
+                          "content": "Далі"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ex9lx",
+              "name": "Auth · Name",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "TWzin",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "ilpab",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 32,
+                  "padding": [
+                    8,
+                    24,
+                    40,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "id": "s9jZxm",
+                      "type": "ref",
+                      "ref": "VVS2J",
+                      "name": "Back"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Dxshw",
+                      "name": "Heading",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "x9QfVU",
+                          "name": "Title",
+                          "fill": "$fg",
+                          "content": "Як вас звати?",
+                          "fontFamily": "Inter",
+                          "fontSize": 26,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gVmPC",
+                          "name": "Subtitle",
+                          "fill": "$mute",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "+380 67 123 45 67 — новий номер. Ім'я побачать ваші співрозмовники.",
+                          "fontFamily": "Inter",
+                          "fontSize": 15
+                        }
+                      ]
+                    },
+                    {
+                      "id": "ysmcM",
+                      "type": "ref",
+                      "ref": "OBnMR",
+                      "name": "Field",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Btp0b": {
+                          "content": "Ім'я"
+                        },
+                        "tEDQd": {
+                          "enabled": false
+                        },
+                        "qwwAZ": {
+                          "content": "Олена"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YLWgv",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "id": "hlq9M",
+                      "type": "ref",
+                      "ref": "jDcsi",
+                      "name": "Submit",
+                      "width": "fill_container",
+                      "descendants": {
+                        "oMRUk": {
+                          "content": "Далі"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "g5EUN",
+              "name": "Auth · Code",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "st2oA",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "Y3UnP",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 32,
+                  "padding": [
+                    8,
+                    24,
+                    40,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "id": "qpoW9",
+                      "type": "ref",
+                      "ref": "VVS2J",
+                      "name": "Back"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "a4qgC",
+                      "name": "Heading",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "w1NdFL",
+                          "name": "Title",
+                          "fill": "$fg",
+                          "content": "Введіть код",
+                          "fontFamily": "Inter",
+                          "fontSize": 26,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vD95q",
+                          "name": "Subtitle",
+                          "fill": "$mute",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Код для +380 67 123 45 67",
+                          "fontFamily": "Inter",
+                          "fontSize": 15
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hnrhr",
+                      "name": "Code",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "D8E4Nv",
+                          "name": "Cells",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "children": [
+                            {
+                              "id": "e0n1F",
+                              "type": "ref",
+                              "ref": "pOMzN",
+                              "name": "Cell 1",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": "4"
+                                }
+                              }
+                            },
+                            {
+                              "id": "rD0dG",
+                              "type": "ref",
+                              "ref": "pOMzN",
+                              "name": "Cell 2",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": "5"
+                                }
+                              }
+                            },
+                            {
+                              "id": "pvm7I",
+                              "type": "ref",
+                              "ref": "YPRmm",
+                              "name": "Cell 3",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": ""
+                                }
+                              }
+                            },
+                            {
+                              "id": "EVS43",
+                              "type": "ref",
+                              "ref": "pOMzN",
+                              "name": "Cell 4",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": ""
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "wLySU",
+                          "name": "Change Number",
+                          "fill": "$accent-icon",
+                          "content": "Змінити номер",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PJtKQ",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "id": "Vo9gI",
+                      "type": "ref",
+                      "ref": "v0hdm",
+                      "name": "Submit",
+                      "width": "fill_container",
+                      "descendants": {
+                        "oMRUk": {
+                          "content": "Увійти"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rWlcO",
+              "name": "Auth · Code error",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "Y1dyw",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "ixKB0",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 32,
+                  "padding": [
+                    8,
+                    24,
+                    40,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "id": "q2IKF",
+                      "type": "ref",
+                      "ref": "VVS2J",
+                      "name": "Back"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "K4fIs",
+                      "name": "Heading",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "QdrrL",
+                          "name": "Title",
+                          "fill": "$fg",
+                          "content": "Введіть код",
+                          "fontFamily": "Inter",
+                          "fontSize": 26,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "FQ7Hv",
+                          "name": "Subtitle",
+                          "fill": "$mute",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Код для +380 67 123 45 67",
+                          "fontFamily": "Inter",
+                          "fontSize": 15
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xeX4V",
+                      "name": "Code",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "xThsO",
+                          "name": "Cells",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "children": [
+                            {
+                              "id": "XdMJp",
+                              "type": "ref",
+                              "ref": "ZH4Ep",
+                              "name": "Cell 1",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": "1"
+                                }
+                              }
+                            },
+                            {
+                              "id": "p8N9N",
+                              "type": "ref",
+                              "ref": "ZH4Ep",
+                              "name": "Cell 2",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": "2"
+                                }
+                              }
+                            },
+                            {
+                              "id": "OgSI2",
+                              "type": "ref",
+                              "ref": "ZH4Ep",
+                              "name": "Cell 3",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": "3"
+                                }
+                              }
+                            },
+                            {
+                              "id": "jgyJR",
+                              "type": "ref",
+                              "ref": "ZH4Ep",
+                              "name": "Cell 4",
+                              "descendants": {
+                                "zyoiV": {
+                                  "content": "4"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Tpwnv",
+                          "name": "Error",
+                          "fill": "$bad",
+                          "content": "Невірний код. Залишилось спроб: 3",
+                          "fontFamily": "Inter",
+                          "fontSize": 13
+                        },
+                        {
+                          "type": "text",
+                          "id": "E7t1U6",
+                          "name": "Change Number",
+                          "fill": "$accent-icon",
+                          "content": "Змінити номер",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qk9FG",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "id": "ONKrO",
+                      "type": "ref",
+                      "ref": "jDcsi",
+                      "name": "Submit",
+                      "width": "fill_container",
+                      "descendants": {
+                        "oMRUk": {
+                          "content": "Увійти"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
@@ -6109,6 +7080,38 @@
     "mute-clear": {
       "type": "color",
       "value": "#B4BCCD00"
+    },
+    "space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "space-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "space-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "space-2xl": {
+      "type": "number",
+      "value": 24
+    },
+    "space-3xl": {
+      "type": "number",
+      "value": 32
+    },
+    "space-4xl": {
+      "type": "number",
+      "value": 40
     }
   },
   "fileToken": "8dbbdd0a-a14f-400d-a6f9-149ce907ef90"
