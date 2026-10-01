@@ -2,7 +2,10 @@ import { createI18n } from 'vue-i18n';
 
 export const messages = {
   uk: {
-    contacts: { title: 'Дзвінки', online: 'онлайн', offline: 'не в мережі', demo: 'демо-співрозмовник', bot: { answers: 'онлайн · відповість', ignores: 'онлайн · не відповість', busy: 'у розмові · зайнято' }, noConnection: "Немає зв'язку з сервером", connecting: 'Підключаємось…', call: 'Подзвонити' },
+    contacts: { title: 'Дзвінки', online: 'онлайн', offline: 'не в мережі', demo: 'демо-співрозмовник', bot: { answers: 'онлайн · відповість', ignores: 'онлайн · не відповість', busy: 'у розмові · зайнято' }, noConnection: "Немає зв'язку з сервером", connecting: 'Підключаємось…', call: 'Подзвонити', empty: 'Контактів поки немає', search: 'Пошук', clear: 'Очистити', found: 'Знайдено: {n}', notFound: 'Нікого не знайдено' },
+    missed: { title: 'Пропущені', label: 'пропущений', today: 'Сьогодні', yesterday: 'Вчора', empty: 'Пропущених немає' },
+    presence: { free: 'вільний', busy: 'зайнятий' },
+    tabs: { label: 'Розділи', missed: 'Пропущені', contacts: 'Контакти', search: 'Пошук' },
     call: {
       calling: 'Дзвонимо…', outgoing: 'Вихідний виклик', incomingLabel: 'Вхідний виклик', you: 'Ви', camOff: 'Камера вимк.', micUnavailable: 'Мікрофон недоступний',
       self: { hold: 'Ви на утриманні', micOff: 'Мікрофон вимкнено', micUnavailable: 'Мікрофон недоступний', camOff: 'Камера вимкнена', camUnavailable: 'Камера недоступна' }, camera: 'Вимкнути камеру', cameraOn: 'Увімкнути камеру', cameraUnavailable: 'Камера недоступна', hideSelf: 'Сховати себе', showSelf: 'Показати себе', incoming: 'Вхідний дзвінок…', left: 'Залишилось {time}',
@@ -16,8 +19,8 @@ export const messages = {
         micOff: { f: '{name} вимкнула мікрофон', m: '{name} вимкнув мікрофон' },
       },
       close: 'Закрити', redial: 'Передзвонити',
-      missed: { busy: 'Зайнято', rejected: 'Відхилено', timeout: 'Без відповіді', incoming: 'Пропущений дзвінок', error: 'Не вдалося зателефонувати' },
-      missedNote: { busy: 'Абонент зараз розмовляє', rejected: 'Абонент відхилив дзвінок', timeout: 'Абонент не відповів', incoming: 'Ви не відповіли на вхідний' },
+      missed: { busy: 'Зайнято', rejected: 'Відхилено', timeout: 'Без відповіді', incoming: 'Пропущений дзвінок', error: 'Не вдалося зателефонувати', ended: 'Дзвінок завершено', lost: "З'єднання втрачено", dropped: 'Дзвінок перервано' },
+      missedNote: { busy: 'Абонент зараз розмовляє', rejected: 'Абонент відхилив дзвінок', timeout: 'Абонент не відповів', incoming: 'Ви не відповіли на вхідний', ended: 'Тривалість {time}', lost: "Не вдалося відновити зв'язок · {time}", dropped: 'Збій сервера, спробуйте ще раз · {time}' },
       err: { generic: 'Спробуйте ще раз', alreadyInCall: 'Ви вже на дзвінку', invalidTarget: 'Такого користувача немає', rateLimited: 'Забагато дзвінків, зачекайте хвилину', offline: "Немає зв'язку з сервером" },
     },
     sound: { on: 'Звук: вкл', off: 'Звук: вимк' },

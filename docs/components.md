@@ -17,13 +17,16 @@
 | Base | `Call Controls` | панель кнопок у `CallScreen.vue` | є |
 | Base | `Self View` | мініатюра у `CallScreen.vue` + `shared/ui/VideoSurface.vue` | є; відео з реальним потоком не перевірено на двох пристроях |
 | Base | `Action Button` і варіанти `/ active`, `/ danger`, `/ success`, `/ subtle`, `/ disabled` | `shared/ui/RoundButton.vue`: `ghost`, `ghost` + `active`, `bad`, `ok`, `subtle`, `unavailable` | є |
-| Base | `Labeled Action` | кнопка з підписом у `CallScreen.vue` | є |
+| Base | `Labeled Action` | кнопка в обгортці 88 у `CallScreen.vue` (підпис вимкнено, лишився `aria-label`) | є |
+| Base | `Card` | `shared/ui/Card.vue` | є |
 | Base | `Show Self` | кнопка «показати себе» у `CallScreen.vue` | є |
 | Base | (аватар у кожному екрані) | `shared/ui/Avatar.vue` | є |
 | Base | lucide-іконки | `shared/ui/Icon.vue` | є |
-| Contacts | `Contact Meta`, `Contact Row`, `Contact List` | `pages/ContactsPage.vue` (одним файлом) | є, без кнопки чату |
+| Contacts | `Contact Meta`, `Contact Row`, `Contact Row / missed` | `features/contacts/ContactRow.vue` | є, без кнопки чату |
+| Contacts | `Home Header`, `Presence` (+ `/ busy`), `Tab` (+ `/ active`), `Tab Bar` (+ `/ missed`, `/ search`) | `pages/HomePage.vue` | є |
+| Contacts | `Section Label`, `Search Field` | `pages/MissedPage.vue`, `pages/SearchPage.vue` | є |
+| Contacts | `Empty State` | `shared/ui/EmptyState.vue` | є |
 | Auth | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` | `pages/LoginPage.vue` (одним файлом) | є |
-| Auth | `App Header` | шапка в `pages/HomePage.vue` | є |
 | Екрани | `Auth · Phone`, `Auth · Name`, `Auth · Code`, помилки | `pages/LoginPage.vue` | є |
 | Self Status | `Self Status / *` (5 значків) | `shared/ui/SelfStatusChip.vue` | є |
 | Banners | `Banner` | `shared/ui/Banner.vue` | є |
@@ -31,13 +34,14 @@
 | Peer | `Peer`, `Peer Ring`, `Call Label`, `Result Label` | `features/call/Peer.vue` (+ підписи в слоті з `CallScreen.vue`) | є |
 | Peer | `Voice Wave`, `Voice Wave / silent` | `shared/ui/VoiceWave.vue` (`silent`) | є |
 | Peer | `Peer Video` | `shared/ui/VideoSurface.vue` (`kind: 'remote'`) у `CallScreen.vue` | є |
-| Екрани | `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *`, усі стани розмови | `features/call/CallScreen.vue` | є |
+| Екрани | `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *`, `Ended · *`, усі стани розмови | `features/call/CallScreen.vue` | є |
+| Екрани | `Home · Contacts`, `Home · Missed`, `Home · Search` і їхні `· empty` | `pages/HomePage.vue` + `ContactsPage`, `MissedPage`, `SearchPage` | є |
 
 ## Базові: `shared/ui`
 
 ### `Icon`
 
-Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`.
+Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
 
 - **Розмір:** за замовчуванням 24; менші задає викликач класом `size-*` (16 у підписах і плашках, 18 у результаті, 12 у бейджі). Власного розміру компонент не нав'язує.
 - **Доступність:** декоративна (`aria-hidden`), підпис дає кнопка.
@@ -54,7 +58,7 @@
 
 Кругла кнопка 54 × 54.
 
-- **Props:** `variant: 'ok' | 'bad' | 'ghost' | 'subtle'` (`subtle` — світліше скло, «Закрити» на результаті), `label` (для `aria-label`), `active?: boolean` — увімкнений перемикач (білий фон, темна іконка).
+- **Props:** `variant: 'ok' | 'bad' | 'ghost' | 'subtle'` (`subtle` — світліше скло), `label` (для `aria-label`), `active?: boolean` — увімкнений перемикач (білий фон, темна іконка).
 - **Слот:** іконка. **Стани:** звичайна, натиснута (`scale .95`), `active`, вимкнена. `bad` і `ok` мають тінь свого кольору (`shadow-bad`, `shadow-ok`).
 
 ### `Banner` (базовий) і похідні `Self Banner / *`, `Peer Banner / *`
@@ -90,9 +94,23 @@
 - **Props:** `kind`, `track` — прапорець, що потік з'явився чи зник (за ним відео підключається знову).
 - Без звуку: аудіо йде окремими елементами в `CallMedia`.
 
+### `Card`
+
+Картка: градієнт 160° `card-top → card-bottom`, рамка `line`, радіус 28. **Слот:** вміст; відступи задає викликач класом
+(у дизайні за замовчуванням 18 12 10 12). З неї зібрані шапка, списки й вкладки головної.
+
+### `EmptyState`
+
+Порожній список: значок 26 у колі 64 (`surface`, рамка `line`) і заголовок 16 / 600. **Props:** `icon`, `title`. `role="status"`.
+Порожню картку замість нього не показуємо.
+
 ## Контакти: `pages/ContactsPage`
 
-Картка з рядками контактів: аватар, ім'я, крапка статусу з підписом, кнопка виклику 36 × 36 з іконкою `phone` 16.
+Картка з рядками контактів (`features/contacts/ContactRow.vue`: аватар, ім'я, крапка статусу з підписом, кнопка виклику 36 × 36 з іконкою `phone` 16).
+Картка тягнеться на всю висоту між шапкою й вкладками, прокрутка всередині неї. Контактів немає → `EmptyState` «Контактів поки немає».
+
+- **Props:** `query?: string` — фільтр за ім'ям чи цифрами номера (вкладка «Пошук»): тоді картка за вмістом, над нею «Знайдено: N»,
+  нічого не знайдено → `EmptyState` «Нікого не знайдено».
 
 - Порядок: демо-боти (Олена, Андрій, Support), далі люди, ті, хто в мережі, вище.
 - Статуси ботів збігаються з їхніми сценаріями: «відповість» (зелена), «не відповість» (жовта), «зайнято» (червона).
@@ -104,6 +122,7 @@
 `#/login` для гостей, `#/` після входу (гард перенаправляє).
 
 ### `LoginPage` (дизайн: `Flow · Auth`)
+Поле вводу (рамка, без підпису й помилки) стоїть по центру екрана: `top: max(50%, 280px)`, заголовок лишається зверху.
 Три кроки однієї сторінки: номер (`+380` і 9 цифр, вставка `+380…`/`0…` нормалізується) → ім'я (лише для нового номера) → код.
 Підтверджений раніше номер після «Далі» одразу входить: код питаємо один раз на номер.
 - Код: чотири клітинки поверх прозорого `<input autocomplete="one-time-code">`, тож працюють вставка й автозаповнення; після 4 цифр
@@ -111,8 +130,21 @@
 - Помилки сервера з `auth.err.*` (i18n) під полем, `role="alert"`. «Назад» і «Змінити номер» повертають на попередній крок.
 - Підказки, що код — останні 4 цифри номера, навмисно немає.
 
-### `HomePage`
-Шапка (`App Header`): назва застосунку «Call» і кнопка «Вийти» (`log-out`, 44 × 44), під нею `ContactsPage`.
+### `HomePage` (дизайн: `Flow · Contacts`)
+Три картки `Card` одна під одною, відступи 16 з боків, 12 між картками:
+- **Шапка** (`Home Header`): наше ім'я з `hello.ok` одним рядком (задовге обрізається з «…»), мітка `Presence` «вільний» (зелена)
+  чи «зайнятий» (червона, `busySelf`: на дзвінку чи «Не турбувати») і кнопка «Вийти» (`log-out`, 44 × 44).
+- **Вміст вкладки** займає решту висоти: `MissedPage`, `ContactsPage` (за замовчуванням) чи `SearchPage`.
+- **Вкладки** (`Tab Bar`): лише іконки `phone-missed`, `users`, `search`; активна `accent-icon`, решта `mute`. На «Пропущених» червоний лічильник
+  нових (`unseenMissed`), поки вкладка не відкрита.
+
+### `MissedPage` (дизайн: `Home · Missed`)
+Пропущені з історії (`recents` з результатом `missed`) в одній картці, групи за днями («Сьогодні», «Вчора», «28 вересня»), рядок
+`Contact Row / missed`: червона крапка, «пропущений · 14:32», натискання дзвонить. Немає → `EmptyState` «Пропущених немає».
+Поки вкладка відкрита, пропущені вважаються переглянутими (`markMissedSeen`, час у `localStorage` `dialer.missedSeen`).
+
+### `SearchPage` (дизайн: `Home · Search`)
+Поле пошуку 48 (`search`, кнопка очищення `circle-x`), під ним `ContactsPage` з `query`.
 
 ### `features/auth/session.ts` (`useSessionStore`)
 Сесія в `localStorage` (`dialer.session`): токен доступу, `refreshToken`, строки. `start`, `verify`, `refresh`, `logout`.
@@ -127,8 +159,9 @@
 Стан дзвінка належить серверу: стор надсилає наміри (`call.invite`, `call.accept`, `call.hangup` …), а екран міняє за подіями
 (див. [signaling.md](signaling.md#відповідність-дій-клієнта)). Отримує залежності через `init({ client, media, sounds })`, тож тестується без мережі.
 
-- Стан: `status` (`idle` / `ringing` / `incoming` / `connected`), `peer`, `hold`, `peerHold`, `mic`, `link` (стан зв'язку з кімнати LiveKit), `missed`, `left`, `seconds`.
-- Дії: `call`, `accept`, `end` (відхилити, скасувати чи завершити залежно від стану), `toggleHold`, `toggleMic`, `dismissMissed`.
+- Стан: `status` (`idle` / `ringing` / `incoming` / `connected`), `peer`, `hold`, `peerHold`, `mic`, `link` (стан зв'язку з кімнати LiveKit), `missed` (екран результату з `reason` і `duration`), `left`, `seconds`;
+  `me` і `settings` з `hello.ok`, `recents` (історія, `recents.add` додає), `missedCalls`, `unseenMissed`, `busySelf`.
+- Дії: `call`, `accept`, `end` (відхилити, скасувати чи завершити залежно від стану), `toggleHold`, `toggleMic`, `dismissMissed`, `markMissedSeen`.
 
 ### `Peer`
 
@@ -159,7 +192,11 @@
   тоді мініатюра лишається з написом «Камера вимк.», як у дизайні. Блокування діє до кінця дзвінка й перевіряється наново в кожному.
 - Під час утримання камера й мікрофон вимкнені.
 - **Результат** (`idle` із `missed`): сірий аватар без кілець, «Зайнято» (`phone-off`), «Без відповіді» й «Пропущений дзвінок» (`phone-missed`),
-  причина, кнопки «Закрити» й «Передзвонити».
+  причина, кнопки без підписів: зелена «Передзвонити» ліворуч, червона «Закрити» праворуч.
+- **Кінець розмови:** співрозмовник поклав слухавку (`hangup`) → «Дзвінок завершено» (`phone-off`, `fg`, фон `stage-glow`), «Тривалість 03:42»,
+  лише «Закрити», закривається сам за 2 с; `lost` → «З'єднання втрачено» (`wifi-off`), `error` → «Дзвінок перервано» (`triangle-alert`),
+  обидва червоні, з тривалістю, «Передзвонити» й «Закрити». Свій «Завершити» екрана не дає: одразу контакти.
+- **Вхідний:** зелена «Прийняти» ліворуч, червона «Відхилити» праворуч, без підписів.
 
 Співрозмовник: смужка `Peer Banner` внизу над панеллю керування (`BannerStack` з `absolute bottom-[122px]`), одна за раз: утримання співрозмовником,
 втрата зв'язку, мікрофон співрозмовника; поки вона є, хвилю голосу під іменем ховаємо.

@@ -151,7 +151,7 @@
 - 6 px (`1.5`) — проміжок між значками в `Status Slot` шапки, зазор між іконкою та текстом у підписі виклику.
 - 10 px (`2.5`) — внутрішні відступи та проміжок між кнопками в панелі `Call Controls`, лівий відступ і проміжок у `Banner`, горизонтальні відступи таймера.
 - 14 px (`3.5`) — проміжок між аватаром і текстом у рядку контакту, правий відступ у `Banner`.
-- 72 px (`18`) — проміжок між двома кнопками `Labeled Action` на екранах вхідного дзвінка та результату.
+- 72 px (`18`) — проміжок між двома кнопками `Labeled Action` на екранах вхідного дзвінка та результату. Зелена дія завжди ліворуч, червона праворуч.
 
 Розміри шрифтів змінними не робимо: значень мало, і вони закріплені в таблиці типографіки вище.
 
@@ -172,13 +172,18 @@
 | `phone` | кнопка виклику в рядку (16), «Прийняти», «Передзвонити» (24) | 16 / 24 |
 | `phone-outgoing` | підпис «Вихідний виклик» | 16 |
 | `phone-incoming` | підпис «Вхідний виклик» | 16 |
-| `phone-off` | результат «Зайнято» | 18 |
+| `phone-off` | результат «Зайнято», «Дзвінок завершено» | 18 |
 | `phone-missed` | результат «Без відповіді» й «Пропущений дзвінок» | 18 |
 | `x` | «Завершити», «Відхилити», «Скасувати», «Закрити» | 24 |
+| `triangle-alert` | результат «Дзвінок перервано» | 18 |
+| `users`, `search` | вкладки «Контакти», «Пошук» (22); порожній стан (26) | 22 / 26 |
+| `search-x` | порожній стан «Нікого не знайдено» | 26 |
+| `circle-x` | очищення поля пошуку | 18 |
+| `log-out` | «Вийти» в шапці головної | 20 |
 | `mic`, `mic-off` | кнопка мікрофона (24); смужка «вимкнув мікрофон» (14); смужка «Мікрофон недоступний» (14); значки `Self Status` (12) | 24 / 16 / 12 |
 | `video`, `video-off` | кнопка камери (24); кнопка «показати себе» (20); смужка «Камера недоступна» (у колі 24, іконка 14) | 24 / 20 / 14 |
 | `pause` | кнопка утримання (24); смужка «поставила на утримання» (у колі 24, іконка 14); значок `Self Status / hold` (12) | 24 / 14 / 12 |
-| `wifi-off` | смужка «втратив з'єднання» (у колі 24, іконка 14) | 14 |
+| `wifi-off` | смужка «втратив з'єднання» (у колі 24, іконка 14); результат «З'єднання втрачено» (18) | 14 / 18 |
 | `loader` | смужка «Відновлюємо з'єднання» (у колі 24, іконка 14) | 14 |
 | `signal-low` | смужка «Слабкий сигнал» (у колі 24, іконка 14) | 14 |
 | `message-circle` | кнопка чату в рядку контакту | 16 |
@@ -332,17 +337,17 @@
 
 | Група компонентів | Що в ній |
 | --- | --- |
-| `Components · Base` | `Status Bar`, `Call Header`, `Call Controls`, `Self View`, `Action Button` і варіанти `Action Button / active, danger, success, subtle, disabled`, `Labeled Action`, `Show Self` |
-| `Components · Contacts` | `Contact Meta`, `Contact Row`, `Contact List` |
+| `Components · Base` | `Status Bar`, `Call Header`, `Call Controls`, `Self View`, `Action Button` і варіанти `Action Button / active, danger, success, subtle, disabled`, `Labeled Action`, `Show Self`, `Card` |
+| `Components · Contacts` | `Contact Meta`, `Contact Row`, `Contact Row / missed`, `Home Header`, `Presence` (+ `/ busy`), `Tab` (+ `/ active`), `Tab Bar` (+ `/ missed`, `/ search`), `Section Label`, `Search Field`, `Empty State` |
 | `Components · Self Status` | `Self Status / mic-off`, `mic-unavailable`, `camera-off`, `camera-unavailable`, `hold` |
-| `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button`, `App Header` |
+| `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` |
 | `Components · Banners` | `Banner` (база); контейнери `Self Banners` (`Self Banner / *`) і `Peer Banners` (`Peer Banner / *`) |
 | `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring`, `Voice Wave`, `Voice Wave / silent`, `Call Label`, `Result Label`, `Peer Video`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `silent`, `result`) |
 
 | Флоу | Екрани |
 | --- | --- |
 | `Flow · Auth` | `Auth · Phone`, `Auth · Phone error`, `Auth · Name`, `Auth · Code`, `Auth · Code error` |
-| `Flow · Contacts` | `Contacts` (з `App Header`) |
+| `Flow · Contacts` | `Home · Contacts`, `Home · Missed`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · Missed · empty`, `Home · Search · empty` |
 | `Flow · Outgoing call` | `Outgoing Call`, `Result · Busy`, `Result · No Answer` |
 | `Flow · Incoming call` | `Incoming Call`, `Result · Missed` |
 | `Flow · In call · base` | `In Call`, `In Call · self-hold` |
@@ -350,6 +355,7 @@
 | `Flow · In call · self devices` | `self-status`, `self-mic-camera-off`, `self-camera-unavailable`, `self-view-hidden` |
 | `Flow · In call · self network` | `self-poor-signal`, `self-reconnecting`, `self-banners-stacked` |
 | `Flow · In call · video` | `video`, `video · peer-mic-off` |
+| `Flow · Call ended` | `Ended · peer hangup`, `Ended · lost`, `Ended · error` |
 
 **Сторони дзвінка: `self` і `peer`.** Усе, що стосується нас, має префікс `self`, усе про співрозмовника — `peer`:
 компоненти (`Self Status / *`, `Self Banner / *`, `Self View`; `Peer Banner / *`, `Peer Video`, `Peer Name` у шапці), екрани
@@ -377,7 +383,7 @@
 | ringing (вихідний / вхідний) | кільця, пульсують | `Call Label`: `phone-outgoing` / `phone-incoming` + «ВИХІДНИЙ/ВХІДНИЙ ВИКЛИК» (12 / 600, `accent-icon`), під ним «Залишилось 00:58» (12, `mute`) |
 | talking (розмова) | без кілець, звичайний аватар | `Voice Wave`: 5 смуг 4 px (8 16 26 16 8), `accent` |
 | silent (утримання, обрив, вимкнений мікрофон співрозмовника) | без кілець; аватар .6 при утриманні й обриві | `Voice Wave / silent`: ті самі 5 смуг по 4 px, `mute` 50% |
-| result (зайнято, без відповіді, пропущений) | без кілець, сірий аватар `#6B7080 → #7A6E86`, .55 | `Result Label`: іконка 18 + текст 18 / 600 `bad`, під ним причина 13 `mute` |
+| result (зайнято, без відповіді, пропущений, кінець розмови) | без кілець, сірий аватар `#6B7080 → #7A6E86`, .55 | `Result Label`: іконка 18 + текст 18 / 600 `bad` (для «Дзвінок завершено» `fg`), під ним причина 13 `mute` |
 
 **Позиція:** верх блоку на 220 px від верху екрана 844 (у віджеті без системної смуги — 158) на всіх екранах. Так блок не зсувається, коли
 з'являється шапка розмови чи змінюється панель кнопок, і не перетинає мініатюру «Ви» (перетин почався б вище 216).
@@ -399,14 +405,16 @@
   | --- | --- | --- |
   | `Action Button` | скло `surface-3`, іконка біла | мікрофон, камера, утримання в `Call Controls` |
   | `Action Button / active` | фон `on-solid`, іконка `on-light` | увімкнений перемикач: вимкнений мікрофон чи камера, наше утримання |
-  | `Action Button / danger` | `bad`, тінь `shadow-bad`, `x` | «Завершити», «Скасувати», «Відхилити» |
+  | `Action Button / danger` | `bad`, тінь `shadow-bad`, `x` | «Завершити», «Скасувати», «Відхилити», «Закрити» |
   | `Action Button / success` | `ok`, тінь `shadow-ok`, `phone` | «Прийняти», «Передзвонити» |
-  | `Action Button / subtle` | скло `surface-2`, `x` | «Закрити» на екрані результату |
+  | `Action Button / subtle` | скло `surface-2`, `x` | зараз не використовується |
   | `Action Button / disabled` | прозорість .4 | недоступна камера чи мікрофон (натискається, показує смужку) |
 
   Щоб змінити стан кнопки в екземплярі `Call Controls`, кнопку замінюють потрібним варіантом, а не перефарбовують.
-- **`Labeled Action`** 88 завширшки: `Action Button` і підпис 12 / 500 `mute` під ним, проміжок 8. Вхідний дзвінок («Відхилити», «Прийняти»)
-  і результат («Закрити», «Передзвонити»); кнопку в екземплярі замінюють варіантом.
+- **`Labeled Action`** 88 завширшки: `Action Button` і підпис під ним (вимкнений: кнопки без підписів, значення дає колір і місце).
+  Вхідний дзвінок («Прийняти», «Відхилити») і результат («Передзвонити», «Закрити»): зелена ліворуч, червона праворуч; кнопку в екземплярі замінюють варіантом.
+- **`Card`** 343 завширшки: градієнт 160° `card-top → card-bottom`, рамка `line`, радіус `radius-2xl`, відступи 18 12 10 12, слот `Content`.
+  З неї зібрані шапка, списки й вкладки головної; список тягнеться на всю висоту, прокрутка всередині картки.
 - **`Show Self`** 44 × 44, коло, скло `surface-2`, рамка `line`, іконка `video` 20: кнопка «показати себе», коли мініатюру згорнуто.
 - **`Peer Video`** 375 × 844: відео співрозмовника на весь екран (у дизайні фото-заглушка), лежить у `Components · Peer`.
 
@@ -419,12 +427,23 @@
   розбіжність у кольорі — помилка. Лінійні градієнти, розміри й радіуси скрипт не перевіряє.
 
 ## Вхід (Components · Auth)
-Екрани `Flow · Auth`: поля 24 від країв, заголовок 26 / 700, підзаголовок 15 `mute`, між блоками 32, кнопка притиснута до низу (відступ 40).
+Екрани `Flow · Auth`: поля 24 від країв, заголовок 26 / 700, підзаголовок 15 `mute` зверху, кнопка притиснута до низу (відступ 40).
+Поле вводу (рамка 56 чи клітинки коду 72) стоїть центром рівно посередині екрана (422 з 844) на всіх кроках; підпис над ним і помилка під ним рамку не зсувають.
 - **`Text Field`** на всю ширину: підпис 13 / 500 `mute`, проміжок 8; поле 56 заввишки, радіус `radius-md`, скло `surface-2`, рамка `line`,
   текст 17 / 500 (префікс `+380` кольору `mute`). `/ focused`: рамка 2 px `accent`; `/ error`: рамка 2 px `bad` і повідомлення 13 `bad` під полем.
 - **`Primary Button`** 56 заввишки на всю ширину, радіус `radius-md`, `accent`, текст 16 / 600 `on-solid`; `/ disabled` з прозорістю .4.
 - **`Code Cell`** 64 × 72, радіус `radius-md`, скло, цифра 28 / 700; чотири клітинки на всю ширину (`space_between`).
   `/ focused` — рамка 2 px `accent` (наступна клітинка для вводу), `/ error` — рамка 2 px `bad` у всіх клітинках.
 - **`Icon Button`** 44 × 44, коло, скло, рамка `line`, іконка 20 `fg`: «Назад» (`chevron-left`), «Вийти» (`log-out`).
-- **`App Header`** 375 × 56, відступи 0 16: назва застосунку «Call» 20 / 700 і `Icon Button` з `log-out`.
 - Посилання «Змінити номер» 14 / 600 `accent-icon`. Підказки про код на екрані немає.
+
+## Головна (Flow · Contacts)
+Три картки `Card` на всю ширину з відступом 16: шапка, вміст вкладки (займає решту висоти, прокрутка всередині) і вкладки.
+- **`Home Header`**: наше ім'я 18 / 700 одним рядком (обрізається з «…»), `Presence` і `Icon Button` «Вийти»; відступи картки 12 12 12 16.
+- **`Presence`**: пігулка, крапка 7 і текст 12 / 500. «вільний»: `ok-soft` / `ok`; `/ busy` «зайнятий»: `bad-soft` / `bad`.
+- **`Tab Bar`**: картка з трьома `Tab` без підписів (іконка 22, `mute`; `Tab / active` — `accent-icon`). Лічильник на «Пропущених»:
+  `bad`, висота 16, текст 10 / 700. Варіанти `/ missed`, `/ search` — та сама панель з іншою активною вкладкою.
+- **`Section Label`**: заголовок групи 12 / 600 `mute` («Сьогодні», «Вчора», «Знайдено: 3»).
+- **`Contact Row / missed`**: `Contact Row` без кнопки чату, крапка `bad`, «пропущений · 14:32».
+- **`Search Field`**: 48 заввишки, радіус `radius-md`, `surface-2`, рамка `accent`, іконка `search` і `circle-x` 18, текст 16 / 500.
+- **`Empty State`**: коло 64 (`surface-2`, рамка `line`) з іконкою 26 `mute` і заголовок 16 / 600; стоїть по центру замість порожньої картки.

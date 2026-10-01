@@ -98,7 +98,7 @@ function back() {
 </script>
 
 <template>
-  <form class="flex h-full flex-col px-6 pb-10" :class="step === 'phone' ? 'pt-[72px]' : 'pt-2'" novalidate @submit.prevent="submit">
+  <form class="relative flex h-full flex-col px-6 pb-10" :class="step === 'phone' ? 'pt-[72px]' : 'pt-2'" novalidate @submit.prevent="submit">
     <button
       v-if="step !== 'phone'"
       type="button"
@@ -112,9 +112,10 @@ function back() {
     <h1 class="text-[26px] font-bold">{{ t(`auth.${step}.title`) }}</h1>
     <p class="mt-2 text-[15px] text-mute">{{ t(`auth.${step}.subtitle`, { phone: phoneText }) }}</p>
 
-    <div class="mt-8 grid gap-2">
+    <!-- поле стоїть по центру екрана (дизайн: центр рамки на 422 з 844), заголовок лишається зверху; підпис і помилка навколо рамку не зсувають -->
+    <div class="field-pos absolute inset-x-6">
       <template v-if="step === 'phone'">
-        <label for="phone" class="text-[13px] font-medium text-mute">{{ t('auth.phone.label') }}</label>
+        <label for="phone" class="absolute bottom-full mb-2 text-[13px] font-medium text-mute">{{ t('auth.phone.label') }}</label>
         <div class="field" :class="error && 'error'">
           <span class="text-mute">+380</span>
           <input
@@ -133,7 +134,7 @@ function back() {
       </template>
 
       <template v-else-if="step === 'name'">
-        <label for="name" class="text-[13px] font-medium text-mute">{{ t('auth.name.label') }}</label>
+        <label for="name" class="absolute bottom-full mb-2 text-[13px] font-medium text-mute">{{ t('auth.name.label') }}</label>
         <div class="field" :class="error && 'error'">
           <input
             id="name"
@@ -177,15 +178,17 @@ function back() {
         </div>
       </template>
 
-      <p id="auth-error" class="min-h-5 text-[13px] text-call-bad" role="alert">{{ error }}</p>
-      <button
-        v-if="step === 'code'"
-        type="button"
-        class="justify-self-start text-sm font-semibold text-accent-icon focus-visible:outline-2 focus-visible:outline-accent"
-        @click="(step = 'phone'), (error = '')"
-      >
-        {{ t('auth.code.change') }}
-      </button>
+      <div class="absolute inset-x-0 top-full grid gap-2 pt-2">
+        <p id="auth-error" class="text-[13px] text-call-bad empty:hidden" role="alert">{{ error }}</p>
+        <button
+          v-if="step === 'code'"
+          type="button"
+          class="justify-self-start text-sm font-semibold text-accent-icon focus-visible:outline-2 focus-visible:outline-accent"
+          @click="(step = 'phone'), (error = '')"
+        >
+          {{ t('auth.code.change') }}
+        </button>
+      </div>
     </div>
 
     <button
@@ -199,6 +202,11 @@ function back() {
 </template>
 
 <style scoped>
+/* центр рамки поля по центру екрана, але не вище за заголовок, коли екран низький (наприклад, відкрита клавіатура) */
+.field-pos {
+  top: max(50%, 280px);
+  translate: 0 -50%;
+}
 .field {
   display: flex;
   align-items: center;

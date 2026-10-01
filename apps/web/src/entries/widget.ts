@@ -1,5 +1,5 @@
 import { createPinia } from 'pinia';
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import App from '@/app/App.vue';
 import { i18n } from '@/app/i18n';
@@ -36,7 +36,7 @@ const client = new SignalingClient({
 });
 
 const pinia = createPinia();
-const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: ContactsPage }] });
+const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: { render: () => h(ContactsPage, { class: 'p-4' }) } }] });
 const app = createApp(App).use(pinia).use(router).use(i18n);
 
 const call = useCallStore(pinia);

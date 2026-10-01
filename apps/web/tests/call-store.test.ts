@@ -199,4 +199,51 @@ describe('call store', () => {
     await Promise.resolve();
     expect(store.micBlocked).toBe(true);
   });
+
+  it('shows the call result when the peer hangs up, and closes it after 2 s', async () => {
+    const { store, send } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    vi.useFakeTimers();
+    send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup', duration: 222 });
+    expect(store.missed).toMatchObject({ reason: 'ended', duration: 222 });
+    vi.advanceTimersByTime(2000);
+    expect(store.missed).toBeNull();
+  });
+
+  it('keeps lost and failed calls on screen, but shows nothing after our own hangup', async () => {
+    for (const [reason, shown] of [['lost', 'lost'], ['error', 'dropped']] as const) {
+      const { store, send } = setup();
+      await store.call(olena.userId);
+      send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+      send({ v: V, type: 'call.ended', callId: 'c1', reason });
+      expect(store.missed?.reason).toBe(shown);
+    }
+    const { store, send } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    store.end();
+    send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup' });
+    expect(store.missed).toBeNull();
+  });
+
+  it('counts unseen missed calls from recents and resets the count when seen', () => {
+    localStorage.clear();
+    const { store, send } = setup();
+    const entry = (callId: string, p: object = {}) => ({ callId, peer: olena.userId, direction: 'in' as const, result: 'missed' as const, startedAt: Date.now(), ...p });
+    send({ v: V, type: 'recents.add', entry: entry('m1') });
+    send({ v: V, type: 'recents.add', entry: entry('m2', { silent: true }) });
+    send({ v: V, type: 'recents.add', entry: entry('c3', { result: 'completed' }) });
+    expect(store.missedCalls).toHaveLength(2);
+    expect(store.unseenMissed).toBe(1);
+    store.markMissedSeen();
+    expect(store.unseenMissed).toBe(0);
+  });
+
+  it('is busy while on a call', async () => {
+    const { store } = setup();
+    expect(store.busySelf).toBe(false);
+    await store.call(olena.userId);
+    expect(store.busySelf).toBe(true);
+  });
 });

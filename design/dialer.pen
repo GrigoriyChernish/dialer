@@ -4,8 +4,8 @@
     {
       "type": "frame",
       "id": "m1mG0D",
-      "x": -376,
-      "y": -1934,
+      "x": -5200,
+      "y": 1814,
       "name": "Components · Peer",
       "fill": "$bg",
       "cornerRadius": "$radius-md",
@@ -594,10 +594,9 @@
     {
       "type": "frame",
       "id": "RA8lM",
-      "x": -3000,
-      "y": -1934,
+      "x": -5200,
+      "y": 0,
       "name": "Components · Base",
-      "height": 221,
       "layout": "vertical",
       "gap": 16,
       "padding": 24,
@@ -949,7 +948,10 @@
                 {
                   "type": "text",
                   "id": "kPwGr",
+                  "x": 23.5,
+                  "y": 62,
                   "name": "Label",
+                  "enabled": false,
                   "fill": "$mute",
                   "content": "Підпис",
                   "fontFamily": "Inter",
@@ -983,6 +985,64 @@
                   "fill": "$fg"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "aEP8Q",
+              "name": "Card",
+              "reusable": true,
+              "width": 343,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 160,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "$card-top",
+                    "position": 0
+                  },
+                  {
+                    "color": "$card-bottom",
+                    "position": 1
+                  }
+                ]
+              },
+              "cornerRadius": "$radius-2xl",
+              "stroke": "$line",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "padding": [
+                18,
+                12,
+                10,
+                12
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CMBt4",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "H8eo3",
+                      "name": "Placeholder",
+                      "fill": "$mute",
+                      "content": "Вміст картки",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -991,8 +1051,8 @@
     {
       "type": "frame",
       "id": "b6tSk6",
-      "x": -3000,
-      "y": -1591,
+      "x": -5200,
+      "y": 323,
       "name": "Components · Contacts",
       "layout": "vertical",
       "gap": 16,
@@ -1180,180 +1240,523 @@
             },
             {
               "type": "frame",
-              "id": "LpeSn",
-              "name": "Contact List",
+              "id": "n0Hx1o",
+              "name": "Home Header",
               "reusable": true,
-              "width": 343,
-              "fill": {
-                "type": "gradient",
-                "gradientType": "linear",
-                "enabled": true,
-                "rotation": 160,
-                "size": {
-                  "height": 1
-                },
-                "colors": [
-                  {
-                    "color": "$card-top",
-                    "position": 0
-                  },
-                  {
-                    "color": "$card-bottom",
-                    "position": 1
-                  }
-                ]
-              },
-              "cornerRadius": "$radius-2xl",
-              "stroke": "$line",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": 4,
+              "width": 375,
               "padding": [
-                18,
+                4,
+                16,
                 12,
-                10,
-                12
+                16
               ],
+              "alignItems": "center",
               "children": [
                 {
-                  "id": "nwnvp",
+                  "id": "o2GAx8",
                   "type": "ref",
-                  "ref": "ahjhz",
-                  "name": "Олена Коваль",
+                  "ref": "aEP8Q",
+                  "name": "Card",
                   "width": "fill_container",
+                  "padding": [
+                    12,
+                    12,
+                    12,
+                    16
+                  ],
                   "descendants": {
-                    "dhYFg": {
-                      "fill": {
-                        "type": "gradient",
-                        "gradientType": "linear",
-                        "enabled": true,
-                        "rotation": 135,
-                        "size": {
-                          "height": 1
+                    "CMBt4": {
+                      "type": "frame",
+                      "id": "ZEpUc",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "a8EXK",
+                          "name": "Name",
+                          "context": "Ім'я користувача одним рядком; якщо не вміщається, обрізати з «…» в кінці (text-overflow: ellipsis).",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 24,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mxgcA",
+                              "name": "Name Text",
+                              "fill": "$fg",
+                              "content": "Олена Коваль",
+                              "lineHeight": 1.3,
+                              "fontFamily": "Inter",
+                              "fontSize": 18,
+                              "fontWeight": "700"
+                            }
+                          ]
                         },
-                        "colors": [
-                          {
-                            "color": "$accent",
-                            "position": 0
-                          },
-                          {
-                            "color": "$avatar-end",
-                            "position": 1
-                          }
-                        ]
-                      }
-                    },
-                    "P4LlfF": {
-                      "content": "ОК"
-                    },
-                    "x6ZWRS/a63lt": {
-                      "content": "Олена Коваль"
-                    },
-                    "x6ZWRS/ZYWNw": {
-                      "width": "fit_content"
-                    },
-                    "x6ZWRS/T2L4QA": {
-                      "fill": "$ok"
-                    },
-                    "x6ZWRS/RpOJ4": {
-                      "content": "онлайн · відповість",
-                      "textGrowth": "auto"
-                    }
-                  }
-                },
-                {
-                  "id": "hqwLa",
-                  "type": "ref",
-                  "ref": "ahjhz",
-                  "name": "Андрій Мельник",
-                  "width": "fill_container",
-                  "descendants": {
-                    "dhYFg": {
-                      "fill": {
-                        "type": "gradient",
-                        "gradientType": "linear",
-                        "enabled": true,
-                        "rotation": 135,
-                        "size": {
-                          "height": 1
+                        {
+                          "id": "X5MCNP",
+                          "type": "ref",
+                          "ref": "V0mdUm",
+                          "name": "Presence"
                         },
-                        "colors": [
-                          {
-                            "color": "$avatar-teal",
-                            "position": 0
-                          },
-                          {
-                            "color": "$avatar-blue",
-                            "position": 1
+                        {
+                          "id": "bkt0J",
+                          "type": "ref",
+                          "ref": "VVS2J",
+                          "name": "Log Out",
+                          "descendants": {
+                            "s1YE6y": {
+                              "icon": "log-out"
+                            }
                           }
-                        ]
-                      }
-                    },
-                    "P4LlfF": {
-                      "content": "АМ"
-                    },
-                    "x6ZWRS/a63lt": {
-                      "content": "Андрій Мельник"
-                    },
-                    "x6ZWRS/ZYWNw": {
-                      "width": "fit_content"
-                    },
-                    "x6ZWRS/T2L4QA": {
-                      "fill": "$warn"
-                    },
-                    "x6ZWRS/RpOJ4": {
-                      "content": "онлайн · не відповість",
-                      "textGrowth": "auto"
-                    }
-                  }
-                },
-                {
-                  "id": "Z1wP5D",
-                  "type": "ref",
-                  "ref": "ahjhz",
-                  "name": "Support",
-                  "width": "fill_container",
-                  "descendants": {
-                    "dhYFg": {
-                      "fill": {
-                        "type": "gradient",
-                        "gradientType": "linear",
-                        "enabled": true,
-                        "rotation": 135,
-                        "size": {
-                          "height": 1
-                        },
-                        "colors": [
-                          {
-                            "color": "$avatar-amber",
-                            "position": 0
-                          },
-                          {
-                            "color": "$avatar-red",
-                            "position": 1
-                          }
-                        ]
-                      }
-                    },
-                    "P4LlfF": {
-                      "content": "S"
-                    },
-                    "x6ZWRS/a63lt": {
-                      "content": "Support"
-                    },
-                    "x6ZWRS/ZYWNw": {
-                      "width": "fit_content"
-                    },
-                    "x6ZWRS/T2L4QA": {
-                      "fill": "$bad"
-                    },
-                    "x6ZWRS/RpOJ4": {
-                      "content": "у розмові · зайнято",
-                      "textGrowth": "auto"
+                        }
+                      ]
                     }
                   }
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "c9bZD6",
+              "name": "Tab",
+              "reusable": true,
+              "width": 100,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                6,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "P0Dqi",
+                  "name": "Icon Wrap",
+                  "width": 28,
+                  "height": 24,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "c5pK3",
+                      "name": "Icon",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "users",
+                      "library": "lucide",
+                      "fill": "$mute"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "b8kpR",
+                      "layoutPosition": "absolute",
+                      "x": 16,
+                      "y": -4,
+                      "name": "Badge",
+                      "enabled": false,
+                      "height": 16,
+                      "fill": "$bad",
+                      "cornerRadius": 8,
+                      "padding": [
+                        0,
+                        5
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ksvB3",
+                          "name": "Count",
+                          "fill": "$on-solid",
+                          "content": "2",
+                          "fontFamily": "Inter",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "sJrNA",
+                  "x": 25,
+                  "y": 34,
+                  "name": "Label",
+                  "enabled": false,
+                  "fill": "$mute",
+                  "content": "Контакти",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dPLmV",
+              "name": "Tab Bar",
+              "reusable": true,
+              "width": 375,
+              "layout": "vertical",
+              "padding": [
+                0,
+                16,
+                24,
+                16
+              ],
+              "children": [
+                {
+                  "id": "hVZrT",
+                  "type": "ref",
+                  "ref": "aEP8Q",
+                  "name": "Card",
+                  "width": "fill_container",
+                  "padding": [
+                    6,
+                    4
+                  ],
+                  "descendants": {
+                    "CMBt4": {
+                      "type": "frame",
+                      "id": "g5ogt",
+                      "name": "Tabs",
+                      "width": "fill_container",
+                      "children": [
+                        {
+                          "id": "rK0hn",
+                          "type": "ref",
+                          "ref": "c9bZD6",
+                          "name": "Missed",
+                          "width": "fill_container",
+                          "descendants": {
+                            "c5pK3": {
+                              "icon": "phone-missed"
+                            },
+                            "b8kpR": {
+                              "enabled": true
+                            }
+                          }
+                        },
+                        {
+                          "id": "W372DC",
+                          "type": "ref",
+                          "ref": "GaR34",
+                          "name": "Contacts",
+                          "width": "fill_container",
+                          "descendants": {
+                            "c5pK3": {
+                              "icon": "users"
+                            }
+                          }
+                        },
+                        {
+                          "id": "bZi3o",
+                          "type": "ref",
+                          "ref": "c9bZD6",
+                          "name": "Search",
+                          "width": "fill_container",
+                          "descendants": {
+                            "c5pK3": {
+                              "icon": "search"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "V0mdUm",
+              "name": "Presence",
+              "reusable": true,
+              "fill": "$ok-soft",
+              "cornerRadius": 999,
+              "gap": 6,
+              "padding": [
+                3,
+                10,
+                3,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "JdWY2",
+                  "name": "Dot",
+                  "fill": "$ok",
+                  "width": 7,
+                  "height": 7
+                },
+                {
+                  "type": "text",
+                  "id": "AXbWD",
+                  "name": "Status",
+                  "fill": "$ok",
+                  "content": "вільний",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "id": "mRQrY",
+              "type": "ref",
+              "reusable": true,
+              "ref": "V0mdUm",
+              "name": "Presence / busy",
+              "fill": "$bad-soft",
+              "descendants": {
+                "JdWY2": {
+                  "fill": "$bad"
+                },
+                "AXbWD": {
+                  "content": "зайнятий",
+                  "fill": "$bad"
+                }
+              }
+            },
+            {
+              "id": "GaR34",
+              "type": "ref",
+              "reusable": true,
+              "ref": "c9bZD6",
+              "name": "Tab / active",
+              "descendants": {
+                "c5pK3": {
+                  "fill": "$accent-icon"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "H0lf1",
+              "name": "Section Label",
+              "reusable": true,
+              "width": 320,
+              "padding": [
+                12,
+                10,
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eudRb",
+                  "name": "Label",
+                  "fill": "$mute",
+                  "content": "Сьогодні",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "id": "uWROh",
+              "type": "ref",
+              "reusable": true,
+              "ref": "ahjhz",
+              "name": "Contact Row / missed",
+              "descendants": {
+                "x6ZWRS/ZYWNw": {
+                  "width": "fit_content"
+                },
+                "x6ZWRS/T2L4QA": {
+                  "fill": "$bad"
+                },
+                "x6ZWRS/RpOJ4": {
+                  "content": "пропущений · 14:32",
+                  "textGrowth": "auto"
+                },
+                "x3sUSs": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "dkJvc",
+              "name": "Search Field",
+              "reusable": true,
+              "width": 343,
+              "height": 48,
+              "fill": "$surface-2",
+              "cornerRadius": "$radius-md",
+              "stroke": "$accent",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "qrlik",
+                  "name": "Icon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$mute"
+                },
+                {
+                  "type": "text",
+                  "id": "Uc2TA",
+                  "name": "Value",
+                  "fill": "$fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "на",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "icon",
+                  "id": "Z0jgZt",
+                  "name": "Clear",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-x",
+                  "library": "lucide",
+                  "fill": "$mute"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Uz2w8",
+              "name": "Empty State",
+              "reusable": true,
+              "width": 343,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": [
+                0,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "l408A",
+                  "name": "Badge",
+                  "width": 64,
+                  "height": 64,
+                  "fill": "$surface-2",
+                  "cornerRadius": 32,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "b1vBa",
+                      "name": "Icon",
+                      "width": 26,
+                      "height": 26,
+                      "icon": "users",
+                      "library": "lucide",
+                      "fill": "$mute"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "S2DMy",
+                  "name": "Title",
+                  "fill": "$fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Контактів поки немає",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "id": "RqHiy",
+              "type": "ref",
+              "reusable": true,
+              "ref": "dPLmV",
+              "name": "Tab Bar / missed",
+              "descendants": {
+                "rK0hn": {
+                  "id": "Q2KdY",
+                  "type": "ref",
+                  "ref": "GaR34",
+                  "name": "Missed",
+                  "width": "fill_container",
+                  "descendants": {
+                    "c5pK3": {
+                      "icon": "phone-missed"
+                    }
+                  }
+                },
+                "W372DC": {
+                  "id": "OCNBC",
+                  "type": "ref",
+                  "ref": "c9bZD6",
+                  "name": "Contacts",
+                  "width": "fill_container",
+                  "descendants": {
+                    "c5pK3": {
+                      "icon": "users"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "yDYF0",
+              "type": "ref",
+              "reusable": true,
+              "ref": "dPLmV",
+              "name": "Tab Bar / search",
+              "descendants": {
+                "W372DC": {
+                  "id": "pnRb7",
+                  "type": "ref",
+                  "ref": "c9bZD6",
+                  "name": "Contacts",
+                  "width": "fill_container",
+                  "descendants": {
+                    "c5pK3": {
+                      "icon": "users"
+                    }
+                  }
+                },
+                "bZi3o": {
+                  "id": "n3eIo",
+                  "type": "ref",
+                  "ref": "GaR34",
+                  "name": "Search",
+                  "width": "fill_container",
+                  "descendants": {
+                    "c5pK3": {
+                      "icon": "search"
+                    }
+                  }
+                }
+              }
             }
           ]
         }
@@ -1362,8 +1765,8 @@
     {
       "type": "frame",
       "id": "z6V7IV",
-      "x": -3000,
-      "y": -1168,
+      "x": -5200,
+      "y": 954,
       "name": "Components · Self Status",
       "layout": "vertical",
       "gap": 16,
@@ -1512,8 +1915,8 @@
     {
       "type": "frame",
       "id": "r6uqxn",
-      "x": -1841,
-      "y": -1591,
+      "x": -5200,
+      "y": 1177,
       "name": "Components · Banners",
       "fill": "$bg",
       "cornerRadius": "$radius-md",
@@ -2350,6 +2753,16 @@
           "fontWeight": "600"
         },
         {
+          "type": "text",
+          "id": "sYh3i",
+          "name": "Note",
+          "fill": "$mute",
+          "content": "Порожній список: картку не показуємо, замість неї Empty State по центру тіла. Пошук без результатів: поле лишається, під ним Empty State.",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
           "type": "frame",
           "id": "LBojt",
           "name": "Screens",
@@ -2357,8 +2770,8 @@
           "children": [
             {
               "type": "frame",
-              "id": "DGJz8",
-              "name": "Contacts",
+              "id": "UZL1l",
+              "name": "Home · Contacts",
               "clip": true,
               "width": 375,
               "height": 844,
@@ -2366,42 +2779,1494 @@
               "layout": "vertical",
               "children": [
                 {
-                  "id": "xDS56",
+                  "id": "JFdpu",
                   "type": "ref",
                   "ref": "ITFvA",
                   "name": "Status Bar",
                   "width": "fill_container"
                 },
                 {
-                  "id": "TEcUb",
+                  "id": "kxBtd",
                   "type": "ref",
-                  "ref": "G22IM",
-                  "name": "App Header",
-                  "width": "fill_container"
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олена Коваль"
+                    }
+                  }
                 },
                 {
                   "type": "frame",
-                  "id": "Zscx2",
-                  "name": "Content",
+                  "id": "jLKxS",
+                  "name": "Body",
                   "width": "fill_container",
-                  "height": 262,
+                  "height": "fill_container",
                   "layout": "vertical",
-                  "gap": 16,
+                  "gap": 12,
                   "padding": [
-                    0,
+                    4,
+                    16,
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "T9kVt5",
+                      "type": "ref",
+                      "ref": "aEP8Q",
+                      "name": "Contact List",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "clip": true,
+                      "descendants": {
+                        "CMBt4": {
+                          "type": "frame",
+                          "id": "K5TRhM",
+                          "name": "Content",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "id": "knvM1",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Олена Коваль",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ОК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Олена Коваль"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "R426B",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Андрій Мельник",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "АМ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Андрій Мельник"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$warn"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · не відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "ygT7j",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Support",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "S"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Support"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$bad"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "у розмові · зайнято",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "ewSvq",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Ірина Петренко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ІП"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Ірина Петренко"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "G6llc",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Дмитро Бондар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ДБ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Дмитро Бондар"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "SpSie",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Марія Савчук",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "МС"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Марія Савчук"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "OpUIK",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Тарас Кравець",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ТК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Тарас Кравець"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "Mkg9K",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Юлія Лисенко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ЮЛ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Юлія Лисенко"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "V8lFas",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Наталія Гончар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "НГ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Наталія Гончар"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$warn"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · не відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "nbZZl",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Василь Шевчук",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ВШ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Василь Шевчук"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "dXZTx",
+                  "type": "ref",
+                  "ref": "dPLmV",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "UltX2",
+              "name": "Home · Missed",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "TtJ14",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "SO29D",
+                  "type": "ref",
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олександра Ко…"
+                    },
+                    "X5MCNP": {
+                      "id": "g95Mc",
+                      "type": "ref",
+                      "ref": "mRQrY",
+                      "name": "Presence"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "A1NTN",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "M887Kf",
+                      "type": "ref",
+                      "ref": "aEP8Q",
+                      "name": "History",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "clip": true,
+                      "padding": [
+                        14,
+                        12,
+                        10,
+                        12
+                      ],
+                      "descendants": {
+                        "CMBt4": {
+                          "type": "frame",
+                          "id": "zDbdk",
+                          "name": "Content",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "id": "p2mTpT",
+                              "type": "ref",
+                              "ref": "H0lf1",
+                              "name": "Section · Сьогодні",
+                              "width": "fill_container",
+                              "padding": [
+                                0,
+                                10,
+                                4,
+                                10
+                              ],
+                              "descendants": {
+                                "eudRb": {
+                                  "content": "Сьогодні"
+                                }
+                              }
+                            },
+                            {
+                              "id": "MKSgI",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Олена Коваль",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ОК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Олена Коваль"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 14:32"
+                                }
+                              }
+                            },
+                            {
+                              "id": "SvZ8u",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Ірина Петренко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ІП"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Ірина Петренко"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 11:05"
+                                }
+                              }
+                            },
+                            {
+                              "id": "WfiPg",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Андрій Мельник",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "АМ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Андрій Мельник"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 09:47"
+                                }
+                              }
+                            },
+                            {
+                              "id": "J3fBN",
+                              "type": "ref",
+                              "ref": "H0lf1",
+                              "name": "Section · Вчора",
+                              "width": "fill_container",
+                              "descendants": {
+                                "eudRb": {
+                                  "content": "Вчора"
+                                }
+                              }
+                            },
+                            {
+                              "id": "vrhs1",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Марія Савчук",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "МС"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Марія Савчук"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 21:18"
+                                }
+                              }
+                            },
+                            {
+                              "id": "KDp1P",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Олена Коваль",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ОК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Олена Коваль"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 18:02"
+                                }
+                              }
+                            },
+                            {
+                              "id": "n5GVV",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Юлія Лисенко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ЮЛ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Юлія Лисенко"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 12:40"
+                                }
+                              }
+                            },
+                            {
+                              "id": "t1DMv",
+                              "type": "ref",
+                              "ref": "H0lf1",
+                              "name": "Section · 28 вересня",
+                              "width": "fill_container",
+                              "descendants": {
+                                "eudRb": {
+                                  "content": "28 вересня"
+                                }
+                              }
+                            },
+                            {
+                              "id": "BJbKr",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Support",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "S"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Support"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 16:20"
+                                }
+                              }
+                            },
+                            {
+                              "id": "vugjS",
+                              "type": "ref",
+                              "ref": "uWROh",
+                              "name": "Наталія Гончар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "НГ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Наталія Гончар"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "пропущений · 10:11"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "Vf44Y",
+                  "type": "ref",
+                  "ref": "RqHiy",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WgGVD",
+              "name": "Home · Search",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "Kr4dc",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "pMP1p",
+                  "type": "ref",
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олена Коваль"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "L0OXjb",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
                     16,
                     16,
                     16
                   ],
                   "children": [
                     {
-                      "id": "X4JB4Z",
+                      "id": "xEdZQ",
                       "type": "ref",
-                      "ref": "LpeSn",
-                      "name": "Contact List",
+                      "ref": "dkJvc",
+                      "name": "Search Field",
                       "width": "fill_container"
+                    },
+                    {
+                      "id": "TEOGq",
+                      "type": "ref",
+                      "ref": "H0lf1",
+                      "name": "Section · Знайдено",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        10
+                      ],
+                      "descendants": {
+                        "eudRb": {
+                          "content": "Знайдено: 3"
+                        }
+                      }
+                    },
+                    {
+                      "id": "nXQD3",
+                      "type": "ref",
+                      "ref": "aEP8Q",
+                      "name": "Results",
+                      "width": "fill_container",
+                      "descendants": {
+                        "CMBt4": {
+                          "type": "frame",
+                          "id": "NdaJ0",
+                          "name": "Content",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "id": "apxvC",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Олена Коваль",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ОК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Олена Коваль"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "tnP6w",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Ірина Петренко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ІП"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Ірина Петренко"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                }
+                              }
+                            },
+                            {
+                              "id": "EMapT",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Наталія Гончар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "НГ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Наталія Гончар"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$warn"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · не відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
                     }
                   ]
+                },
+                {
+                  "id": "J0ZCC",
+                  "type": "ref",
+                  "ref": "yDYF0",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "L5lSKT",
+              "name": "Home · Contacts · empty",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "KucjJ",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "waCHH",
+                  "type": "ref",
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олена Коваль"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "LljSy",
+                  "name": "Body",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    80,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "O3X80s",
+                      "type": "ref",
+                      "ref": "Uz2w8",
+                      "name": "Empty State",
+                      "width": "fill_container",
+                      "descendants": {
+                        "b1vBa": {
+                          "icon": "users"
+                        },
+                        "S2DMy": {
+                          "content": "Контактів поки немає"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "On9qg",
+                  "type": "ref",
+                  "ref": "dPLmV",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Tnnuq",
+              "name": "Home · Missed · empty",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "VqYRf",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "YJd5c",
+                  "type": "ref",
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олександра Ко…"
+                    },
+                    "X5MCNP": {
+                      "id": "Fj2in",
+                      "type": "ref",
+                      "ref": "mRQrY",
+                      "name": "Presence"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "cbxj1",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    80,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "T1kTC",
+                      "type": "ref",
+                      "ref": "Uz2w8",
+                      "name": "Empty State",
+                      "width": "fill_container",
+                      "descendants": {
+                        "b1vBa": {
+                          "icon": "phone-missed"
+                        },
+                        "S2DMy": {
+                          "content": "Пропущених немає"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "a32LdV",
+                  "type": "ref",
+                  "ref": "RqHiy",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "odolf",
+              "name": "Home · Search · empty",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "BmbOu",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "CvKzv",
+                  "type": "ref",
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олена Коваль"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "WTCqz",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    16,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "I3BDLk",
+                      "type": "ref",
+                      "ref": "dkJvc",
+                      "name": "Search Field",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Uc2TA": {
+                          "content": "Богдан"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UhAsj",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        0,
+                        0,
+                        80,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "v0erX",
+                          "type": "ref",
+                          "ref": "Uz2w8",
+                          "name": "Empty State",
+                          "width": "fill_container",
+                          "descendants": {
+                            "b1vBa": {
+                              "icon": "search-x"
+                            },
+                            "S2DMy": {
+                              "content": "Нікого не знайдено"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "r8sGI",
+                  "type": "ref",
+                  "ref": "yDYF0",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
                 }
               ]
             }
@@ -2703,28 +4568,6 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "id": "sCENt",
-                          "type": "ref",
-                          "ref": "ib04f",
-                          "name": "Close",
-                          "descendants": {
-                            "LfiGR": {
-                              "id": "tTZcK",
-                              "type": "ref",
-                              "ref": "ENmpC",
-                              "name": "Close Button",
-                              "descendants": {
-                                "gcrxy": {
-                                  "icon": "x"
-                                }
-                              }
-                            },
-                            "kPwGr": {
-                              "content": "Закрити"
-                            }
-                          }
-                        },
-                        {
                           "id": "oo2RL",
                           "type": "ref",
                           "ref": "ib04f",
@@ -2742,7 +4585,31 @@
                               }
                             },
                             "kPwGr": {
-                              "content": "Передзвонити"
+                              "content": "Передзвонити",
+                              "enabled": false
+                            }
+                          }
+                        },
+                        {
+                          "id": "sCENt",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Close",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "zRcf5",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Close Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Закрити",
+                              "enabled": false
                             }
                           }
                         }
@@ -2889,28 +4756,6 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "id": "Z8p3Ki",
-                          "type": "ref",
-                          "ref": "ib04f",
-                          "name": "Close",
-                          "descendants": {
-                            "LfiGR": {
-                              "id": "JnhT2",
-                              "type": "ref",
-                              "ref": "ENmpC",
-                              "name": "Close Button",
-                              "descendants": {
-                                "gcrxy": {
-                                  "icon": "x"
-                                }
-                              }
-                            },
-                            "kPwGr": {
-                              "content": "Закрити"
-                            }
-                          }
-                        },
-                        {
                           "id": "RTmzi",
                           "type": "ref",
                           "ref": "ib04f",
@@ -2928,7 +4773,31 @@
                               }
                             },
                             "kPwGr": {
-                              "content": "Передзвонити"
+                              "content": "Передзвонити",
+                              "enabled": false
+                            }
+                          }
+                        },
+                        {
+                          "id": "Z8p3Ki",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Close",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "wjfEE",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Close Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Закрити",
+                              "enabled": false
                             }
                           }
                         }
@@ -3089,28 +4958,6 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "id": "VR4qD",
-                          "type": "ref",
-                          "ref": "ib04f",
-                          "name": "Decline",
-                          "descendants": {
-                            "LfiGR": {
-                              "id": "H0IPg",
-                              "type": "ref",
-                              "ref": "GruFA",
-                              "name": "Decline Button",
-                              "descendants": {
-                                "gcrxy": {
-                                  "icon": "x"
-                                }
-                              }
-                            },
-                            "kPwGr": {
-                              "content": "Відхилити"
-                            }
-                          }
-                        },
-                        {
                           "id": "MorAj",
                           "type": "ref",
                           "ref": "ib04f",
@@ -3129,6 +4976,28 @@
                             },
                             "kPwGr": {
                               "content": "Прийняти"
+                            }
+                          }
+                        },
+                        {
+                          "id": "VR4qD",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Decline",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "H0IPg",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Decline Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Відхилити"
                             }
                           }
                         }
@@ -3275,28 +5144,6 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "id": "QqpIo",
-                          "type": "ref",
-                          "ref": "ib04f",
-                          "name": "Close",
-                          "descendants": {
-                            "LfiGR": {
-                              "id": "XV55C",
-                              "type": "ref",
-                              "ref": "ENmpC",
-                              "name": "Close Button",
-                              "descendants": {
-                                "gcrxy": {
-                                  "icon": "x"
-                                }
-                              }
-                            },
-                            "kPwGr": {
-                              "content": "Закрити"
-                            }
-                          }
-                        },
-                        {
                           "id": "hfH2K",
                           "type": "ref",
                           "ref": "ib04f",
@@ -3314,7 +5161,31 @@
                               }
                             },
                             "kPwGr": {
-                              "content": "Передзвонити"
+                              "content": "Передзвонити",
+                              "enabled": false
+                            }
+                          }
+                        },
+                        {
+                          "id": "QqpIo",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Close",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "SFcBr",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Close Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Закрити",
+                              "enabled": false
                             }
                           }
                         }
@@ -5890,8 +7761,8 @@
     {
       "type": "frame",
       "id": "V0Pexm",
-      "x": -3000,
-      "y": -1000,
+      "x": -5200,
+      "y": 649,
       "name": "Components · Auth",
       "layout": "vertical",
       "gap": 16,
@@ -6114,43 +7985,6 @@
                   "fill": "$fg"
                 }
               ]
-            },
-            {
-              "type": "frame",
-              "id": "G22IM",
-              "name": "App Header",
-              "reusable": true,
-              "width": 375,
-              "height": 56,
-              "padding": [
-                0,
-                16
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "w1gVsc",
-                  "name": "Title",
-                  "fill": "$fg",
-                  "content": "Дзвонілка",
-                  "fontFamily": "Inter",
-                  "fontSize": 20,
-                  "fontWeight": "700"
-                },
-                {
-                  "id": "s2Mnc",
-                  "type": "ref",
-                  "ref": "VVS2J",
-                  "name": "Log Out",
-                  "descendants": {
-                    "s1YE6y": {
-                      "icon": "log-out"
-                    }
-                  }
-                }
-              ]
             }
           ]
         }
@@ -6250,7 +8084,10 @@
                       "type": "ref",
                       "ref": "OBnMR",
                       "name": "Field",
-                      "width": "fill_container",
+                      "width": 327,
+                      "layoutPosition": "absolute",
+                      "x": 24,
+                      "y": 308,
                       "descendants": {
                         "Btp0b": {
                           "content": "Номер телефону"
@@ -6354,7 +8191,10 @@
                       "type": "ref",
                       "ref": "crkxK",
                       "name": "Field",
-                      "width": "fill_container",
+                      "width": 327,
+                      "layoutPosition": "absolute",
+                      "x": 24,
+                      "y": 308,
                       "descendants": {
                         "Btp0b": {
                           "content": "Номер телефону"
@@ -6464,7 +8304,10 @@
                       "type": "ref",
                       "ref": "OBnMR",
                       "name": "Field",
-                      "width": "fill_container",
+                      "width": 327,
+                      "layoutPosition": "absolute",
+                      "x": 24,
+                      "y": 308,
                       "descendants": {
                         "Btp0b": {
                           "content": "Ім'я"
@@ -6572,8 +8415,11 @@
                     {
                       "type": "frame",
                       "id": "hnrhr",
+                      "layoutPosition": "absolute",
+                      "x": 24,
+                      "y": 324,
                       "name": "Code",
-                      "width": "fill_container",
+                      "width": 327,
                       "layout": "vertical",
                       "gap": 12,
                       "children": [
@@ -6737,8 +8583,11 @@
                     {
                       "type": "frame",
                       "id": "xeX4V",
+                      "layoutPosition": "absolute",
+                      "x": 24,
+                      "y": 324,
                       "name": "Code",
-                      "width": "fill_container",
+                      "width": 327,
                       "layout": "vertical",
                       "gap": 12,
                       "children": [
@@ -6834,6 +8683,595 @@
                           "content": "Увійти"
                         }
                       }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "kk3U8",
+      "x": 0,
+      "y": 9000,
+      "name": "Flow · Call ended",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "vAf6x",
+          "name": "Title",
+          "fill": "$mute",
+          "content": "Flow · Call ended",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "n19Wdi",
+          "name": "Note",
+          "fill": "$mute",
+          "textGrowth": "fixed-width",
+          "width": 1205,
+          "content": "Self hangup: екрана немає, одразу «Контакти». Peer hangup: екран закривається сам за 2 с або кнопкою «Закрити». Lost і error: екран тримається до «Закрити» чи «Передзвонити».",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "fmMiE",
+          "name": "Screens",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "doS6c",
+              "name": "Ended · peer hangup",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "f5h9H",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "vkjJG",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "pB2Dm",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        158,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "c4bWD7",
+                          "type": "ref",
+                          "ref": "b76euv",
+                          "name": "Peer",
+                          "descendants": {
+                            "wBaK6/R7iiJ": {
+                              "opacity": 0.55,
+                              "fill": {
+                                "type": "gradient",
+                                "gradientType": "linear",
+                                "enabled": true,
+                                "rotation": 135,
+                                "size": {
+                                  "height": 1
+                                },
+                                "colors": [
+                                  {
+                                    "color": "$avatar-muted-start",
+                                    "position": 0
+                                  },
+                                  {
+                                    "color": "$avatar-muted-end",
+                                    "position": 1
+                                  }
+                                ]
+                              }
+                            },
+                            "wBaK6/jbPVz": {
+                              "content": "ОК"
+                            },
+                            "kcNR8": {
+                              "content": "Олена Коваль"
+                            },
+                            "fAYS0": {
+                              "children": [
+                                {
+                                  "id": "EcIrA",
+                                  "type": "ref",
+                                  "ref": "iLLnQ",
+                                  "name": "Result Label",
+                                  "descendants": {
+                                    "NUY3Y": {
+                                      "icon": "phone-off",
+                                      "fill": "$fg"
+                                    },
+                                    "gvZuH": {
+                                      "content": "Дзвінок завершено",
+                                      "fill": "$fg"
+                                    },
+                                    "WAYFM": {
+                                      "content": "Тривалість 03:42"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fsNIx",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "gap": 72,
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "I9H3c5",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Close",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "cQmuT",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Close Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Закрити",
+                              "enabled": false
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "N9R6qq",
+              "name": "Ended · lost",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-missed-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "qgXEH",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "UXOpw",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FZ7X4",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        158,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "OX0Ah",
+                          "type": "ref",
+                          "ref": "b76euv",
+                          "name": "Peer",
+                          "descendants": {
+                            "wBaK6/R7iiJ": {
+                              "opacity": 0.55,
+                              "fill": {
+                                "type": "gradient",
+                                "gradientType": "linear",
+                                "enabled": true,
+                                "rotation": 135,
+                                "size": {
+                                  "height": 1
+                                },
+                                "colors": [
+                                  {
+                                    "color": "$avatar-muted-start",
+                                    "position": 0
+                                  },
+                                  {
+                                    "color": "$avatar-muted-end",
+                                    "position": 1
+                                  }
+                                ]
+                              }
+                            },
+                            "wBaK6/jbPVz": {
+                              "content": "ОК"
+                            },
+                            "kcNR8": {
+                              "content": "Олена Коваль"
+                            },
+                            "fAYS0": {
+                              "children": [
+                                {
+                                  "id": "jjAhC",
+                                  "type": "ref",
+                                  "ref": "iLLnQ",
+                                  "name": "Result Label",
+                                  "descendants": {
+                                    "NUY3Y": {
+                                      "icon": "wifi-off",
+                                      "fill": "$bad"
+                                    },
+                                    "gvZuH": {
+                                      "content": "З'єднання втрачено",
+                                      "fill": "$bad"
+                                    },
+                                    "WAYFM": {
+                                      "content": "Не вдалося відновити зв'язок · 03:42"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BlUkI",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "gap": 72,
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "YnXrI",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Redial",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "llP7k",
+                              "type": "ref",
+                              "ref": "Yk8rH",
+                              "name": "Redial Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "phone"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Передзвонити",
+                              "enabled": false
+                            }
+                          }
+                        },
+                        {
+                          "id": "klEgL",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Close",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "XHAGs",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Close Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Закрити",
+                              "enabled": false
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xilDE",
+              "name": "Ended · error",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-missed-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "nwSnh",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "KjsYA",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "gicUN",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        158,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "pd5md",
+                          "type": "ref",
+                          "ref": "b76euv",
+                          "name": "Peer",
+                          "descendants": {
+                            "wBaK6/R7iiJ": {
+                              "opacity": 0.55,
+                              "fill": {
+                                "type": "gradient",
+                                "gradientType": "linear",
+                                "enabled": true,
+                                "rotation": 135,
+                                "size": {
+                                  "height": 1
+                                },
+                                "colors": [
+                                  {
+                                    "color": "$avatar-muted-start",
+                                    "position": 0
+                                  },
+                                  {
+                                    "color": "$avatar-muted-end",
+                                    "position": 1
+                                  }
+                                ]
+                              }
+                            },
+                            "wBaK6/jbPVz": {
+                              "content": "ОК"
+                            },
+                            "kcNR8": {
+                              "content": "Олена Коваль"
+                            },
+                            "fAYS0": {
+                              "children": [
+                                {
+                                  "id": "PucJ9",
+                                  "type": "ref",
+                                  "ref": "iLLnQ",
+                                  "name": "Result Label",
+                                  "descendants": {
+                                    "NUY3Y": {
+                                      "icon": "triangle-alert",
+                                      "fill": "$bad"
+                                    },
+                                    "gvZuH": {
+                                      "content": "Дзвінок перервано",
+                                      "fill": "$bad"
+                                    },
+                                    "WAYFM": {
+                                      "content": "Збій сервера, спробуйте ще раз · 03:42"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xI5bZ",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "gap": 72,
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "BHQYC",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Redial",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "bHy2e",
+                              "type": "ref",
+                              "ref": "Yk8rH",
+                              "name": "Redial Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "phone"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Передзвонити",
+                              "enabled": false
+                            }
+                          }
+                        },
+                        {
+                          "id": "NdTSm",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Close",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "CB6rg",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Close Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Закрити",
+                              "enabled": false
+                            }
+                          }
+                        }
+                      ]
                     }
                   ]
                 }

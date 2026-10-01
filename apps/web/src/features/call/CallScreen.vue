@@ -45,7 +45,8 @@ const banners = computed<BannerItem[]>(() => {
   if (call.hint === 'mic') list.push(banner('micUnavailable', t('call.notice.micUnavailable')));
   return list;
 });
-const missedIcon = computed(() => (call.missed?.reason === 'incoming' || call.missed?.reason === 'timeout' ? 'phoneMissed' : 'phoneOff'));
+const MISSED_ICON = { incoming: 'phoneMissed', timeout: 'phoneMissed', lost: 'wifiOff', dropped: 'triangleAlert' } as const;
+const missedIcon = computed(() => (call.missed && call.missed.reason in MISSED_ICON ? MISSED_ICON[call.missed.reason as keyof typeof MISSED_ICON] : 'phoneOff'));
 // наші статуси в шапці (дизайн: Self Status), зліва направо: утримання, мікрофон, камера; «недоступно» сильніше за «вимкнено»
 const selfStatuses = computed<{ status: SelfStatus; label: string }[]>(() => {
   const list: { status: SelfStatus; label: string }[] = [];
@@ -60,15 +61,20 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
 </script>
 
 <template>
-  <!-- пропущений / зайнято / без відповіді / помилка -->
-  <section v-if="call.status === 'idle' && call.missed" class="relative h-full" style="background: linear-gradient(180deg, var(--stage-missed-glow), var(--bg))">
+  <!-- результат: пропущений / зайнято / без відповіді / помилка; кінець розмови: завершено / зв'язок втрачено / перервано -->
+  <section
+    v-if="call.status === 'idle' && call.missed"
+    class="relative h-full"
+    :style="{ background: `linear-gradient(180deg, ${call.missed.reason === 'ended' ? 'var(--stage-glow)' : 'var(--stage-missed-glow)'}, var(--bg))` }"
+  >
     <Peer class="peer-pos" :name="name" variant="result">
-      <p class="flex items-center gap-2 text-lg font-semibold text-call-bad"><Icon :name="missedIcon" class="size-[18px]" />{{ t(`call.missed.${call.missed.reason}`) }}</p>
-      <small class="text-[13px] text-mute">{{ call.missed.note ? t(call.missed.note) : t(`call.missedNote.${call.missed.reason}`) }}</small>
+      <p class="flex items-center gap-2 text-lg font-semibold" :class="call.missed.reason === 'ended' ? 'text-fg' : 'text-call-bad'"><Icon :name="missedIcon" class="size-[18px]" />{{ t(`call.missed.${call.missed.reason}`) }}</p>
+      <small class="text-[13px] text-mute">{{ call.missed.note ? t(call.missed.note) : t(`call.missedNote.${call.missed.reason}`, { time: mm(call.missed.duration ?? 0) }) }}</small>
     </Peer>
+    <!-- кнопки без підписів: зелена дія ліворуч, червона праворуч (як на вхідному) -->
     <div class="absolute inset-x-0 bottom-10 flex justify-center gap-[72px]">
-      <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton variant="subtle" :label="t('call.close')" @click="call.dismissMissed()"><Icon name="x" /></RoundButton>{{ t('call.close') }}</div>
-      <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton variant="ok" :label="t('call.redial')" @click="call.call(call.missed.peer.userId)"><Icon name="phone" /></RoundButton>{{ t('call.redial') }}</div>
+      <div v-if="call.missed.reason !== 'ended'" class="grid w-22 justify-items-center"><RoundButton variant="ok" :label="t('call.redial')" @click="call.call(call.missed.peer.userId)"><Icon name="phone" /></RoundButton></div>
+      <div class="grid w-22 justify-items-center"><RoundButton variant="bad" :label="t('call.close')" @click="call.dismissMissed()"><Icon name="x" /></RoundButton></div>
     </div>
   </section>
 
@@ -137,8 +143,8 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
         <RoundButton variant="bad" :label="t('call.hangup')" @click="call.end()"><Icon name="x" /></RoundButton>
       </div>
       <div v-else-if="call.status === 'incoming'" class="flex gap-[72px]">
-        <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton variant="bad" :label="t('call.reject')" @click="call.end()"><Icon name="x" /></RoundButton>{{ t('call.reject') }}</div>
-        <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton variant="ok" :label="t('call.accept')" @click="call.accept()"><Icon name="phone" /></RoundButton>{{ t('call.accept') }}</div>
+        <div class="grid w-22 justify-items-center"><RoundButton variant="ok" :label="t('call.accept')" @click="call.accept()"><Icon name="phone" /></RoundButton></div>
+        <div class="grid w-22 justify-items-center"><RoundButton variant="bad" :label="t('call.reject')" @click="call.end()"><Icon name="x" /></RoundButton></div>
       </div>
       <RoundButton v-else variant="bad" :label="t('call.cancel')" @click="call.end()"><Icon name="x" /></RoundButton>
     </div>

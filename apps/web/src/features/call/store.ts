@@ -1,11 +1,12 @@
-import type { CallInfo, Contact, EndReason, Peer, ServerMessage } from '@dialer/shared';
+import { DEFAULT_SETTINGS, type CallInfo, type Contact, type EndReason, type Peer, type RecentEntry, type ServerMessage, type Settings } from '@dialer/shared';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type { LinkState } from '@/shared/media/room';
 import type { SoundKind } from '@/shared/sounds/sounds';
 
 export type CallStatus = 'idle' | 'ringing' | 'incoming' | 'connected';
-export type MissedReason = 'busy' | 'rejected' | 'timeout' | 'incoming' | 'error';
+/** Екран результату: дзвінок не відбувся (`busy` … `error`) або розмова скінчилась не з нашої волі (`ended`, `lost`, `dropped`). */
+export type MissedReason = 'busy' | 'rejected' | 'timeout' | 'incoming' | 'error' | 'ended' | 'lost' | 'dropped';
 
 /** Те, що стору потрібно від зовнішнього світу: так його легко тестувати без мережі й звуку. */
 export interface CallDeps {
@@ -19,6 +20,16 @@ export interface CallDeps {
 }
 
 const HINT_MS = 4000;
+/** Екран «Дзвінок завершено» після того, як поклав слухавку співрозмовник, закривається сам. */
+const ENDED_MS = 2000;
+const SEEN_KEY = 'dialer.missedSeen';
+const loadSeen = () => {
+  try {
+    return Number(localStorage.getItem(SEEN_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+};
 
 const ERRORS: Record<string, string> = {
   already_in_call: 'call.err.alreadyInCall',
@@ -37,6 +48,12 @@ export const useCallStore = defineStore('call', () => {
   const online = ref(false);
   const netError = ref('');
   const contacts = ref<Contact[]>([]);
+  const me = ref<Peer | null>(null);
+  const settings = ref<Settings>({ ...DEFAULT_SETTINGS });
+  /** Історія дзвінків, новіші першими (docs/signaling.md, «Історія»). */
+  const recents = ref<RecentEntry[]>([]);
+  /** Час останнього перегляду вкладки «Пропущені»: поки лише на цьому пристрої (беклог, пункт 13). */
+  const missedSeenAt = ref(loadSeen());
   const status = ref<CallStatus>('idle');
   const callId = ref<string | null>(null);
   const peer = ref<Peer | null>(null);
@@ -56,7 +73,8 @@ export const useCallStore = defineStore('call', () => {
   /** Підказка «… недоступна» після натискання на приглушену кнопку камери чи мікрофона. */
   const hint = ref<'cam' | 'mic' | null>(null);
   let hintTimer: ReturnType<typeof setTimeout> | undefined;
-  const missed = ref<{ peer: Peer; reason: MissedReason; note?: string } | null>(null);
+  const missed = ref<{ peer: Peer; reason: MissedReason; note?: string; duration?: number } | null>(null);
+  let endedTimer: ReturnType<typeof setTimeout> | undefined;
   const now = ref(Date.now());
   let offset = 0; // serverTime - локальний час
   let busy = false;
@@ -65,6 +83,11 @@ export const useCallStore = defineStore('call', () => {
   const serverNow = computed(() => now.value + offset);
   const left = computed(() => (expiresAt.value ? Math.max(0, Math.ceil((expiresAt.value - serverNow.value) / 1000)) : 0));
   const seconds = computed(() => (startedAt.value ? Math.max(0, Math.floor((serverNow.value - startedAt.value) / 1000)) : 0));
+  /** Ми зайняті: на дзвінку чи ввімкнено «Не турбувати». */
+  const busySelf = computed(() => status.value !== 'idle' || settings.value.dnd);
+  const missedCalls = computed(() => recents.value.filter((r) => r.result === 'missed'));
+  /** Лічильник на вкладці «Пропущені»: нові з часу перегляду, без тихих (`silent`). */
+  const unseenMissed = computed(() => missedCalls.value.filter((r) => !r.silent && r.startedAt > missedSeenAt.value).length);
 
   let timer: ReturnType<typeof setInterval> | undefined;
   const tick = () => (now.value = Date.now());
@@ -100,7 +123,7 @@ export const useCallStore = defineStore('call', () => {
   function applyCall(call: CallInfo) {
     callId.value = call.callId;
     peer.value = call.peer;
-    missed.value = null;
+    setMissed(null);
     expiresAt.value = call.expiresAt ?? 0;
     if (call.state === 'connected') {
       status.value = 'connected';
@@ -138,18 +161,28 @@ export const useCallStore = defineStore('call', () => {
     if (c.state === 'connected' || c.direction === 'out' || !c.waiting) applyCall(c);
   }
 
-  function onEnded(endedId: string, reason: EndReason) {
+  function setMissed(m: typeof missed.value) {
+    clearTimeout(endedTimer);
+    missed.value = m;
+    if (m?.reason === 'ended') endedTimer = setTimeout(() => (missed.value = null), ENDED_MS);
+  }
+
+  function onEnded(endedId: string, reason: EndReason, duration?: number) {
     if (endedId !== callId.value) return;
     const was = status.value;
     const p = peer.value;
+    const secs = duration ?? seconds.value;
     reset();
     let shown: MissedReason | null = null;
     if (was === 'ringing') {
       shown = ({ busy: 'busy', rejected: 'rejected', timeout: 'timeout', offline: 'timeout', error: 'error' } as Partial<Record<EndReason, MissedReason>>)[reason] ?? null;
     } else if (was === 'incoming' && (reason === 'cancelled' || reason === 'timeout')) {
       shown = 'incoming'; // answered_elsewhere, hangup: без екрана «пропущений»
+    } else if (was === 'connected') {
+      // свій hangup сюди не доходить: end() скидає дзвінок одразу, тож hangup тут від співрозмовника
+      shown = ({ hangup: 'ended', lost: 'lost', error: 'dropped' } as Partial<Record<EndReason, MissedReason>>)[reason] ?? null;
     }
-    missed.value = shown && p ? { peer: p, reason: shown } : null;
+    setMissed(shown && p ? { peer: p, reason: shown, ...(was === 'connected' && { duration: secs }) } : null);
     if (shown === 'busy') deps.sounds.play('busy', 4000);
     else deps.sounds.play(null);
   }
@@ -158,7 +191,10 @@ export const useCallStore = defineStore('call', () => {
     switch (m.type) {
       case 'hello.ok':
         offset = m.serverTime - Date.now();
+        me.value = m.user;
+        settings.value = m.settings;
         contacts.value = m.contacts;
+        recents.value = [...m.recents].sort((a, b) => b.startedAt - a.startedAt);
         restore(m.calls);
         break;
       case 'call.incoming':
@@ -176,7 +212,10 @@ export const useCallStore = defineStore('call', () => {
         }
         break;
       case 'call.ended':
-        onEnded(m.callId, m.reason);
+        onEnded(m.callId, m.reason, m.duration);
+        break;
+      case 'recents.add':
+        recents.value = [m.entry, ...recents.value.filter((r) => r.callId !== m.entry.callId)];
         break;
       case 'call.peer':
         if (m.callId === callId.value) {
@@ -240,14 +279,14 @@ export const useCallStore = defineStore('call', () => {
     if (status.value !== 'idle' || busy) return;
     const target = contacts.value.find((c) => c.userId === userId);
     if (!target) return;
-    missed.value = null;
+    setMissed(null);
     busy = true;
     try {
       const ack = await deps.client.request('call.invite', { to: userId, video: true });
       if (ack.type === 'ack' && ack.call) applyCall(ack.call);
     } catch (e) {
       const code = e instanceof Error ? e.message : 'error';
-      missed.value = { peer: { userId: target.userId, name: target.name }, reason: 'error', note: ERRORS[code] ?? 'call.err.generic' };
+      setMissed({ peer: { userId: target.userId, name: target.name }, reason: 'error', note: ERRORS[code] ?? 'call.err.generic' });
     } finally {
       busy = false;
     }
@@ -301,12 +340,22 @@ export const useCallStore = defineStore('call', () => {
   }
 
   function dismissMissed() {
-    missed.value = null;
+    setMissed(null);
     deps.sounds.play(null);
   }
 
+  /** Вкладку «Пропущені» переглянуто: лічильник обнуляється. */
+  function markMissedSeen() {
+    missedSeenAt.value = Math.max(missedSeenAt.value, ...missedCalls.value.map((r) => r.startedAt));
+    try {
+      localStorage.setItem(SEEN_KEY, String(missedSeenAt.value));
+    } catch {
+      // приватний режим: лічильник обнулиться лише до перезавантаження
+    }
+  }
+
   return {
-    online, netError, contacts, status, callId, peer, hold, peerHold, mic, cam, micBlocked, camBlocked, hint, selfHidden, link, missed, left, seconds,
-    init, handle, call, accept, end, toggleHold, toggleMic, toggleCam, attach, dismissMissed,
+    online, netError, contacts, me, settings, recents, missedCalls, unseenMissed, busySelf, status, callId, peer, hold, peerHold, mic, cam, micBlocked, camBlocked, hint, selfHidden, link, missed, left, seconds,
+    init, handle, call, accept, end, toggleHold, toggleMic, toggleCam, attach, dismissMissed, markMissedSeen,
   };
 });
