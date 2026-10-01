@@ -7,6 +7,10 @@
 dialer/
   AGENTS.md          # інструкції для агентів
   CLAUDE.md          # підключає AGENTS.md для Claude Code
+  .claude/           # налаштування Claude Code: launch.json, скіли
+    skills/pen-dev/  #   скіл pen.dev для роботи з design/dialer.pen (копія з Pen.app)
+    skills/vue-*/    #   скіли Vue 3, Pinia, Router, тестів і налагодження з vuejs-ai/skills (MIT)
+    skills/fastify-best-practices/, node/, typescript-magician/  #   скіли бекенду й TypeScript з mcollina/skills (MIT)
   README.md          # що це за проєкт і як запустити
   index.html         # клікабельне демо інтерфейсу, воно ж прототип віджета (є)
   demo/              # сторінка демо з входом і вбудованим прототипом віджета (є)
