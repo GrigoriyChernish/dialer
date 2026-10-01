@@ -1593,7 +1593,7 @@
               "reusable": true,
               "width": 343,
               "height": 48,
-              "fill": "$surface-2",
+              "fill": "$bg",
               "cornerRadius": "$radius-md",
               "stroke": "$accent",
               "strokeWidth": 1,
@@ -3828,22 +3828,6 @@
                       "ref": "dkJvc",
                       "name": "Search Field",
                       "width": "fill_container"
-                    },
-                    {
-                      "id": "TEOGq",
-                      "type": "ref",
-                      "ref": "H0lf1",
-                      "name": "Section · Знайдено",
-                      "width": "fill_container",
-                      "padding": [
-                        0,
-                        10
-                      ],
-                      "descendants": {
-                        "eudRb": {
-                          "content": "Знайдено: 3"
-                        }
-                      }
                     },
                     {
                       "id": "nXQD3",

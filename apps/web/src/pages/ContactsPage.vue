@@ -8,7 +8,7 @@ import EmptyState from '@/shared/ui/EmptyState.vue';
 
 /**
  * Список контактів у картці (дизайн: Home · Contacts). Картка тягнеться на всю висоту, прокрутка всередині неї.
- * `query`: фільтр за ім'ям чи номером (вкладка «Пошук»), тоді картка за вмістом і над нею «Знайдено: N».
+ * `query`: фільтр за ім'ям чи номером (вкладка «Пошук»), тоді картка за вмістом.
  */
 const props = defineProps<{ query?: string }>();
 const { t } = useI18n();
@@ -35,7 +35,9 @@ const shown = computed(() => {
   if (!searching.value) return sorted.value;
   const q = props.query!.trim().toLocaleLowerCase('uk');
   const digits = q.replace(/\D/g, '');
-  return sorted.value.filter((c) => c.name.toLocaleLowerCase('uk').includes(q) || (digits.length > 0 && c.userId.includes(digits)));
+  return sorted.value.filter(
+    c => c.name.toLocaleLowerCase('uk').includes(q) || (digits.length > 0 && c.userId.includes(digits)),
+  );
 });
 const dot = (id: string, online: boolean) => BOTS[id]?.dot ?? (online ? 'bg-call-ok' : 'bg-mute');
 // «Немає зв'язку» лише якщо розрив довший за 3 с: короткі перепідключення не блимають
@@ -43,7 +45,7 @@ const offline = ref(false);
 let offlineTimer: ReturnType<typeof setTimeout> | undefined;
 watch(
   () => call.online,
-  (on) => {
+  on => {
     clearTimeout(offlineTimer);
     if (on) offline.value = false;
     else offlineTimer = setTimeout(() => (offline.value = true), 3_000);
@@ -61,14 +63,26 @@ const sub = (id: string, online: boolean) => {
   <section class="flex h-full min-h-0 flex-col">
     <h2 class="sr-only">{{ t('contacts.title') }}</h2>
     <template v-if="shown.length">
-      <p v-if="searching" class="px-2.5 pb-1 text-xs font-semibold text-mute" role="status">{{ t('contacts.found', { n: shown.length }) }}</p>
-      <Card class="min-h-0 overflow-y-auto overflow-x-hidden [scrollbar-width:thin] px-3 pb-2.5 pt-[18px]" :class="!searching && 'flex-1'">
-        <div class="grid grid-cols-[minmax(0,1fr)] gap-1">
-          <ContactRow v-for="c in shown" :key="c.userId" :name="c.name" :status="sub(c.userId, c.online)" :dot="dot(c.userId, c.online)" @call="call.call(c.userId)" />
+      <!-- прокрутка у внутрішньому блоці: картка обрізає її по своїх скругленнях -->
+      <Card class="flex min-h-0 flex-col overflow-hidden" :class="!searching && 'flex-1'">
+        <div class="scroll grid min-h-0 grid-cols-[minmax(0,1fr)] content-start gap-1 px-3 pb-2.5 pt-[18px]">
+          <ContactRow
+            v-for="c in shown"
+            :key="c.userId"
+            :name="c.name"
+            :status="sub(c.userId, c.online)"
+            :dot="dot(c.userId, c.online)"
+            @call="call.call(c.userId)"
+          />
         </div>
       </Card>
     </template>
-    <EmptyState v-else class="my-auto pb-20" :icon="searching ? 'searchX' : 'users'" :title="searching ? t('contacts.notFound') : t('contacts.empty')" />
+    <EmptyState
+      v-else
+      class="my-auto pb-20"
+      :icon="searching ? 'searchX' : 'users'"
+      :title="searching ? t('contacts.notFound') : t('contacts.empty')"
+    />
     <p v-if="offline" class="px-3 pt-3 text-sm text-mute" role="status">
       {{ t('contacts.noConnection') }}{{ call.netError ? ': ' + call.netError : '. ' + t('contacts.connecting') }}
     </p>

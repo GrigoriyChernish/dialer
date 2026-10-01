@@ -19,9 +19,9 @@ const { t } = useI18n();
     <Avatar :name="name" />
     <span class="grid min-w-0 flex-1 gap-0.5">
       <b class="truncate text-sm font-semibold">{{ name }}</b>
-      <small class="flex items-center gap-1.5 text-xs text-mute">
+      <small class="flex min-w-0 items-center gap-1.5 text-xs text-mute">
         <i class="size-[7px] shrink-0 rounded-full" :class="dot" />
-        <span class="truncate">{{ status }}</span>
+        <span class="min-w-0 truncate">{{ status }}</span>
       </small>
     </span>
     <span
