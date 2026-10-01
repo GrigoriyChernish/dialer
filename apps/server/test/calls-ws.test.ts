@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createFakeClock } from './fake-clock';
-import { connectUser, startServer, type TestServer } from './helpers';
+import { connectUser, startServer, TestClient, type TestServer } from './helpers';
 
 const clock = createFakeClock();
 let server: TestServer;
@@ -143,6 +143,30 @@ describe('дзвінок через WebSocket', () => {
     const again = await connectUser(server, 'Лілія', p, 'tablet');
     expect(again.hello.settings).toEqual({ waiting: true, dnd: true });
     for (const c of [d1, d2, again]) c.client.close();
+  });
+
+  it("profile.update: ack з новим ім'ям, інші пристрої отримують profile.updated, контакти — contacts.update", async () => {
+    const p = phone();
+    const d1 = await connectUser(server, 'Мирон', p, 'phone');
+    const d2 = await connectUser(server, 'Мирон', p, 'laptop');
+    const other = await connectUser(server, 'Ніна', phone());
+    d1.client.send({ type: 'profile.update', id: 'p1', name: '  Мирон Гай  ' });
+    expect((await d1.client.next('ack')).user).toEqual({ userId: `+38${p}`, name: 'Мирон Гай' });
+    expect((await d2.client.next('profile.updated')).user.name).toBe('Мирон Гай');
+    const upd = await other.client.next('contacts.update');
+    expect(upd.upsert).toEqual([expect.objectContaining({ userId: `+38${p}`, name: 'Мирон Гай' })]);
+    expect(d1.client.frames.filter(f => f.type === 'profile.updated')).toEqual([]);
+
+    d1.client.send({ type: 'profile.update', id: 'p2', name: ' я ' });
+    expect(await d1.client.next('error')).toMatchObject({ reqId: 'p2', code: 'bad_request' });
+    d1.client.send({ type: 'profile.update', id: 'p3', name: 5 });
+    expect((await d1.client.next('error')).code).toBe('bad_request');
+
+    // ім'я з бази, а не з токена: старий токен після перепідключення бачить нове ім'я
+    const again = await TestClient.connect(server.ws);
+    again.send({ type: 'hello', id: 'h2', token: d1.token, deviceId: 'tablet' });
+    expect((await again.next('hello.ok')).user.name).toBe('Мирон Гай');
+    for (const c of [d1.client, d2.client, other.client, again]) c.close();
   });
 
   it('dnd: дзвінок отримує busy, а адресат тихий пропущений', async () => {

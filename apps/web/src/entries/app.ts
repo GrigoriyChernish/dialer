@@ -8,6 +8,8 @@ import { useSessionStore } from '@/features/auth/session';
 import { useCallStore } from '@/features/call/store';
 import HomePage from '@/pages/HomePage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
+import SettingsPage from '@/pages/SettingsPage.vue';
+import { usePrefsStore } from '@/features/settings/prefs';
 import { createAuthApi } from '@/shared/api/auth';
 import { SignalingClient } from '@/shared/api/signaling';
 import { CallMedia } from '@/shared/media/room';
@@ -37,6 +39,13 @@ const client = new SignalingClient({
   onAuthFailed: () => void session.refresh().then(ok => ok && client.connect()),
 });
 const call = useCallStore(pinia);
+// тема з налаштувань (лише цей пристрій): «Авто» — системна; у віджеті тему задає сайт-господар, тому лише тут
+const prefs = usePrefsStore(pinia);
+watch(
+  () => prefs.theme,
+  th => (th === 'auto' ? delete document.documentElement.dataset.theme : (document.documentElement.dataset.theme = th)),
+  { immediate: true },
+);
 call.init({ client, media: new CallMedia(), sounds: new Sounds() });
 
 // токен доступу живе 30 хв: оновлюємо за хвилину до кінця (і за запитом сервера `token.expiring`)
@@ -54,6 +63,7 @@ const router = createRouter({
   routes: [
     { path: '/login', component: LoginPage, meta: { guest: true } },
     { path: '/', component: HomePage },
+    { path: '/settings', component: SettingsPage },
     { path: '/:rest(.*)*', redirect: '/' },
   ],
 });

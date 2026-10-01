@@ -15,7 +15,8 @@ const palette = (name: string) => {
 };
 
 // muted: сірий аватар екрана результату (дизайн: avatar-muted-start → avatar-muted-end, #6B7080 → #7A6E86, прозорість .55)
-const props = defineProps<{ name: string; size?: 'sm' | 'md' | 'xl'; muted?: boolean; opacity?: number }>();
+const props = defineProps<{ name: string; size?: 'sm' | 'md' | 'lg' | 'xl'; muted?: boolean; opacity?: number }>();
+const SIZES = { sm: 'size-9 text-xs', md: 'size-12 text-sm', lg: 'size-14 text-xl', xl: 'size-26 text-[34px]' };
 const initials = computed(() =>
   props.name
     .split(' ')
@@ -33,7 +34,7 @@ const style = computed(() => ({
 <template>
   <span
     class="inline-grid shrink-0 place-items-center rounded-full font-semibold text-white"
-    :class="size === 'xl' ? 'size-26 text-[34px]' : size === 'sm' ? 'size-9 text-xs' : 'size-12 text-sm'"
+    :class="SIZES[size ?? 'md']"
     :style="style"
     aria-hidden="true"
     >{{ initials }}</span

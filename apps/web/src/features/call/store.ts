@@ -11,6 +11,7 @@ import {
 } from '@dialer/shared';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { usePrefsStore } from '@/features/settings/prefs';
 import type { LinkState } from '@/shared/media/room';
 import type { SoundKind } from '@/shared/sounds/sounds';
 
@@ -76,6 +77,7 @@ const ERRORS: Record<string, string> = {
  */
 export const useCallStore = defineStore('call', () => {
   let deps: CallDeps;
+  const prefs = usePrefsStore();
 
   const online = ref(false);
   /** Перший `hello.ok` прийшов. Після обриву не скидається: старі дані показуємо, поки не прийде новий знімок. */
@@ -107,7 +109,7 @@ export const useCallStore = defineStore('call', () => {
     camError: false,
   };
   const link = ref<LinkState>({ ...NO_LINK });
-  const cam = ref(true);
+  const cam = ref(prefs.camOnStart);
   const selfHidden = ref(false);
   /** Камери немає чи немає дозволу: мініатюру себе не показуємо, кнопка камери неактивна. */
   const camBlocked = ref(false);
@@ -138,6 +140,8 @@ export const useCallStore = defineStore('call', () => {
   );
   /** Ми зайняті: на дзвінку чи ввімкнено «Не турбувати». */
   const busySelf = computed(() => status.value !== 'idle' || settings.value.dnd);
+  /** Мітка в шапці (дизайн: Presence, `/ busy`, `/ dnd`): дзвінок сильніший за «Не турбувати». */
+  const presence = computed(() => (status.value !== 'idle' ? 'busy' : settings.value.dnd ? 'dnd' : 'free'));
   const missedCalls = computed(() => recents.value.filter(r => r.result === 'missed'));
   /** Лічильник на вкладці «Пропущені»: нові з часу перегляду, без тихих (`silent`). */
   const unseenMissed = computed(
@@ -158,7 +162,10 @@ export const useCallStore = defineStore('call', () => {
 
   /** Звук із поправкою на другий вхідний: поки він дзвонить, замість тиші й мелодії утримання тихі сигнали очікування. */
   function play(kind: SoundKind | null, ms?: number) {
-    deps.sounds.play(waiting.value && (kind === null || kind === 'hold') ? 'waiting' : kind, ms);
+    if (waiting.value && (kind === null || kind === 'hold')) kind = 'waiting';
+    // «Мелодія вхідних» вимкнена: без мелодії й сигналу другого вхідного
+    if (!prefs.ringtone && (kind === 'ringtone' || kind === 'waiting')) kind = null;
+    deps.sounds.play(kind, ms);
   }
 
   function reset(leaveMedia = true) {
@@ -172,7 +179,7 @@ export const useCallStore = defineStore('call', () => {
     hold.value = peerHold.value = false;
     mic.value = true;
     link.value = { ...NO_LINK };
-    cam.value = true;
+    cam.value = prefs.camOnStart;
     camBlocked.value = false;
     micBlocked.value = false;
     hint.value = null;
@@ -416,6 +423,12 @@ export const useCallStore = defineStore('call', () => {
         if (c) c.online = m.online;
         break;
       }
+      case 'settings.updated':
+        settings.value = m.settings;
+        break;
+      case 'profile.updated':
+        me.value = m.user;
+        break;
       case 'contacts.update':
         contacts.value = contacts.value
           .filter(c => !m.remove.includes(c.userId) && !m.upsert.some(u => u.userId === c.userId))
@@ -560,6 +573,24 @@ export const useCallStore = defineStore('call', () => {
     play(null);
   }
 
+  /** Серверні налаштування (`waiting`, `dnd`): одразу локально, при помилці повертаємо. */
+  async function updateSettings(patch: Partial<Settings>) {
+    const prev = settings.value;
+    settings.value = { ...prev, ...patch };
+    try {
+      const ack = await deps.client.request('settings.update', { settings: patch });
+      if (ack.type === 'ack' && ack.settings) settings.value = ack.settings;
+    } catch {
+      settings.value = prev;
+    }
+  }
+
+  /** Нове ім'я (`profile.update`); кидає помилку, якщо сервер не прийняв. */
+  async function rename(name: string) {
+    const ack = await deps.client.request('profile.update', { name });
+    if (ack.type === 'ack' && ack.user) me.value = ack.user;
+  }
+
   /** Вкладку «Пропущені» переглянуто: лічильник обнуляється. */
   function markMissedSeen() {
     missedSeenAt.value = Math.max(missedSeenAt.value, ...missedCalls.value.map(r => r.startedAt));
@@ -581,6 +612,9 @@ export const useCallStore = defineStore('call', () => {
     missedCalls,
     unseenMissed,
     busySelf,
+    presence,
+    updateSettings,
+    rename,
     status,
     waiting,
     held,

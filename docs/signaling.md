@@ -237,8 +237,10 @@ type Settings = {
 |---|---|---|---|
 | `settings.update` | клієнт → сервер | `settings: Partial<Settings>` | сервер зберігає змінені поля, відповідає `ack` з повним `settings` |
 | `settings.updated` | сервер → клієнт | `settings: Settings` | усім іншим пристроям користувача, щоб перемикачі не розходилися |
+| `profile.update` | клієнт → сервер | `name: string` | нове ім'я (2–40 символів після обрізання пробілів, інакше `bad_request`); сервер відповідає `ack` з `user` |
+| `profile.updated` | сервер → клієнт | `user: Peer` | іншим пристроям користувача; решта сайту отримує `contacts.update` з новим ім'ям |
 
-Поточні значення приходять у `hello.ok`. Невідомі поля в `settings.update` сервер ігнорує,
+Поточні значення приходять у `hello.ok`. Ім'я сервер завжди бере з бази, а не з токена, тож після `profile.update` воно нове скрізь, навіть зі старим токеном. Невідомі поля в `settings.update` сервер ігнорує,
 значення неправильного типу дають `bad_request`. Нові налаштування додаються як необов'язкові поля без зміни `v`.
 
 ### `waiting: false` («Не дзвонити, коли я на дзвінку»)
@@ -354,9 +356,10 @@ type Settings = {
 | `reject()` | `call.reject` | `idle` |
 | `hangup()` | `call.hangup` | `idle` після `call.ended` |
 | `toggleHold()` | `call.hold` | `hold` одразу локально, підтверджується `ack` |
-| `setSettings({ waiting })` | `settings.update` | значення оновлюється за `ack`, інші пристрої отримують `settings.updated` |
+| `updateSettings({ waiting, dnd })` | `settings.update` | одразу локально, за `ack` береться повний `settings`, при помилці повертається; інші пристрої отримують `settings.updated` |
+| `rename(name)` | `profile.update` | `me` оновлюється за `ack`; інші пристрої отримують `profile.updated` |
 | `acceptWaiting('hold' \| 'end')` | `call.accept` з `action` | другий дзвінок `connected` після `call.connected` |
-| `swapCalls()` | `call.hold` з `hold: false` на утримуваному | дзвінки міняються місцями після `call.updated` |
+| `swapHeld()` | `call.hold` з `hold: false` на утримуваному | дзвінки міняються місцями одразу локально, сервер підтверджує `call.updated` |
 
 Перехід стору відбувається від подій сервера, а не від власних команд. Виняток: `hold`, бо він локальний і не
 змінює стан дзвінка, а при `error` клієнт його відкочує.

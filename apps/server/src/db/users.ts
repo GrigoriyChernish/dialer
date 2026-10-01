@@ -54,6 +54,7 @@ export function createUsers(db: Db) {
     'UPDATE users SET verified_at = ? WHERE site_id = ? AND id = ? AND verified_at IS NULL',
   );
   const updateSettingsStmt = db.prepare('UPDATE users SET settings = ? WHERE site_id = ? AND id = ?');
+  const renameStmt = db.prepare('UPDATE users SET name = ? WHERE site_id = ? AND id = ?');
   const selectOthers = db.prepare(
     'SELECT * FROM users WHERE site_id = ? AND id != ? AND disabled = 0 ORDER BY is_bot, name',
   );
@@ -80,6 +81,11 @@ export function createUsers(db: Db) {
       const stored = { ...JSON.parse(row.settings), ...patch };
       updateSettingsStmt.run(JSON.stringify(stored), siteId, id);
       return { ...DEFAULT_SETTINGS, ...stored };
+    },
+    /** Нове ім'я (уже перевірене `normalizeName`); повертає оновлений запис. */
+    rename(siteId: string, id: string, name: string): UserRow {
+      renameStmt.run(name, siteId, id);
+      return get(siteId, id)!;
     },
     /** Усі користувачі сайту, крім самого (у демо це контакти). */
     listOthers(siteId: string, exceptId: string): UserRow[] {

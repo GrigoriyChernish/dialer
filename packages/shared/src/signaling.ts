@@ -126,6 +126,8 @@ export type CallRejectRequest = Request<'call.reject', { callId: CallId }>;
 export type CallHangupRequest = Request<'call.hangup', { callId: CallId }>;
 export type CallHoldRequest = Request<'call.hold', { callId: CallId; hold: boolean }>;
 export type SettingsUpdateRequest = Request<'settings.update', { settings: Partial<Settings> }>;
+/** Нове ім'я користувача: 2–40 символів після обрізання пробілів. */
+export type ProfileUpdateRequest = Request<'profile.update', { name: string }>;
 export type RecentsSeenRequest = Request<'recents.seen', { upTo: number }>;
 export type PushSubscribeRequest = Request<'push.subscribe', { subscription: unknown }>;
 export type PushUnsubscribeRequest = Request<'push.unsubscribe', object>;
@@ -141,6 +143,7 @@ export type ClientMessage =
   | CallHangupRequest
   | CallHoldRequest
   | SettingsUpdateRequest
+  | ProfileUpdateRequest
   | RecentsSeenRequest
   | PushSubscribeRequest
   | PushUnsubscribeRequest;
@@ -163,7 +166,7 @@ export type HelloOk = Reply<
   }
 >;
 /** Порожній ack, або з `call` (на `call.invite`), або з повними `settings` (на `settings.update`). */
-export type Ack = Reply<'ack', { call?: CallInfo; settings?: Settings }>;
+export type Ack = Reply<'ack', { call?: CallInfo; settings?: Settings; user?: Peer }>;
 export type ErrorReply = Frame<'error'> & {
   reqId?: string;
   code: ErrorCode;
@@ -193,6 +196,7 @@ export type ContactsUpdate = Frame<'contacts.update'> & {
 };
 export type RecentsAdd = Frame<'recents.add'> & { entry: RecentEntry };
 export type SettingsUpdated = Frame<'settings.updated'> & { settings: Settings };
+export type ProfileUpdated = Frame<'profile.updated'> & { user: Peer };
 
 export type ServerMessage =
   | HelloOk
@@ -209,7 +213,8 @@ export type ServerMessage =
   | PresenceEvent
   | ContactsUpdate
   | RecentsAdd
-  | SettingsUpdated;
+  | SettingsUpdated
+  | ProfileUpdated;
 
 export type ClientMessageType = ClientMessage['type'];
 export type ServerMessageType = ServerMessage['type'];

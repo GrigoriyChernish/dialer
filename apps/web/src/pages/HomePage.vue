@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useSessionStore } from '@/features/auth/session';
+import { RouterLink } from 'vue-router';
 import { useCallStore } from '@/features/call/store';
 import ContactsPage from '@/pages/ContactsPage.vue';
 import MissedPage from '@/pages/MissedPage.vue';
 import SearchPage from '@/pages/SearchPage.vue';
+import Avatar from '@/shared/ui/Avatar.vue';
 import Card from '@/shared/ui/Card.vue';
 import Icon, { type IconName } from '@/shared/ui/Icon.vue';
 
 // Головна застосунку (дизайн: Flow · Contacts): три картки — шапка (Home Header), вміст вкладки, вкладки (Tab Bar).
 const { t } = useI18n();
-const session = useSessionStore();
 const call = useCallStore();
 
 type Tab = 'missed' | 'contacts' | 'search';
@@ -23,34 +23,41 @@ const TABS: { id: Tab; icon: IconName }[] = [
 const tab = ref<Tab>('contacts');
 const PAGES = { missed: MissedPage, contacts: ContactsPage, search: SearchPage };
 // лічильник ховаємо, поки відкрита сама вкладка «Пропущені»
+// мітка присутності (дизайн: Presence, / busy, / dnd)
+const PRESENCE = {
+  free: 'bg-call-ok/15 text-call-ok',
+  busy: 'bg-call-bad/15 text-call-bad',
+  dnd: 'bg-accent/[.18] text-accent-icon',
+} as const;
 const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
 </script>
 
 <template>
   <div class="flex h-full flex-col gap-3 px-4 pb-6 pt-1">
-    <Card class="flex shrink-0 items-center gap-3 py-3 pl-4 pr-3">
-      <!-- ім'я одним рядком, задовге обрізається з «…»; до першого hello.ok смужка-заготовка, а мітки присутності немає (дизайн: Home Header / loading) -->
-      <h1 v-if="call.ready" class="min-w-0 flex-1 truncate text-lg font-bold">{{ call.me?.name }}</h1>
-      <span v-else class="flex h-6 flex-1 animate-pulse items-center" aria-hidden="true"
-        ><i class="h-3.5 w-[140px] rounded-full bg-surface"
-      /></span>
-      <span
-        v-if="call.ready"
-        class="flex shrink-0 items-center gap-1.5 rounded-full py-[3px] pl-2 pr-2.5 text-xs font-medium"
-        :class="call.busySelf ? 'bg-call-bad/15 text-call-bad' : 'bg-call-ok/15 text-call-ok'"
-        role="status"
+    <!-- шапка (дизайн: Home Header): уся картка відкриває налаштування; до першого hello.ok заготовка (Home Header / loading) -->
+    <Card class="shrink-0">
+      <RouterLink
+        to="/settings"
+        class="flex items-center gap-2.5 rounded-[28px] py-2.5 pl-2.5 pr-3.5 focus-visible:outline-2 focus-visible:outline-accent"
+        :aria-label="t('settings.open')"
       >
-        <i class="size-[7px] rounded-full bg-current" />{{ call.busySelf ? t('presence.busy') : t('presence.free') }}
-      </span>
-      <button
-        type="button"
-        class="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-line bg-surface text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        :aria-label="t('app.logout')"
-        :title="t('app.logout')"
-        @click="session.logout()"
-      >
-        <Icon name="logOut" class="size-5" />
-      </button>
+        <Avatar v-if="call.ready" :name="call.me?.name ?? ''" size="sm" />
+        <i v-else class="size-9 shrink-0 animate-pulse rounded-full bg-surface" />
+        <!-- ім'я одним рядком, задовге обрізається з «…» -->
+        <h1 v-if="call.ready" class="min-w-0 flex-1 truncate text-lg font-bold">{{ call.me?.name }}</h1>
+        <span v-else class="flex h-6 flex-1 animate-pulse items-center" aria-hidden="true"
+          ><i class="h-3.5 w-35 rounded-full bg-surface"
+        /></span>
+        <span
+          v-if="call.ready"
+          class="flex shrink-0 items-center gap-1.5 rounded-full py-[3px] pl-2 pr-2.5 text-xs font-medium"
+          :class="PRESENCE[call.presence]"
+          role="status"
+        >
+          <i class="size-1.75 rounded-full bg-current" />{{ t(`presence.${call.presence}`) }}
+        </span>
+        <Icon name="chevronRight" class="size-4.5 shrink-0 text-mute" />
+      </RouterLink>
     </Card>
 
     <component :is="PAGES[tab]" class="min-h-0 flex-1" />
@@ -68,10 +75,10 @@ const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
           @click="tab = x.id"
         >
           <span class="relative grid h-6 w-7 place-items-center">
-            <Icon :name="x.icon" class="size-[22px]" />
+            <Icon :name="x.icon" class="size-5.5" />
             <b
               v-if="x.id === 'missed' && badge"
-              class="absolute -top-1 left-4 grid h-4 min-w-4 place-items-center rounded-full bg-call-bad px-[5px] text-[10px] font-bold text-white"
+              class="absolute -top-1 left-4 grid h-4 min-w-4 place-items-center rounded-full bg-call-bad px-1.25 text-[10px] font-bold text-white"
               >{{ badge }}</b
             >
           </span>

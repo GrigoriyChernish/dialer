@@ -2,6 +2,7 @@ import type { CallInfo, ServerMessage } from '@dialer/shared';
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCallStore, type CallDeps } from '@/features/call/store';
+import { usePrefsStore } from '@/features/settings/prefs';
 import type { LinkState } from '@/shared/media/room';
 
 const V = 1 as const;
@@ -16,6 +17,7 @@ const info = (p: Partial<CallInfo> = {}): CallInfo => ({
 });
 
 function setup() {
+  localStorage.clear(); // локальні налаштування (usePrefsStore) не переходять між тестами
   setActivePinia(createPinia());
   let handler: (m: ServerMessage) => void = () => {};
   let onLink: (p: Partial<LinkState>) => void = () => {};
@@ -453,6 +455,66 @@ describe('call store', () => {
       });
       expect(store.callId).toBe('c2');
       expect(store.held?.callId).toBe('c1');
+    });
+  });
+
+  describe('settings', () => {
+    it('updates server settings optimistically and rolls back on error', async () => {
+      const { store, request } = setup();
+      request.mockImplementationOnce(async () => ({
+        v: V,
+        type: 'ack',
+        reqId: 'r',
+        settings: { waiting: true, dnd: true },
+      }));
+      const p = store.updateSettings({ dnd: true });
+      expect(store.settings.dnd).toBe(true);
+      expect(store.presence).toBe('dnd');
+      await p;
+      expect(request).toHaveBeenCalledWith('settings.update', { settings: { dnd: true } });
+      request.mockRejectedValueOnce(new Error('bad_request'));
+      await store.updateSettings({ waiting: false });
+      expect(store.settings.waiting).toBe(true);
+    });
+
+    it('applies settings and the new name from other devices', () => {
+      const { store, send } = setup();
+      send({ v: V, type: 'settings.updated', settings: { waiting: false, dnd: true } });
+      send({ v: V, type: 'profile.updated', user: { userId: 'me', name: 'Нове' } });
+      expect(store.settings).toEqual({ waiting: false, dnd: true });
+      expect(store.me?.name).toBe('Нове');
+    });
+
+    it('renames through profile.update', async () => {
+      const { store, request } = setup();
+      request.mockImplementationOnce(async () => ({
+        v: V,
+        type: 'ack',
+        reqId: 'r',
+        user: { userId: 'me', name: 'Ярема' },
+      }));
+      await store.rename('Ярема');
+      expect(request).toHaveBeenCalledWith('profile.update', { name: 'Ярема' });
+      expect(store.me?.name).toBe('Ярема');
+    });
+
+    it('shows "busy" over "do not disturb" while on a call', async () => {
+      const { store, send } = setup();
+      send({ v: V, type: 'settings.updated', settings: { waiting: true, dnd: true } });
+      await store.call(olena.userId);
+      expect(store.presence).toBe('busy');
+    });
+
+    it('keeps the ringtone silent and starts with the camera off when chosen on this device', () => {
+      const t = setup();
+      const prefs = usePrefsStore();
+      prefs.ringtone = false;
+      prefs.camOnStart = false;
+      t.send({ v: V, type: 'call.incoming', call: info({ callId: 'c9', direction: 'in' }) });
+      expect(t.deps.sounds.play).toHaveBeenLastCalledWith(null, undefined);
+      t.send({ v: V, type: 'call.connected', call: info({ callId: 'c9', direction: 'in', state: 'connected' }) });
+      expect(t.store.cam).toBe(false);
+      expect(t.deps.media.setCamera).toHaveBeenLastCalledWith(false);
     });
   });
 });

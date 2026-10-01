@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const read = p => readFileSync(root + p, 'utf8');
 
-const { variables } = JSON.parse(read('design/tokens.json'));
+const { variables, light = {} } = JSON.parse(read('design/tokens.json'));
 const css = read('apps/web/src/app/styles/tokens.css');
 const doc = read('docs/design-system.md');
 
@@ -70,8 +70,24 @@ for (const [name, value] of Object.entries(variables)) {
     errors.push(`docs/design-system.md: немає значення ${value} (${name})`);
 }
 
+// світла тема: блок :root (без атрибута) у tokens.css і значення в документації
+const lightCss = css.match(/:root\s*\{([^}]*)\}/)?.[1] ?? '';
+for (const [name, value] of Object.entries(light)) {
+  if (!(name in variables)) errors.push(`design/tokens.json: світле значення для невідомої змінної ${name}`);
+  const want = norm(value);
+  const cssName = CSS_VAR[name];
+  if (cssName && !cssName.startsWith('--color-')) {
+    const got = declared(cssName, lightCss);
+    if (got !== want) errors.push(`CSS (світла): ${cssName} = ${got ?? 'немає'}, у дизайні ${name} = ${want}`);
+  }
+  if (!doc.toLowerCase().includes(value.toLowerCase()))
+    errors.push(`docs/design-system.md: немає світлого значення ${value} (${name})`);
+}
+
 if (errors.length) {
   console.error('Токени розходяться з design/tokens.json:\n- ' + errors.join('\n- '));
   process.exit(1);
 }
-console.log(`Дизайн-токени збігаються: ${Object.keys(variables).length} змінних.`);
+console.log(
+  `Дизайн-токени збігаються: ${Object.keys(variables).length} змінних, світлих значень ${Object.keys(light).length}.`,
+);

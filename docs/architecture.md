@@ -65,12 +65,12 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
 /* варіант dark: спрацьовує за атрибутом, а не лише за системною темою */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* значення з design/dialer.pen (темна тема, єдина в дизайні) */
+/* значення з design/dialer.pen (темна тема) */
 :root, [data-theme="dark"] {
   --bg: #0a0c14; --fg: #f3f5fa; --mute: #b4bccd; --line: rgba(255, 255, 255, .18);
   --card-top: #1c2338; --card-bottom: #121726; --stage-glow: #1e2340; --accent-icon: #a5a8ff;
 }
-/* світла тема: поза дизайном, значення підібрані окремо */
+/* світла тема: значення з design/dialer.pen (theme mode: light) */
 [data-theme="light"] {
   --bg: #eef0f6; --fg: #12151f; --mute: #5b6478; --line: rgba(20, 24, 38, .12);
   --card-top: #fff; --card-bottom: #f1f3fa; --stage-glow: #dfe3f7; --accent-icon: #4f46e5;
@@ -104,15 +104,16 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
 Повний перелік токенів — у [design-system.md](design-system.md), каталог компонентів — у [components.md](components.md).
 
 ### Теми
-Дві теми: **світла** й **темна**. Кольори обох узяті з демо.
+Дві теми: **світла** й **темна**. Кольори обох — з `design/dialer.pen` (вісь `mode`, див. [design-system.md](design-system.md#світла-тема)).
 
 - Режим теми: `auto` (за `prefers-color-scheme`, змінюється разом із системою), `light` або `dark`.
 - **У віджеті** режим задає сайт-господар у налаштуваннях віджета, щоб віджет пасував до його дизайну.
   За замовчуванням `auto`. Сайт-господар може змінити тему на льоту (наприклад, коли в нього самого перемикається тема).
 - **У демо** тему обирають перемикачем на самій сторінці демо. Вона передає вибір віджету через `setTheme`
   і зберігає його в `localStorage`.
-- Композабл `useTheme` у `shared/ui` виставляє на `<html>` атрибут `data-theme="light"` або `"dark"`
-  і для `auto` слухає зміни `matchMedia`.
+- **У застосунку** (`entries/app.ts`) тему обирають у налаштуваннях («Авто / Світла / Темна», `usePrefsStore`, лише цей пристрій).
+- На `<html>` ставиться атрибут `data-theme="light"` або `"dark"`; для `auto` атрибута немає, і CSS бере системну тему
+  (`prefers-color-scheme`), тож змінюється разом із системою без JS.
 - Щоб віджет не блимав не тією темою при завантаженні, тема передається вже в URL iframe
   і виставляється до запуску Vue.
 - Компоненти використовують семантичні кольори (`bg-card`, `text-fg`, `text-mute`), тож працюють в обох темах

@@ -10,7 +10,7 @@
 
 ## Кольори
 
-Назви токенів збігаються зі змінними файлу дизайну. У дизайні одна, темна тема.
+Назви токенів збігаються зі змінними файлу дизайну. Тем дві: темна (основна, значення в таблицях нижче) і світла (вісь `mode`, див. [Світла тема](#світла-тема)).
 
 | Змінна дизайну | Утиліта | Значення | Для чого |
 | --- | --- | --- | --- |
@@ -20,7 +20,7 @@
 | `mute` | `text-mute` | `#B4BCCD` | другорядний текст, підписи |
 | `line` | `border-line` | `#FFFFFF2E` (білий 18%) | рамки |
 | `accent` | `bg-accent` | `#6366F1` | хвиля голосу, кільця, фокус |
-| `accent-soft` | | `#6366F12E` | фон кнопки чату (поза MVP) |
+| `accent-soft` | | `#6366F12E` | мітка «не турбувати» (`Presence / dnd`), фон кнопки чату (поза MVP) |
 | `accent-icon` | `text-accent-icon` | `#A5A8FF` | підпис «Вихідний/Вхідний виклик», іконка завантаження |
 | `ok` | `bg-call-ok` | `#22C55E` | «Прийняти», «Подзвонити», крапка «онлайн» |
 | `ok-soft` | | `#22C55E26` | фон кнопки виклику в рядку контакту |
@@ -38,6 +38,7 @@
 | `surface-tile` | `#1B2030` | мініатюра себе (CSS `--pip`) |
 | `on-solid` | `#FFFFFF` | текст і іконки на суцільному фоні, фон увімкненого перемикача |
 | `on-light` | `#111111` | іконка на білому (увімкнений перемикач) |
+| `on-glass` | `#FFFFFF` (світла `#12151F`) | іконка на склі: `Action Button` |
 | `accent-ring-outer` | `#6366F114` | зовнішнє кільце навколо аватара |
 | `accent-ring-inner` | `#6366F124` | внутрішнє кільце навколо аватара |
 | `accent-badge` | `#6366F133` | коло під іконкою смужки тону `accent` |
@@ -70,12 +71,29 @@
 ### Фон екрана дзвінка
 
 Лінійний градієнт згори вниз: `stage-glow → bg` (вихідний, вхідний, розмова) і `stage-missed-glow → bg` (результат).
-Екран дзвінка завжди темний.
 
-### Світла тема (поза дизайном)
+### Світла тема
 
-У дизайні світлої теми немає. У застосунку вона лишається для сайтів-господарів зі світлим оформленням;
-значення підібрано окремо в `main.css` і мають бути підтверджені дизайном, коли він з'явиться.
+У `dialer.pen` змінні мають вісь теми `mode: dark | light`: без `theme` фрейм темний, з `theme: { mode: light }` — світлий
+(`Flow · Light theme` показує ключові екрани). У світлій темі змінюються лише нейтральні змінні; кольори стану (`accent`, `ok`, `warn`, `bad`
+і їхні відтінки), аватари, тіні й `on-solid` однакові в обох темах.
+
+| Змінна | Темна | Світла |
+| --- | --- | --- |
+| `bg` | `#0A0C14` | `#EEF0F6` |
+| `card-top` → `card-bottom` | `#1C2338` → `#121726` | `#FFFFFF` → `#F1F3FA` |
+| `fg` | `#F3F5FA` | `#12151F` |
+| `mute` | `#B4BCCD` | `#5B6478` |
+| `line` | `#FFFFFF2E` | `#1418261F` |
+| `accent-icon` | `#A5A8FF` | `#4F46E5` |
+| `mute-soft`, `mute-faint`, `mute-edge`, `mute-clear` | `#B4BCCD33`, `1A`, `66`, `00` | `#5B647833`, `#5B64781A`, `#5B647866`, `#5B647800` |
+| `stage-glow`, `stage-missed-glow` | `#1E2340`, `#2A1E28` | `#DFE3F7`, `#F3DFE6` |
+| `surface-2`, `surface-3`, `surface-tile` | `#FFFFFF1A`, `#FFFFFF1F`, `#1B2030` | `#1418260F`, `#1418261A`, `#E4E7F1` |
+| `scrim` → `scrim-mid` → `scrim-clear` | `#0A0C14D9` → `99` → `00` | `#EEF0F6D9` → `#EEF0F699` → `#EEF0F600` |
+| `on-glass` | `#FFFFFF` | `#12151F` |
+
+`on-glass` — іконка на склі (`Action Button`): у темній білa, у світлій темна; червоні й зелені кнопки лишаються з `on-solid`.
+Вибір теми — у налаштуваннях («Авто / Світла / Темна», лише цей пристрій); у віджеті тему задає сайт-господар.
 
 ## Типографіка
 
@@ -149,13 +167,13 @@
 | `space-4xl` | 40 | `10` | поля екрана дзвінка знизу, висота шапки розмови, висота смужки `Banner` |
 
 Проміжні та спеціальні значення (поза шкалою змінних):
+
 - 6 px (`1.5`) — проміжок між значками в `Status Slot` шапки, зазор між іконкою та текстом у підписі виклику.
 - 10 px (`2.5`) — внутрішні відступи та проміжок між кнопками в панелі `Call Controls`, лівий відступ і проміжок у `Banner`, горизонтальні відступи таймера.
 - 14 px (`3.5`) — проміжок між аватаром і текстом у рядку контакту, правий відступ у `Banner`.
 - 72 px (`18`) — проміжок між двома кнопками `Labeled Action` на екранах вхідного дзвінка та результату. Зелена дія завжди ліворуч, червона праворуч.
 
 Розміри шрифтів змінними не робимо: значень мало, і вони закріплені в таблиці типографіки вище.
-
 
 ## Тіні
 
@@ -180,7 +198,12 @@
 | `users`, `search` | вкладки «Контакти», «Пошук» (22); порожній стан (26) | 22 / 26 |
 | `search-x` | порожній стан «Нікого не знайдено» | 26 |
 | `circle-x` | очищення поля пошуку | 18 |
-| `log-out` | «Вийти» в шапці головної | 20 |
+| `log-out` | «Вийти» в налаштуваннях (у колі 32) | 16 |
+| `chevron-left`, `chevron-right` | «Назад» (20); стрілка в шапці головної (18) | 20 / 18 |
+| `pencil` | «Змінити ім'я» в налаштуваннях | 18 |
+| `moon`, `phone-call`, `bell` | рядки налаштувань «Не турбувати», «Очікування виклику», «Мелодія вхідних» (у колі 32) | 16 |
+| `monitor-smartphone`, `sun`, `moon` | вибір теми «Авто», «Світла», «Темна» | 15 |
+| `arrow-left-right` | «Перемкнути» на смужці утримуваного дзвінка (у колі 24) | 14 |
 | `mic`, `mic-off` | кнопка мікрофона (24); смужка «вимкнув мікрофон» (14); смужка «Мікрофон недоступний» (14); значки `Self Status` (12) | 24 / 16 / 12 |
 | `video`, `video-off` | кнопка камери (24); кнопка «показати себе» (20); смужка «Камера недоступна» (у колі 24, іконка 14) | 24 / 20 / 14 |
 | `pause` | кнопка утримання (24); смужка «поставила на утримання» (у колі 24, іконка 14); значок `Self Status / hold` (12) | 24 / 14 / 12 |
@@ -322,6 +345,7 @@
 | Вимкнена кнопка (`disabled`) | прозорість 40% | без змін, `disabled:cursor-not-allowed` | без реакції |
 
 Правила:
+
 - Усі інтерактивні елементи мають явний `cursor-pointer`.
 - Зміна кольорів і фону згладжується переходом тривалістю 150 мс (`transition duration-150 ease-out`).
 - Перехід геометричного стискання прив'язаний до токенів `duration-[var(--duration-press)]` (100 мс) та `ease-[var(--ease-out)]`.
@@ -340,9 +364,10 @@
 
 | Група компонентів | Що в ній |
 | --- | --- |
-| `Components · Base` | `Status Bar`, `Call Header`, `Call Controls`, `Self View`, `Action Button` і варіанти `Action Button / active, danger, success, subtle, disabled`, `Labeled Action`, `Show Self`, `Card` |
-| `Components · Contacts` | `Contact Meta`, `Contact Row`, `Contact Row / missed`, `Home Header`, `Presence` (+ `/ busy`), `Tab` (+ `/ active`), `Tab Bar` (+ `/ missed`, `/ search`), `Section Label`, `Search Field`, `Empty State`, `Contact Row / skeleton`, `Home Header / loading` |
+| `Components · Base` | Контейнер у колонку: підгрупи `Bars` (`Status Bar`, `Call Header`), `Controls` (`Call Controls`, `Self View`, `Show Self`), `Actions` (`Action Button` і варіанти `/ active, danger, success, subtle, disabled`, `Labeled Action`), `Card` (`Card`) |
+| `Components · Contacts` | Контейнер у колонку: підгрупи `Headers` (`Home Header`, `Home Header / loading`, `Presence`, `Presence / busy`), `Rows` (`Contact Meta`, `Contact Row`, `Contact Row / missed`, `Contact Row / skeleton`), `Navigation` (`Tab`, `Tab / active`, `Tab Bar`, `Tab Bar / missed`, `Tab Bar / search`), `Elements` (`Section Label`, `Search Field`, `Empty State`) |
 | `Components · Self Status` | `Self Status / mic-off`, `mic-unavailable`, `camera-off`, `camera-unavailable`, `hold` |
+| `Components · Settings` | `Toggle`, `Toggle / on`, `Settings Row`, `Segmented`, `Presence / dnd` |
 | `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` |
 | `Components · Banners` | `Banner` (база); контейнери `Self Banners` (`Self Banner / *`) і `Peer Banners` (`Peer Banner / *`) |
 | `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring`, `Voice Wave`, `Voice Wave / silent`, `Call Label`, `Result Label`, `Peer Video`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `silent`, `result`) |
@@ -359,6 +384,8 @@
 | `Flow · In call · self network` | `self-poor-signal`, `self-reconnecting`, `self-banners-stacked` |
 | `Flow · In call · video` | `video`, `video · peer-mic-off` |
 | `Flow · Call ended` | `Ended · peer hangup`, `Ended · lost`, `Ended · error` |
+| `Flow · Settings` | `Settings`, `Settings · edit name`, `Home · Contacts · dnd` |
+| `Flow · Light theme` | світлі копії `Home · Contacts`, `Settings`, `Incoming Call`, `In Call · self-reconnecting`, `In Call · held call`, `Auth · Phone` |
 | `Flow · Call waiting` | `Incoming · waiting` (другий вхідний під час розмови, три дії без підписів), `In Call · held call` (смужка `Self Banner / held-call` під шапкою) |
 
 **Сторони дзвінка: `self` і `peer`.** Усе, що стосується нас, має префікс `self`, усе про співрозмовника — `peer`:
@@ -425,26 +452,33 @@
 ## Токени в коді й перевірка
 
 - `design/tokens.json` — знімок змінних `dialer.pen` (сам файл зашифрований, читається лише через Pencil).
-  Після змін у дизайні оновіть знімок: Pencil → `execute` → `Print(GetVariables())`, перенесіть значення в `tokens.json`.
-- `apps/web/src/app/styles/tokens.css` — єдиний файл токенів застосунку (темна тема = значення дизайну, світла поза дизайном).
+  Після змін у дизайні оновіть знімок: Pencil → `execute` → `Print(GetVariables())`, перенесіть значення в `tokens.json`
+  (`variables` — темна тема, `light` — світлі значення змінних, що мають вісь `mode`).
+- `apps/web/src/app/styles/tokens.css` — єдиний файл токенів застосунку (світла тема в `:root`, темна в `[data-theme="dark"]` і за системною темою).
 - `pnpm check:design` (`scripts/check-design-tokens.mjs`, запускається в CI) звіряє `tokens.css` і цей документ зі знімком:
-  розбіжність у кольорі — помилка. Лінійні градієнти, розміри й радіуси скрипт не перевіряє.
+  розбіжність у кольорі — помилка (обидві теми). Лінійні градієнти, розміри й радіуси скрипт не перевіряє.
 
 ## Вхід (Components · Auth)
+
 Екрани `Flow · Auth`: поля 24 від країв, заголовок 26 / 700, підзаголовок 15 `mute` зверху, кнопка притиснута до низу (відступ 40).
 Поле вводу (рамка 56 чи клітинки коду 72) стоїть центром рівно посередині екрана (422 з 844) на всіх кроках; підпис над ним і помилка під ним рамку не зсувають.
+
 - **`Text Field`** на всю ширину: підпис 13 / 500 `mute`, проміжок 8; поле 56 заввишки, радіус `radius-md`, скло `surface-2`, рамка `line`,
   текст 17 / 500 (префікс `+380` кольору `mute`). `/ focused`: рамка 2 px `accent`; `/ error`: рамка 2 px `bad` і повідомлення 13 `bad` під полем.
 - **`Primary Button`** 56 заввишки на всю ширину, радіус `radius-md`, `accent`, текст 16 / 600 `on-solid`; `/ disabled` з прозорістю .4.
 - **`Code Cell`** 64 × 72, радіус `radius-md`, скло, цифра 28 / 700; чотири клітинки на всю ширину (`space_between`).
   `/ focused` — рамка 2 px `accent` (наступна клітинка для вводу), `/ error` — рамка 2 px `bad` у всіх клітинках.
-- **`Icon Button`** 44 × 44, коло, скло, рамка `line`, іконка 20 `fg`: «Назад» (`chevron-left`), «Вийти» (`log-out`).
+- **`Icon Button`** 44 × 44, коло, скло, рамка `line`, іконка 20 `fg`: «Назад» (`chevron-left`); 40 з іконкою 18 — «Змінити ім'я» (`pencil`).
 - Посилання «Змінити номер» 14 / 600 `accent-icon`. Підказки про код на екрані немає.
 
 ## Головна (Flow · Contacts)
+
 Три картки `Card` на всю ширину з відступом 16: шапка, вміст вкладки (займає решту висоти, прокрутка всередині) і вкладки.
-- **`Home Header`**: наше ім'я 18 / 700 одним рядком (обрізається з «…»), `Presence` і `Icon Button` «Вийти»; відступи картки 12 12 12 16.
-- **`Presence`**: пігулка, крапка 7 і текст 12 / 500. «вільний»: `ok-soft` / `ok`; `/ busy` «зайнятий»: `bad-soft` / `bad`.
+
+- **`Home Header`**: уся картка — кнопка «Налаштування»: аватар 36, наше ім'я 18 / 700 одним рядком (обрізається з «…»), `Presence`
+  і `chevron-right` 18 `mute`; відступи картки 10 14 10 10, проміжок 10. «Вийти» — у налаштуваннях.
+- **`Presence`**: пігулка, крапка 7 і текст 12 / 500. «вільний»: `ok-soft` / `ok`; `/ busy` «зайнятий»: `bad-soft` / `bad`;
+  `/ dnd` «не турбувати»: `accent-soft` / `accent-icon` (лише для себе, дзвінок сильніший за «не турбувати»).
 - **`Tab Bar`**: картка з трьома `Tab` без підписів (іконка 22, `mute`; `Tab / active` — `accent-icon`). Лічильник на «Пропущених»:
   `bad`, висота 16, текст 10 / 700. Варіанти `/ missed`, `/ search` — та сама панель з іншою активною вкладкою.
 - **`Section Label`**: заголовок групи 12 / 600 `mute` («Сьогодні», «Вчора»).
@@ -452,7 +486,23 @@
 - **`Search Field`**: 48 заввишки, радіус `radius-md`, фон `bg` (як у сторінки), рамка `accent`, іконка `search` і `circle-x` 18, текст 16 / 500.
 - **`Empty State`**: коло 64 (`surface-2`, рамка `line`) з іконкою 26 `mute`, заголовок 16 / 600 і необов'язковий `Caption` 14 / 400 `mute`; стоїть по центру замість порожньої картки.
 - **`Contact Row / skeleton`**: заготовка рядка до першого `hello.ok`: коло 48 і дві смужки 12 і 10 заввишки (`surface-2`, ширина від рядка до рядка різна), без кнопок; пульсує.
-- **`Home Header / loading`**: замість імені смужка 140 × 14 (`surface-2`), `Presence` немає, бо наш стан ще невідомий.
+- **`Home Header / loading`**: аватар — коло `surface-2`, замість імені смужка 140 × 14 (`surface-2`), `Presence` немає, бо наш стан ще невідомий.
 - **Перше завантаження**: картка вкладки з рядками `Contact Row / skeleton` (з'являється через 300 мс, щоб не блимати), лічильника пропущених немає.
   Без зв'язку довше 3 с замість заготовки `Empty State` з `wifi-off`, «Немає зв'язку з сервером» і підписом «Підключаємось…» (`Home · Contacts · offline`).
   Коли дані вже були, після обриву показуємо їх далі.
+
+## Налаштування (Flow · Settings)
+
+Окрема сторінка, відкривається натисканням на `Home Header`. Згори `Icon Button` «Назад» (`chevron-left`) і заголовок 18 / 700, нижче картки `Card`
+з відступом 16 від країв і заголовками секцій `Section Label` («Статус», «Дзвінки», «Вигляд»).
+
+- **Профіль**: аватар 56, ім'я 18 / 700, номер 13 `mute`, `Icon Button` 40 з `pencil` «Змінити ім'я». Редагування (`Settings · edit name`):
+  у тій самій картці `Text Field / focused` з підписом «Ім'я» і кнопки «Скасувати» (скло, рамка `line`) та «Зберегти» (`Primary Button`), обидві 48.
+- **`Settings Row`**: значок 16 у колі 32 (`surface-2`), назва 15 / 500, підпис 12 `mute`, праворуч `Toggle`; відступи 12 14, проміжок 12.
+  Рядки: «Не турбувати» (`moon`), «Очікування виклику» (`phone-call`, `waiting`), «Мелодія вхідних» (`bell`), «Камера на початку дзвінка» (`video`);
+  два останні з підписом «На цьому пристрої».
+- **`Toggle`** 44 × 26, кругляк 22: вимкнений — доріжка `surface-3`, кругляк `mute`; `/ on` — `accent` і `on-solid`.
+- **`Segmented`** (тема): підкладка `surface-2`, радіус `radius-md`, відступ 3; три сегменти 38 заввишки з іконкою 15 і текстом 13
+  («Авто» `monitor-smartphone`, «Світла» `sun`, «Темна» `moon`); активний — `surface-3`, рамка `line`, текст `fg` 600.
+- **«Вийти»**: окрема картка, значок `log-out` у колі `bad-soft`, текст 15 / 500 `bad`.
+

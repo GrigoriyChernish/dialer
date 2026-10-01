@@ -17,6 +17,7 @@ import type { Server as HttpServer } from 'node:http';
 import { WebSocketServer, type RawData, type WebSocket } from 'ws';
 import { CallError, type CallService, type Result } from '../calls/service';
 import type { Actor, Effect } from '../calls/types';
+import { normalizeName } from '../auth/phone';
 import { TokenError, type TokenClaims, type Tokens } from '../auth/tokens';
 import type { Recents } from '../db/recents';
 import type { Users } from '../db/users';
@@ -249,6 +250,26 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       ]);
     }
 
+    /** Нове ім'я: зберігає, повідомляє інші пристрої (`profile.updated`) і решту користувачів (`contacts.update`). */
+    function onProfile(msg: Record<string, unknown>, id: string | undefined) {
+      if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
+      const name = typeof msg.name === 'string' ? normalizeName(msg.name) : null;
+      if (!name) return respond(id, errorFrame('bad_request', id, 'profile.name: від 2 до 40 символів'));
+      const user = deps.users.rename(conn.siteId, conn.userId, name);
+      log.info({ userId: conn.userId }, "ім'я змінено");
+      const peer = { userId: user.id, name: user.name };
+      respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id, user: peer });
+      deps.deliver([
+        {
+          siteId: conn.siteId,
+          userId: conn.userId,
+          exceptDeviceId: conn.deviceId,
+          msg: { v: PROTOCOL_VERSION, type: 'profile.updated', user: peer },
+        },
+      ]);
+      deps.hub.announceUser(user);
+    }
+
     async function onMessage(data: RawData, isBinary: boolean) {
       if (isBinary) return send(errorFrame('bad_request', undefined, 'бінарні кадри не підтримуються'));
       let msg: unknown;
@@ -295,6 +316,8 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
           return onCall(msg, id);
         case 'settings.update':
           return onSettings(msg, id);
+        case 'profile.update':
+          return onProfile(msg, id);
         default:
           // recents.*, push.* з'являться на наступних кроках
           return respond(id, errorFrame('unknown_type', id));

@@ -23,10 +23,12 @@
 | Base | (аватар у кожному екрані) | `shared/ui/Avatar.vue` | є |
 | Base | lucide-іконки | `shared/ui/Icon.vue` | є |
 | Contacts | `Contact Meta`, `Contact Row`, `Contact Row / missed` | `features/contacts/ContactRow.vue` | є, без кнопки чату |
-| Contacts | `Home Header`, `Presence` (+ `/ busy`), `Tab` (+ `/ active`), `Tab Bar` (+ `/ missed`, `/ search`) | `pages/HomePage.vue` | є |
+| Contacts | `Home Header`, `Presence` (+ `/ busy`, `/ dnd`), `Tab` (+ `/ active`), `Tab Bar` (+ `/ missed`, `/ search`) | `pages/HomePage.vue` | є |
 | Contacts | `Section Label`, `Search Field` | `pages/MissedPage.vue`, `pages/SearchPage.vue` | є |
 | Contacts | `Empty State` | `shared/ui/EmptyState.vue` | є |
 | Contacts | `Contact Row / skeleton`, `Home Header / loading` | `features/contacts/ContactRowSkeleton.vue`, `pages/HomePage.vue` | є |
+| Settings | `Toggle` (+ `/ on`) | `shared/ui/Toggle.vue` | є |
+| Settings | `Settings Row`, `Segmented`; екрани `Settings`, `Settings · edit name` | `pages/SettingsPage.vue` (одним файлом) | є |
 | Auth | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` | `pages/LoginPage.vue` (одним файлом) | є |
 | Екрани | `Auth · Phone`, `Auth · Name`, `Auth · Code`, помилки | `pages/LoginPage.vue` | є |
 | Self Status | `Self Status / *` (5 значків) | `shared/ui/SelfStatusChip.vue` | є |
@@ -54,7 +56,7 @@
 Кружок з ініціалами, градієнт 135° з трьох палітр дизайну: `accent → avatar-end`, `avatar-teal → avatar-blue`, `avatar-amber → avatar-red`.
   Палітру обирає хеш імені, тож вона однакова в списку й на екрані дзвінка; демо-боти отримують палітри з дизайну (Олена, Андрій, Support).
 
-- **Props:** `name`, `size?: 'md' | 'xl'` (48 / 104), `opacity?: number` (.6 під час утримання й втрати зв'язку),
+- **Props:** `name`, `size?: 'sm' | 'md' | 'lg' | 'xl'` (36 / 48 / 56 / 104), `opacity?: number` (.6 під час утримання й втрати зв'язку),
   `muted?: boolean` — сірий аватар екрана результату (градієнт `#6B7080 → #7A6E86`, `avatar-muted-*`, прозорість .55).
 
 ### `RoundButton` (`Action Button`)
@@ -127,7 +129,8 @@
 
 ## Застосунок: вхід і головна (`entries/app.ts`)
 Окрема сторінка `index.html` для GitHub Pages; віджет для iframe — `widget.html` (`entries/widget.ts`). Маршрути в hash:
-`#/login` для гостей, `#/` після входу (гард перенаправляє).
+`#/login` для гостей, `#/` і `#/settings` після входу (гард перенаправляє).
+Тема з налаштувань ставить `data-theme` на `<html>` лише тут: у віджеті тему задає сайт-господар.
 
 ### `LoginPage` (дизайн: `Flow · Auth`)
 Поле вводу (рамка, без підпису й помилки) стоїть по центру екрана: `top: max(50%, 280px)`, заголовок лишається зверху.
@@ -140,11 +143,23 @@
 
 ### `HomePage` (дизайн: `Flow · Contacts`)
 Три картки `Card` одна під одною, відступи 16 з боків, 12 між картками:
-- **Шапка** (`Home Header`; до першого `hello.ok` — `Home Header / loading`: смужка замість імені, без `Presence`): наше ім'я з `hello.ok` одним рядком (задовге обрізається з «…»), мітка `Presence` «вільний» (зелена)
-  чи «зайнятий» (червона, `busySelf`: на дзвінку чи «Не турбувати») і кнопка «Вийти» (`log-out`, 44 × 44).
+- **Шапка** (`Home Header`; до першого `hello.ok` — `Home Header / loading`: коло й смужка замість аватара й імені, без `Presence`): уся картка —
+  посилання на `#/settings`: аватар 36, наше ім'я з `hello.ok` одним рядком (задовге обрізається з «…»), мітка `Presence` за `presence`:
+  «вільний» (зелена), «зайнятий» (червона, на дзвінку), «не турбувати» (`accent`, `settings.dnd`), і `chevron-right`.
 - **Вміст вкладки** займає решту висоти: `MissedPage`, `ContactsPage` (за замовчуванням) чи `SearchPage`.
 - **Вкладки** (`Tab Bar`): лише іконки `phone-missed`, `users`, `search`; активна `accent-icon`, решта `mute`. На «Пропущених» червоний лічильник
   нових (`unseenMissed`), поки вкладка не відкрита.
+
+### `SettingsPage` (дизайн: `Flow · Settings`)
+- **Профіль:** аватар 56, ім'я, номер; олівець відкриває редагування в тій самій картці (поле з рамкою `accent`, «Скасувати» / «Зберегти»,
+  Esc скасовує). Ім'я 2–40 символів, інакше помилка під полем; зберігає `call.rename` (`profile.update`).
+- **«Не турбувати»** і **«Очікування виклику»** — `call.updateSettings` (`dnd`, `waiting`), однакові на всіх пристроях.
+- **«Мелодія вхідних»**, **«Камера на початку дзвінка»** і **тема** («Авто / Світла / Темна», `role="radiogroup"`) — `usePrefsStore`
+  (`features/settings/prefs.ts`, `localStorage` `dialer.prefs`): лише цей пристрій. Без мелодії мовчать і мелодія вхідного, і сигнал другого вхідного.
+- **«Вийти»** — окрема картка внизу (`session.logout()`).
+
+### `Toggle` (`shared/ui/Toggle.vue`)
+Перемикач 44 × 26 (`role="switch"`, `aria-checked`). **Props:** `v-model` (`boolean`), `label` (для `aria-label`).
 
 ### `MissedPage` (дизайн: `Home · Missed`)
 Пропущені з історії (`recents` з результатом `missed`) в одній картці, групи за днями («Сьогодні», «Вчора», «28 вересня»), рядок
@@ -169,9 +184,10 @@
 
 - Стан: `status` (`idle` / `ringing` / `incoming` / `connected`), `peer`, `hold`, `peerHold`, `mic`, `link` (стан зв'язку з кімнати LiveKit), `missed` (екран результату з `reason` і `duration`), `left`, `seconds`;
   `me` і `settings` з `hello.ok`, `recents` (історія, `recents.add` додає), `missedCalls`, `unseenMissed`, `busySelf`;
-  `waiting` (другий вхідний під час розмови, `CallInfo`) і `held` (утримуваний дзвінок: `callId`, `peer`, `startedAt`, `peerHold`, `livekit`).
+  `presence` (`free` / `busy` / `dnd` для мітки в шапці); `waiting` (другий вхідний під час розмови, `CallInfo`) і `held` (утримуваний дзвінок: `callId`, `peer`, `startedAt`, `peerHold`, `livekit`).
 - Дії: `call`, `accept`, `end` (відхилити, скасувати чи завершити залежно від стану), `toggleHold`, `toggleMic`, `dismissMissed`, `markMissedSeen`;
-  `acceptWaiting('hold' | 'end')`, `rejectWaiting`, `swapHeld`.
+  `acceptWaiting('hold' | 'end')`, `rejectWaiting`, `swapHeld`; `updateSettings(patch)` (`settings.update`, одразу локально, при помилці назад),
+  `rename(name)` (`profile.update`). Події `settings.updated` і `profile.updated` з інших пристроїв оновлюють `settings` і `me`.
 - **Другий вхідний** ([signaling.md](signaling.md#другий-вхідний-під-час-розмови)): `call.incoming` з `waiting` під час розмови кладеться у `waiting`
   (звук `waiting` замість тиші й мелодії утримання). «Утримати й прийняти»: коли приходить `call.connected` другого, поточна розмова переходить у `held`
   (`media.park()`), другий стає поточним. «Завершити й прийняти»: кінець першої (`call.ended`, `hangup`) без екрана результату, хоч би яка подія прийшла першою.
