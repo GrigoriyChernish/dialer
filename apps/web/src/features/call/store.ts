@@ -1,6 +1,7 @@
 import type { CallInfo, Contact, EndReason, Peer, ServerMessage } from '@dialer/shared';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import type { LinkState } from '@/shared/media/room';
 import type { SoundKind } from '@/shared/sounds/sounds';
 
 export type CallStatus = 'idle' | 'ringing' | 'incoming' | 'connected';
@@ -13,7 +14,7 @@ export interface CallDeps {
     on(fn: (m: ServerMessage) => void): () => void;
     onStatus(fn: (open: boolean, error?: string) => void): () => void;
   };
-  media: { join(a: { url: string; token: string }): Promise<void>; leave(): void; setMic(on: boolean): void; setDeaf(d: boolean): void };
+  media: { join(a: { url: string; token: string }): Promise<void>; leave(): void; setMic(on: boolean): void; setDeaf(d: boolean): void; onChange?(fn: (patch: Partial<LinkState>) => void): void };
   sounds: { play(kind: SoundKind | null, ms?: number): void };
 }
 
@@ -42,6 +43,7 @@ export const useCallStore = defineStore('call', () => {
   const hold = ref(false);
   const peerHold = ref(false);
   const mic = ref(true);
+  const link = ref<LinkState>({ reconnecting: false, poor: false, peerAway: false, peerMuted: false });
   const missed = ref<{ peer: Peer; reason: MissedReason; note?: string } | null>(null);
   const now = ref(Date.now());
   let offset = 0; // serverTime - локальний час
@@ -73,6 +75,7 @@ export const useCallStore = defineStore('call', () => {
     startedAt.value = 0;
     hold.value = peerHold.value = false;
     mic.value = true;
+    link.value = { reconnecting: false, poor: false, peerAway: false, peerMuted: false };
     syncTimer();
   }
 
@@ -181,6 +184,7 @@ export const useCallStore = defineStore('call', () => {
 
   function init(d: CallDeps) {
     deps = d;
+    d.media.onChange?.((patch) => Object.assign(link.value, patch));
     d.client.on(handle);
     d.client.onStatus((open, error) => {
       online.value = open;
@@ -247,7 +251,7 @@ export const useCallStore = defineStore('call', () => {
   }
 
   return {
-    online, netError, contacts, status, callId, peer, hold, peerHold, mic, missed, left, seconds,
+    online, netError, contacts, status, callId, peer, hold, peerHold, mic, link, missed, left, seconds,
     init, handle, call, accept, end, toggleHold, toggleMic, dismissMissed,
   };
 });

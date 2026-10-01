@@ -1,5 +1,13 @@
 import type { LiveKitAccess } from '@dialer/shared';
-import { Room, RoomEvent, type RemoteTrack } from 'livekit-client';
+import { ConnectionQuality, Room, RoomEvent, Track, type RemoteTrack } from 'livekit-client';
+
+/** Стан зв'язку, який видно з кімнати: показується плашками Call State. */
+export interface LinkState {
+  reconnecting: boolean;
+  poor: boolean;
+  peerAway: boolean;
+  peerMuted: boolean;
+}
 
 /** Обгортка над livekit-client: аудіо розмови. Мікрофон і приглушення співрозмовника керуються ззовні. */
 export class CallMedia {
@@ -8,6 +16,15 @@ export class CallMedia {
   private gen = 0;
   private micOn = true;
   private deaf = false;
+  private listeners = new Set<(patch: Partial<LinkState>) => void>();
+
+  onChange(fn: (patch: Partial<LinkState>) => void) {
+    this.listeners.add(fn);
+  }
+
+  private emit(patch: Partial<LinkState>) {
+    this.listeners.forEach((f) => f(patch));
+  }
 
   async join(access: LiveKitAccess) {
     this.leave();
@@ -26,6 +43,13 @@ export class CallMedia {
         this.els = this.els.filter((x) => x !== el);
       }),
     );
+    room.on(RoomEvent.Reconnecting, () => this.emit({ reconnecting: true }));
+    room.on(RoomEvent.Reconnected, () => this.emit({ reconnecting: false }));
+    room.on(RoomEvent.ConnectionQualityChanged, (q, p) => p.isLocal && this.emit({ poor: q === ConnectionQuality.Poor || q === ConnectionQuality.Lost }));
+    room.on(RoomEvent.ParticipantDisconnected, () => this.emit({ peerAway: true }));
+    room.on(RoomEvent.ParticipantConnected, () => this.emit({ peerAway: false }));
+    room.on(RoomEvent.TrackMuted, (pub, p) => !p.isLocal && pub.source === Track.Source.Microphone && this.emit({ peerMuted: true }));
+    room.on(RoomEvent.TrackUnmuted, (pub, p) => !p.isLocal && pub.source === Track.Source.Microphone && this.emit({ peerMuted: false }));
     try {
       await room.connect(access.url, access.token);
       if (gen !== this.gen) return void room.disconnect();
