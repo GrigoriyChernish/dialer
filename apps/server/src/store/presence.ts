@@ -43,7 +43,6 @@ export function createMemoryPresence(): PresenceStore {
     },
     isOnline: (siteId, userId) => byUser.has(key(siteId, userId)),
     connections: (siteId, userId) => [...(byUser.get(key(siteId, userId)) ?? [])],
-    siteConnections: (siteId) =>
-      [...byUser.values()].flatMap((set) => [...set]).filter((c) => c.siteId === siteId),
+    siteConnections: siteId => [...byUser.values()].flatMap(set => [...set]).filter(c => c.siteId === siteId),
   };
 }

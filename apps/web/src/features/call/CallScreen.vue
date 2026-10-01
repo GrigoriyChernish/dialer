@@ -45,8 +45,17 @@ const banners = computed<BannerItem[]>(() => {
   if (call.hint === 'mic') list.push(banner('micUnavailable', t('call.notice.micUnavailable')));
   return list;
 });
-const MISSED_ICON = { incoming: 'phoneMissed', timeout: 'phoneMissed', lost: 'wifiOff', dropped: 'triangleAlert' } as const;
-const missedIcon = computed(() => (call.missed && call.missed.reason in MISSED_ICON ? MISSED_ICON[call.missed.reason as keyof typeof MISSED_ICON] : 'phoneOff'));
+const MISSED_ICON = {
+  incoming: 'phoneMissed',
+  timeout: 'phoneMissed',
+  lost: 'wifiOff',
+  dropped: 'triangleAlert',
+} as const;
+const missedIcon = computed(() =>
+  call.missed && call.missed.reason in MISSED_ICON
+    ? MISSED_ICON[call.missed.reason as keyof typeof MISSED_ICON]
+    : 'phoneOff',
+);
 // наші статуси в шапці (дизайн: Self Status), зліва направо: утримання, мікрофон, камера; «недоступно» сильніше за «вимкнено»
 const selfStatuses = computed<{ status: SelfStatus; label: string }[]>(() => {
   const list: { status: SelfStatus; label: string }[] = [];
@@ -65,39 +74,75 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
   <section
     v-if="call.status === 'idle' && call.missed"
     class="relative h-full"
-    :style="{ background: `linear-gradient(180deg, ${call.missed.reason === 'ended' ? 'var(--stage-glow)' : 'var(--stage-missed-glow)'}, var(--bg))` }"
+    :style="{
+      background: `linear-gradient(180deg, ${call.missed.reason === 'ended' ? 'var(--stage-glow)' : 'var(--stage-missed-glow)'}, var(--bg))`,
+    }"
   >
     <Peer class="peer-pos" :name="name" variant="result">
-      <p class="flex items-center gap-2 text-lg font-semibold" :class="call.missed.reason === 'ended' ? 'text-fg' : 'text-call-bad'"><Icon :name="missedIcon" class="size-[18px]" />{{ t(`call.missed.${call.missed.reason}`) }}</p>
-      <small class="text-[13px] text-mute">{{ call.missed.note ? t(call.missed.note) : t(`call.missedNote.${call.missed.reason}`, { time: mm(call.missed.duration ?? 0) }) }}</small>
+      <p
+        class="flex items-center gap-2 text-lg font-semibold"
+        :class="call.missed.reason === 'ended' ? 'text-fg' : 'text-call-bad'"
+      >
+        <Icon :name="missedIcon" class="size-[18px]" />{{ t(`call.missed.${call.missed.reason}`) }}
+      </p>
+      <small class="text-[13px] text-mute">{{
+        call.missed.note
+          ? t(call.missed.note)
+          : t(`call.missedNote.${call.missed.reason}`, { time: mm(call.missed.duration ?? 0) })
+      }}</small>
     </Peer>
     <!-- кнопки без підписів: зелена дія ліворуч, червона праворуч (як на вхідному) -->
     <div class="absolute inset-x-0 bottom-10 flex justify-center gap-[72px]">
-      <div v-if="call.missed.reason !== 'ended'" class="grid w-22 justify-items-center"><RoundButton variant="ok" :label="t('call.redial')" @click="call.call(call.missed.peer.userId)"><Icon name="phone" /></RoundButton></div>
-      <div class="grid w-22 justify-items-center"><RoundButton variant="bad" :label="t('call.close')" @click="call.dismissMissed()"><Icon name="x" /></RoundButton></div>
+      <div v-if="call.missed.reason !== 'ended'" class="grid w-22 justify-items-center">
+        <RoundButton variant="ok" :label="t('call.redial')" @click="call.call(call.missed.peer.userId)"
+          ><Icon name="phone"
+        /></RoundButton>
+      </div>
+      <div class="grid w-22 justify-items-center">
+        <RoundButton variant="bad" :label="t('call.close')" @click="call.dismissMissed()"
+          ><Icon name="x"
+        /></RoundButton>
+      </div>
     </div>
   </section>
 
   <!-- дзвонимо / вхідний / розмова -->
-  <section v-else class="relative flex h-full flex-col overflow-hidden" style="background: linear-gradient(180deg, var(--stage-glow), var(--bg))" aria-live="polite">
+  <section
+    v-else
+    class="relative flex h-full flex-col overflow-hidden"
+    style="background: linear-gradient(180deg, var(--stage-glow), var(--bg))"
+    aria-live="polite"
+  >
     <template v-if="video">
       <VideoSurface kind="remote" :track="video" class="absolute inset-0" />
       <!-- градієнти під відео: згори 180, знизу 220 -->
-      <div class="absolute inset-x-0 top-0 h-[180px]" style="background: linear-gradient(180deg, #000000a0, #00000000)" />
-      <div class="absolute inset-x-0 bottom-0 h-[220px]" style="background: linear-gradient(0deg, #000000a0, #00000000)" />
+      <div
+        class="absolute inset-x-0 top-0 h-[180px]"
+        style="background: linear-gradient(180deg, #000000a0, #00000000)"
+      />
+      <div
+        class="absolute inset-x-0 bottom-0 h-[220px]"
+        style="background: linear-gradient(0deg, #000000a0, #00000000)"
+      />
     </template>
 
     <header v-if="connected" class="relative z-10 flex h-10 shrink-0 items-center justify-between px-4">
       <b class="text-base font-semibold">{{ name }}</b>
       <div class="flex items-center gap-2">
         <SelfStatusChip v-for="s in selfStatuses" :key="s.status" :status="s.status" :label="s.label" />
-        <span class="rounded-[14px] bg-surface px-2.5 py-1 text-[13px] font-medium tabular-nums">{{ mm(call.seconds) }}</span>
+        <span class="rounded-[14px] bg-surface px-2.5 py-1 text-[13px] font-medium tabular-nums">{{
+          mm(call.seconds)
+        }}</span>
       </div>
     </header>
     <!-- смужки-пігулки поверх екрана під шапкою (h-10 + 6), відступ 16 з боків, вміст не зсувають -->
     <BannerStack v-if="connected" class="pointer-events-none absolute inset-x-4 top-[46px] z-20" :items="banners" />
     <!-- смужка співрозмовника внизу: над панеллю керування (відступ 40 + висота панелі 74 + проміжок 8) -->
-    <BannerStack v-if="connected" class="pointer-events-none absolute inset-x-4 bottom-[122px] z-20" :items="peerBanners" />
+    <BannerStack
+      v-if="connected"
+      class="pointer-events-none absolute inset-x-4 bottom-[122px] z-20"
+      :items="peerBanners"
+    />
 
     <div class="relative flex min-h-0 flex-1 flex-col">
       <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); без камери їх не показуємо -->
@@ -129,22 +174,57 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
     </div>
     <!-- блок співрозмовника на одній висоті в усіх станах (поза потоком, тож шапка й кнопки його не зсувають) -->
     <Peer v-if="!video" class="peer-pos" :name="name" :variant="dimmed ? 'dimmed' : 'default'" :ringing="!connected">
-      <p v-if="call.status === 'ringing'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}</p>
-      <p v-else-if="call.status === 'incoming'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}</p>
+      <p
+        v-if="call.status === 'ringing'"
+        class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"
+      >
+        <Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}
+      </p>
+      <p
+        v-else-if="call.status === 'incoming'"
+        class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"
+      >
+        <Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}
+      </p>
       <VoiceWave v-else :silent="!talking || call.hold" />
-      <small v-if="!connected && call.left" class="text-xs text-mute">{{ t('call.left', { time: mm(call.left) }) }}</small>
+      <small v-if="!connected && call.left" class="text-xs text-mute">{{
+        t('call.left', { time: mm(call.left) })
+      }}</small>
     </Peer>
 
     <div class="relative z-10 flex justify-center pb-10">
       <div v-if="connected" class="flex gap-2.5 rounded-[40px] border border-line bg-surface p-2.5">
-        <RoundButton :label="call.micBlocked ? t('call.micUnavailable') : call.mic ? t('call.mute') : t('call.unmute')" :active="!call.mic && !call.micBlocked" :unavailable="call.micBlocked" :disabled="call.hold" @click="call.toggleMic()"><Icon :name="call.mic ? 'mic' : 'micOff'" /></RoundButton>
-        <RoundButton :label="call.camBlocked ? t('call.cameraUnavailable') : call.cam ? t('call.camera') : t('call.cameraOn')" :active="!call.cam && !call.camBlocked" :unavailable="call.camBlocked" :disabled="call.hold" @click="call.toggleCam()"><Icon :name="call.cam ? 'video' : 'videoOff'" /></RoundButton>
-        <RoundButton :label="call.hold ? t('call.resume') : t('call.hold')" :active="call.hold" @click="call.toggleHold()"><Icon name="pause" /></RoundButton>
+        <RoundButton
+          :label="call.micBlocked ? t('call.micUnavailable') : call.mic ? t('call.mute') : t('call.unmute')"
+          :active="!call.mic && !call.micBlocked"
+          :unavailable="call.micBlocked"
+          :disabled="call.hold"
+          @click="call.toggleMic()"
+          ><Icon :name="call.mic ? 'mic' : 'micOff'"
+        /></RoundButton>
+        <RoundButton
+          :label="call.camBlocked ? t('call.cameraUnavailable') : call.cam ? t('call.camera') : t('call.cameraOn')"
+          :active="!call.cam && !call.camBlocked"
+          :unavailable="call.camBlocked"
+          :disabled="call.hold"
+          @click="call.toggleCam()"
+          ><Icon :name="call.cam ? 'video' : 'videoOff'"
+        /></RoundButton>
+        <RoundButton
+          :label="call.hold ? t('call.resume') : t('call.hold')"
+          :active="call.hold"
+          @click="call.toggleHold()"
+          ><Icon name="pause"
+        /></RoundButton>
         <RoundButton variant="bad" :label="t('call.hangup')" @click="call.end()"><Icon name="x" /></RoundButton>
       </div>
       <div v-else-if="call.status === 'incoming'" class="flex gap-[72px]">
-        <div class="grid w-22 justify-items-center"><RoundButton variant="ok" :label="t('call.accept')" @click="call.accept()"><Icon name="phone" /></RoundButton></div>
-        <div class="grid w-22 justify-items-center"><RoundButton variant="bad" :label="t('call.reject')" @click="call.end()"><Icon name="x" /></RoundButton></div>
+        <div class="grid w-22 justify-items-center">
+          <RoundButton variant="ok" :label="t('call.accept')" @click="call.accept()"><Icon name="phone" /></RoundButton>
+        </div>
+        <div class="grid w-22 justify-items-center">
+          <RoundButton variant="bad" :label="t('call.reject')" @click="call.end()"><Icon name="x" /></RoundButton>
+        </div>
       </div>
       <RoundButton v-else variant="bad" :label="t('call.cancel')" @click="call.end()"><Icon name="x" /></RoundButton>
     </div>

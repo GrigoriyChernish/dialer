@@ -6,21 +6,50 @@ import type { LinkState } from '@/shared/media/room';
 
 const V = 1 as const;
 const olena = { userId: '+380501111111', name: 'Олена' };
-const info = (p: Partial<CallInfo> = {}): CallInfo => ({ callId: 'c1', direction: 'out', peer: olena, state: 'ringing', expiresAt: Date.now() + 60_000, ...p });
+const info = (p: Partial<CallInfo> = {}): CallInfo => ({
+  callId: 'c1',
+  direction: 'out',
+  peer: olena,
+  state: 'ringing',
+  expiresAt: Date.now() + 60_000,
+  ...p,
+});
 
 function setup() {
   setActivePinia(createPinia());
   let handler: (m: ServerMessage) => void = () => {};
   let onLink: (p: Partial<LinkState>) => void = () => {};
-  const request = vi.fn(async (type: string): Promise<ServerMessage> => (type === 'call.invite' ? { v: V, type: 'ack', reqId: 'r', call: info() } : { v: V, type: 'ack', reqId: 'r' }));
+  const request = vi.fn(async (type: string): Promise<ServerMessage> =>
+    type === 'call.invite' ? { v: V, type: 'ack', reqId: 'r', call: info() } : { v: V, type: 'ack', reqId: 'r' },
+  );
   const deps: CallDeps = {
-    client: { request, on: (f) => ((handler = f), () => {}), onStatus: () => () => {} },
-    media: { join: vi.fn(async () => {}), leave: vi.fn(), setMic: vi.fn(), setDeaf: vi.fn(), setCamera: vi.fn(), attach: vi.fn(), hasCamera: vi.fn(async () => true), hasMicrophone: vi.fn(async () => true), onChange: (f) => (onLink = f) },
+    client: { request, on: f => ((handler = f), () => {}), onStatus: () => () => {} },
+    media: {
+      join: vi.fn(async () => {}),
+      leave: vi.fn(),
+      setMic: vi.fn(),
+      setDeaf: vi.fn(),
+      setCamera: vi.fn(),
+      attach: vi.fn(),
+      hasCamera: vi.fn(async () => true),
+      hasMicrophone: vi.fn(async () => true),
+      onChange: f => (onLink = f),
+    },
     sounds: { play: vi.fn() },
   };
   const store = useCallStore();
   store.init(deps);
-  handler({ v: V, type: 'hello.ok', reqId: 'h', user: { userId: 'me', name: 'Я' }, serverTime: Date.now(), settings: { waiting: true, dnd: false }, calls: [], contacts: [{ ...olena, online: true }], recents: [] });
+  handler({
+    v: V,
+    type: 'hello.ok',
+    reqId: 'h',
+    user: { userId: 'me', name: 'Я' },
+    serverTime: Date.now(),
+    settings: { waiting: true, dnd: false },
+    calls: [],
+    contacts: [{ ...olena, online: true }],
+    recents: [],
+  });
   return { store, deps, request, send: handler, link: (p: Partial<LinkState>) => onLink(p) };
 }
 
@@ -43,7 +72,11 @@ describe('call store', () => {
   it('connects on call.connected and joins the LiveKit room', async () => {
     const { store, deps, send } = setup();
     await store.call(olena.userId);
-    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now(), livekit: { url: 'wss://x', token: 't' } }) });
+    send({
+      v: V,
+      type: 'call.connected',
+      call: info({ state: 'connected', startedAt: Date.now(), livekit: { url: 'wss://x', token: 't' } }),
+    });
     expect(store.status).toBe('connected');
     expect(deps.media.join).toHaveBeenCalledWith({ url: 'wss://x', token: 't' });
   });
@@ -212,7 +245,10 @@ describe('call store', () => {
   });
 
   it('keeps lost and failed calls on screen, but shows nothing after our own hangup', async () => {
-    for (const [reason, shown] of [['lost', 'lost'], ['error', 'dropped']] as const) {
+    for (const [reason, shown] of [
+      ['lost', 'lost'],
+      ['error', 'dropped'],
+    ] as const) {
       const { store, send } = setup();
       await store.call(olena.userId);
       send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
@@ -230,7 +266,14 @@ describe('call store', () => {
   it('counts unseen missed calls from recents and resets the count when seen', () => {
     localStorage.clear();
     const { store, send } = setup();
-    const entry = (callId: string, p: object = {}) => ({ callId, peer: olena.userId, direction: 'in' as const, result: 'missed' as const, startedAt: Date.now(), ...p });
+    const entry = (callId: string, p: object = {}) => ({
+      callId,
+      peer: olena.userId,
+      direction: 'in' as const,
+      result: 'missed' as const,
+      startedAt: Date.now(),
+      ...p,
+    });
     send({ v: V, type: 'recents.add', entry: entry('m1') });
     send({ v: V, type: 'recents.add', entry: entry('m2', { silent: true }) });
     send({ v: V, type: 'recents.add', entry: entry('c3', { result: 'completed' }) });

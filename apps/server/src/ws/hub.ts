@@ -19,18 +19,25 @@ export function createHub(presence: PresenceStore, users: Users) {
   };
 
   return {
-    contactsFor: (siteId: string, userId: string): Contact[] =>
-      users.listOthers(siteId, userId).map(toContact),
+    contactsFor: (siteId: string, userId: string): Contact[] => users.listOthers(siteId, userId).map(toContact),
 
     connect(conn: Connection) {
       if (presence.add(conn)) {
-        broadcast(conn.siteId, { v: PROTOCOL_VERSION, type: 'presence', userId: conn.userId, online: true }, conn.userId);
+        broadcast(
+          conn.siteId,
+          { v: PROTOCOL_VERSION, type: 'presence', userId: conn.userId, online: true },
+          conn.userId,
+        );
       }
     },
 
     disconnect(conn: Connection) {
       if (presence.remove(conn)) {
-        broadcast(conn.siteId, { v: PROTOCOL_VERSION, type: 'presence', userId: conn.userId, online: false }, conn.userId);
+        broadcast(
+          conn.siteId,
+          { v: PROTOCOL_VERSION, type: 'presence', userId: conn.userId, online: false },
+          conn.userId,
+        );
       }
     },
 

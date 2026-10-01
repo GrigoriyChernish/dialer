@@ -7,7 +7,9 @@ defineProps<{ icon: IconName; title: string }>();
 
 <template>
   <div class="grid justify-items-center gap-3 px-6 text-center" role="status">
-    <span class="grid size-16 place-items-center rounded-full border border-line bg-surface text-mute"><Icon :name="icon" class="size-[26px]" /></span>
+    <span class="grid size-16 place-items-center rounded-full border border-line bg-surface text-mute"
+      ><Icon :name="icon" class="size-[26px]"
+    /></span>
     <p class="text-base font-semibold">{{ title }}</p>
   </div>
 </template>

@@ -50,9 +50,13 @@ export function createUsers(db: Db) {
     `INSERT OR IGNORE INTO users (site_id, id, name, is_bot, created_at) VALUES (?, ?, ?, 1, ?)`,
   );
   const select = db.prepare('SELECT * FROM users WHERE site_id = ? AND id = ?');
-  const markVerifiedStmt = db.prepare('UPDATE users SET verified_at = ? WHERE site_id = ? AND id = ? AND verified_at IS NULL');
+  const markVerifiedStmt = db.prepare(
+    'UPDATE users SET verified_at = ? WHERE site_id = ? AND id = ? AND verified_at IS NULL',
+  );
   const updateSettingsStmt = db.prepare('UPDATE users SET settings = ? WHERE site_id = ? AND id = ?');
-  const selectOthers = db.prepare('SELECT * FROM users WHERE site_id = ? AND id != ? AND disabled = 0 ORDER BY is_bot, name');
+  const selectOthers = db.prepare(
+    'SELECT * FROM users WHERE site_id = ? AND id != ? AND disabled = 0 ORDER BY is_bot, name',
+  );
 
   const get = (siteId: string, id: string): UserRow | null => {
     const row = select.get(siteId, id) as RawUser | undefined;

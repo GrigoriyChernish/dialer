@@ -17,7 +17,8 @@ let token = q.get('token') ?? '';
 const server = q.get('server') || import.meta.env.VITE_SERVER_URL || 'http://localhost:8787';
 const toHost = (m: object) => parent !== window && parent.postMessage(m, host);
 
-const setTheme = (t: string | null) => (t && t !== 'auto' ? (document.documentElement.dataset.theme = t) : delete document.documentElement.dataset.theme);
+const setTheme = (t: string | null) =>
+  t && t !== 'auto' ? (document.documentElement.dataset.theme = t) : delete document.documentElement.dataset.theme;
 setTheme(q.get('theme'));
 
 let deviceId: string;
@@ -36,19 +37,22 @@ const client = new SignalingClient({
 });
 
 const pinia = createPinia();
-const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: { render: () => h(ContactsPage, { class: 'p-4' }) } }] });
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes: [{ path: '/', component: { render: () => h(ContactsPage, { class: 'p-4' }) } }],
+});
 const app = createApp(App).use(pinia).use(router).use(i18n);
 
 const call = useCallStore(pinia);
 call.init({ client, media: new CallMedia(), sounds: new Sounds() });
-client.on((m) => m.type === 'token.expiring' && toHost({ type: 'token:expired' }));
+client.on(m => m.type === 'token.expiring' && toHost({ type: 'token:expired' }));
 client.connect();
 // після обриву не чекаємо паузи, коли мережа повернулась чи вкладку знову відкрили
 addEventListener('online', () => client.reconnectNow());
 document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && client.reconnectNow());
 
 // повідомлення лише від сайту-господаря, який нас вбудував
-addEventListener('message', (e) => {
+addEventListener('message', e => {
   if (e.source !== parent || e.origin !== host) return;
   const m = e.data ?? {};
   if (m.type === 'theme') setTheme(m.theme);
@@ -58,7 +62,7 @@ addEventListener('message', (e) => {
   }
   if (m.type === 'call') void call.call(m.id);
 });
-addEventListener('keydown', (e) => e.key === 'Escape' && toHost({ type: 'close' }));
+addEventListener('keydown', e => e.key === 'Escape' && toHost({ type: 'close' }));
 call.$subscribe(() => toHost({ type: 'state', state: call.status }));
 
 app.mount('#app');

@@ -1,4 +1,13 @@
-import { DEFAULT_SETTINGS, type CallInfo, type Contact, type EndReason, type Peer, type RecentEntry, type ServerMessage, type Settings } from '@dialer/shared';
+import {
+  DEFAULT_SETTINGS,
+  type CallInfo,
+  type Contact,
+  type EndReason,
+  type Peer,
+  type RecentEntry,
+  type ServerMessage,
+  type Settings,
+} from '@dialer/shared';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type { LinkState } from '@/shared/media/room';
@@ -15,7 +24,17 @@ export interface CallDeps {
     on(fn: (m: ServerMessage) => void): () => void;
     onStatus(fn: (open: boolean, error?: string) => void): () => void;
   };
-  media: { join(a: { url: string; token: string }): Promise<void>; leave(): void; setMic(on: boolean): void; setDeaf(d: boolean): void; onChange?(fn: (patch: Partial<LinkState>) => void): void; setCamera?(on: boolean): void; hasCamera?(): Promise<boolean>; hasMicrophone?(): Promise<boolean>; attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void };
+  media: {
+    join(a: { url: string; token: string }): Promise<void>;
+    leave(): void;
+    setMic(on: boolean): void;
+    setDeaf(d: boolean): void;
+    onChange?(fn: (patch: Partial<LinkState>) => void): void;
+    setCamera?(on: boolean): void;
+    hasCamera?(): Promise<boolean>;
+    hasMicrophone?(): Promise<boolean>;
+    attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void;
+  };
   sounds: { play(kind: SoundKind | null, ms?: number): void };
 }
 
@@ -62,7 +81,16 @@ export const useCallStore = defineStore('call', () => {
   const hold = ref(false);
   const peerHold = ref(false);
   const mic = ref(true);
-  const NO_LINK: LinkState = { reconnecting: false, poor: false, peerAway: false, peerMuted: false, peerCam: false, localCam: false, micError: false, camError: false };
+  const NO_LINK: LinkState = {
+    reconnecting: false,
+    poor: false,
+    peerAway: false,
+    peerMuted: false,
+    peerCam: false,
+    localCam: false,
+    micError: false,
+    camError: false,
+  };
   const link = ref<LinkState>({ ...NO_LINK });
   const cam = ref(true);
   const selfHidden = ref(false);
@@ -81,13 +109,19 @@ export const useCallStore = defineStore('call', () => {
 
   /** Серверний час у локальному відліку. */
   const serverNow = computed(() => now.value + offset);
-  const left = computed(() => (expiresAt.value ? Math.max(0, Math.ceil((expiresAt.value - serverNow.value) / 1000)) : 0));
-  const seconds = computed(() => (startedAt.value ? Math.max(0, Math.floor((serverNow.value - startedAt.value) / 1000)) : 0));
+  const left = computed(() =>
+    expiresAt.value ? Math.max(0, Math.ceil((expiresAt.value - serverNow.value) / 1000)) : 0,
+  );
+  const seconds = computed(() =>
+    startedAt.value ? Math.max(0, Math.floor((serverNow.value - startedAt.value) / 1000)) : 0,
+  );
   /** Ми зайняті: на дзвінку чи ввімкнено «Не турбувати». */
   const busySelf = computed(() => status.value !== 'idle' || settings.value.dnd);
-  const missedCalls = computed(() => recents.value.filter((r) => r.result === 'missed'));
+  const missedCalls = computed(() => recents.value.filter(r => r.result === 'missed'));
   /** Лічильник на вкладці «Пропущені»: нові з часу перегляду, без тихих (`silent`). */
-  const unseenMissed = computed(() => missedCalls.value.filter((r) => !r.silent && r.startedAt > missedSeenAt.value).length);
+  const unseenMissed = computed(
+    () => missedCalls.value.filter(r => !r.silent && r.startedAt > missedSeenAt.value).length,
+  );
 
   let timer: ReturnType<typeof setInterval> | undefined;
   const tick = () => (now.value = Date.now());
@@ -134,8 +168,8 @@ export const useCallStore = defineStore('call', () => {
       deps.media.setDeaf(hold.value);
       deps.media.setMic(mic.value);
       deps.media.setCamera?.(cam.value);
-      void deps.media.hasCamera?.().then((ok) => ok || blockCamera());
-      void deps.media.hasMicrophone?.().then((ok) => ok || blockMic());
+      void deps.media.hasCamera?.().then(ok => ok || blockCamera());
+      void deps.media.hasMicrophone?.().then(ok => ok || blockMic());
       if (call.livekit) void deps.media.join(call.livekit);
     } else if (call.direction === 'in') {
       status.value = 'incoming';
@@ -148,7 +182,7 @@ export const useCallStore = defineStore('call', () => {
   }
 
   function restore(calls: CallInfo[]) {
-    const c = calls.find((x) => x.state === 'connected') ?? calls[0];
+    const c = calls.find(x => x.state === 'connected') ?? calls[0];
     if (!c) {
       if (callId.value) {
         reset();
@@ -175,12 +209,19 @@ export const useCallStore = defineStore('call', () => {
     reset();
     let shown: MissedReason | null = null;
     if (was === 'ringing') {
-      shown = ({ busy: 'busy', rejected: 'rejected', timeout: 'timeout', offline: 'timeout', error: 'error' } as Partial<Record<EndReason, MissedReason>>)[reason] ?? null;
+      shown =
+        (
+          { busy: 'busy', rejected: 'rejected', timeout: 'timeout', offline: 'timeout', error: 'error' } as Partial<
+            Record<EndReason, MissedReason>
+          >
+        )[reason] ?? null;
     } else if (was === 'incoming' && (reason === 'cancelled' || reason === 'timeout')) {
       shown = 'incoming'; // answered_elsewhere, hangup: без екрана «пропущений»
     } else if (was === 'connected') {
       // свій hangup сюди не доходить: end() скидає дзвінок одразу, тож hangup тут від співрозмовника
-      shown = ({ hangup: 'ended', lost: 'lost', error: 'dropped' } as Partial<Record<EndReason, MissedReason>>)[reason] ?? null;
+      shown =
+        ({ hangup: 'ended', lost: 'lost', error: 'dropped' } as Partial<Record<EndReason, MissedReason>>)[reason] ??
+        null;
     }
     setMissed(shown && p ? { peer: p, reason: shown, ...(was === 'connected' && { duration: secs }) } : null);
     if (shown === 'busy') deps.sounds.play('busy', 4000);
@@ -199,7 +240,8 @@ export const useCallStore = defineStore('call', () => {
         break;
       case 'call.incoming':
         // другий вхідний під час розмови поки відхиляємо (беклог, пункт 3)
-        if (status.value !== 'idle' || m.call.waiting) void deps.client.request('call.reject', { callId: m.call.callId }).catch(() => {});
+        if (status.value !== 'idle' || m.call.waiting)
+          void deps.client.request('call.reject', { callId: m.call.callId }).catch(() => {});
         else applyCall(m.call);
         break;
       case 'call.ringing':
@@ -215,7 +257,7 @@ export const useCallStore = defineStore('call', () => {
         onEnded(m.callId, m.reason, m.duration);
         break;
       case 'recents.add':
-        recents.value = [m.entry, ...recents.value.filter((r) => r.callId !== m.entry.callId)];
+        recents.value = [m.entry, ...recents.value.filter(r => r.callId !== m.entry.callId)];
         break;
       case 'call.peer':
         if (m.callId === callId.value) {
@@ -230,13 +272,13 @@ export const useCallStore = defineStore('call', () => {
         }
         break;
       case 'presence': {
-        const c = contacts.value.find((x) => x.userId === m.userId);
+        const c = contacts.value.find(x => x.userId === m.userId);
         if (c) c.online = m.online;
         break;
       }
       case 'contacts.update':
         contacts.value = contacts.value
-          .filter((c) => !m.remove.includes(c.userId) && !m.upsert.some((u) => u.userId === c.userId))
+          .filter(c => !m.remove.includes(c.userId) && !m.upsert.some(u => u.userId === c.userId))
           .concat(m.upsert);
         break;
     }
@@ -262,7 +304,7 @@ export const useCallStore = defineStore('call', () => {
 
   function init(d: CallDeps) {
     deps = d;
-    d.media.onChange?.((patch) => {
+    d.media.onChange?.(patch => {
       Object.assign(link.value, patch);
       if (patch.micError) blockMic();
       if (patch.camError) blockCamera(); // камеру не вдалося ввімкнути (немає пристрою чи дозволу)
@@ -277,7 +319,7 @@ export const useCallStore = defineStore('call', () => {
 
   async function call(userId: string) {
     if (status.value !== 'idle' || busy) return;
-    const target = contacts.value.find((c) => c.userId === userId);
+    const target = contacts.value.find(c => c.userId === userId);
     if (!target) return;
     setMissed(null);
     busy = true;
@@ -286,7 +328,11 @@ export const useCallStore = defineStore('call', () => {
       if (ack.type === 'ack' && ack.call) applyCall(ack.call);
     } catch (e) {
       const code = e instanceof Error ? e.message : 'error';
-      setMissed({ peer: { userId: target.userId, name: target.name }, reason: 'error', note: ERRORS[code] ?? 'call.err.generic' });
+      setMissed({
+        peer: { userId: target.userId, name: target.name },
+        reason: 'error',
+        note: ERRORS[code] ?? 'call.err.generic',
+      });
     } finally {
       busy = false;
     }
@@ -304,7 +350,8 @@ export const useCallStore = defineStore('call', () => {
   function end() {
     const id = callId.value;
     if (!id) return;
-    const type = status.value === 'incoming' ? 'call.reject' : status.value === 'ringing' ? 'call.cancel' : 'call.hangup';
+    const type =
+      status.value === 'incoming' ? 'call.reject' : status.value === 'ringing' ? 'call.cancel' : 'call.hangup';
     void deps.client.request(type, { callId: id }).catch(() => {});
     reset();
     deps.sounds.play(null);
@@ -346,7 +393,7 @@ export const useCallStore = defineStore('call', () => {
 
   /** Вкладку «Пропущені» переглянуто: лічильник обнуляється. */
   function markMissedSeen() {
-    missedSeenAt.value = Math.max(missedSeenAt.value, ...missedCalls.value.map((r) => r.startedAt));
+    missedSeenAt.value = Math.max(missedSeenAt.value, ...missedCalls.value.map(r => r.startedAt));
     try {
       localStorage.setItem(SEEN_KEY, String(missedSeenAt.value));
     } catch {
@@ -355,7 +402,40 @@ export const useCallStore = defineStore('call', () => {
   }
 
   return {
-    online, netError, contacts, me, settings, recents, missedCalls, unseenMissed, busySelf, status, callId, peer, hold, peerHold, mic, cam, micBlocked, camBlocked, hint, selfHidden, link, missed, left, seconds,
-    init, handle, call, accept, end, toggleHold, toggleMic, toggleCam, attach, dismissMissed, markMissedSeen,
+    online,
+    netError,
+    contacts,
+    me,
+    settings,
+    recents,
+    missedCalls,
+    unseenMissed,
+    busySelf,
+    status,
+    callId,
+    peer,
+    hold,
+    peerHold,
+    mic,
+    cam,
+    micBlocked,
+    camBlocked,
+    hint,
+    selfHidden,
+    link,
+    missed,
+    left,
+    seconds,
+    init,
+    handle,
+    call,
+    accept,
+    end,
+    toggleHold,
+    toggleMic,
+    toggleCam,
+    attach,
+    dismissMissed,
+    markMissedSeen,
   };
 });

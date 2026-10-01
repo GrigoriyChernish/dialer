@@ -18,7 +18,10 @@ import type { CallStore } from '../store/calls';
 import type { Actor, Call, Clock, Effect } from './types';
 
 export class CallError extends Error {
-  constructor(readonly code: ErrorCode, message?: string) {
+  constructor(
+    readonly code: ErrorCode,
+    message?: string,
+  ) {
     super(message ?? code);
   }
 }
@@ -98,7 +101,7 @@ export function createCallService(deps: CallServiceDeps) {
   /** Дзвінок очікує: адресат уже в розмові. */
   const isWaiting = (call: Call): boolean =>
     call.state === 'ringing' &&
-    store.activeFor(call.siteId, call.calleeId).some((c) => c.id !== call.id && c.state === 'connected');
+    store.activeFor(call.siteId, call.calleeId).some(c => c.id !== call.id && c.state === 'connected');
 
   const info = (call: Call, forUserId: string, forDevice?: string): CallInfo => {
     const outgoing = call.callerId === forUserId;
@@ -110,7 +113,11 @@ export function createCallService(deps: CallServiceDeps) {
     const mediaDevice = outgoing ? call.callerDevice : call.answeredDevice;
     const livekit =
       call.state === 'connected' && forDevice !== undefined && forDevice === mediaDevice && tracked(call)
-        ? deps.livekit!.accessFor(call.id, liveKitIdentity(forUserId, forDevice), users.get(call.siteId, forUserId)?.name ?? forUserId)
+        ? deps.livekit!.accessFor(
+            call.id,
+            liveKitIdentity(forUserId, forDevice),
+            users.get(call.siteId, forUserId)?.name ?? forUserId,
+          )
         : undefined;
     return {
       callId: call.id,
@@ -156,11 +163,17 @@ export function createCallService(deps: CallServiceDeps) {
     store.save(call);
     clock.after(ENDED_CALL_TTL_MS, () => store.remove(call.id));
     if (wasConnected && tracked(call)) {
-      deps.livekit!.closeRoom(call.id).catch((err) => log.warn({ err, callId: call.id }, 'не вдалося закрити кімнату'));
+      deps.livekit!.closeRoom(call.id).catch(err => log.warn({ err, callId: call.id }, 'не вдалося закрити кімнату'));
     }
 
     const duration = wasConnected && call.answeredAt ? Math.round((now - call.answeredAt) / 1000) : undefined;
-    const ended = { v: V, type: 'call.ended', callId: call.id, reason, ...(duration !== undefined && { duration }) } as const;
+    const ended = {
+      v: V,
+      type: 'call.ended',
+      callId: call.id,
+      reason,
+      ...(duration !== undefined && { duration }),
+    } as const;
     log.info({ callId: call.id, reason, duration }, 'дзвінок завершено');
 
     const effects: Effect[] = [toCaller(call, ended)];
@@ -233,7 +246,7 @@ export function createCallService(deps: CallServiceDeps) {
   }
 
   const connectedCalls = (siteId: string, userId: string, except: string): Call[] =>
-    store.activeFor(siteId, userId).filter((c) => c.id !== except && c.state === 'connected');
+    store.activeFor(siteId, userId).filter(c => c.id !== except && c.state === 'connected');
 
   /** Переводить дзвінок у `connected` і повідомляє обидві сторони. */
   function connect(call: Call, deviceId: string): Effect[] {
@@ -250,7 +263,8 @@ export function createCallService(deps: CallServiceDeps) {
       refreshLost(call.id);
     }
 
-    const callerMsg = (device?: string) => ({ v: V, type: 'call.connected', call: info(call, call.callerId, device) }) as const;
+    const callerMsg = (device?: string) =>
+      ({ v: V, type: 'call.connected', call: info(call, call.callerId, device) }) as const;
     return [
       // токен кімнати лише пристрою, з якого дзвонили; інші пристрої бачать дзвінок без медіа
       ...(tracked(call)
@@ -261,7 +275,11 @@ export function createCallService(deps: CallServiceDeps) {
         : [toCaller(call, callerMsg())]),
       toCallee(call, { v: V, type: 'call.connected', call: info(call, call.calleeId, deviceId) }, { deviceId }),
       // решта пристроїв адресата припиняє дзвонити
-      toCallee(call, { v: V, type: 'call.ended', callId: call.id, reason: 'answered_elsewhere' }, { exceptDeviceId: deviceId }),
+      toCallee(
+        call,
+        { v: V, type: 'call.ended', callId: call.id, reason: 'answered_elsewhere' },
+        { exceptDeviceId: deviceId },
+      ),
     ];
   }
 
@@ -271,7 +289,7 @@ export function createCallService(deps: CallServiceDeps) {
     if (!call || call.state !== 'connected') return;
     const present = media.get(id) ?? new Set<string>();
     const key = `lost:${id}`;
-    if (expectedIdentities(call).every((identity) => present.has(identity))) {
+    if (expectedIdentities(call).every(identity => present.has(identity))) {
       timers.get(key)?.();
       timers.delete(key);
     } else if (!timers.has(key)) {
@@ -296,7 +314,7 @@ export function createCallService(deps: CallServiceDeps) {
     const current = store.get(id);
     if (current?.state !== 'connected' || timers.has(key)) return;
     if (present) media.set(id, present);
-    if (present && !expectedIdentities(current).every((identity) => present.has(identity))) {
+    if (present && !expectedIdentities(current).every(identity => present.has(identity))) {
       deps.deliver(end(current, 'lost'));
       return;
     }
@@ -321,7 +339,7 @@ export function createCallService(deps: CallServiceDeps) {
 
   function checkRate(userKey: string): void {
     const now = clock.now();
-    const recent = (invites.get(userKey) ?? []).filter((t) => now - t < 60_000);
+    const recent = (invites.get(userKey) ?? []).filter(t => now - t < 60_000);
     if (recent.length >= MAX_INVITES_PER_MINUTE) throw new CallError('rate_limited');
     recent.push(now);
     invites.set(userKey, recent);
@@ -330,7 +348,7 @@ export function createCallService(deps: CallServiceDeps) {
   return {
     /** Дзвінки користувача; токен кімнати отримує лише пристрій, що бере участь у розмові. */
     callsFor: (siteId: string, userId: string, deviceId?: string): CallInfo[] =>
-      store.activeFor(siteId, userId).map((c) => info(c, userId, deviceId)),
+      store.activeFor(siteId, userId).map(c => info(c, userId, deviceId)),
 
     /** Подія з вебхука LiveKit: хто зайшов у кімнату чи вийшов з неї. */
     onMedia(event: MediaEvent): void {
@@ -391,7 +409,7 @@ export function createCallService(deps: CallServiceDeps) {
         if (scenario?.kind === 'busy' || others.length > 0) refusal = { reason: 'busy' };
       } else if (callee.settings.dnd) {
         refusal = { reason: 'busy', silent: true };
-      } else if (others.some((c) => c.state === 'ringing') || others.length >= 2) {
+      } else if (others.some(c => c.state === 'ringing') || others.length >= 2) {
         refusal = { reason: 'busy' };
       } else if (others.length === 1 && !callee.settings.waiting) {
         refusal = { reason: 'busy', silent: true };

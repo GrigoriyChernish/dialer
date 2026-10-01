@@ -8,8 +8,8 @@ export function createFakeLiveKit() {
   const livekit: LiveKit = {
     accessFor: (callId, identity, name) => ({ url: 'wss://lk.test', token: `${callId}|${identity}|${name}` }),
     parseWebhook: async () => null,
-    closeRoom: async (callId) => void closed.push(callId),
-    listParticipants: async (callId) => {
+    closeRoom: async callId => void closed.push(callId),
+    listParticipants: async callId => {
       if (failList) throw new Error('LiveKit недоступний');
       return participants.get(callId) ?? [];
     },

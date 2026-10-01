@@ -46,7 +46,8 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
 
   // Вхід за номером (docs/backend.md, «Вхід»): номер → код → токен доступу й сесія на 7 днів.
   // На Fly.io справжня адреса клієнта в Fly-Client-IP (заголовок ставить проксі Fly).
-  const clientIp = (req: { headers: Record<string, unknown>; ip: string }) => String(req.headers['fly-client-ip'] ?? req.ip);
+  const clientIp = (req: { headers: Record<string, unknown>; ip: string }) =>
+    String(req.headers['fly-client-ip'] ?? req.ip);
   const startLimit = createRateLimit(10, 10 * 60_000, clock);
   const verifyLimit = createRateLimit(30, 10 * 60_000, clock);
   const tooMany = (reply: { code(c: number): { send(b: object): unknown } }, ms: number) =>
@@ -69,10 +70,16 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
     if (user?.verifiedAt) {
       const session = sessions.create(DEMO_SITE_ID, user.id);
       req.log.info({ userId: user.id }, 'вхід підтвердженим номером');
-      return { known: true, ...(await issue(user)), refreshToken: session.refreshToken, sessionExpiresAt: session.expiresAt };
+      return {
+        known: true,
+        ...(await issue(user)),
+        refreshToken: session.refreshToken,
+        sessionExpiresAt: session.expiresAt,
+      };
     }
     const locked = await otp.start(phone);
-    if (locked) return reply.code(429).send({ error: 'too_many_attempts', retryAfter: Math.ceil(locked.retryAfter / 1000) });
+    if (locked)
+      return reply.code(429).send({ error: 'too_many_attempts', retryAfter: Math.ceil(locked.retryAfter / 1000) });
     return { known: !!user };
   });
 
@@ -89,8 +96,10 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
     const code = typeof body.code === 'string' ? body.code.trim() : '';
     const res = otp.verify(phone, code);
     if (!res.ok) {
-      if (res.error === 'too_many_attempts') return reply.code(429).send({ error: res.error, retryAfter: Math.ceil(res.retryAfter / 1000) });
-      if (res.error === 'invalid_code') return reply.code(401).send({ error: res.error, attemptsLeft: res.attemptsLeft });
+      if (res.error === 'too_many_attempts')
+        return reply.code(429).send({ error: res.error, retryAfter: Math.ceil(res.retryAfter / 1000) });
+      if (res.error === 'invalid_code')
+        return reply.code(401).send({ error: res.error, attemptsLeft: res.attemptsLeft });
       return reply.code(400).send({ error: res.error });
     }
     const user = known ?? users.upsertDemoUser(phone, name);
@@ -119,21 +128,22 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
   });
 
   // Демо-вхід без коду: {name, phone} → токен. Лише для розробки й прототипів (config.demoLogin).
-  if (config.demoLogin) app.post('/demo/login', async (req, reply) => {
-    const body = (req.body ?? {}) as { name?: unknown; phone?: unknown };
-    const name = typeof body.name === 'string' ? normalizeName(body.name) : null;
-    if (!name) return reply.code(400).send({ error: 'invalid_name' });
-    const phone = typeof body.phone === 'string' ? normalizePhone(body.phone) : null;
-    if (!phone) return reply.code(400).send({ error: 'invalid_phone' });
+  if (config.demoLogin)
+    app.post('/demo/login', async (req, reply) => {
+      const body = (req.body ?? {}) as { name?: unknown; phone?: unknown };
+      const name = typeof body.name === 'string' ? normalizeName(body.name) : null;
+      if (!name) return reply.code(400).send({ error: 'invalid_name' });
+      const phone = typeof body.phone === 'string' ? normalizePhone(body.phone) : null;
+      if (!phone) return reply.code(400).send({ error: 'invalid_phone' });
 
-    const user = users.upsertDemoUser(phone, name);
-    if (user.disabled) return reply.code(403).send({ error: 'disabled' });
+      const user = users.upsertDemoUser(phone, name);
+      if (user.disabled) return reply.code(403).send({ error: 'disabled' });
 
-    const { token, expiresAt } = await tokens.sign({ sub: user.id, sid: DEMO_SITE_ID, name: user.name });
-    hub.announceUser(user);
-    req.log.info({ userId: user.id }, 'демо-вхід');
-    return { token, expiresAt, user: { userId: user.id, name: user.name } };
-  });
+      const { token, expiresAt } = await tokens.sign({ sub: user.id, sid: DEMO_SITE_ID, name: user.name });
+      hub.announceUser(user);
+      req.log.info({ userId: user.id }, 'демо-вхід');
+      return { token, expiresAt, user: { userId: user.id, name: user.name } };
+    });
 
   // Вебхук LiveKit: хто зайшов у кімнату й вийшов із неї (правило `lost`). Тіло потрібне «сирим» для перевірки підпису.
   if (livekit) {

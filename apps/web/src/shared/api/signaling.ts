@@ -56,17 +56,19 @@ export class SignalingClient {
     clearTimeout(this.retry);
     let ws: WebSocket;
     try {
-      ws = this.ws = (this.opts.createSocket ?? ((u) => new WebSocket(u)))(this.opts.url);
+      ws = this.ws = (this.opts.createSocket ?? (u => new WebSocket(u)))(this.opts.url);
     } catch (e) {
       // неправильна адреса чи змішаний https/ws: показуємо причину й пробуємо знову
-      this.statusHandlers.forEach((f) => f(false, e instanceof Error ? e.message : String(e)));
+      this.statusHandlers.forEach(f => f(false, e instanceof Error ? e.message : String(e)));
       this.scheduleRetry();
       return;
     }
     ws.onopen = () => {
-      void this.request('hello', { token: this.opts.getToken(), deviceId: this.opts.deviceId, locale: 'uk' }).catch(() => {});
+      void this.request('hello', { token: this.opts.getToken(), deviceId: this.opts.deviceId, locale: 'uk' }).catch(
+        () => {},
+      );
     };
-    ws.onmessage = (e) => {
+    ws.onmessage = e => {
       let m: ServerMessage;
       try {
         m = JSON.parse(String(e.data));
@@ -75,11 +77,11 @@ export class SignalingClient {
       }
       this.dispatch(m);
     };
-    ws.onclose = (e) => {
+    ws.onclose = e => {
       if (ws !== this.ws) return;
       clearInterval(this.ping);
       this.rejectAll();
-      this.statusHandlers.forEach((f) => f(false));
+      this.statusHandlers.forEach(f => f(false));
       if (e.code === CLOSE_UNAUTHORIZED) return this.opts.onAuthFailed?.();
       if (FATAL_CLOSE.has(e.code) || this.stopped) return;
       this.scheduleRetry();
@@ -118,8 +120,11 @@ export class SignalingClient {
     if (m.type === 'hello.ok') {
       this.tries = 0;
       clearInterval(this.ping);
-      this.ping = setInterval(() => this.ws?.send(JSON.stringify({ v: PROTOCOL_VERSION, type: 'ping' })), PING_INTERVAL_MS);
-      this.statusHandlers.forEach((f) => f(true));
+      this.ping = setInterval(
+        () => this.ws?.send(JSON.stringify({ v: PROTOCOL_VERSION, type: 'ping' })),
+        PING_INTERVAL_MS,
+      );
+      this.statusHandlers.forEach(f => f(true));
     }
     const reqId = 'reqId' in m ? m.reqId : undefined;
     const p = reqId ? this.pending.get(reqId) : undefined;
@@ -128,11 +133,11 @@ export class SignalingClient {
       if (m.type === 'error') p.reject(new SignalingError(m.code));
       else p.resolve(m);
     }
-    this.handlers.forEach((f) => f(m));
+    this.handlers.forEach(f => f(m));
   }
 
   private rejectAll() {
-    this.pending.forEach((p) => p.reject(new SignalingError('offline')));
+    this.pending.forEach(p => p.reject(new SignalingError('offline')));
     this.pending.clear();
   }
 

@@ -4,14 +4,25 @@ import { useSessionStore } from '@/features/auth/session';
 import { AuthError, type AuthApi } from '@/shared/api/auth';
 
 const user = { userId: '+380671234567', name: 'Ірина' };
-const login = { token: 't1', expiresAt: Date.now() + 1_800_000, user, refreshToken: 'r1', sessionExpiresAt: Date.now() + 7 * 86_400_000 };
+const login = {
+  token: 't1',
+  expiresAt: Date.now() + 1_800_000,
+  user,
+  refreshToken: 'r1',
+  sessionExpiresAt: Date.now() + 7 * 86_400_000,
+};
 
 function setup(api: Partial<AuthApi> = {}) {
   setActivePinia(createPinia());
   const full: AuthApi = {
     start: vi.fn(async () => ({ known: false })),
     verify: vi.fn(async () => login),
-    refresh: vi.fn(async () => ({ token: 't2', expiresAt: Date.now() + 1_800_000, user, sessionExpiresAt: login.sessionExpiresAt })),
+    refresh: vi.fn(async () => ({
+      token: 't2',
+      expiresAt: Date.now() + 1_800_000,
+      user,
+      sessionExpiresAt: login.sessionExpiresAt,
+    })),
     logout: vi.fn(async () => {}),
     ...api,
   };

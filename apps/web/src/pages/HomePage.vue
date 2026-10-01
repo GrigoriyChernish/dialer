@@ -65,7 +65,11 @@ const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
         >
           <span class="relative grid h-6 w-7 place-items-center">
             <Icon :name="x.icon" class="size-[22px]" />
-            <b v-if="x.id === 'missed' && badge" class="absolute -top-1 left-4 grid h-4 min-w-4 place-items-center rounded-full bg-call-bad px-[5px] text-[10px] font-bold text-white">{{ badge }}</b>
+            <b
+              v-if="x.id === 'missed' && badge"
+              class="absolute -top-1 left-4 grid h-4 min-w-4 place-items-center rounded-full bg-call-bad px-[5px] text-[10px] font-bold text-white"
+              >{{ badge }}</b
+            >
           </span>
         </button>
       </nav>

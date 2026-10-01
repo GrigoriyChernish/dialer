@@ -63,7 +63,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       socket.destroy();
       return;
     }
-    wss.handleUpgrade(req, socket, head, (ws) => handleConnection(ws));
+    wss.handleUpgrade(req, socket, head, ws => handleConnection(ws));
   });
 
   function handleConnection(ws: WebSocket) {
@@ -163,7 +163,8 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
     }
 
     async function onRefresh(msg: Record<string, unknown>, id: string | undefined) {
-      if (!id || typeof msg.token !== 'string') return respond(id, errorFrame('bad_request', id, 'auth.refresh: потрібні id, token'));
+      if (!id || typeof msg.token !== 'string')
+        return respond(id, errorFrame('bad_request', id, 'auth.refresh: потрібні id, token'));
       let fresh: TokenClaims;
       try {
         fresh = await deps.tokens.verify(msg.token);
@@ -194,7 +195,8 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         let result: Result;
         switch (msg.type) {
           case 'call.invite':
-            if (!isString(msg.to) || (msg.video !== undefined && typeof msg.video !== 'boolean')) throw new CallError('bad_request');
+            if (!isString(msg.to) || (msg.video !== undefined && typeof msg.video !== 'boolean'))
+              throw new CallError('bad_request');
             result = deps.calls.invite(actor, { to: msg.to, video: msg.video === true });
             break;
           case 'call.accept':
@@ -226,18 +228,24 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
     function onSettings(msg: Record<string, unknown>, id: string | undefined) {
       if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
       const patch = msg.settings;
-      if (!isRecord(patch)) return respond(id, errorFrame('bad_request', id, 'settings: очікується об\'єкт'));
+      if (!isRecord(patch)) return respond(id, errorFrame('bad_request', id, "settings: очікується об'єкт"));
       const clean: Partial<Settings> = {};
       for (const key of ['waiting', 'dnd'] as const) {
         if (!(key in patch)) continue;
-        if (typeof patch[key] !== 'boolean') return respond(id, errorFrame('bad_request', id, `settings.${key}: очікується boolean`));
+        if (typeof patch[key] !== 'boolean')
+          return respond(id, errorFrame('bad_request', id, `settings.${key}: очікується boolean`));
         clean[key] = patch[key];
       }
       const settings = deps.users.updateSettings(conn.siteId, conn.userId, clean);
       log.info({ userId: conn.userId, ...clean }, 'налаштування змінено');
       respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id, settings });
       deps.deliver([
-        { siteId: conn.siteId, userId: conn.userId, exceptDeviceId: conn.deviceId, msg: { v: PROTOCOL_VERSION, type: 'settings.updated', settings } },
+        {
+          siteId: conn.siteId,
+          userId: conn.userId,
+          exceptDeviceId: conn.deviceId,
+          msg: { v: PROTOCOL_VERSION, type: 'settings.updated', settings },
+        },
       ]);
     }
 
@@ -295,13 +303,15 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
 
     ws.on('message', (data, isBinary) => {
       resetSilence();
-      queue = queue.then(() => onMessage(data, isBinary)).catch((err) => {
-        log.error({ err }, 'не вдалося обробити кадр');
-        send(errorFrame('internal'));
-      });
+      queue = queue
+        .then(() => onMessage(data, isBinary))
+        .catch(err => {
+          log.error({ err }, 'не вдалося обробити кадр');
+          send(errorFrame('internal'));
+        });
     });
 
-    ws.on('close', (code) => {
+    ws.on('close', code => {
       clearTimeout(helloTimer);
       clearTimeout(expiringTimer);
       clearTimeout(silenceTimer);
@@ -311,7 +321,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       }
     });
 
-    ws.on('error', (err) => log.warn({ err }, 'помилка з\'єднання'));
+    ws.on('error', err => log.warn({ err }, "помилка з'єднання"));
   }
 
   return {

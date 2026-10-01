@@ -11,7 +11,11 @@ beforeAll(async () => void (server = await startServer({ hello: 300 }, { clock }
 afterAll(() => server.close());
 
 const post = async (path: string, body: object, headers: Record<string, string> = {}) => {
-  const res = await fetch(`${server.http}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+  const res = await fetch(`${server.http}${path}`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', ...headers },
+    body: JSON.stringify(body),
+  });
   return { status: res.status, body: res.status === 204 ? null : ((await res.json()) as any) };
 };
 // кожен тест зі своєї IP-адреси, щоб не впертися в ліміт /auth/start
@@ -19,10 +23,12 @@ let ip = 0;
 const from = () => ({ 'fly-client-ip': `10.0.0.${++ip}` });
 
 describe('вхід за номером', () => {
-  it('новий номер: ім\'я + код (останні 4 цифри), далі сесія', async () => {
+  it("новий номер: ім'я + код (останні 4 цифри), далі сесія", async () => {
     const h = from();
     expect(await post('/auth/start', { phone: '0671110001' }, h)).toEqual({ status: 200, body: { known: false } });
-    expect((await post('/auth/verify', { phone: '0671110001', code: '0001' }, h)).body).toEqual({ error: 'invalid_name' });
+    expect((await post('/auth/verify', { phone: '0671110001', code: '0001' }, h)).body).toEqual({
+      error: 'invalid_name',
+    });
     const ok = await post('/auth/verify', { phone: '+380671110001', code: '0001', name: 'Ірина' }, h);
     expect(ok.status).toBe(200);
     expect(ok.body.user).toEqual({ userId: '+380671110001', name: 'Ірина' });
@@ -36,7 +42,7 @@ describe('вхід за номером', () => {
     c.close();
   });
 
-  it('підтверджений номер входить без коду, ім\'я з бази', async () => {
+  it("підтверджений номер входить без коду, ім'я з бази", async () => {
     const h = from();
     await post('/auth/start', { phone: '0671110002' }, h);
     await post('/auth/verify', { phone: '0671110002', code: '0002', name: 'Перше' }, h);
@@ -77,10 +83,14 @@ describe('вхід за номером', () => {
 
   it('код спливає через 5 хв і без /auth/start не приймається', async () => {
     const h = from();
-    expect((await post('/auth/verify', { phone: '0671110004', code: '0004', name: 'Тест' }, h)).body).toEqual({ error: 'no_challenge' });
+    expect((await post('/auth/verify', { phone: '0671110004', code: '0004', name: 'Тест' }, h)).body).toEqual({
+      error: 'no_challenge',
+    });
     await post('/auth/start', { phone: '0671110004' }, h);
     clock.advance(OTP_TTL_MS);
-    expect((await post('/auth/verify', { phone: '0671110004', code: '0004', name: 'Тест' }, h)).body).toEqual({ error: 'no_challenge' });
+    expect((await post('/auth/verify', { phone: '0671110004', code: '0004', name: 'Тест' }, h)).body).toEqual({
+      error: 'no_challenge',
+    });
   });
 
   it('невалідний номер і ліміт /auth/start з однієї адреси', async () => {
@@ -102,7 +112,9 @@ describe('вхід за номером', () => {
     expect(r.body.sessionExpiresAt).toBe(body.sessionExpiresAt);
 
     clock.advance(SESSION_TTL_MS);
-    expect((await post('/auth/refresh', { refreshToken: body.refreshToken })).body).toEqual({ error: 'session_invalid' });
+    expect((await post('/auth/refresh', { refreshToken: body.refreshToken })).body).toEqual({
+      error: 'session_invalid',
+    });
 
     const again = await post('/auth/start', { phone: '0671110005' }, h);
     expect((await post('/auth/logout', { refreshToken: again.body.refreshToken })).status).toBe(204);
@@ -111,7 +123,13 @@ describe('вхід за номером', () => {
   });
 
   it('/demo/login у production вимкнено, якщо не DEMO_LOGIN=on', () => {
-    const base = { NODE_ENV: 'production', JWT_SECRET: 's'.repeat(32), LIVEKIT_URL: 'wss://x', LIVEKIT_API_KEY: 'k', LIVEKIT_API_SECRET: 's' };
+    const base = {
+      NODE_ENV: 'production',
+      JWT_SECRET: 's'.repeat(32),
+      LIVEKIT_URL: 'wss://x',
+      LIVEKIT_API_KEY: 'k',
+      LIVEKIT_API_SECRET: 's',
+    };
     expect(loadConfig(base).demoLogin).toBe(false);
     expect(loadConfig({ ...base, DEMO_LOGIN: 'on' }).demoLogin).toBe(true);
     expect(loadConfig({ JWT_SECRET: 's'.repeat(32) }).demoLogin).toBe(true);

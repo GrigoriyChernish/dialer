@@ -11,7 +11,7 @@ describe('normalizePhone', () => {
     ['(050) 123-45-67', '+380501234567'],
   ])('%s → %s', (input, expected) => expect(normalizePhone(input)).toBe(expected));
 
-  it.each(['', '12345', '+48123456789', '05012345678', 'abc'])('відхиляє %j', (input) =>
+  it.each(['', '12345', '+48123456789', '05012345678', 'abc'])('відхиляє %j', input =>
     expect(normalizePhone(input)).toBeNull(),
   );
 });

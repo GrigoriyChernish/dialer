@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const read = (p) => readFileSync(root + p, 'utf8');
+const read = p => readFileSync(root + p, 'utf8');
 
 const { variables } = JSON.parse(read('design/tokens.json'));
 const css = read('apps/web/src/app/styles/tokens.css');
@@ -13,11 +13,22 @@ const doc = read('docs/design-system.md');
 // змінна дизайну → CSS-змінна. Решта змінних (`*-soft`, `*-badge`, `accent-ring-*`, `on-solid`, `on-light`) у CSS задаються прозорістю утиліти
 // (`bg-warn/20`, `bg-accent/[.08]`) чи кольором `white`, власних CSS-змінних вони не мають, тож перевіряються лише в документації.
 const CSS_VAR = {
-  bg: '--bg', fg: '--fg', mute: '--mute', line: '--line',
-  'card-top': '--card-top', 'card-bottom': '--card-bottom',
-  'stage-glow': '--stage-glow', 'stage-missed-glow': '--stage-missed-glow', 'accent-icon': '--accent-icon',
-  'surface-2': '--surface', 'surface-3': '--surface-strong', 'surface-tile': '--pip',
-  accent: '--color-accent', ok: '--color-call-ok', bad: '--color-call-bad', warn: '--color-warn',
+  bg: '--bg',
+  fg: '--fg',
+  mute: '--mute',
+  line: '--line',
+  'card-top': '--card-top',
+  'card-bottom': '--card-bottom',
+  'stage-glow': '--stage-glow',
+  'stage-missed-glow': '--stage-missed-glow',
+  'accent-icon': '--accent-icon',
+  'surface-2': '--surface',
+  'surface-3': '--surface-strong',
+  'surface-tile': '--pip',
+  accent: '--color-accent',
+  ok: '--color-call-ok',
+  bad: '--color-call-bad',
+  warn: '--color-warn',
 };
 
 // приводить #RGB, #RRGGBB, #RRGGBBAA і rgba(r,g,b,a) до #rrggbb або #rrggbbaa
@@ -26,10 +37,10 @@ function norm(v) {
   const m = v.match(/^rgba?\(([^)]+)\)$/);
   if (m) {
     const [r, g, b, a = 1] = m[1].split(',').map(Number);
-    const h = (n) => Math.round(n).toString(16).padStart(2, '0');
+    const h = n => Math.round(n).toString(16).padStart(2, '0');
     return '#' + h(r) + h(g) + h(b) + (a < 1 ? h(a * 255) : '');
   }
-  return v.length === 4 ? '#' + [...v.slice(1)].map((c) => c + c).join('') : v;
+  return v.length === 4 ? '#' + [...v.slice(1)].map(c => c + c).join('') : v;
 }
 
 function declared(name, block) {
@@ -45,7 +56,8 @@ const errors = [];
 for (const [name, value] of Object.entries(variables)) {
   // числові змінні (радіуси, відступи) у CSS не мапляться, у документації шукаємо назву змінної в одному рядку зі значенням
   if (typeof value === 'number') {
-    if (!new RegExp(`\`${name}\`[^\n]*\\b${value}\\b`).test(doc)) errors.push(`docs/design-system.md: немає ${name} = ${value}`);
+    if (!new RegExp(`\`${name}\`[^\n]*\\b${value}\\b`).test(doc))
+      errors.push(`docs/design-system.md: немає ${name} = ${value}`);
     continue;
   }
   const want = norm(value);
@@ -54,7 +66,8 @@ for (const [name, value] of Object.entries(variables)) {
     const got = declared(cssName, cssName.startsWith('--color-') ? theme : dark);
     if (got !== want) errors.push(`CSS: ${cssName} = ${got ?? 'немає'}, у дизайні ${name} = ${want}`);
   }
-  if (!doc.toLowerCase().includes(value.toLowerCase())) errors.push(`docs/design-system.md: немає значення ${value} (${name})`);
+  if (!doc.toLowerCase().includes(value.toLowerCase()))
+    errors.push(`docs/design-system.md: немає значення ${value} (${name})`);
 }
 
 if (errors.length) {

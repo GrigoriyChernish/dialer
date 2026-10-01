@@ -31,7 +31,15 @@ export interface ServerOptions {
 }
 
 /** Збирає сервер: БД, токени, присутність, HTTP і WebSocket. */
-export async function createServer({ config, logger, timeouts, clock = realClock, newId = ulid, livekitRooms, otpSender = lastDigitsOtp }: ServerOptions) {
+export async function createServer({
+  config,
+  logger,
+  timeouts,
+  clock = realClock,
+  newId = ulid,
+  livekitRooms,
+  otpSender = lastDigitsOtp,
+}: ServerOptions) {
   const db = openDb(config.dbPath);
   const users = createUsers(db);
   users.seedBots();

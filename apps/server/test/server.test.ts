@@ -21,12 +21,12 @@ describe('HTTP', () => {
     expect(body.expiresAt).toBeGreaterThan(Date.now());
   });
 
-  it('відхиляє неправильні ім\'я й номер', async () => {
+  it("відхиляє неправильні ім'я й номер", async () => {
     expect((await login(server, 'І', '0501234567')).body).toEqual({ error: 'invalid_name' });
     expect((await login(server, 'Ірина', '123')).body).toEqual({ error: 'invalid_phone' });
   });
 
-  it('той самий номер оновлює ім\'я', async () => {
+  it("той самий номер оновлює ім'я", async () => {
     await login(server, 'Стара', '0670000001');
     const { body } = await login(server, 'Нова', '+380670000001');
     expect(body.user.name).toBe('Нова');
@@ -41,10 +41,10 @@ describe('WebSocket: підключення', () => {
     expect(hello.calls).toEqual([]);
     expect(hello.reqId).toBe('h1');
     expect(hello.serverTime).toBeGreaterThan(0);
-    const ids = hello.contacts.map((c) => c.userId);
+    const ids = hello.contacts.map(c => c.userId);
     expect(ids).toEqual(expect.arrayContaining(['bot:olena', 'bot:andriy', 'bot:support']));
     expect(ids).not.toContain('+380931111111');
-    expect(hello.contacts.filter((c) => c.userId.startsWith('bot:')).every((c) => c.online)).toBe(true);
+    expect(hello.contacts.filter(c => c.userId.startsWith('bot:')).every(c => c.online)).toBe(true);
     client.close();
   });
 
@@ -90,7 +90,7 @@ describe('WebSocket: після hello', () => {
     client.close();
   });
 
-  it('некоректний JSON не рве з\'єднання', async () => {
+  it("некоректний JSON не рве з'єднання", async () => {
     const { client } = await connectUser(server, 'Оксана', '0933333333');
     client.ws.send('не json');
     expect((await client.next('error')).code).toBe('bad_request');
@@ -127,7 +127,7 @@ describe('присутність і контакти', () => {
     // Аня отримала presence про Богдана
     expect(await a.client.next('presence')).toEqual({ v: 1, type: 'presence', userId: '+380940000002', online: true });
     // Богдан бачить Аню в мережі
-    expect(b.hello.contacts.find((c) => c.userId === '+380940000001')?.online).toBe(true);
+    expect(b.hello.contacts.find(c => c.userId === '+380940000001')?.online).toBe(true);
 
     b.client.close();
     expect(await a.client.next('presence')).toMatchObject({ userId: '+380940000002', online: false });
@@ -141,16 +141,16 @@ describe('присутність і контакти', () => {
     const b2 = await connectUser(server, 'Гліб', '0940000004', 'laptop');
     b1.client.close();
     // Гліб ще в мережі через другий пристрій: даємо серверу обробити закриття першого
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 100));
     a.client.send({ type: 'ping' });
     await a.client.next('pong');
-    expect(a.client.frames.filter((f) => f.type === 'presence')).toEqual([]);
+    expect(a.client.frames.filter(f => f.type === 'presence')).toEqual([]);
     b2.client.close();
     expect(await a.client.next('presence')).toMatchObject({ userId: '+380940000004', online: false });
     a.client.close();
   });
 
-  it('новий демо-користувач з\'являється в контактах підключених', async () => {
+  it("новий демо-користувач з'являється в контактах підключених", async () => {
     const a = await connectUser(server, 'Дарина', '0940000005');
     await login(server, 'Едуард', '0940000006');
     const update = await a.client.next('contacts.update');

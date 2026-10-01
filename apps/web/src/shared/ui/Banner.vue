@@ -39,8 +39,18 @@ const BADGE = {
   position: relative;
   border-radius: 20px;
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--bg) 85%, transparent), color-mix(in srgb, var(--bg) 60%, transparent) 65%, transparent),
-    linear-gradient(90deg, color-mix(in srgb, var(--c) 20%, transparent), color-mix(in srgb, var(--c) 10%, transparent) 60%, transparent);
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--bg) 85%, transparent),
+      color-mix(in srgb, var(--bg) 60%, transparent) 65%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--c) 20%, transparent),
+      color-mix(in srgb, var(--c) 10%, transparent) 60%,
+      transparent
+    );
 }
 .banner.warn {
   --c: var(--color-warn);
@@ -61,7 +71,12 @@ const BADGE = {
   inset: 0;
   padding: 1px;
   border-radius: inherit;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--c) 40%, transparent), color-mix(in srgb, var(--c) 20%, transparent) 60%, transparent);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--c) 40%, transparent),
+    color-mix(in srgb, var(--c) 20%, transparent) 60%,
+    transparent
+  );
   mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);

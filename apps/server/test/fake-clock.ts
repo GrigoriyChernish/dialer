@@ -17,7 +17,9 @@ export function createFakeClock(start = 1_000_000) {
     advance(ms) {
       const target = now + ms;
       for (;;) {
-        const due = [...timers.entries()].filter(([, t]) => t.at <= target).sort((a, b) => a[1].at - b[1].at || a[0] - b[0])[0];
+        const due = [...timers.entries()]
+          .filter(([, t]) => t.at <= target)
+          .sort((a, b) => a[1].at - b[1].at || a[0] - b[0])[0];
         if (!due) break;
         timers.delete(due[0]);
         now = Math.max(now, due[1].at);

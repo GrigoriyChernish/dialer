@@ -63,7 +63,7 @@ export function createCallStore(db: Db): CallStore {
   const selectActive = db.prepare('SELECT * FROM calls WHERE ended_at IS NULL');
 
   return {
-    get: (id) => calls.get(id),
+    get: id => calls.get(id),
     save(call) {
       calls.set(call.id, call);
       upsert.run({
@@ -77,10 +77,10 @@ export function createCallStore(db: Db): CallStore {
         reason: call.reason ?? null,
       });
     },
-    remove: (id) => void calls.delete(id),
+    remove: id => void calls.delete(id),
     activeFor: (siteId, userId) =>
       [...calls.values()].filter(
-        (c) => c.siteId === siteId && c.state !== 'ended' && (c.callerId === userId || c.calleeId === userId),
+        c => c.siteId === siteId && c.state !== 'ended' && (c.callerId === userId || c.calleeId === userId),
       ),
     loadActive() {
       const rows = (selectActive.all() as RawCall[]).map(fromRow);

@@ -44,7 +44,13 @@ function onCode(e: Event) {
 }
 
 const canSubmit = computed(() =>
-  busy.value ? false : step.value === 'phone' ? digits.value.length === 9 : step.value === 'name' ? name.value.trim().length >= 2 : code.value.length === 4,
+  busy.value
+    ? false
+    : step.value === 'phone'
+      ? digits.value.length === 9
+      : step.value === 'name'
+        ? name.value.trim().length >= 2
+        : code.value.length === 4,
 );
 
 function fail(e: unknown) {
@@ -56,7 +62,7 @@ function fail(e: unknown) {
 
 // фокус на полі кроку: autofocus ненадійний після переходів роутера
 onMounted(() => document.getElementById('phone')?.focus());
-watch(step, async (s) => {
+watch(step, async s => {
   await nextTick();
   (s === 'code' ? codeInput.value : document.getElementById(s))?.focus();
 });
@@ -98,7 +104,12 @@ function back() {
 </script>
 
 <template>
-  <form class="relative flex h-full flex-col px-6 pb-10" :class="step === 'phone' ? 'pt-[72px]' : 'pt-2'" novalidate @submit.prevent="submit">
+  <form
+    class="relative flex h-full flex-col px-6 pb-10"
+    :class="step === 'phone' ? 'pt-[72px]' : 'pt-2'"
+    novalidate
+    @submit.prevent="submit"
+  >
     <button
       v-if="step !== 'phone'"
       type="button"
@@ -115,7 +126,9 @@ function back() {
     <!-- поле стоїть по центру екрана (дизайн: центр рамки на 422 з 844), заголовок лишається зверху; підпис і помилка навколо рамку не зсувають -->
     <div class="field-pos absolute inset-x-6">
       <template v-if="step === 'phone'">
-        <label for="phone" class="absolute bottom-full mb-2 text-[13px] font-medium text-mute">{{ t('auth.phone.label') }}</label>
+        <label for="phone" class="absolute bottom-full mb-2 text-[13px] font-medium text-mute">{{
+          t('auth.phone.label')
+        }}</label>
         <div class="field" :class="error && 'error'">
           <span class="text-mute">+380</span>
           <input
@@ -134,7 +147,9 @@ function back() {
       </template>
 
       <template v-else-if="step === 'name'">
-        <label for="name" class="absolute bottom-full mb-2 text-[13px] font-medium text-mute">{{ t('auth.name.label') }}</label>
+        <label for="name" class="absolute bottom-full mb-2 text-[13px] font-medium text-mute">{{
+          t('auth.name.label')
+        }}</label>
         <div class="field" :class="error && 'error'">
           <input
             id="name"
@@ -156,7 +171,13 @@ function back() {
             v-for="i in 4"
             :key="i"
             class="grid h-[72px] w-16 place-items-center rounded-2xl border bg-surface text-[28px] font-bold"
-            :class="error ? 'border-2 border-call-bad' : codeFocused && i - 1 === Math.min(code.length, 3) ? 'border-2 border-accent' : 'border-line'"
+            :class="
+              error
+                ? 'border-2 border-call-bad'
+                : codeFocused && i - 1 === Math.min(code.length, 3)
+                  ? 'border-2 border-accent'
+                  : 'border-line'
+            "
             aria-hidden="true"
             >{{ code[i - 1] ?? '' }}</span
           >
@@ -184,7 +205,7 @@ function back() {
           v-if="step === 'code'"
           type="button"
           class="justify-self-start text-sm font-semibold text-accent-icon focus-visible:outline-2 focus-visible:outline-accent"
-          @click="(step = 'phone'), (error = '')"
+          @click="((step = 'phone'), (error = ''))"
         >
           {{ t('auth.code.change') }}
         </button>

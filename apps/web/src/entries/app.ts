@@ -34,7 +34,7 @@ const client = new SignalingClient({
   deviceId,
   getToken: () => session.token,
   // токен відхилено: пробуємо оновити, інакше сесія закінчилась і гард поверне на вхід
-  onAuthFailed: () => void session.refresh().then((ok) => ok && client.connect()),
+  onAuthFailed: () => void session.refresh().then(ok => ok && client.connect()),
 });
 const call = useCallStore(pinia);
 call.init({ client, media: new CallMedia(), sounds: new Sounds() });
@@ -44,7 +44,7 @@ let refreshTimer: ReturnType<typeof setTimeout> | undefined;
 const refreshSoon = async () => {
   if (await session.refresh()) client.refreshToken();
 };
-client.on((m) => m.type === 'token.expiring' && void refreshSoon());
+client.on(m => m.type === 'token.expiring' && void refreshSoon());
 
 /** Вихід: перезавантаження скидає стан дзвінків і контактів, сесії вже немає. */
 const restart = () => location.replace(location.pathname + '#/login');
@@ -57,7 +57,7 @@ const router = createRouter({
     { path: '/:rest(.*)*', redirect: '/' },
   ],
 });
-router.beforeEach((to) => {
+router.beforeEach(to => {
   if (!session.loggedIn && !to.meta.guest) return '/login';
   if (session.loggedIn && to.meta.guest) return '/';
 });

@@ -8,10 +8,21 @@ const call = useCallStore();
 const el = ref<HTMLVideoElement>();
 const bind = () => el.value && call.attach(props.kind, el.value);
 onMounted(bind);
-watch(() => props.track, () => nextTick(bind), { flush: 'post' });
+watch(
+  () => props.track,
+  () => nextTick(bind),
+  { flush: 'post' },
+);
 </script>
 
 <template>
   <!-- звук іде окремо (аудіо-елементи в CallMedia), тому відео без звуку -->
-  <video ref="el" autoplay playsinline muted class="size-full object-cover" :class="kind === 'local' && '-scale-x-100'" />
+  <video
+    ref="el"
+    autoplay
+    playsinline
+    muted
+    class="size-full object-cover"
+    :class="kind === 'local' && '-scale-x-100'"
+  />
 </template>

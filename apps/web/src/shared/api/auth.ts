@@ -29,7 +29,12 @@ export function createAuthApi(server: string, fetchFn: typeof fetch = (...a) => 
     let res: Response;
     try {
       // keepalive: logout довершується, навіть коли сторінка одразу перезавантажується на екран входу
-      res = await fetchFn(base + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true });
+      res = await fetchFn(base + path, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+        keepalive: true,
+      });
     } catch {
       throw new AuthError('network');
     }
@@ -41,7 +46,8 @@ export function createAuthApi(server: string, fetchFn: typeof fetch = (...a) => 
   return {
     /** Підтверджений номер одразу отримує токен і сесію; інакше `{ known }` і код. */
     start: (phone: string) => post<{ known: boolean } | ({ known: true } & LoginResult)>('/auth/start', { phone }),
-    verify: (phone: string, code: string, name?: string) => post<LoginResult>('/auth/verify', { phone, code, ...(name && { name }) }),
+    verify: (phone: string, code: string, name?: string) =>
+      post<LoginResult>('/auth/verify', { phone, code, ...(name && { name }) }),
     refresh: (refreshToken: string) => post<AccessToken>('/auth/refresh', { refreshToken }),
     logout: (refreshToken: string) => post<void>('/auth/logout', { refreshToken }),
   };

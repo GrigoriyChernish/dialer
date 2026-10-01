@@ -23,7 +23,8 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
   const lk = { url: env.LIVEKIT_URL, apiKey: env.LIVEKIT_API_KEY, apiSecret: env.LIVEKIT_API_SECRET };
   const lkSet = Object.values(lk).filter(Boolean).length;
   if (lkSet > 0 && lkSet < 3) throw new Error('LIVEKIT_URL, LIVEKIT_API_KEY і LIVEKIT_API_SECRET задаються разом');
-  if (production && lkSet === 0) throw new Error('У production потрібні LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET');
+  if (production && lkSet === 0)
+    throw new Error('У production потрібні LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET');
   return {
     port: Number(env.PORT ?? 8787),
     host: env.HOST ?? '0.0.0.0',

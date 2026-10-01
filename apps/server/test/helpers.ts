@@ -42,7 +42,13 @@ export async function startServer(
       return roomParticipants.get(room) ?? [];
     },
   };
-  const server = await createServer({ config, logger: pino({ level: 'silent' }), timeouts, clock: extra.clock, livekitRooms });
+  const server = await createServer({
+    config,
+    logger: pino({ level: 'silent' }),
+    timeouts,
+    clock: extra.clock,
+    livekitRooms,
+  });
   const port = await server.listen();
   return {
     ...server,
@@ -72,11 +78,11 @@ export class TestClient {
   private waiters: Array<() => void> = [];
 
   constructor(readonly ws: WebSocket) {
-    ws.on('message', (data) => {
+    ws.on('message', data => {
       this.frames.push(JSON.parse(data.toString()));
       this.notify();
     });
-    ws.on('close', (code) => {
+    ws.on('close', code => {
       this.closed = { code };
       this.notify();
     });
@@ -106,7 +112,7 @@ export class TestClient {
       const value = check();
       if (value) return value;
       if (Date.now() > deadline) throw new Error('timeout; кадри: ' + JSON.stringify(this.frames));
-      await new Promise<void>((resolve) => {
+      await new Promise<void>(resolve => {
         this.waiters.push(resolve);
         setTimeout(resolve, 50);
       });
@@ -114,7 +120,7 @@ export class TestClient {
   }
 
   next<T extends ServerMessage['type']>(type: T): Promise<Extract<ServerMessage, { type: T }>> {
-    return this.until(() => this.frames.find((f) => f.type === type) as any).then((f) => {
+    return this.until(() => this.frames.find(f => f.type === type) as any).then(f => {
       this.frames.splice(this.frames.indexOf(f), 1);
       return f;
     });

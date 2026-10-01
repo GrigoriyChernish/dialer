@@ -12,7 +12,8 @@ const phone = () => `09500000${String(++phoneSeq).padStart(2, '0')}`;
 
 describe('дзвінок через WebSocket', () => {
   it('повний цикл: invite → accept → hold → hangup, історія доступна після перепідключення', async () => {
-    const pa = phone(), pb = phone();
+    const pa = phone(),
+      pb = phone();
     const a = await connectUser(server, 'Анна', pa);
     const b = await connectUser(server, 'Богдан', pb);
 
@@ -38,7 +39,11 @@ describe('дзвінок через WebSocket', () => {
     await b.client.next('ack');
     expect(await a.client.next('call.ended')).toMatchObject({ callId, reason: 'hangup', duration: 42 });
     expect(await b.client.next('call.ended')).toMatchObject({ callId, reason: 'hangup', duration: 42 });
-    expect((await a.client.next('recents.add')).entry).toMatchObject({ result: 'completed', direction: 'out', duration: 42 });
+    expect((await a.client.next('recents.add')).entry).toMatchObject({
+      result: 'completed',
+      direction: 'out',
+      duration: 42,
+    });
     expect((await b.client.next('recents.add')).entry).toMatchObject({ result: 'completed', direction: 'in' });
 
     const again = await connectUser(server, 'Анна', pa, 'd2');
@@ -128,7 +133,7 @@ describe('дзвінок через WebSocket', () => {
     d1.client.send({ type: 'settings.update', id: 's1', settings: { dnd: true, невідоме: 1 } });
     expect(await d1.client.next('ack')).toMatchObject({ reqId: 's1', settings: { waiting: true, dnd: true } });
     expect((await d2.client.next('settings.updated')).settings).toEqual({ waiting: true, dnd: true });
-    expect(d1.client.frames.filter((f) => f.type === 'settings.updated')).toEqual([]);
+    expect(d1.client.frames.filter(f => f.type === 'settings.updated')).toEqual([]);
 
     d1.client.send({ type: 'settings.update', id: 's2', settings: { waiting: 'так' } });
     expect(await d1.client.next('error')).toMatchObject({ reqId: 's2', code: 'bad_request' });
@@ -151,7 +156,7 @@ describe('дзвінок через WebSocket', () => {
     await a.client.next('ack');
     expect(await a.client.next('call.ended')).toMatchObject({ reason: 'busy' });
     expect((await b.client.next('recents.add')).entry).toMatchObject({ result: 'missed', silent: true });
-    expect(b.client.frames.filter((f) => f.type === 'call.incoming')).toEqual([]);
+    expect(b.client.frames.filter(f => f.type === 'call.incoming')).toEqual([]);
     a.client.close();
     b.client.close();
   });

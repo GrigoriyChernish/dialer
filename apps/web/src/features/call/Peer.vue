@@ -18,8 +18,16 @@ defineProps<{
 <template>
   <div class="flex h-[336px] w-[327px] max-w-full flex-col items-center gap-5 text-center">
     <span class="grid size-[200px] shrink-0 place-items-center rounded-full" :class="ringing && 'bg-accent/[.08]'">
-      <span class="grid size-[152px] place-items-center rounded-full" :class="ringing && 'animate-ring bg-accent/[.14]'">
-        <Avatar :name="name" size="xl" :muted="variant === 'result'" :opacity="variant === 'dimmed' ? 0.6 : undefined" />
+      <span
+        class="grid size-[152px] place-items-center rounded-full"
+        :class="ringing && 'animate-ring bg-accent/[.14]'"
+      >
+        <Avatar
+          :name="name"
+          size="xl"
+          :muted="variant === 'result'"
+          :opacity="variant === 'dimmed' ? 0.6 : undefined"
+        />
       </span>
     </span>
     <h3 class="flex h-8 w-full shrink-0 items-center justify-center truncate text-[26px] font-bold">{{ name }}</h3>

@@ -29,15 +29,7 @@ export type CallId = string; // ULID; він же назва кімнати Live
 export type CallState = 'ringing' | 'connected';
 
 export type EndReason =
-  | 'hangup'
-  | 'cancelled'
-  | 'rejected'
-  | 'busy'
-  | 'timeout'
-  | 'offline'
-  | 'answered_elsewhere'
-  | 'lost'
-  | 'error';
+  'hangup' | 'cancelled' | 'rejected' | 'busy' | 'timeout' | 'offline' | 'answered_elsewhere' | 'lost' | 'error';
 
 export type ErrorCode =
   | 'token_invalid'
@@ -97,14 +89,7 @@ export interface Contact {
   online: boolean;
 }
 
-export type RecentResult =
-  | 'completed'
-  | 'cancelled'
-  | 'rejected'
-  | 'busy'
-  | 'no_answer'
-  | 'missed'
-  | 'failed';
+export type RecentResult = 'completed' | 'cancelled' | 'rejected' | 'busy' | 'no_answer' | 'missed' | 'failed';
 
 export interface RecentEntry {
   callId: CallId;
@@ -130,26 +115,17 @@ type Request<T extends string, P = object> = Frame<T> & { id: string } & P;
 
 // Клієнт → сервер
 
-export type HelloRequest = Request<
-  'hello',
-  { token: string; deviceId: DeviceId; locale?: string }
->;
+export type HelloRequest = Request<'hello', { token: string; deviceId: DeviceId; locale?: string }>;
 export type PingRequest = Frame<'ping'> & { id?: string };
 export type AuthRefreshRequest = Request<'auth.refresh', { token: string }>;
 export type CallInviteRequest = Request<'call.invite', { to: UserId; video: boolean }>;
 export type CallCancelRequest = Request<'call.cancel', { callId: CallId }>;
 /** `action` обов'язкове, якщо в користувача вже є розмова (вхідний із `waiting`). */
-export type CallAcceptRequest = Request<
-  'call.accept',
-  { callId: CallId; action?: 'hold' | 'end' }
->;
+export type CallAcceptRequest = Request<'call.accept', { callId: CallId; action?: 'hold' | 'end' }>;
 export type CallRejectRequest = Request<'call.reject', { callId: CallId }>;
 export type CallHangupRequest = Request<'call.hangup', { callId: CallId }>;
 export type CallHoldRequest = Request<'call.hold', { callId: CallId; hold: boolean }>;
-export type SettingsUpdateRequest = Request<
-  'settings.update',
-  { settings: Partial<Settings> }
->;
+export type SettingsUpdateRequest = Request<'settings.update', { settings: Partial<Settings> }>;
 export type RecentsSeenRequest = Request<'recents.seen', { upTo: number }>;
 export type PushSubscribeRequest = Request<'push.subscribe', { subscription: unknown }>;
 export type PushUnsubscribeRequest = Request<'push.unsubscribe', object>;

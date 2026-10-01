@@ -67,8 +67,8 @@ const restHost = (url: string) => url.replace(/^ws(s?):\/\//, 'http$1://');
 export function createRoomApi(cfg: LiveKitConfig): RoomApi {
   const client = new RoomServiceClient(restHost(cfg.url), cfg.apiKey, cfg.apiSecret);
   return {
-    deleteRoom: (room) => client.deleteRoom(room),
-    listParticipants: async (room) => (await client.listParticipants(room)).map((p) => p.identity),
+    deleteRoom: room => client.deleteRoom(room),
+    listParticipants: async room => (await client.listParticipants(room)).map(p => p.identity),
   };
 }
 
@@ -94,7 +94,7 @@ export function createLiveKit(cfg: LiveKitConfig, rooms: RoomApi = createRoomApi
           return null;
       }
     },
-    closeRoom: (callId) => rooms.deleteRoom(callId),
-    listParticipants: (callId) => rooms.listParticipants(callId),
+    closeRoom: callId => rooms.deleteRoom(callId),
+    listParticipants: callId => rooms.listParticipants(callId),
   };
 }

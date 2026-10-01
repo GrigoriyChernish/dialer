@@ -36,7 +36,10 @@ describe('медіа і lost через WebSocket та вебхук', () => {
     const forCaller = (await a.client.next('call.connected')).call;
     const forCallee = (await b.client.next('call.connected')).call;
     expect(forCaller.livekit!.url).toBe(LIVEKIT_TEST.url);
-    expect(payload(forCaller.livekit!.token)).toMatchObject({ sub: `+38${pa}:phone`, video: { room: call!.callId, roomJoin: true } });
+    expect(payload(forCaller.livekit!.token)).toMatchObject({
+      sub: `+38${pa}:phone`,
+      video: { room: call!.callId, roomJoin: true },
+    });
     expect(payload(forCallee.livekit!.token).sub).toBe(`+38${pb}:phone`);
     // інший пристрій того, хто дзвонив, бачить дзвінок без медіа
     expect((await aOther.client.next('call.connected')).call.livekit).toBeUndefined();
@@ -63,11 +66,11 @@ describe('медіа і lost через WebSocket та вебхук', () => {
     expect((await postWebhook('participant_joined', callId, `+38${pa}:d1`)).status).toBe(200);
     expect((await postWebhook('participant_joined', callId, `+38${pb}:d1`)).status).toBe(200);
     clock.advance(120_000);
-    expect(a.client.frames.filter((f) => f.type === 'call.ended')).toEqual([]);
+    expect(a.client.frames.filter(f => f.type === 'call.ended')).toEqual([]);
 
     await postWebhook('participant_left', callId, `+38${pb}:d1`);
     clock.advance(29_000);
-    expect(a.client.frames.filter((f) => f.type === 'call.ended')).toEqual([]);
+    expect(a.client.frames.filter(f => f.type === 'call.ended')).toEqual([]);
     clock.advance(1_000);
     expect(await a.client.next('call.ended')).toMatchObject({ callId, reason: 'lost', duration: 150 });
     expect(await b.client.next('call.ended')).toMatchObject({ callId, reason: 'lost' });
@@ -87,8 +90,8 @@ describe('медіа і lost через WebSocket та вебхук', () => {
     b.client.send({ type: 'call.accept', id: 'x1', callId });
     await b.client.next('ack');
     await a.client.next('call.connected');
-    const tick = () => new Promise((r) => setTimeout(r, 30));
-    const ended = () => a.client.frames.filter((f) => f.type === 'call.ended');
+    const tick = () => new Promise(r => setTimeout(r, 30));
+    const ended = () => a.client.frames.filter(f => f.type === 'call.ended');
 
     // вебхуків немає, але LiveKit бачить обох: 30 с, ще 60 с — розмова жива
     server.roomParticipants.set(callId, [`+38${pa}:d1`, `+38${pb}:d1`]);
@@ -115,9 +118,16 @@ describe('медіа і lost через WebSocket та вебхук', () => {
   });
 
   it('вебхук з неправильним підписом відхиляється й нічого не змінює', async () => {
-    const forged = await signedWebhook({ event: 'room_finished', room: { name: 'call' } }, { ...LIVEKIT_TEST, apiSecret: 'f'.repeat(32) });
+    const forged = await signedWebhook(
+      { event: 'room_finished', room: { name: 'call' } },
+      { ...LIVEKIT_TEST, apiSecret: 'f'.repeat(32) },
+    );
     expect((await postWebhook('room_finished', 'call', '', forged)).status).toBe(401);
-    const noAuth = await fetch(`${server.http}/livekit/webhook`, { method: 'POST', headers: { 'content-type': 'application/webhook+json' }, body: '{}' });
+    const noAuth = await fetch(`${server.http}/livekit/webhook`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/webhook+json' },
+      body: '{}',
+    });
     expect(noAuth.status).toBe(401);
   });
 });
@@ -125,7 +135,11 @@ describe('медіа і lost через WebSocket та вебхук', () => {
 describe('без LiveKit', () => {
   it('ендпоінту вебхука немає, call.connected без токена', async () => {
     const plain = await startServer(undefined, { clock: createFakeClock() });
-    const res = await fetch(`${plain.http}/livekit/webhook`, { method: 'POST', headers: { 'content-type': 'application/webhook+json' }, body: '{}' });
+    const res = await fetch(`${plain.http}/livekit/webhook`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/webhook+json' },
+      body: '{}',
+    });
     expect(res.status).toBe(404);
     const a = await connectUser(plain, 'Тест', phone());
     a.client.send({ type: 'call.invite', id: 'i1', to: 'bot:olena', video: false });

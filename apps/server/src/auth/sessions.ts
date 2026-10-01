@@ -9,7 +9,9 @@ const hash = (token: string) => createHash('sha256').update(token).digest('hex')
 
 /** Refresh-токени сесій. Клієнт тримає токен, у базі лише його хеш. */
 export function createSessions(db: Db, clock: Clock) {
-  const insert = db.prepare('INSERT INTO sessions (id, site_id, user_id, created_at, expires_at) VALUES (?, ?, ?, ?, ?)');
+  const insert = db.prepare(
+    'INSERT INTO sessions (id, site_id, user_id, created_at, expires_at) VALUES (?, ?, ?, ?, ?)',
+  );
   const select = db.prepare('SELECT site_id, user_id, expires_at FROM sessions WHERE id = ?');
   const remove = db.prepare('DELETE FROM sessions WHERE id = ?');
   const purge = db.prepare('DELETE FROM sessions WHERE expires_at <= ?');
@@ -25,7 +27,8 @@ export function createSessions(db: Db, clock: Clock) {
     },
     /** Чинна сесія за токеном або `null`. */
     get(refreshToken: string): { siteId: string; userId: string; expiresAt: number } | null {
-      const row = select.get(hash(refreshToken)) as { site_id: string; user_id: string; expires_at: number } | undefined;
+      const row = select.get(hash(refreshToken)) as
+        { site_id: string; user_id: string; expires_at: number } | undefined;
       if (!row || row.expires_at <= clock.now()) return null;
       return { siteId: row.site_id, userId: row.user_id, expiresAt: row.expires_at };
     },

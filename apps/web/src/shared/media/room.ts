@@ -33,13 +33,13 @@ export class CallMedia {
   }
 
   private emit(patch: Partial<LinkState>) {
-    this.listeners.forEach((f) => f(patch));
+    this.listeners.forEach(f => f(patch));
   }
 
   /** Чи є камера (без запиту дозволу): список пристроїв видно й до дозволу. */
   async hasCamera() {
     try {
-      return (await navigator.mediaDevices.enumerateDevices()).some((d) => d.kind === 'videoinput');
+      return (await navigator.mediaDevices.enumerateDevices()).some(d => d.kind === 'videoinput');
     } catch {
       return false;
     }
@@ -47,7 +47,7 @@ export class CallMedia {
 
   async hasMicrophone() {
     try {
-      return (await navigator.mediaDevices.enumerateDevices()).some((d) => d.kind === 'audioinput');
+      return (await navigator.mediaDevices.enumerateDevices()).some(d => d.kind === 'audioinput');
     } catch {
       return false;
     }
@@ -76,16 +76,22 @@ export class CallMedia {
         this.emit({ peerCam: false });
         return;
       }
-      t.detach().forEach((el) => {
+      t.detach().forEach(el => {
         el.remove();
-        this.els = this.els.filter((x) => x !== el);
+        this.els = this.els.filter(x => x !== el);
       });
     });
-    room.on(RoomEvent.LocalTrackPublished, (pub) => pub.source === Track.Source.Camera && this.emit({ localCam: true }));
-    room.on(RoomEvent.LocalTrackUnpublished, (pub) => pub.source === Track.Source.Camera && this.emit({ localCam: false }));
+    room.on(RoomEvent.LocalTrackPublished, pub => pub.source === Track.Source.Camera && this.emit({ localCam: true }));
+    room.on(
+      RoomEvent.LocalTrackUnpublished,
+      pub => pub.source === Track.Source.Camera && this.emit({ localCam: false }),
+    );
     room.on(RoomEvent.Reconnecting, () => this.emit({ reconnecting: true }));
     room.on(RoomEvent.Reconnected, () => this.emit({ reconnecting: false }));
-    room.on(RoomEvent.ConnectionQualityChanged, (q, p) => p.isLocal && this.emit({ poor: q === ConnectionQuality.Poor || q === ConnectionQuality.Lost }));
+    room.on(
+      RoomEvent.ConnectionQualityChanged,
+      (q, p) => p.isLocal && this.emit({ poor: q === ConnectionQuality.Poor || q === ConnectionQuality.Lost }),
+    );
     room.on(RoomEvent.ParticipantDisconnected, () => this.emit({ peerAway: true }));
     room.on(RoomEvent.ParticipantConnected, () => this.emit({ peerAway: false }));
     room.on(RoomEvent.TrackMuted, (pub, p) => {
@@ -120,7 +126,10 @@ export class CallMedia {
 
   /** Показує відео в елементі: `remote` співрозмовника, `local` нашу камеру. */
   attach(kind: 'local' | 'remote', el: HTMLVideoElement) {
-    const track = kind === 'remote' ? this.remoteVideo : this.room?.localParticipant.getTrackPublication(Track.Source.Camera)?.videoTrack;
+    const track =
+      kind === 'remote'
+        ? this.remoteVideo
+        : this.room?.localParticipant.getTrackPublication(Track.Source.Camera)?.videoTrack;
     track?.attach(el);
   }
 
@@ -135,7 +144,7 @@ export class CallMedia {
     this.room?.disconnect();
     this.room = undefined;
     this.remoteVideo = undefined;
-    this.els.forEach((el) => el.remove());
+    this.els.forEach(el => el.remove());
     this.els = [];
   }
 
@@ -144,6 +153,6 @@ export class CallMedia {
     const wantMic = this.micOn && !this.deaf;
     void lp?.setMicrophoneEnabled(wantMic).catch(() => wantMic && this.emit({ micError: true }));
     void lp?.setCameraEnabled(this.camOn && !this.deaf).catch(() => this.emit({ camError: true }));
-    this.els.forEach((el) => (el.muted = this.deaf));
+    this.els.forEach(el => (el.muted = this.deaf));
   }
 }

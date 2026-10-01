@@ -6,7 +6,7 @@ export interface OtpSender {
 }
 
 /** Поки без SMS: код = останні 4 цифри номера, нікуди не надсилається. */
-export const lastDigitsOtp: OtpSender = { send: async (phone) => phone.slice(-4) };
+export const lastDigitsOtp: OtpSender = { send: async phone => phone.slice(-4) };
 
 export const OTP_TTL_MS = 5 * 60_000;
 export const OTP_MAX_ATTEMPTS = 5;

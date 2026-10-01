@@ -27,12 +27,20 @@ export function createRecents(db: Db) {
     `INSERT INTO recents (site_id, user_id, call_id, peer_id, direction, result, started_at, duration, silent)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
-  const select = db.prepare(
-    'SELECT * FROM recents WHERE site_id = ? AND user_id = ? ORDER BY id DESC LIMIT ?',
-  );
+  const select = db.prepare('SELECT * FROM recents WHERE site_id = ? AND user_id = ? ORDER BY id DESC LIMIT ?');
   return {
     add(siteId: string, userId: string, entry: RecentEntry): void {
-      insert.run(siteId, userId, entry.callId, entry.peer, entry.direction, entry.result, entry.startedAt, entry.duration ?? null, entry.silent ? 1 : 0);
+      insert.run(
+        siteId,
+        userId,
+        entry.callId,
+        entry.peer,
+        entry.direction,
+        entry.result,
+        entry.startedAt,
+        entry.duration ?? null,
+        entry.silent ? 1 : 0,
+      );
     },
     /** Новіші першими. */
     list(siteId: string, userId: string, limit = 50): RecentEntry[] {
