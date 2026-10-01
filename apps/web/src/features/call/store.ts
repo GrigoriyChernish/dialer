@@ -14,11 +14,11 @@ export interface CallDeps {
     on(fn: (m: ServerMessage) => void): () => void;
     onStatus(fn: (open: boolean, error?: string) => void): () => void;
   };
-  media: { join(a: { url: string; token: string }): Promise<void>; leave(): void; setMic(on: boolean): void; setDeaf(d: boolean): void; onChange?(fn: (patch: Partial<LinkState>) => void): void; setCamera?(on: boolean): void; hasCamera?(): Promise<boolean>; attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void };
+  media: { join(a: { url: string; token: string }): Promise<void>; leave(): void; setMic(on: boolean): void; setDeaf(d: boolean): void; onChange?(fn: (patch: Partial<LinkState>) => void): void; setCamera?(on: boolean): void; hasCamera?(): Promise<boolean>; hasMicrophone?(): Promise<boolean>; attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void };
   sounds: { play(kind: SoundKind | null, ms?: number): void };
 }
 
-const CAM_HINT_MS = 3000;
+const HINT_MS = 3000;
 
 const ERRORS: Record<string, string> = {
   already_in_call: 'call.err.alreadyInCall',
@@ -45,15 +45,17 @@ export const useCallStore = defineStore('call', () => {
   const hold = ref(false);
   const peerHold = ref(false);
   const mic = ref(true);
-  const NO_LINK: LinkState = { reconnecting: false, poor: false, peerAway: false, peerMuted: false, peerCam: false, localCam: false, camError: false };
+  const NO_LINK: LinkState = { reconnecting: false, poor: false, peerAway: false, peerMuted: false, peerCam: false, localCam: false, micError: false, camError: false };
   const link = ref<LinkState>({ ...NO_LINK });
   const cam = ref(true);
   const selfHidden = ref(false);
   /** Камери немає чи немає дозволу: мініатюру себе не показуємо, кнопка камери неактивна. */
   const camBlocked = ref(false);
-  /** Підказка «Камера недоступна» після натискання на приглушену кнопку камери. */
-  const camHint = ref(false);
-  let camHintTimer: ReturnType<typeof setTimeout> | undefined;
+  /** Мікрофона немає чи немає дозволу: кнопка мікрофона приглушена. */
+  const micBlocked = ref(false);
+  /** Підказка «… недоступна» після натискання на приглушену кнопку камери чи мікрофона. */
+  const hint = ref<'cam' | 'mic' | null>(null);
+  let hintTimer: ReturnType<typeof setTimeout> | undefined;
   const missed = ref<{ peer: Peer; reason: MissedReason; note?: string } | null>(null);
   const now = ref(Date.now());
   let offset = 0; // serverTime - локальний час
@@ -88,8 +90,9 @@ export const useCallStore = defineStore('call', () => {
     link.value = { ...NO_LINK };
     cam.value = true;
     camBlocked.value = false;
-    camHint.value = false;
-    clearTimeout(camHintTimer);
+    micBlocked.value = false;
+    hint.value = null;
+    clearTimeout(hintTimer);
     selfHidden.value = false;
     syncTimer();
   }
@@ -109,6 +112,7 @@ export const useCallStore = defineStore('call', () => {
       deps.media.setMic(mic.value);
       deps.media.setCamera?.(cam.value);
       void deps.media.hasCamera?.().then((ok) => ok || blockCamera());
+      void deps.media.hasMicrophone?.().then((ok) => ok || blockMic());
       if (call.livekit) void deps.media.join(call.livekit);
     } else if (call.direction === 'in') {
       status.value = 'incoming';
@@ -199,6 +203,18 @@ export const useCallStore = defineStore('call', () => {
     }
   }
 
+  function blockMic() {
+    micBlocked.value = true;
+    mic.value = false;
+    deps.media.setMic(false);
+  }
+
+  function showHint(kind: 'cam' | 'mic') {
+    hint.value = kind;
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(() => (hint.value = null), HINT_MS);
+  }
+
   function blockCamera() {
     camBlocked.value = true;
     cam.value = false;
@@ -209,6 +225,7 @@ export const useCallStore = defineStore('call', () => {
     deps = d;
     d.media.onChange?.((patch) => {
       Object.assign(link.value, patch);
+      if (patch.micError) blockMic();
       if (patch.camError) blockCamera(); // камеру не вдалося ввімкнути (немає пристрою чи дозволу)
     });
     d.client.on(handle);
@@ -267,17 +284,13 @@ export const useCallStore = defineStore('call', () => {
   }
 
   function toggleMic() {
+    if (micBlocked.value) return showHint('mic');
     mic.value = !mic.value;
     deps.media.setMic(mic.value);
   }
 
   function toggleCam() {
-    if (camBlocked.value) {
-      camHint.value = true;
-      clearTimeout(camHintTimer);
-      camHintTimer = setTimeout(() => (camHint.value = false), CAM_HINT_MS);
-      return;
-    }
+    if (camBlocked.value) return showHint('cam');
     cam.value = !cam.value;
     deps.media.setCamera?.(cam.value);
   }
@@ -293,7 +306,7 @@ export const useCallStore = defineStore('call', () => {
   }
 
   return {
-    online, netError, contacts, status, callId, peer, hold, peerHold, mic, cam, camBlocked, camHint, selfHidden, link, missed, left, seconds,
+    online, netError, contacts, status, callId, peer, hold, peerHold, mic, cam, micBlocked, camBlocked, hint, selfHidden, link, missed, left, seconds,
     init, handle, call, accept, end, toggleHold, toggleMic, toggleCam, attach, dismissMissed,
   };
 });

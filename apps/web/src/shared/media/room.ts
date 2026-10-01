@@ -11,6 +11,8 @@ export interface LinkState {
   peerCam: boolean;
   /** Наша камера справді публікується. */
   localCam: boolean;
+  /** Мікрофон не вдалося ввімкнути (немає пристрою чи дозволу). */
+  micError: boolean;
   /** Камеру не вдалося ввімкнути (немає пристрою чи дозволу). */
   camError: boolean;
 }
@@ -38,6 +40,14 @@ export class CallMedia {
   async hasCamera() {
     try {
       return (await navigator.mediaDevices.enumerateDevices()).some((d) => d.kind === 'videoinput');
+    } catch {
+      return false;
+    }
+  }
+
+  async hasMicrophone() {
+    try {
+      return (await navigator.mediaDevices.enumerateDevices()).some((d) => d.kind === 'audioinput');
     } catch {
       return false;
     }
@@ -131,7 +141,8 @@ export class CallMedia {
 
   private apply() {
     const lp = this.room?.localParticipant;
-    void lp?.setMicrophoneEnabled(this.micOn && !this.deaf).catch(() => {});
+    const wantMic = this.micOn && !this.deaf;
+    void lp?.setMicrophoneEnabled(wantMic).catch(() => wantMic && this.emit({ micError: true }));
     void lp?.setCameraEnabled(this.camOn && !this.deaf).catch(() => this.emit({ camError: true }));
     this.els.forEach((el) => (el.muted = this.deaf));
   }

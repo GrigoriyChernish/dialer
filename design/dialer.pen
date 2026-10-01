@@ -50,7 +50,7 @@
               "type": "text",
               "id": "P4LlfF",
               "name": "Initials",
-              "fill": "#FFFFFF",
+              "fill": "$on-solid",
               "content": "ОК",
               "fontFamily": "Inter",
               "fontSize": 14,
@@ -126,39 +126,11 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "R6h6Lg",
+          "id": "xDS56",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "zZ044",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "h15bN",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -419,7 +391,8 @@
               "lineHeight": 1,
               "textAlignVertical": "middle",
               "fontFamily": "Inter",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         }
@@ -457,7 +430,7 @@
           "height": 24,
           "icon": "x",
           "library": "lucide",
-          "fill": "#FFFFFF"
+          "fill": "$on-solid"
         }
       ]
     },
@@ -496,39 +469,11 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "yZJ5g",
+          "id": "wPPQ0",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "LGvmW",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "p8YNH",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -562,7 +507,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -573,7 +518,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -611,7 +556,7 @@
                               "type": "text",
                               "id": "dGNOh",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -720,86 +665,26 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "T0ty0l",
+          "id": "qllr3",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "S2dpD1",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "l2BMuu",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "seZ0g",
+          "id": "rTV2g",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "NhKiM",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "kuRhV",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "BjA3d",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -833,7 +718,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -844,7 +729,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -882,7 +767,7 @@
                               "type": "text",
                               "id": "yHVtx",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -970,134 +855,43 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "D7Zmp",
+                  "id": "a7Dg3y",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "rv6kE",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "K8I4gN",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "CqDTu",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "v4Oca",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "TiGNw",
+          "id": "t0svsd",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
-          "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "F7KUSQ",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "u5nUR",
-      "x": 1340,
-      "y": -554,
-      "name": "Call State / hold",
-      "reusable": true,
-      "fill": "#FFFFFF14",
-      "cornerRadius": 20,
-      "stroke": "$line",
-      "strokeWidth": 1,
-      "gap": 8,
-      "padding": [
-        8,
-        14
-      ],
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "icon",
-          "id": "Hwfeo",
-          "name": "Icon",
-          "width": 16,
-          "height": 16,
-          "icon": "pause",
-          "library": "lucide",
-          "fill": "$warn"
-        },
-        {
-          "type": "text",
-          "id": "M5EZC",
-          "name": "Label",
-          "fill": "$fg",
-          "content": "Ви поставили на утримання",
-          "fontFamily": "Inter",
-          "fontSize": 13,
-          "fontWeight": "normal"
+          "y": 134
         }
       ]
     },
@@ -1108,7 +902,7 @@
       "y": -554,
       "name": "Call State / peer-hold",
       "reusable": true,
-      "fill": "#FFFFFF14",
+      "fill": "$surface-1",
       "cornerRadius": 20,
       "stroke": "$line",
       "strokeWidth": 1,
@@ -1148,7 +942,7 @@
       "y": -471,
       "name": "Call State / connection-lost",
       "reusable": true,
-      "fill": "#FFFFFF14",
+      "fill": "$surface-1",
       "cornerRadius": 20,
       "stroke": "$line",
       "strokeWidth": 1,
@@ -1174,87 +968,7 @@
           "id": "aNOt7",
           "name": "Label",
           "fill": "$fg",
-          "content": "Олена втратила з'єднання · чекаємо до 30 с",
-          "fontFamily": "Inter",
-          "fontSize": 13,
-          "fontWeight": "normal"
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "rK2YW",
-      "x": 1340,
-      "y": -471,
-      "name": "Call State / reconnecting",
-      "reusable": true,
-      "fill": "#FFFFFF14",
-      "cornerRadius": 20,
-      "stroke": "$line",
-      "strokeWidth": 1,
-      "gap": 8,
-      "padding": [
-        8,
-        14
-      ],
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "icon",
-          "id": "Lvzmh",
-          "name": "Icon",
-          "width": 16,
-          "height": 16,
-          "icon": "loader",
-          "library": "lucide",
-          "fill": "$accent-icon"
-        },
-        {
-          "type": "text",
-          "id": "MUlsO",
-          "name": "Label",
-          "fill": "$fg",
-          "content": "Відновлюємо ваше з'єднання",
-          "fontFamily": "Inter",
-          "fontSize": 13,
-          "fontWeight": "normal"
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "WTm0T",
-      "x": 1340,
-      "y": -394,
-      "name": "Call State / poor-signal",
-      "reusable": true,
-      "fill": "#FFFFFF14",
-      "cornerRadius": 20,
-      "stroke": "$line",
-      "strokeWidth": 1,
-      "gap": 8,
-      "padding": [
-        8,
-        14
-      ],
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "icon",
-          "id": "RDB7j",
-          "name": "Icon",
-          "width": 16,
-          "height": 16,
-          "icon": "signal-low",
-          "library": "lucide",
-          "fill": "$warn"
-        },
-        {
-          "type": "text",
-          "id": "Fr8tK",
-          "name": "Label",
-          "fill": "$fg",
-          "content": "Слабкий сигнал",
+          "content": "З'єднання втрачено · чекаємо до 30 с",
           "fontFamily": "Inter",
           "fontSize": 13,
           "fontWeight": "normal"
@@ -1268,7 +982,7 @@
       "y": -394,
       "name": "Call State / mic-off",
       "reusable": true,
-      "fill": "#FFFFFF14",
+      "fill": "$surface-1",
       "cornerRadius": 20,
       "stroke": "$line",
       "strokeWidth": 1,
@@ -1336,86 +1050,36 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "ZBsRA",
+          "id": "RH7Eo",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "TBqOh",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "m6EPIz",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "rKhEe",
+          "id": "gbFjQ",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "R2js1Q",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "u25pGm",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
+            "MG9z1": {
               "children": [
                 {
-                  "type": "text",
-                  "id": "TF3Ff",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
+                  "id": "nIVV5",
+                  "type": "ref",
+                  "ref": "xrzjf",
+                  "name": "Self Status / hold"
                 }
               ]
+            },
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -1449,7 +1113,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -1460,7 +1124,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -1499,7 +1163,7 @@
                               "type": "text",
                               "id": "nh9wg",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -1521,12 +1185,6 @@
                   "fontSize": 24,
                   "fontWeight": "700",
                   "letterSpacing": -0.4
-                },
-                {
-                  "id": "awzeB",
-                  "type": "ref",
-                  "ref": "u5nUR",
-                  "name": "State"
                 }
               ]
             },
@@ -1538,94 +1196,44 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "d6qd9",
+                  "id": "UmdWM",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "CbgYJ",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "Lo6Ob",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "w84Dm",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "ADR5b",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$on-solid"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause",
+                      "fill": "$on-light"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "QItzr",
+          "id": "f1ys1",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
-          "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "d2I96",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
+          "y": 134
         }
       ]
     },
@@ -1664,86 +1272,26 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "WW5Uf",
+          "id": "T8XuRh",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "KORh9",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "yle5E",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "xJXeq",
+          "id": "TDOND",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "C3mpN",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "aal3c",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "rpB1W",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -1777,7 +1325,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -1788,7 +1336,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -1827,7 +1375,7 @@
                               "type": "text",
                               "id": "mbI9K",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -1866,94 +1414,43 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "z3rKx",
+                  "id": "jz55t",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "rxiCj",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "PQFNj",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "bPj9j",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "g42R9",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "e7OWQl",
+          "id": "Fy7EV",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
-          "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "z6zBp",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
+          "y": 134
         }
       ]
     },
@@ -1992,86 +1489,26 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "ax7y8",
+          "id": "DJQcb",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "pT0L8",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "ekMuA",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "ZGERZ",
+          "id": "dWEMJ",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "It14S",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "YUaCc",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Rvos1",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -2105,7 +1542,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -2116,7 +1553,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -2155,7 +1592,7 @@
                               "type": "text",
                               "id": "ARDlV",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -2194,94 +1631,43 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "sg6YU",
+                  "id": "U8p91",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "mcbb2",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "z7Bols",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "oU4Qo",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "ELWof",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "K1EhcA",
+          "id": "G25eQ",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
-          "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "JElrJ",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
+          "y": 134
         }
       ]
     },
@@ -2320,86 +1706,33 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "i8iMVn",
+          "id": "COa7A",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "bcMsH",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "baHvf",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "BKqik",
+          "id": "otJzz",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "DeCWU",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "Huxpb",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "K7WrUT",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
+        },
+        {
+          "id": "By5YQ",
+          "type": "ref",
+          "ref": "S31D1V",
+          "name": "Network Banner",
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -2433,7 +1766,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -2444,7 +1777,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -2482,7 +1815,7 @@
                               "type": "text",
                               "id": "X6EKg",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -2506,10 +1839,59 @@
                   "letterSpacing": -0.4
                 },
                 {
-                  "id": "r1cY93",
-                  "type": "ref",
-                  "ref": "rK2YW",
-                  "name": "State"
+                  "type": "frame",
+                  "id": "Y6jIRV",
+                  "name": "Voice Wave",
+                  "height": 28,
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "LFgp5",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "Zpcyt",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "F2FG7",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 26
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "OyYJQ",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "o7Kk1L",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    }
+                  ]
                 }
               ]
             },
@@ -2521,421 +1903,43 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "Rfvym",
-                  "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "y9Wgb",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
-                    },
-                    {
-                      "id": "YVxwM",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
-                    },
-                    {
-                      "id": "fXmF5",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
-                    },
-                    {
-                      "id": "TE3uD",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "KFGOr",
-          "layoutPosition": "absolute",
-          "x": 267,
-          "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "eazO2",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "XLnPU",
-      "x": 3185,
-      "y": 0,
-      "name": "In Call · poor-signal",
-      "clip": true,
-      "width": 375,
-      "height": 844,
-      "fill": {
-        "type": "gradient",
-        "gradientType": "radial",
-        "enabled": true,
-        "rotation": 0,
-        "size": {
-          "width": 1.2,
-          "height": 0.8
-        },
-        "colors": [
-          {
-            "color": "$stage-glow",
-            "position": 0
-          },
-          {
-            "color": "$bg",
-            "position": 1
-          }
-        ],
-        "center": {
-          "y": 0
-        }
-      },
-      "layout": "vertical",
-      "children": [
-        {
-          "type": "frame",
-          "id": "w0hBfq",
-          "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "AyvTI",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "oloE6",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "mPDmf",
-          "name": "Header",
-          "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "ausk9",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "frame",
-              "id": "kw9Ni",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "tMZoW",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "tjM5w",
-          "name": "Content",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "padding": [
-            0,
-            24,
-            40,
-            24
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "F84L1v",
-              "name": "Remote",
-              "width": "fill_container",
-              "height": "fill_container",
-              "layout": "vertical",
-              "gap": 14,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "fOVer",
-                  "name": "Ring Outer",
-                  "width": 200,
-                  "height": 200,
-                  "fill": "#6366F114",
-                  "cornerRadius": 100,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "IC0pA",
-                      "name": "Ring Inner",
-                      "width": 152,
-                      "height": 152,
-                      "fill": "#6366F124",
-                      "cornerRadius": 76,
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "vED1O",
-                          "name": "Avatar",
-                          "width": 104,
-                          "height": 104,
-                          "fill": {
-                            "type": "gradient",
-                            "gradientType": "linear",
-                            "enabled": true,
-                            "rotation": 135,
-                            "size": {
-                              "height": 1
-                            },
-                            "colors": [
-                              {
-                                "color": "#6366F1",
-                                "position": 0
-                              },
-                              {
-                                "color": "#A855F7",
-                                "position": 1
-                              }
-                            ]
-                          },
-                          "cornerRadius": 52,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "GG68b",
-                              "name": "Initials",
-                              "fill": "#FFFFFF",
-                              "content": "ОК",
-                              "fontFamily": "Inter",
-                              "fontSize": 34,
-                              "fontWeight": "600"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "k5T7o",
-                  "name": "Name",
-                  "fill": "$fg",
-                  "content": "Олена Коваль",
-                  "fontFamily": "Inter",
-                  "fontSize": 24,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
-                },
-                {
-                  "id": "ppq8h",
+                  "id": "mfZ59",
                   "type": "ref",
-                  "ref": "WTm0T",
-                  "name": "State"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "nNOI0",
-              "name": "Controls",
-              "width": "fill_container",
-              "justifyContent": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "dg6P7",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "GPQxL",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "TvgdW",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "cRoGX",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "tog62",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "C7yWk",
+          "id": "yiIAd",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
-          "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "uhLPa",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
+          "y": 178
         }
       ]
     },
@@ -2974,86 +1978,26 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "xbadg",
+          "id": "B3rIuY",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "z6sef",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "TNPJJ",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "qLCNp",
+          "id": "dRCjf",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "Mpq8M",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "nkSxp",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "GhdQn",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -3087,7 +2031,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -3098,7 +2042,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -3136,7 +2080,7 @@
                               "type": "text",
                               "id": "Vch6H",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -3175,94 +2119,43 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "RGR90",
+                  "id": "yZg0P",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "aSixr",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "lhoNl",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "TYnKV",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "Kk9yP",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "OoBh0",
+          "id": "ceiyp",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
-          "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "grv8D",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
+          "y": 134
         }
       ]
     },
@@ -3301,39 +2194,11 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "UUJ5m",
+          "id": "V8fluA",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "kj8vA",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "cfxgz",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -3367,7 +2232,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -3378,7 +2243,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -3416,7 +2281,7 @@
                               "type": "text",
                               "id": "xmWr5",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -3616,39 +2481,11 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "ARWf6",
+          "id": "oSoQO",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "ZjX1t",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "DBpv2",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -3732,7 +2569,7 @@
                               "type": "text",
                               "id": "NysTB",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "S",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -3818,7 +2655,7 @@
                       "type": "ref",
                       "ref": "JfOe5",
                       "name": "Close Button",
-                      "fill": "#FFFFFF1A",
+                      "fill": "$surface-2",
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -3927,39 +2764,11 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "x6vGgd",
+          "id": "HS9GN",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "VtPJS",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "VJZDq",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -4043,7 +2852,7 @@
                               "type": "text",
                               "id": "bCugp",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "АМ",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -4129,7 +2938,7 @@
                       "type": "ref",
                       "ref": "JfOe5",
                       "name": "Close Button",
-                      "fill": "#FFFFFF1A",
+                      "fill": "$surface-2",
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -4238,39 +3047,11 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "xP2zv",
+          "id": "Jmiu8",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "C7mMsS",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "p4gTP",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -4354,7 +3135,7 @@
                               "type": "text",
                               "id": "A1ooF2",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -4440,7 +3221,7 @@
                       "type": "ref",
                       "ref": "JfOe5",
                       "name": "Close Button",
-                      "fill": "#FFFFFF1A",
+                      "fill": "$surface-2",
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -4629,86 +3410,26 @@
           }
         },
         {
-          "type": "frame",
-          "id": "YcN08",
+          "id": "WRpEq",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "i7BtkU",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "f4rZOo",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "FfOo6",
+          "id": "gAi1D",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "ndORO",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "m26Wnp",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "z8f0SL",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -4735,91 +3456,49 @@
               "alignItems": "end",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "s4HjJ",
+                  "id": "C06B4R",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "gieL3",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "OIcY3",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "bw3AT",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "bcasC",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "c7CcaG",
+          "id": "xdxoF",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
           "y": 134,
-          "name": "Self View",
-          "metadata": {
-            "type": "unsplash",
-            "username": "roscoadrian",
-            "link": "https://unsplash.com/@roscoadrian",
-            "author": "Adrian \"Rosco\" Stef"
-          },
-          "width": 92,
-          "height": 122,
           "fill": {
             "type": "image",
             "enabled": true,
             "url": "https://images.unsplash.com/photo-1654432673538-ae403ce9d457?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NzN8&ixlib=rb-4.1.0&q=80&w=1080",
             "mode": "cover"
           },
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
           "effect": {
             "type": "shadow",
             "shadowType": "outer",
@@ -4830,23 +3509,11 @@
             },
             "blur": 24
           },
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "YFmF3",
-              "x": 37.5,
-              "y": 53,
-              "name": "Label",
-              "enabled": false,
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
+          "descendants": {
+            "gnnBB": {
+              "enabled": false
             }
-          ]
+          }
         }
       ]
     },
@@ -4965,86 +3632,26 @@
           }
         },
         {
-          "type": "frame",
-          "id": "HCN1Z",
+          "id": "g6Uuq",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "OOo36",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "qe4cv",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "WX8KX",
+          "id": "Iemjb",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "A2KEy",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "GWBQy",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "KqoA2",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -5071,91 +3678,49 @@
               "alignItems": "end",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "GcBnU",
+                  "id": "qeft4",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "b9WxPk",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "CgTES",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "JLJ3x",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "T6Psu",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "ND3J4",
+          "id": "KVjTl",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
           "y": 134,
-          "name": "Self View",
-          "metadata": {
-            "type": "unsplash",
-            "username": "noorvoux",
-            "link": "https://unsplash.com/@noorvoux",
-            "author": "Frankie Cordoba"
-          },
-          "width": 92,
-          "height": 122,
           "fill": {
             "type": "image",
             "enabled": true,
             "url": "https://images.unsplash.com/photo-1654432673538-ae403ce9d457?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NzN8&ixlib=rb-4.1.0&q=80&w=1080",
             "mode": "cover"
           },
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
           "effect": {
             "type": "shadow",
             "shadowType": "outer",
@@ -5166,23 +3731,11 @@
             },
             "blur": 24
           },
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "DVCGj",
-              "x": 37.5,
-              "y": 53,
-              "name": "Label",
-              "enabled": false,
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
+          "descendants": {
+            "gnnBB": {
+              "enabled": false
             }
-          ]
+          }
         },
         {
           "id": "ORBew",
@@ -5200,7 +3753,7 @@
       "id": "j8WFD6",
       "x": 910,
       "y": 2000,
-      "name": "In Call · my mic & cam off",
+      "name": "In Call · self mic & cam off",
       "clip": true,
       "width": 375,
       "height": 844,
@@ -5230,86 +3783,26 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "mMUdy",
+          "id": "XHZp6",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "TbJrk",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "zDMQb",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "e0hGOz",
+          "id": "fVonu",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "lxCmQ",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "MO42P",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Vph42",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -5343,7 +3836,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -5354,7 +3847,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -5392,7 +3885,7 @@
                               "type": "text",
                               "id": "KbHkO",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -5480,122 +3973,56 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "DEeVR",
+                  "id": "qXYaL",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "c2KW1",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic-off",
-                          "fill": "#111111"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$on-solid"
                     },
-                    {
-                      "id": "jh9ZD",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video-off",
-                          "fill": "#111111"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic-off",
+                      "fill": "$on-light"
                     },
-                    {
-                      "id": "EoTCe",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$on-solid"
                     },
-                    {
-                      "id": "Hur3z",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video-off",
+                      "fill": "$on-light"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "kqa9O",
+          "id": "ERDos",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
           "y": 134,
-          "name": "Self View",
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "DEy5d",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Камера вимк.",
-              "fontFamily": "Inter",
-              "fontSize": 12,
-              "fontWeight": "normal"
+          "descendants": {
+            "gnnBB": {
+              "enabled": false
             },
-            {
-              "type": "frame",
-              "id": "ArcqV",
-              "layoutPosition": "absolute",
-              "x": 64,
-              "y": 6,
-              "name": "My Mic Off",
-              "width": 22,
-              "height": 22,
-              "fill": "$bad",
-              "cornerRadius": 11,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "U4C7q",
-                  "name": "Icon",
-                  "width": 12,
-                  "height": 12,
-                  "icon": "mic-off",
-                  "library": "lucide",
-                  "fill": "#FFFFFF"
-                }
-              ]
+            "XgWNV": {
+              "enabled": true
+            },
+            "brMtf": {
+              "enabled": true
             }
-          ]
+          }
         }
       ]
     },
@@ -5634,86 +4061,26 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "nOHsb",
+          "id": "L6U6TJ",
+          "type": "ref",
+          "ref": "ITFvA",
           "name": "Status Bar",
-          "width": "fill_container",
-          "height": 62,
-          "padding": [
-            0,
-            28
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "RyrCR",
-              "name": "Time",
-              "fill": "$fg",
-              "content": "9:41",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "n3gXU7",
-              "name": "Indicators",
-              "fill": "$fg",
-              "content": "5G  100%",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "600"
-            }
-          ]
+          "width": "fill_container"
         },
         {
-          "type": "frame",
-          "id": "C1XwG",
+          "id": "XlIqW",
+          "type": "ref",
+          "ref": "dCVmN",
           "name": "Header",
           "width": "fill_container",
-          "padding": [
-            8,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "jg2bJ",
-              "name": "Peer Name",
-              "fill": "$fg",
-              "content": "Олена Коваль",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "600"
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
             },
-            {
-              "type": "frame",
-              "id": "R3tPl",
-              "name": "Timer",
-              "fill": "#FFFFFF1A",
-              "cornerRadius": 14,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Nt55v",
-                  "name": "Time",
-                  "fill": "$fg",
-                  "content": "00:42",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500"
-                }
-              ]
+            "Lm6Lv": {
+              "content": "00:42"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -5747,7 +4114,7 @@
                   "name": "Ring Outer",
                   "width": 200,
                   "height": 200,
-                  "fill": "#6366F114",
+                  "fill": "$accent-ring-outer",
                   "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -5758,7 +4125,7 @@
                       "name": "Ring Inner",
                       "width": 152,
                       "height": 152,
-                      "fill": "#6366F124",
+                      "fill": "$accent-ring-inner",
                       "cornerRadius": 76,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -5796,7 +4163,7 @@
                               "type": "text",
                               "id": "Twdl0",
                               "name": "Initials",
-                              "fill": "#FFFFFF",
+                              "fill": "$on-solid",
                               "content": "ОК",
                               "fontFamily": "Inter",
                               "fontSize": 34,
@@ -5884,95 +4251,44 @@
               "justifyContent": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "sxuW5",
+                  "id": "WpDRd",
+                  "type": "ref",
+                  "ref": "zKP5v",
                   "name": "Controls Pill",
-                  "fill": "#FFFFFF1A",
-                  "cornerRadius": 40,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": 10,
-                  "children": [
-                    {
-                      "id": "dsYnX",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Mic",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "mic"
-                        }
-                      }
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "S8Oj4R",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Camera",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "video"
-                        }
-                      }
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
                     },
-                    {
-                      "id": "JU7mG",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "Hold",
-                      "fill": "#FFFFFF1F",
-                      "effect": [],
-                      "descendants": {
-                        "gcrxy": {
-                          "icon": "pause"
-                        }
-                      }
+                    "G51U2F": {
+                      "fill": "$surface-3"
                     },
-                    {
-                      "id": "O7EUvW",
-                      "type": "ref",
-                      "ref": "JfOe5",
-                      "name": "End Call"
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
                     }
-                  ]
+                  }
                 }
               ]
             }
           ]
         },
         {
-          "type": "frame",
-          "id": "XFP66",
+          "id": "sx7gY",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
           "layoutPosition": "absolute",
           "x": 267,
           "y": 134,
-          "name": "Self View",
-          "enabled": false,
-          "width": 92,
-          "height": 122,
-          "fill": "#1B2030",
-          "cornerRadius": 16,
-          "stroke": "$line",
-          "strokeWidth": 1,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "lvIU6",
-              "name": "Label",
-              "fill": "$mute",
-              "content": "Ви",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            }
-          ]
+          "enabled": false
         },
         {
           "type": "frame",
@@ -5983,7 +4299,7 @@
           "name": "Show Self",
           "width": 44,
           "height": 44,
-          "fill": "#FFFFFF1A",
+          "fill": "$surface-2",
           "cornerRadius": 22,
           "stroke": "$line",
           "strokeWidth": 1,
@@ -6005,39 +4321,1374 @@
       ]
     },
     {
-      "id": "J0Pa5A",
-      "type": "ref",
-      "ref": "JfOe5",
-      "x": 4055,
-      "y": -554
+      "type": "frame",
+      "id": "MxTuk",
+      "x": 1534,
+      "y": -394,
+      "name": "Call State / camera-unavailable",
+      "reusable": true,
+      "fill": "$surface-1",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "w3tyg",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "video-off",
+          "library": "lucide",
+          "fill": "$warn"
+        },
+        {
+          "type": "text",
+          "id": "MTLal",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Камера недоступна",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
     },
     {
-      "id": "oCX8h",
-      "type": "ref",
-      "ref": "JfOe5",
-      "x": 4149,
-      "y": -554
+      "type": "frame",
+      "id": "t2kqOb",
+      "x": 4095,
+      "y": 0,
+      "name": "In Call · camera-unavailable",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "RfXG4",
+          "type": "ref",
+          "ref": "ITFvA",
+          "name": "Status Bar",
+          "width": "fill_container"
+        },
+        {
+          "id": "w159VN",
+          "type": "ref",
+          "ref": "dCVmN",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
+            },
+            "Lm6Lv": {
+              "content": "00:42"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "mUhL5",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "GocPI",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IvlJv",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "$accent-ring-outer",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "gMm6q",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "$accent-ring-inner",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "EFijt",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wFOvd",
+                              "name": "Initials",
+                              "fill": "$on-solid",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Y2oltB",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "id": "RVH6M",
+                  "type": "ref",
+                  "ref": "MxTuk",
+                  "name": "State"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "inINL",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "id": "pGfRo",
+                  "type": "ref",
+                  "ref": "zKP5v",
+                  "name": "Controls Pill",
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
+                    },
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
+                    },
+                    "G51U2F": {
+                      "fill": "$surface-3",
+                      "opacity": 0.4
+                    },
+                    "G51U2F/gcrxy": {
+                      "icon": "video-off"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "QvIas",
-      "type": "ref",
-      "ref": "JfOe5",
-      "x": 4243,
-      "y": -554
+      "type": "frame",
+      "id": "I09u4",
+      "x": 1754,
+      "y": -394,
+      "name": "Self Status / mic-off",
+      "reusable": true,
+      "width": 22,
+      "height": 22,
+      "fill": "$bad",
+      "cornerRadius": 11,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "UmFaC",
+          "name": "Icon",
+          "width": 12,
+          "height": 12,
+          "icon": "mic-off",
+          "library": "lucide",
+          "fill": "$on-solid"
+        }
+      ]
     },
     {
-      "id": "DXN9T",
-      "type": "ref",
-      "ref": "JfOe5",
-      "x": 4337,
-      "y": -554
+      "type": "frame",
+      "id": "NMdio",
+      "x": 1804,
+      "y": -394,
+      "name": "Self Status / cam-off",
+      "reusable": true,
+      "width": 22,
+      "height": 22,
+      "fill": "$surface-2",
+      "cornerRadius": 11,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "XLcbv",
+          "name": "Icon",
+          "width": 12,
+          "height": 12,
+          "icon": "video-off",
+          "library": "lucide",
+          "fill": "$mute"
+        }
+      ]
     },
     {
-      "id": "z4P4kb",
-      "type": "ref",
-      "ref": "JfOe5",
-      "x": 4431,
-      "y": -554
+      "type": "frame",
+      "id": "rtXsy",
+      "x": 1854,
+      "y": -394,
+      "name": "Self Status / cam-unavailable",
+      "reusable": true,
+      "width": 22,
+      "height": 22,
+      "fill": "$surface-2",
+      "cornerRadius": 11,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "I6AEFp",
+          "name": "Icon",
+          "width": 12,
+          "height": 12,
+          "icon": "video-off",
+          "library": "lucide",
+          "fill": "$warn"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "xrzjf",
+      "x": 1904,
+      "y": -394,
+      "name": "Self Status / hold",
+      "reusable": true,
+      "width": 22,
+      "height": 22,
+      "fill": "$surface-2",
+      "cornerRadius": 11,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "mOE2O",
+          "name": "Icon",
+          "width": 12,
+          "height": 12,
+          "icon": "pause",
+          "library": "lucide",
+          "fill": "$warn"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "VaP9y",
+      "x": 4550,
+      "y": 0,
+      "name": "In Call · self status",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "I5Orr",
+          "type": "ref",
+          "ref": "ITFvA",
+          "name": "Status Bar",
+          "width": "fill_container"
+        },
+        {
+          "id": "p8cdm",
+          "type": "ref",
+          "ref": "dCVmN",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
+            },
+            "MG9z1": {
+              "children": [
+                {
+                  "id": "jnItp",
+                  "type": "ref",
+                  "ref": "I09u4",
+                  "name": "Self Status / mic-off"
+                },
+                {
+                  "id": "FwuRl",
+                  "type": "ref",
+                  "ref": "NMdio",
+                  "name": "Self Status / cam-off"
+                }
+              ]
+            },
+            "Lm6Lv": {
+              "content": "00:42"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "hFVpJ",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Ri8Qr",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "xKZuy",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "$accent-ring-outer",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Dtu7T",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "$accent-ring-inner",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "VCSXs",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "R3vFmz",
+                              "name": "Initials",
+                              "fill": "$on-solid",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "f62cJ",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "type": "frame",
+                  "id": "cvQqs",
+                  "name": "Voice Wave",
+                  "height": 28,
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "XId6l",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "HDLyZ",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "r2d7b",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 26
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "CHlsv",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "SB89E",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KLTlv",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "id": "b8S71",
+                  "type": "ref",
+                  "ref": "zKP5v",
+                  "name": "Controls Pill",
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$on-solid"
+                    },
+                    "iSBAx/gcrxy": {
+                      "icon": "mic-off",
+                      "fill": "$on-light"
+                    },
+                    "G51U2F": {
+                      "fill": "$on-solid"
+                    },
+                    "G51U2F/gcrxy": {
+                      "icon": "video-off",
+                      "fill": "$on-light"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "IACjP",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 134,
+          "descendants": {
+            "gnnBB": {
+              "enabled": false
+            },
+            "XgWNV": {
+              "enabled": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "r8tpn",
+      "x": 1954,
+      "y": -394,
+      "name": "Self Status / mic-unavailable",
+      "reusable": true,
+      "width": 22,
+      "height": 22,
+      "fill": "$surface-2",
+      "cornerRadius": 11,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "fZEXr",
+          "name": "Icon",
+          "width": 12,
+          "height": 12,
+          "icon": "mic-off",
+          "library": "lucide",
+          "fill": "$warn"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "v1QsZ",
+      "x": 1534,
+      "y": -334,
+      "name": "Call State / mic-unavailable",
+      "reusable": true,
+      "fill": "$surface-1",
+      "cornerRadius": 20,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 8,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "P429ZD",
+          "name": "Icon",
+          "width": 16,
+          "height": 16,
+          "icon": "mic-off",
+          "library": "lucide",
+          "fill": "$warn"
+        },
+        {
+          "type": "text",
+          "id": "IeJMp",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Мікрофон недоступний",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "kqJLc",
+      "x": 1775,
+      "y": -334,
+      "name": "Network Banner / poor-signal",
+      "reusable": true,
+      "width": 375,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 270,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "#F5B84B2E",
+            "position": 0
+          },
+          {
+            "color": "#F5B84B00",
+            "position": 1
+          }
+        ]
+      },
+      "stroke": "$warn-banner",
+      "strokeWidth": {
+        "bottom": 1
+      },
+      "gap": 10,
+      "padding": [
+        10,
+        24
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "hagFe",
+          "name": "Icon Badge",
+          "width": 24,
+          "height": 24,
+          "fill": "$warn-soft",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "xeSAu",
+              "name": "Icon",
+              "width": 14,
+              "height": 14,
+              "icon": "signal-low",
+              "library": "lucide",
+              "fill": "$warn"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "KHWPp",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Слабкий сигнал",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "S31D1V",
+      "x": 2190,
+      "y": -334,
+      "name": "Network Banner / reconnecting",
+      "reusable": true,
+      "width": 375,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 270,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "#6366F12E",
+            "position": 0
+          },
+          {
+            "color": "#6366F100",
+            "position": 1
+          }
+        ]
+      },
+      "stroke": "$accent-banner",
+      "strokeWidth": {
+        "bottom": 1
+      },
+      "gap": 10,
+      "padding": [
+        10,
+        24
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Proof",
+          "name": "Icon Badge",
+          "width": 24,
+          "height": 24,
+          "fill": "$accent-badge",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "LK1oh",
+              "name": "Icon",
+              "width": 14,
+              "height": 14,
+              "icon": "loader",
+              "library": "lucide",
+              "fill": "$accent-icon"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "mzuL1",
+          "name": "Label",
+          "fill": "$fg",
+          "content": "Відновлюємо ваше з'єднання",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "y4GnO",
+      "x": 5005,
+      "y": 0,
+      "name": "In Call · poor-signal",
+      "clip": true,
+      "width": 375,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.2,
+          "height": 0.8
+        },
+        "colors": [
+          {
+            "color": "$stage-glow",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0
+        }
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "yrX6D",
+          "type": "ref",
+          "ref": "ITFvA",
+          "name": "Status Bar",
+          "width": "fill_container"
+        },
+        {
+          "id": "UQUld",
+          "type": "ref",
+          "ref": "dCVmN",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "P6ptR9": {
+              "content": "Олена Коваль"
+            },
+            "Lm6Lv": {
+              "content": "00:42"
+            }
+          }
+        },
+        {
+          "id": "Erk5H",
+          "type": "ref",
+          "ref": "kqJLc",
+          "name": "Network Banner",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "QXc8F",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            0,
+            24,
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "g4C96",
+              "name": "Remote",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "uP6rv",
+                  "name": "Ring Outer",
+                  "width": 200,
+                  "height": 200,
+                  "fill": "$accent-ring-outer",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "IMhZZ",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "$accent-ring-inner",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "D1OJEL",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6366F1",
+                                "position": 0
+                              },
+                              {
+                                "color": "#A855F7",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yhdtB",
+                              "name": "Initials",
+                              "fill": "$on-solid",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mbRZt",
+                  "name": "Name",
+                  "fill": "$fg",
+                  "content": "Олена Коваль",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                },
+                {
+                  "type": "frame",
+                  "id": "SpY8r",
+                  "name": "Voice Wave",
+                  "height": 28,
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "xLLBL",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "bwWiL",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "DwvcB",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 26
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "Yf4Bu",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 16
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 2,
+                      "id": "oQjID",
+                      "name": "Bar",
+                      "fill": "$accent",
+                      "width": 4,
+                      "height": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Trv8d",
+              "name": "Controls",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "id": "z3m8k",
+                  "type": "ref",
+                  "ref": "zKP5v",
+                  "name": "Controls Pill",
+                  "descendants": {
+                    "iSBAx": {
+                      "fill": "$surface-3"
+                    },
+                    "iSBAx/gcrxy": {
+                      "icon": "mic"
+                    },
+                    "G51U2F": {
+                      "fill": "$surface-3"
+                    },
+                    "G51U2F/gcrxy": {
+                      "icon": "video"
+                    },
+                    "G0zgSx": {
+                      "fill": "$surface-3"
+                    },
+                    "G0zgSx/gcrxy": {
+                      "icon": "pause"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mMQfK",
+          "type": "ref",
+          "ref": "BEE1F",
+          "name": "Self View",
+          "layoutPosition": "absolute",
+          "x": 267,
+          "y": 178
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ITFvA",
+      "x": 0,
+      "y": -519,
+      "name": "Status Bar",
+      "reusable": true,
+      "width": 375,
+      "height": 62,
+      "padding": [
+        0,
+        28
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "Igm52",
+          "name": "Time",
+          "fill": "$fg",
+          "content": "9:41",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "rEWBl",
+          "name": "Indicators",
+          "fill": "$fg",
+          "content": "5G  100%",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "dCVmN",
+      "x": 0,
+      "y": -609,
+      "name": "Call Header",
+      "reusable": true,
+      "width": 375,
+      "padding": [
+        8,
+        24
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "P6ptR9",
+          "name": "Peer Name",
+          "fill": "$fg",
+          "content": "Олена Коваль",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "mwfJ0",
+          "name": "Right",
+          "gap": 8,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "MG9z1",
+              "name": "Status Slot",
+              "slot": [
+                "I09u4",
+                "NMdio",
+                "rtXsy",
+                "xrzjf",
+                "r8tpn"
+              ],
+              "width": "fit_content(0)",
+              "height": "fit_content(0)",
+              "gap": 6,
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "YSzYZ",
+              "name": "Timer",
+              "fill": "$surface-2",
+              "cornerRadius": 14,
+              "padding": [
+                4,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Lm6Lv",
+                  "name": "Time",
+                  "fill": "$fg",
+                  "content": "00:42",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zKP5v",
+      "x": 0,
+      "y": -729,
+      "name": "Call Controls",
+      "reusable": true,
+      "fill": "$surface-2",
+      "cornerRadius": 40,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "gap": 10,
+      "padding": 10,
+      "children": [
+        {
+          "id": "iSBAx",
+          "type": "ref",
+          "ref": "JfOe5",
+          "name": "Mic",
+          "fill": "$surface-3",
+          "effect": [],
+          "descendants": {
+            "gcrxy": {
+              "icon": "mic"
+            }
+          }
+        },
+        {
+          "id": "G51U2F",
+          "type": "ref",
+          "ref": "JfOe5",
+          "name": "Camera",
+          "fill": "$surface-3",
+          "effect": [],
+          "descendants": {
+            "gcrxy": {
+              "icon": "video"
+            }
+          }
+        },
+        {
+          "id": "G0zgSx",
+          "type": "ref",
+          "ref": "JfOe5",
+          "name": "Hold",
+          "fill": "$surface-3",
+          "effect": [],
+          "descendants": {
+            "gcrxy": {
+              "icon": "pause"
+            }
+          }
+        },
+        {
+          "id": "FrLJV",
+          "type": "ref",
+          "ref": "JfOe5",
+          "name": "End Call"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "BEE1F",
+      "x": 0,
+      "y": -909,
+      "name": "Self View",
+      "reusable": true,
+      "clip": true,
+      "width": 92,
+      "height": 122,
+      "fill": "$surface-tile",
+      "cornerRadius": 16,
+      "stroke": "$line",
+      "strokeWidth": 1,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "gnnBB",
+          "name": "Label",
+          "fill": "$mute",
+          "content": "Ви",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "icon",
+          "id": "XgWNV",
+          "x": 0,
+          "y": 0,
+          "name": "Cam Off Icon",
+          "enabled": false,
+          "width": 22,
+          "height": 22,
+          "icon": "video-off",
+          "library": "lucide",
+          "fill": "$mute"
+        },
+        {
+          "type": "frame",
+          "id": "brMtf",
+          "layoutPosition": "absolute",
+          "x": 64,
+          "y": 6,
+          "name": "Self Mic Off",
+          "enabled": false,
+          "width": 22,
+          "height": 22,
+          "fill": "$bad",
+          "cornerRadius": 11,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "U8fQJM",
+              "name": "Icon",
+              "width": 12,
+              "height": 12,
+              "icon": "mic-off",
+              "library": "lucide",
+              "fill": "$on-solid"
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
@@ -6100,6 +5751,54 @@
     "stage-missed-glow": {
       "type": "color",
       "value": "#2A1E28"
+    },
+    "on-solid": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "surface-1": {
+      "type": "color",
+      "value": "#FFFFFF14"
+    },
+    "surface-2": {
+      "type": "color",
+      "value": "#FFFFFF1A"
+    },
+    "surface-3": {
+      "type": "color",
+      "value": "#FFFFFF1F"
+    },
+    "accent-ring-outer": {
+      "type": "color",
+      "value": "#6366F114"
+    },
+    "accent-ring-inner": {
+      "type": "color",
+      "value": "#6366F124"
+    },
+    "surface-tile": {
+      "type": "color",
+      "value": "#1B2030"
+    },
+    "warn-soft": {
+      "type": "color",
+      "value": "#F5B84B33"
+    },
+    "warn-banner": {
+      "type": "color",
+      "value": "#F5B84B40"
+    },
+    "accent-badge": {
+      "type": "color",
+      "value": "#6366F133"
+    },
+    "accent-banner": {
+      "type": "color",
+      "value": "#6366F140"
+    },
+    "on-light": {
+      "type": "color",
+      "value": "#111111"
     }
   },
   "fileToken": "8dbbdd0a-a14f-400d-a6f9-149ce907ef90"

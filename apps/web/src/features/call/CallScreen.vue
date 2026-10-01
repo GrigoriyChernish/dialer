@@ -4,7 +4,9 @@ import { useI18n } from 'vue-i18n';
 import Avatar from '@/shared/ui/Avatar.vue';
 import CallStatePill, { type PillState } from '@/shared/ui/CallStatePill.vue';
 import Icon from '@/shared/ui/Icon.vue';
+import NetworkBanner, { type NetworkKind } from '@/shared/ui/NetworkBanner.vue';
 import RoundButton from '@/shared/ui/RoundButton.vue';
+import SelfStatusChip, { type SelfStatus } from '@/shared/ui/SelfStatusChip.vue';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
 import { useCallStore } from './store';
 
@@ -19,22 +21,33 @@ const connected = computed(() => call.status === 'connected');
 // екран «In Call · video»: на весь екран відео співрозмовника
 const video = computed(() => connected.value && call.link.peerCam && !call.peerHold);
 
-// одна плашка за раз, за пріоритетом: утримання, зв'язок, мікрофон співрозмовника
+// плашка під іменем лише про співрозмовника (утримання, зв'язок, мікрофон) та підказки після натискання; наш бік у шапці й смужці
 const pill = computed<{ state: PillState; text: string } | null>(() => {
   if (!connected.value) return null;
-  if (call.hold) return { state: 'hold', text: t('call.state.hold') };
-  if (call.camHint) return { state: 'cameraUnavailable', text: t('call.state.cameraUnavailable') };
+  if (call.hint === 'cam') return { state: 'cameraUnavailable', text: t('call.state.cameraUnavailable') };
+  if (call.hint === 'mic') return { state: 'micUnavailable', text: t('call.state.micUnavailable') };
   if (call.peerHold) return { state: 'peerHold', text: t(`call.state.peerHold.${g.value}`, { name: first.value }) };
-  if (call.link.reconnecting) return { state: 'reconnecting', text: t('call.state.reconnecting') };
   if (call.link.peerAway) return { state: 'connectionLost', text: t(`call.state.connectionLost.${g.value}`, { name: first.value }) };
-  if (call.link.poor) return { state: 'poorSignal', text: t('call.state.poorSignal') };
   if (call.link.peerMuted) return { state: 'micOff', text: t(`call.state.micOff.${g.value}`, { name: first.value }) };
   return null;
 });
 // дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена чи співрозмовник втратив зв'язок
-const dimmed = computed(() => ['hold', 'peerHold', 'connectionLost'].includes(pill.value?.state ?? ''));
+const dimmed = computed(() => call.hold || call.peerHold || call.link.peerAway);
+// наша мережа: смужка під шапкою, відновлення важливіше за слабкий сигнал
+const network = computed<NetworkKind | null>(() => (!connected.value ? null : call.link.reconnecting ? 'reconnecting' : call.link.poor ? 'poorSignal' : null));
+const networkLabel = computed(() => ({ poorSignal: t('call.network.poorSignal'), reconnecting: t('call.network.reconnecting') }));
 const missedIcon = computed(() => (call.missed?.reason === 'incoming' || call.missed?.reason === 'timeout' ? 'phoneMissed' : 'phoneOff'));
 const WAVE = [8, 16, 26, 16, 8];
+// наші статуси в шапці (дизайн: Self Status), зліва направо: утримання, мікрофон, камера; «недоступно» сильніше за «вимкнено»
+const selfStatuses = computed<{ status: SelfStatus; label: string }[]>(() => {
+  const list: { status: SelfStatus; label: string }[] = [];
+  if (call.hold) list.push({ status: 'hold', label: t('call.self.hold') });
+  if (call.micBlocked) list.push({ status: 'micUnavailable', label: t('call.self.micUnavailable') });
+  else if (!call.mic) list.push({ status: 'micOff', label: t('call.self.micOff') });
+  if (call.camBlocked) list.push({ status: 'camUnavailable', label: t('call.self.camUnavailable') });
+  else if (!call.cam) list.push({ status: 'camOff', label: t('call.self.camOff') });
+  return list;
+});
 const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
 </script>
 
@@ -69,58 +82,64 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
 
     <header v-if="connected" class="relative z-10 flex h-10 shrink-0 items-center justify-between px-4">
       <b class="text-base font-semibold">{{ name }}</b>
-      <span class="rounded-[14px] bg-surface px-2.5 py-1 text-[13px] font-medium tabular-nums">{{ mm(call.seconds) }}</span>
-    </header>
-    <div v-if="video && pill" class="absolute left-5 top-12 z-10"><CallStatePill :state="pill.state">{{ pill.text }}</CallStatePill></div>
-
-    <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); без камери їх не показуємо -->
-    <template v-if="connected && !call.camBlocked">
-      <button
-        v-if="!call.selfHidden"
-        type="button"
-        :aria-label="t('call.hideSelf')"
-        class="absolute right-4 top-[72px] z-10 grid h-[122px] w-[92px] place-items-center overflow-hidden rounded-2xl border border-line bg-pip text-[13px] text-mute"
-        :class="selfVideo && 'shadow-[0_10px_24px_#00000066]'"
-        @click="call.selfHidden = true"
-      >
-        <VideoSurface v-if="selfVideo" kind="local" :track="selfVideo" class="absolute inset-0" />
-        <span v-if="!call.cam || call.hold" class="px-1 text-xs">{{ t('call.camOff') }}</span>
-        <span v-else class="relative" :class="selfVideo && 'text-fg drop-shadow'">{{ t('call.you') }}</span>
-        <!-- бейдж «мій мікрофон вимкнено»: 22 × 22, праворуч угорі, відступ 6 (дизайн: My Mic Off) -->
-        <span v-if="!call.mic" class="absolute right-1.5 top-1.5 grid size-[22px] place-items-center rounded-full bg-call-bad text-white" :title="t('call.myMicOff')"><Icon name="micOff" class="size-3" /></span>
-      </button>
-      <button
-        v-else
-        type="button"
-        :aria-label="t('call.showSelf')"
-        class="absolute right-5 top-14 z-10 grid size-11 place-items-center rounded-full border border-line bg-surface text-fg"
-        @click="call.selfHidden = false"
-      >
-        <Icon name="video" class="size-5" />
-      </button>
-    </template>
-
-    <div v-if="!video" class="flex flex-1 flex-col items-center justify-center gap-3 px-6">
-      <span class="grid size-[200px] place-items-center rounded-full bg-accent/[.08]">
-        <span class="grid size-[152px] place-items-center rounded-full bg-accent/[.14]" :class="!connected && 'animate-ring'">
-          <Avatar :name="name" size="xl" :opacity="dimmed ? 0.6 : undefined" />
-        </span>
-      </span>
-      <h3 class="mt-1 text-[26px] font-bold">{{ name }}</h3>
-
-      <p v-if="call.status === 'ringing'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}</p>
-      <p v-else-if="call.status === 'incoming'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}</p>
-      <CallStatePill v-else-if="pill" :state="pill.state">{{ pill.text }}</CallStatePill>
-      <div v-else class="flex h-7 items-center gap-1" aria-hidden="true">
-        <i v-for="(h, i) in WAVE" :key="i" class="w-1 origin-center rounded-sm bg-accent motion-safe:animate-wave" :style="{ height: h + 'px', animationDelay: i * 0.12 + 's' }" />
+      <div class="flex items-center gap-2">
+        <SelfStatusChip v-for="s in selfStatuses" :key="s.status" :status="s.status" :label="s.label" />
+        <span class="rounded-[14px] bg-surface px-2.5 py-1 text-[13px] font-medium tabular-nums">{{ mm(call.seconds) }}</span>
       </div>
-      <small v-if="!connected && call.left" class="text-xs text-mute">{{ t('call.left', { time: mm(call.left) }) }}</small>
+    </header>
+    <!-- наша мережа: смужка під шапкою, вміст під нею з'їжджає вниз разом із мініатюрою -->
+    <NetworkBanner v-if="connected" class="relative z-10" :kind="network" :label="networkLabel" />
+
+    <div class="relative flex min-h-0 flex-1 flex-col">
+      <div v-if="video && pill" class="absolute left-5 top-2 z-10"><CallStatePill :state="pill.state">{{ pill.text }}</CallStatePill></div>
+
+      <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); без камери їх не показуємо -->
+      <template v-if="connected && !call.camBlocked">
+        <button
+          v-if="!call.selfHidden"
+          type="button"
+          :aria-label="t('call.hideSelf')"
+          class="absolute right-4 top-8 z-10 grid h-[122px] w-[92px] place-items-center overflow-hidden rounded-2xl border border-line bg-pip text-[13px] text-mute"
+          :class="selfVideo && 'shadow-[0_10px_24px_#00000066]'"
+          @click="call.selfHidden = true"
+        >
+          <VideoSurface v-if="selfVideo" kind="local" :track="selfVideo" class="absolute inset-0" />
+          <span v-if="!call.cam || call.hold" class="px-1 text-xs">{{ t('call.camOff') }}</span>
+          <span v-else class="relative" :class="selfVideo && 'text-fg drop-shadow'">{{ t('call.you') }}</span>
+        </button>
+        <button
+          v-else
+          type="button"
+          :aria-label="t('call.showSelf')"
+          class="absolute right-5 top-4 z-10 grid size-11 place-items-center rounded-full border border-line bg-surface text-fg"
+          @click="call.selfHidden = false"
+        >
+          <Icon name="video" class="size-5" />
+        </button>
+      </template>
+
+      <div v-if="!video" class="flex flex-1 flex-col items-center justify-center gap-3 px-6">
+        <span class="grid size-[200px] place-items-center rounded-full bg-accent/[.08]">
+          <span class="grid size-[152px] place-items-center rounded-full bg-accent/[.14]" :class="!connected && 'animate-ring'">
+            <Avatar :name="name" size="xl" :opacity="dimmed ? 0.6 : undefined" />
+          </span>
+        </span>
+        <h3 class="mt-1 text-[26px] font-bold">{{ name }}</h3>
+
+        <p v-if="call.status === 'ringing'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}</p>
+        <p v-else-if="call.status === 'incoming'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}</p>
+        <CallStatePill v-else-if="pill" :state="pill.state">{{ pill.text }}</CallStatePill>
+        <div v-else class="flex h-7 items-center gap-1" aria-hidden="true">
+          <i v-for="(h, i) in WAVE" :key="i" class="w-1 origin-center rounded-sm bg-accent motion-safe:animate-wave" :style="{ height: h + 'px', animationDelay: i * 0.12 + 's' }" />
+        </div>
+        <small v-if="!connected && call.left" class="text-xs text-mute">{{ t('call.left', { time: mm(call.left) }) }}</small>
+      </div>
+      <div v-else class="flex-1" />
     </div>
-    <div v-else class="flex-1" />
 
     <div class="relative z-10 flex justify-center pb-10">
       <div v-if="connected" class="flex gap-2.5 rounded-[40px] border border-line bg-surface p-2.5">
-        <RoundButton :label="call.mic ? t('call.mute') : t('call.unmute')" :active="!call.mic" :disabled="call.hold" @click="call.toggleMic()"><Icon :name="call.mic ? 'mic' : 'micOff'" /></RoundButton>
+        <RoundButton :label="call.micBlocked ? t('call.micUnavailable') : call.mic ? t('call.mute') : t('call.unmute')" :active="!call.mic && !call.micBlocked" :unavailable="call.micBlocked" :disabled="call.hold" @click="call.toggleMic()"><Icon :name="call.mic ? 'mic' : 'micOff'" /></RoundButton>
         <RoundButton :label="call.camBlocked ? t('call.cameraUnavailable') : call.cam ? t('call.camera') : t('call.cameraOn')" :active="!call.cam && !call.camBlocked" :unavailable="call.camBlocked" :disabled="call.hold" @click="call.toggleCam()"><Icon :name="call.cam ? 'video' : 'videoOff'" /></RoundButton>
         <RoundButton :label="call.hold ? t('call.resume') : t('call.hold')" :active="call.hold" @click="call.toggleHold()"><Icon name="pause" /></RoundButton>
         <RoundButton variant="bad" :label="t('call.hangup')" @click="call.end()"><Icon name="x" /></RoundButton>

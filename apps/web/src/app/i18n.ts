@@ -4,16 +4,16 @@ export const messages = {
   uk: {
     contacts: { title: 'Дзвінки', online: 'онлайн', offline: 'не в мережі', demo: 'демо-співрозмовник', bot: { answers: 'онлайн · відповість', ignores: 'онлайн · не відповість', busy: 'у розмові · зайнято' }, noConnection: "Немає зв'язку з сервером", connecting: 'Підключаємось…', call: 'Подзвонити' },
     call: {
-      calling: 'Дзвонимо…', outgoing: 'Вихідний виклик', incomingLabel: 'Вхідний виклик', you: 'Ви', camOff: 'Камера вимк.', myMicOff: 'Ваш мікрофон вимкнено', camera: 'Вимкнути камеру', cameraOn: 'Увімкнути камеру', cameraUnavailable: 'Камера недоступна', hideSelf: 'Сховати себе', showSelf: 'Показати себе', incoming: 'Вхідний дзвінок…', left: 'Залишилось {time}',
+      calling: 'Дзвонимо…', outgoing: 'Вихідний виклик', incomingLabel: 'Вхідний виклик', you: 'Ви', camOff: 'Камера вимк.', micUnavailable: 'Мікрофон недоступний',
+      self: { hold: 'Ви на утриманні', micOff: 'Мікрофон вимкнено', micUnavailable: 'Мікрофон недоступний', camOff: 'Камера вимкнена', camUnavailable: 'Камера недоступна' }, camera: 'Вимкнути камеру', cameraOn: 'Увімкнути камеру', cameraUnavailable: 'Камера недоступна', hideSelf: 'Сховати себе', showSelf: 'Показати себе', incoming: 'Вхідний дзвінок…', left: 'Залишилось {time}',
       accept: 'Прийняти', reject: 'Відхилити', cancel: 'Скасувати', hangup: 'Завершити',
       mute: 'Вимкнути мікрофон', unmute: 'Увімкнути мікрофон', hold: 'Утримання', resume: 'Продовжити',
+      network: { poorSignal: 'Слабкий сигнал', reconnecting: "Відновлюємо ваше з'єднання" },
       state: {
-        hold: 'Ви поставили на утримання',
         peerHold: { f: '{name} поставила на утримання', m: '{name} поставив на утримання' },
         connectionLost: { f: "{name} втратила з'єднання · чекаємо до 30 с", m: "{name} втратив з'єднання · чекаємо до 30 с" },
-        reconnecting: "Відновлюємо ваше з'єднання",
-        poorSignal: 'Слабкий сигнал',
         cameraUnavailable: 'Камера недоступна',
+        micUnavailable: 'Мікрофон недоступний',
         micOff: { f: '{name} вимкнула мікрофон', m: '{name} вимкнув мікрофон' },
       },
       close: 'Закрити', redial: 'Передзвонити',

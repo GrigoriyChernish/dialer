@@ -15,7 +15,7 @@ function setup() {
   const request = vi.fn(async (type: string): Promise<ServerMessage> => (type === 'call.invite' ? { v: V, type: 'ack', reqId: 'r', call: info() } : { v: V, type: 'ack', reqId: 'r' }));
   const deps: CallDeps = {
     client: { request, on: (f) => ((handler = f), () => {}), onStatus: () => () => {} },
-    media: { join: vi.fn(async () => {}), leave: vi.fn(), setMic: vi.fn(), setDeaf: vi.fn(), setCamera: vi.fn(), attach: vi.fn(), hasCamera: vi.fn(async () => true), onChange: (f) => (onLink = f) },
+    media: { join: vi.fn(async () => {}), leave: vi.fn(), setMic: vi.fn(), setDeaf: vi.fn(), setCamera: vi.fn(), attach: vi.fn(), hasCamera: vi.fn(async () => true), hasMicrophone: vi.fn(async () => true), onChange: (f) => (onLink = f) },
     sounds: { play: vi.fn() },
   };
   const store = useCallStore();
@@ -165,11 +165,38 @@ describe('call store', () => {
     await store.call(olena.userId);
     send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
     link({ camError: true });
-    expect(store.camHint).toBe(false);
+    expect(store.hint).toBeNull();
     store.toggleCam();
-    expect(store.camHint).toBe(true);
+    expect(store.hint).toBe('cam');
     vi.advanceTimersByTime(3100);
-    expect(store.camHint).toBe(false);
+    expect(store.hint).toBeNull();
     vi.useRealTimers();
+  });
+
+  it('blocks the microphone when it cannot be started and hints on press', async () => {
+    vi.useFakeTimers();
+    const { store, deps, send, link } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    link({ micError: true });
+    expect(store.micBlocked).toBe(true);
+    expect(store.mic).toBe(false);
+    expect(deps.media.setMic).toHaveBeenLastCalledWith(false);
+    store.toggleMic();
+    expect(store.mic).toBe(false);
+    expect(store.hint).toBe('mic');
+    vi.advanceTimersByTime(3100);
+    expect(store.hint).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it('blocks the microphone right away when the device has none', async () => {
+    const { store, deps, send } = setup();
+    vi.mocked(deps.media.hasMicrophone!).mockResolvedValueOnce(false);
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(store.micBlocked).toBe(true);
   });
 });
