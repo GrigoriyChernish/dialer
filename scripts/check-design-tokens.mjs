@@ -48,8 +48,8 @@ function declared(name, block) {
   return m ? norm(m[1]) : null;
 }
 
-// темна тема = значення дизайну; беремо блок :root[data-theme="dark"]
-const dark = css.match(/:root\[data-theme="dark"\]\s*\{([^}]*)\}/)?.[1] ?? '';
+// темна тема = значення дизайну; беремо блок :root[data-theme="dark"] (лапки будь-які: Prettier ставить одинарні)
+const dark = css.match(/:root\[data-theme=["']dark["']\]\s*\{([^}]*)\}/)?.[1] ?? '';
 const theme = css.match(/@theme inline\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
 
 const errors = [];
