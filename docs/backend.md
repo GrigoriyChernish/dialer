@@ -138,7 +138,7 @@ CORS для `/demo/login` обмежений origin демо-сторінки. `
 ## Розгортання на Fly.io
 - Один застосунок, **одна машина** з томом `/data` для SQLite. Кілька машин не можна: БД і стан дзвінків локальні.
 - `auto_stop_machines = false` і `min_machines_running = 1`: інакше машина засне й вхідні не дійдуть.
-- Регіон ближче до користувачів (наприклад, `waw` чи `fra`). Перевірка здоров'я `GET /health`.
+- Регіон ближче до користувачів (`fra`, Франкфурт; Варшави `waw` у Fly.io немає). Перевірка здоров'я `GET /health`.
 - Fly.io тримає WebSocket-з'єднання, але деплой їх розриває: клієнти перепідключаються за паузами з `signaling.md`,
   а дзвінки відновлюються з БД.
 - Вебхук LiveKit Cloud спрямований на публічну адресу `https://<застосунок>.fly.dev/livekit/webhook`.
@@ -148,19 +148,19 @@ CORS для `/demo/login` обмежений origin демо-сторінки. `
 - Збірка: Dockerfile у `apps/server`, контекст від кореня моноrepo, щоб потрапив `packages/shared`.
 
 ### Перший деплой (вручну)
-Потрібні `flyctl` і акаунт Fly.io. Назва застосунку `dialer-server` у `fly.toml` це заглушка: якщо зайнята, замініть.
+Потрібні `flyctl` і акаунт Fly.io. Застосунок називається `dialer-chat-server` (так у `fly.toml`); інша назва — замініть її там і в командах нижче.
 ```bash
-fly apps create dialer-server
-fly volumes create dialer_data --size 1 --region waw --app dialer-server   # том для SQLite
-fly secrets set --app dialer-server \
+fly apps create dialer-chat-server
+fly volumes create dialer_data --size 1 --region fra --app dialer-chat-server   # том для SQLite
+fly secrets set --app dialer-chat-server \
   JWT_SECRET="$(openssl rand -hex 32)" \
   LIVEKIT_URL="wss://<проєкт>.livekit.cloud" \
   LIVEKIT_API_KEY="…" LIVEKIT_API_SECRET="…"
 fly deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --ha=false .   # з кореня репозиторію
-curl https://dialer-server.fly.dev/health
+curl https://dialer-chat-server.fly.dev/health
 ```
 `--ha=false` потрібен, щоб Fly не створив другу машину: кілька інстансів не підтримуються. Далі в панелі LiveKit Cloud
-додайте вебхук `https://dialer-server.fly.dev/livekit/webhook`.
+додайте вебхук `https://dialer-chat-server.fly.dev/livekit/webhook`.
 
 ### Автодеплой (GitHub Actions)
 `.github/workflows/deploy.yml` запускається, коли CI на `dev` завершився успішно після пушу (і вручну через `workflow_dispatch`):
@@ -169,7 +169,7 @@ curl https://dialer-server.fly.dev/health
   `apps/server`, `packages/shared`, кореневі `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `.dockerignore`
   або сам workflow. Зміни дизайну, документації чи `apps/web` деплой не запускають. Ручний запуск деплоїть завжди.
 - Деплої йдуть по черзі (`concurrency: fly-deploy`) і не перериваються новим пушем.
-- Потрібен секрет репозиторію `FLY_API_TOKEN`: `fly tokens create deploy --app dialer-server`, далі GitHub → Settings → Secrets → Actions.
+- Потрібен секрет репозиторію `FLY_API_TOKEN`: `fly tokens create deploy --app dialer-chat-server`, далі GitHub → Settings → Secrets → Actions.
   Без секрету workflow завершується успішно й нічого не деплоїть, тож до першого ручного деплою він не заважає.
 
 ### Що перевірено без Fly.io

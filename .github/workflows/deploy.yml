@@ -1,5 +1,5 @@
 # Деплой сервера на Fly.io після зеленого CI на dev (docs/backend.md, «Розгортання на Fly.io»).
-# Потрібен секрет репозиторію FLY_API_TOKEN (fly tokens create deploy --app dialer-server); без нього деплой пропускається.
+# Потрібен секрет репозиторію FLY_API_TOKEN (fly tokens create deploy --app dialer-chat-server); без нього деплой пропускається.
 # Деплой рве WebSocket-з'єднання, тож запускаємо його лише коли з минулого успішного деплою змінились файли сервера.
 name: Deploy
 
