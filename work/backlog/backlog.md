@@ -70,10 +70,6 @@ Workflow `pages.yml` уже публікує прототипи. `apps/web` уж
 Крок 6 порядку робіт у [`docs/backend.md`](../../docs/backend.md): `push.subscribe`/`push.unsubscribe`, пуш на вхідний і на скасування (`web-push`, VAPID),
 `POST /tokens` для справжніх сайтів-господарів із ключами сайтів. Пункт 9 вище це клієнтська частина. До цього дзвінок до адресата не в мережі завершується з `offline`.
 
-## 16. Автодеплой сервера на Fly.io
-
-Workflow, який після пушу в `dev` і зеленого CI викликає `fly deploy` (потрібен секрет `FLY_API_TOKEN`). Поки деплой вручну.
-
 ## 17. Перевірка `Origin` для WebSocket
 
 Шлюз `/ws` не перевіряє `Origin`. Для справжніх сайтів-господарів додати `sites.allowed_origins` і відхиляти чужі origin; для демо дозволити origin GitHub Pages.

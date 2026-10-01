@@ -1,0 +1,53 @@
+# Деплой сервера на Fly.io після зеленого CI на dev (docs/backend.md, «Розгортання на Fly.io»).
+# Потрібен секрет репозиторію FLY_API_TOKEN (fly tokens create deploy --app dialer-server); без нього деплой пропускається.
+# Деплой рве WebSocket-з'єднання, тож запускаємо його лише коли з минулого успішного деплою змінились файли сервера.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+# деплої йдуть по черзі, перерваний посередині деплой лишив би машину в невідомому стані
+concurrency:
+  group: fly-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SHA }}
+          fetch-depth: 0
+      - name: Check changes
+        id: changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$FLY_API_TOKEN" ]; then echo "Немає секрету FLY_API_TOKEN, деплой пропущено."; echo "deploy=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "${{ github.event_name }}" = workflow_dispatch ]; then echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          last=$(gh run list --workflow deploy.yml --branch dev --status success --limit 1 --json headSha --jq '.[0].headSha // empty')
+          if [ -z "$last" ] || ! git cat-file -e "$last" 2>/dev/null; then echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          changed=$(git diff --name-only "$last" "$SHA" -- apps/server packages/shared package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json .dockerignore .github/workflows/deploy.yml)
+          echo "Змінені файли сервера з $last:"; echo "${changed:-(немає)}"
+          echo "deploy=$([ -n "$changed" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - if: steps.changes.outputs.deploy == 'true'
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - if: steps.changes.outputs.deploy == 'true'
+        run: flyctl deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --remote-only --ha=false .
+      - if: steps.changes.outputs.deploy == 'true'
+        run: curl -fsS --retry 10 --retry-delay 3 --retry-all-errors "https://$(grep -m1 '^app' apps/server/fly.toml | cut -d'"' -f2).fly.dev/health"

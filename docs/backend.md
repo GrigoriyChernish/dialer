@@ -160,14 +160,23 @@ fly deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --h
 curl https://dialer-server.fly.dev/health
 ```
 `--ha=false` потрібен, щоб Fly не створив другу машину: кілька інстансів не підтримуються. Далі в панелі LiveKit Cloud
-додайте вебхук `https://dialer-server.fly.dev/livekit/webhook`. Наступні деплої: та сама команда `fly deploy`.
-Автодеплой з GitHub Actions поки не налаштовано (пункт 16 беклогу).
+додайте вебхук `https://dialer-server.fly.dev/livekit/webhook`.
+
+### Автодеплой (GitHub Actions)
+`.github/workflows/deploy.yml` запускається, коли CI на `dev` завершився успішно після пушу (і вручну через `workflow_dispatch`):
+`flyctl deploy --remote-only --ha=false` (образ збирає Fly.io), потім перевіряє `GET /health`.
+- Деплой рве WebSocket-з'єднання, тож він іде, лише якщо з минулого успішного деплою змінились файли сервера:
+  `apps/server`, `packages/shared`, кореневі `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `.dockerignore`
+  або сам workflow. Зміни дизайну, документації чи `apps/web` деплой не запускають. Ручний запуск деплоїть завжди.
+- Деплої йдуть по черзі (`concurrency: fly-deploy`) і не перериваються новим пушем.
+- Потрібен секрет репозиторію `FLY_API_TOKEN`: `fly tokens create deploy --app dialer-server`, далі GitHub → Settings → Secrets → Actions.
+  Без секрету workflow завершується успішно й нічого не деплоїть, тож до першого ручного деплою він не заважає.
 
 ### Що перевірено без Fly.io
-У середовищі розробки немає ні `flyctl`, ні запущеного Docker-демона, тож образ не збирався. Перевірено лише те, що робить
-Dockerfile: чиста копія файлів, `pnpm install --frozen-lockfile --prod --filter @dialer/server...`, запуск `tsx src/main.ts` з
-`NODE_ENV=production`. `/health`, `POST /demo/login` і вебхук (`401` без підпису) відповідають, БД створюється, а без
-`JWT_SECRET` сервер не стартує. Першу збірку образу й деплой варто перевірити на CI чи локально з Docker.
+Образ зібрано локально в Docker для `linux/amd64` (як на Fly.io) і запущено з томом `/data`: `/health` відповідає `{"ok":true}`,
+`POST /demo/login` видає токен, вебхук без підпису дає `401`, SQLite створюється на томі, `SIGTERM` зупиняє сервер коректно.
+У production сервер не стартує без `JWT_SECRET` і без змінних `LIVEKIT_*`, тож секрети треба задати до першого деплою.
+Сам деплой на Fly.io ще не перевірено: потрібні акаунт і `flyctl`.
 
 ## Тести
 - **Юніт (Vitest).** `calls/`: таблиця правил `call.invite`, таймери на фейковому часі, машина станів, `waiting`, `dnd`.
@@ -182,7 +191,7 @@ Dockerfile: чиста копія файлів, `pnpm install --frozen-lockfile 
 4. ✅ `waiting`, `dnd`, `settings`.
 5. ✅ LiveKit: токени кімнат, вебхук, правило `lost`.
 6. ⏸ Web Push і `POST /tokens` для справжніх сайтів-господарів: поки пропущено (пункт 15 беклогу).
-7. ✅ Розгортання на Fly.io: `Dockerfile`, `fly.toml`, CI (перший деплой робиться вручну, див. «Розгортання на Fly.io»).
+7. ✅ Розгортання на Fly.io: `Dockerfile`, `fly.toml`, автодеплой `.github/workflows/deploy.yml` (перший деплой робиться вручну, див. «Розгортання на Fly.io»).
 
 ## Логи
 Бібліотека `pino`, JSON у stdout (Fly.io збирає їх сам, `fly logs`).

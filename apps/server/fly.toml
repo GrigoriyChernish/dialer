@@ -1,5 +1,6 @@
 # Деплой з кореня репозиторію:
 #   fly deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --ha=false .
+# Автодеплой після зеленого CI на dev: .github/workflows/deploy.yml (секрет FLY_API_TOKEN).
 # Одна машина й том /data: SQLite і стан дзвінків локальні (docs/backend.md).
 app = "dialer-server"
 primary_region = "waw"
