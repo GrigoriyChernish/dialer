@@ -22,6 +22,9 @@
 | Base | (аватар у кожному екрані) | `shared/ui/Avatar.vue` | є |
 | Base | lucide-іконки | `shared/ui/Icon.vue` | є |
 | Contacts | `Contact Meta`, `Contact Row`, `Contact List` | `pages/ContactsPage.vue` (одним файлом) | є, без кнопки чату |
+| Auth | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` | `pages/LoginPage.vue` (одним файлом) | є |
+| Auth | `App Header` | шапка в `pages/HomePage.vue` | є |
+| Екрани | `Auth · Phone`, `Auth · Name`, `Auth · Code`, помилки | `pages/LoginPage.vue` | є |
 | Self Status | `Self Status / *` (5 значків) | `shared/ui/SelfStatusChip.vue` | є |
 | Banners | `Banner` | `shared/ui/Banner.vue` | є |
 | Banners | `Self Banner / *`, `Peer Banner / *` | `shared/ui/banners.ts` + `BannerStack.vue` | є |
@@ -96,6 +99,26 @@
 - Весь рядок — кнопка з підписом «Подзвонити: {ім'я}». Кнопки чату з дизайну немає, бо немає чату.
 - Без з'єднання з сервером показує «Немає зв'язку з сервером…» з причиною.
 
+## Застосунок: вхід і головна (`entries/app.ts`)
+Окрема сторінка `index.html` для GitHub Pages; віджет для iframe — `widget.html` (`entries/widget.ts`). Маршрути в hash:
+`#/login` для гостей, `#/` після входу (гард перенаправляє).
+
+### `LoginPage` (дизайн: `Flow · Auth`)
+Три кроки однієї сторінки: номер (`+380` і 9 цифр, вставка `+380…`/`0…` нормалізується) → ім'я (лише для нового номера) → код.
+- Код: чотири клітинки поверх прозорого `<input autocomplete="one-time-code">`, тож працюють вставка й автозаповнення; після 4 цифр
+  форма відправляється сама. Невірний код очищує клітинки й показує, скільки спроб лишилось.
+- Помилки сервера з `auth.err.*` (i18n) під полем, `role="alert"`. «Назад» і «Змінити номер» повертають на попередній крок.
+- Підказки, що код — останні 4 цифри номера, навмисно немає.
+
+### `HomePage`
+Шапка (`App Header`): «Дзвонілка» і кнопка «Вийти» (`log-out`, 44 × 44), під нею `ContactsPage`.
+
+### `features/auth/session.ts` (`useSessionStore`)
+Сесія в `localStorage` (`dialer.session`): токен доступу, `refreshToken`, строки. `start`, `verify`, `refresh`, `logout`.
+- `refresh` за хвилину до кінця токена доступу й за `token.expiring`; новий токен іде в сигналізацію (`auth.refresh`).
+- Сесія недійсна (`session_invalid`) → вихід; сервер недоступний → сесія лишається, спробуємо пізніше.
+- Вихід перезавантажує сторінку на `#/login`, щоб скинути стан дзвінків і контактів.
+
 ## Дзвінок: `features/call`
 
 ### `store.ts` (`useCallStore`)
@@ -144,6 +167,7 @@
 
 ## Медіа й сигналізація: `shared`
 
+- `api/auth.ts` — HTTP-вхід (`/auth/start`, `/verify`, `/refresh`, `/logout`), помилки як `AuthError` (`network`, якщо сервер недоступний).
 - `api/signaling.ts` — `SignalingClient`: `hello`, пінг, перепідключення 1, 2, 4, 8, 15 с із зсувом, запити з відповіддю за `reqId`.
 - `media/room.ts` — `CallMedia` над `livekit-client`: аудіо розмови, мікрофон, приглушення на утриманні; віддає `LinkState`
   (`reconnecting`, `poor`, `peerAway`, `peerMuted`) із подій кімнати.

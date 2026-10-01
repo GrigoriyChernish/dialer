@@ -51,15 +51,11 @@
 З параметром `?server=http://localhost:8787` сторінка демо працює на справжньому бекенді (див. [local-development.md](local-development.md)):
 - вхід через `POST /demo/login`, сесія в `sessionStorage` (кожна вкладка окрема, тож у двох вкладках можна бути двома людьми);
 - `Dialer.mount({ server })` передає адресу у віджет, віджет підключається до `/ws`, контакти й боти приходять від сервера, дзвінки йдуть через сигналізацію, аудіо через LiveKit;
-- без параметра сервер береться з `<meta name="dialer-server">`: у репозиторії він порожній (усе працює як описано вище, лише в браузері),
-  а збірка GitHub Pages підставляє бекенд на Fly.io `https://dialer-chat-server.fly.dev`, тож опубліковане демо завжди працює з сервером.
+- без параметра сервер береться з `<meta name="dialer-server">`; у репозиторії він порожній, тож усе працює як описано вище, лише в браузері.
 
 ## GitHub Pages
-`https://grigoriychernish.github.io/dialer/` публікує `.github/workflows/pages.yml` після пушу в `dev`:
-- `/dialer/` — сторінка демо з сервером Fly.io за замовчуванням;
-- `/dialer/widget/` — **Vue-віджет** зі збірки `apps/web` (`base: './'`, відносні шляхи);
-- `/dialer/prototype/` — старий прототип `index.html`; відкрити його в демо: `https://grigoriychernish.github.io/dialer/?widget=prototype/`.
-Vue-віджет не має режиму імітації, тож без сервера він не працює.
+На `https://grigoriychernish.github.io/dialer/` тепер не демо, а окремий застосунок `apps/web` (вхід за номером і кодом, див.
+[backend.md](backend.md#вхід-за-номером)). Сторінка демо, `embed.js` і віджет на Pages не публікуються, лише локально.
 
-Параметр `?widget=http://localhost:5173/` підставляє замість `index.html` Vue-віджет з `apps/web`
+Параметр `?widget=http://localhost:5173/widget.html` підставляє замість `index.html` Vue-віджет з `apps/web`
 (опція `widget` у `Dialer.mount`). Прототип `index.html` лишається еталоном сценаріїв, а дизайн задає `design/dialer.pen`.

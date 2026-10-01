@@ -1,9 +1,6 @@
-# Публікація демо на GitHub Pages після пушу в dev.
-# Розкладка як у docs/architecture.md, розділ «Хостинг»:
-#   /dialer/            сторінка демо (demo/index.html), за замовчуванням працює з бекендом на Fly.io
-#   /dialer/embed.js    завантажувач
-#   /dialer/widget/     Vue-віджет (збірка apps/web)
-#   /dialer/prototype/  старий прототип віджета (index.html), відкривається з демо через ?widget=prototype/
+# Публікація застосунку на GitHub Pages після пушу в dev (docs/architecture.md, «Хостинг»):
+#   /dialer/  застосунок apps/web (entries/app.ts): вхід за номером, контакти й дзвінки через бекенд на Fly.io.
+# Демо-сторінка, embed.js і віджет лишаються в репозиторії для локальної розробки й на Pages не публікуються.
 name: Pages
 
 on:
@@ -42,17 +39,10 @@ jobs:
           VITE_SERVER_URL: ${{ env.SERVER }}
       - name: Build site
         run: |
-          mkdir -p _site/prototype
-          cp -r apps/web/dist _site/widget
-          cp demo/embed.js _site/embed.js
-          cp index.html _site/prototype/index.html
-          # віджет лежить у widget/, а не поруч у ../index.html, як у репозиторії;
-          # src може мати параметр версії (embed.js?v=2), його зберігаємо; сервер за замовчуванням — бекенд на Fly.io
-          sed -E -e 's|<script src="embed\.js([^"]*)"></script>|<script src="embed.js\1" data-widget="widget/"></script>|' \
-            -e "s|<meta name=\"dialer-server\" content=\"\">|<meta name=\"dialer-server\" content=\"$SERVER\">|" demo/index.html > _site/index.html
-          grep -q 'data-widget="widget/"' _site/index.html
-          grep -q "content=\"$SERVER\"" _site/index.html
-          test -f _site/widget/index.html
+          cp -r apps/web/dist _site
+          # віджет для iframe на Pages не потрібен
+          rm _site/widget.html
+          test -f _site/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

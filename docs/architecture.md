@@ -238,18 +238,16 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
 Сайт-господар їх не передає. Оновлення (статус «у мережі», нові пропущені) приходять тим самим WebSocket, що й сигналізація.
 
 ### Хостинг
-Поки що для тестування все хоститься на **GitHub Pages** з гілки `dev`:
+Поки що для тестування застосунок хоститься на **GitHub Pages** з гілки `dev`, бекенд на Fly.io:
 
 | Шлях | Що там |
 |---|---|
-| `/dialer/` | сторінка демо: вхід за ім'ям і номером, вбудований віджет (вона ж тестовий сайт-господар) |
-| `/dialer/widget/` | сторінка віджета, яку відкриває iframe |
-| `/dialer/embed.js` | завантажувач |
-| `/dialer/sw.js` | логіка сервіс-воркера для пушів |
+| `/dialer/` | застосунок `apps/web` (`entries/app.ts`): вхід за номером і кодом, контакти, дзвінки |
 
-- Збирає й публікує GitHub Actions після пушу в `dev` (`.github/workflows/pages.yml`): `apps/web` збирається з `base: './'`
-  (відносні шляхи) у `/dialer/widget/`, `demo/index.html` у `/dialer/` з бекендом Fly.io за замовчуванням
-  (`<meta name="dialer-server">`), `demo/embed.js` у `/dialer/embed.js`, старий прототип `index.html` у `/dialer/prototype/`.
+- Збирає й публікує GitHub Actions після пушу в `dev` (`.github/workflows/pages.yml`): `apps/web` з `base: './'` (відносні шляхи)
+  і `VITE_SERVER_URL=https://dialer-chat-server.fly.dev`. Маршрути в hash (`#/login`), бо Pages не віддає `index.html` для довільних шляхів.
+- `apps/web` збирає дві сторінки: `index.html` (застосунок) і `widget.html` (віджет для iframe з `embed.js`). На Pages лише застосунок;
+  віджет, `embed.js` і сторінка демо працюють локально (див. [demo.md](demo.md)).
 - `sw.js` з'явиться разом із пушами (беклог, «Пуш-сповіщення про вхідні»).
 - Pages віддає сайт по HTTPS, тож камера й мікрофон працюють.
 - Обмеження: не можна задати свої HTTP-заголовки (CSP, `Permissions-Policy`), а сторінка демо

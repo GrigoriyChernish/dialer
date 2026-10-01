@@ -335,12 +335,14 @@
 | `Components · Base` | `Status Bar`, `Call Header`, `Call Controls`, `Self View`, `Action Button` і варіанти `Action Button / active, danger, success, subtle, disabled`, `Labeled Action`, `Show Self` |
 | `Components · Contacts` | `Contact Meta`, `Contact Row`, `Contact List` |
 | `Components · Self Status` | `Self Status / mic-off`, `mic-unavailable`, `camera-off`, `camera-unavailable`, `hold` |
+| `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button`, `App Header` |
 | `Components · Banners` | `Banner` (база); контейнери `Self Banners` (`Self Banner / *`) і `Peer Banners` (`Peer Banner / *`) |
 | `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring`, `Voice Wave`, `Voice Wave / silent`, `Call Label`, `Result Label`, `Peer Video`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `silent`, `result`) |
 
 | Флоу | Екрани |
 | --- | --- |
-| `Flow · Contacts` | `Contacts` |
+| `Flow · Auth` | `Auth · Phone`, `Auth · Phone error`, `Auth · Name`, `Auth · Code`, `Auth · Code error` |
+| `Flow · Contacts` | `Contacts` (з `App Header`) |
 | `Flow · Outgoing call` | `Outgoing Call`, `Result · Busy`, `Result · No Answer` |
 | `Flow · Incoming call` | `Incoming Call`, `Result · Missed` |
 | `Flow · In call · base` | `In Call`, `In Call · self-hold` |
@@ -415,3 +417,14 @@
 - `apps/web/src/app/styles/tokens.css` — єдиний файл токенів застосунку (темна тема = значення дизайну, світла поза дизайном).
 - `pnpm check:design` (`scripts/check-design-tokens.mjs`, запускається в CI) звіряє `tokens.css` і цей документ зі знімком:
   розбіжність у кольорі — помилка. Лінійні градієнти, розміри й радіуси скрипт не перевіряє.
+
+## Вхід (Components · Auth)
+Екрани `Flow · Auth`: поля 24 від країв, заголовок 26 / 700, підзаголовок 15 `mute`, між блоками 32, кнопка притиснута до низу (відступ 40).
+- **`Text Field`** на всю ширину: підпис 13 / 500 `mute`, проміжок 8; поле 56 заввишки, радіус `radius-md`, скло `surface-2`, рамка `line`,
+  текст 17 / 500 (префікс `+380` кольору `mute`). `/ focused`: рамка 2 px `accent`; `/ error`: рамка 2 px `bad` і повідомлення 13 `bad` під полем.
+- **`Primary Button`** 56 заввишки на всю ширину, радіус `radius-md`, `accent`, текст 16 / 600 `on-solid`; `/ disabled` з прозорістю .4.
+- **`Code Cell`** 64 × 72, радіус `radius-md`, скло, цифра 28 / 700; чотири клітинки на всю ширину (`space_between`).
+  `/ focused` — рамка 2 px `accent` (наступна клітинка для вводу), `/ error` — рамка 2 px `bad` у всіх клітинках.
+- **`Icon Button`** 44 × 44, коло, скло, рамка `line`, іконка 20 `fg`: «Назад» (`chevron-left`), «Вийти» (`log-out`).
+- **`App Header`** 375 × 56, відступи 0 16: «Дзвонілка» 20 / 700 і `Icon Button` з `log-out`.
+- Посилання «Змінити номер» 14 / 600 `accent-icon`. Підказки про код на екрані немає.

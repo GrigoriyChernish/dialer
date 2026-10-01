@@ -17,8 +17,10 @@ python3 -m http.server 8080
   Сесія в такому режимі своя в кожній вкладці, тож у двох вкладках можна бути двома різними людьми й дзвонити одне одному
   через сигналізацію. Аудіо йде через LiveKit, тож у `apps/server/.env` потрібні `LIVEKIT_*` (без них розмова буде без звуку), а браузер має дозволити мікрофон; відео співрозмовника ще не показується. Без `?server=` усе імітується в браузері.
 
-- Vue-віджет (`apps/web`): `corepack pnpm --filter @dialer/web dev` піднімає його на <http://localhost:5173>. Щоб побачити його в демо, додайте
-  параметр `widget`: <http://localhost:8080/demo/?server=http://localhost:8787&widget=http://localhost:5173/>. Тести й типи: `pnpm --filter @dialer/web test` та `typecheck`.
+- `apps/web`: `corepack pnpm --filter @dialer/web dev` піднімає його на <http://localhost:5173>.
+  - <http://localhost:5173/> — застосунок із входом за номером (як на GitHub Pages). Запити `/auth/*` і `/ws` Vite проксіює на сервер
+    `:8787`, тож CORS для `:5173` не потрібен. Код входу — останні 4 цифри номера.
+  - Віджет у демо: параметр `widget`, <http://localhost:8080/demo/?server=http://localhost:8787&widget=http://localhost:5173/widget.html>. Тести й типи: `pnpm --filter @dialer/web test` та `typecheck`.
 
 Порт `8080` збігається з `DEMO_ORIGIN` у `apps/server/.env.example`, тож CORS сервера пропустить демо.
 

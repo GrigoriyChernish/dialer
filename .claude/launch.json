@@ -21,6 +21,21 @@
         "dev"
       ],
       "port": 5173
+    },
+    {
+      "name": "web-app",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": [
+        "pnpm",
+        "--filter",
+        "@dialer/web",
+        "exec",
+        "vite",
+        "--port",
+        "5199",
+        "--strictPort"
+      ],
+      "port": 5199
     }
   ]
 }

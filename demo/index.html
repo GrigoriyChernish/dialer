@@ -79,7 +79,7 @@ ul.f{margin:0;padding:0;list-style:none;display:grid;gap:8px}ul.f li::before{con
 <script>
 const $=id=>document.getElementById(id);
 // ?server=http://localhost:8787 вмикає справжній бекенд (інакше береться <meta name="dialer-server">); без сервера демо імітує все в браузері
-const QS=new URLSearchParams(location.search),SERVER=(QS.get('server')??document.querySelector('meta[name="dialer-server"]')?.content??'').replace(/\/+$/,''),WIDGET=QS.get('widget')||'';  // ?widget=http://localhost:5173/ підставляє Vue-віджет
+const QS=new URLSearchParams(location.search),SERVER=(QS.get('server')??document.querySelector('meta[name="dialer-server"]')?.content??'').replace(/\/+$/,''),WIDGET=QS.get('widget')||'';  // ?widget=http://localhost:5173/widget.html підставляє Vue-віджет
 const mk=st=>({get:k=>{try{return JSON.parse(st.getItem(k))}catch(e){return null}},
   set:(k,v)=>{try{v==null?st.removeItem(k):st.setItem(k,JSON.stringify(v))}catch(e){}}});
 const store=mk(localStorage);

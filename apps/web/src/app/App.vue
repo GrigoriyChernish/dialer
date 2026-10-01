@@ -7,7 +7,7 @@ const call = useCallStore();
 </script>
 
 <template>
-  <main class="relative h-full overflow-y-auto">
+  <main class="relative mx-auto h-full max-w-[400px] overflow-y-auto">
     <RouterView />
     <!-- екран дзвінка не маршрут, а шар поверх поточної сторінки: навігація його не обриває -->
     <div v-if="call.status !== 'idle' || call.missed" class="absolute inset-0 z-10 bg-bg"><CallScreen /></div>
