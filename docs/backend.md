@@ -33,7 +33,7 @@ pnpm typecheck
 apps/server/
   src/
     main.ts          # запуск: конфіг, БД, HTTP, WebSocket
-    http/            # /demo/login, /tokens, /livekit/webhook, /health
+    http/            # /auth/*, /demo/login, /tokens, /livekit/webhook, /health
     ws/              # підключення, hello, диспетчер кадрів, закриття з кодами
     calls/           # машина станів, правила call.invite, таймери (без залежності від ws і БД)
     store/           # присутність і активні дзвінки: інтерфейси та реалізація в пам'яті
@@ -87,12 +87,33 @@ apps/server/
 ## HTTP
 | Ендпоінт | Для чого |
 |---|---|
-| `POST /demo/login` | `{ name, phone }` → JWT з `site: "demo"`. Номер нормалізується в E.164, той самий номер перезаписує ім'я |
+| `POST /auth/start` | `{ phone }` → `{ known }`: чи є номер у базі; створює код входу (див. «Вхід за номером») |
+| `POST /auth/verify` | `{ phone, code, name? }` → `{ token, expiresAt, user, refreshToken, sessionExpiresAt }`; `name` лише для нового номера |
+| `POST /auth/refresh` | `{ refreshToken }` → новий `{ token, expiresAt, user, sessionExpiresAt }`, поки сесія чинна |
+| `POST /auth/logout` | `{ refreshToken }` → `204`, сесію видалено |
+| `POST /demo/login` | `{ name, phone }` → JWT без коду. Лише для розробки й прототипу `demo/`: у production вимкнено, якщо не `DEMO_LOGIN=on` |
 | `POST /tokens` | бекенд сайту-господаря просить токен користувача. Автентифікація: `siteId` + секрет сайту. Тіло: `{ userId, name }` |
 | `POST /livekit/webhook` | події LiveKit (`participant_left`) для правила `lost`. Підпис перевіряє `WebhookReceiver` |
 | `GET /health` | для Fly.io |
 
-CORS для `/demo/login` обмежений origin демо-сторінки. `/tokens` викликається лише з серверів сайтів, тож CORS не відкриваємо.
+CORS для `/auth/*` і `/demo/login` обмежений origin застосунку (`DEMO_ORIGIN`, на Fly.io це GitHub Pages).
+
+### Вхід за номером
+Застосунок на GitHub Pages входить лише так. Сайт `demo`, номери України (`+380…`).
+1. `POST /auth/start { phone }`. Сервер створює код і відповідає `{ known }`. Відомий номер одразу йде на крок коду, новий спершу вводить ім'я.
+2. `POST /auth/verify { phone, code, name? }`. Для нового номера `name` обов'язкове (2–40 символів), для відомого ігнорується.
+   Успіх: токен доступу (JWT, 30 хв, як і раніше) і `refreshToken` сесії.
+3. Застосунок тримає `refreshToken` у `localStorage` і до спливання токена доступу бере новий через `POST /auth/refresh`.
+
+- **Код.** Генерує `OtpSender` (`auth/otp.ts`). Поки SMS немає, код = останні 4 цифри номера й нікуди не надсилається;
+  на екрані підказки немає. SMS-провайдер підключається новою реалізацією `OtpSender`, решта не змінюється.
+- **Строки й ліміти.** Код діє 5 хв. 5 невірних спроб блокують номер на 15 хв (і перевірку, і новий код).
+  З однієї IP-адреси (на Fly.io `Fly-Client-IP`) не більше 10 `/auth/start` і 30 `/auth/verify` за 10 хв, далі `429 rate_limited` з `retryAfter`, с.
+  Коди й лічильники в пам'яті: процес один, а перезапуск лише просить ввести номер знову.
+- **Сесія.** 7 днів від входу без подовження (таблиця `sessions`, у базі лише sha256 токена). `logout` видаляє сесію;
+  відкриті WebSocket-з'єднання живуть до кінця свого токена доступу (≤ 30 хв).
+- **Помилки:** `invalid_phone`, `invalid_name`, `no_challenge` (код не запитано чи сплив), `invalid_code` з `attemptsLeft`,
+  `too_many_attempts` з `retryAfter`, `disabled`, `session_invalid`. `/tokens` викликається лише з серверів сайтів, тож CORS не відкриваємо.
 
 ## Токени
 
@@ -132,7 +153,7 @@ CORS для `/demo/login` обмежений origin демо-сторінки. `
 
 ## Конфігурація
 Змінні середовища (Fly.io secrets): `JWT_SECRET`, `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`,
-`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `LOG_LEVEL` (за замовчуванням `info`), `DB_PATH` (за замовчуванням `/data/dialer.db`), `DEMO_ORIGIN`, `PORT`.
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `LOG_LEVEL` (за замовчуванням `info`), `DB_PATH` (за замовчуванням `/data/dialer.db`), `DEMO_ORIGIN`, `DEMO_LOGIN` (`on` вмикає `/demo/login` у production), `PORT`.
 У репозиторії лежить лише `.env.example` без значень.
 
 ## Розгортання на Fly.io

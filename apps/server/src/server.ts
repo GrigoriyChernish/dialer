@@ -1,3 +1,5 @@
+import { createOtp, lastDigitsOtp, type OtpSender } from './auth/otp';
+import { createSessions } from './auth/sessions';
 import { createTokens } from './auth/tokens';
 import { ulid } from './calls/id';
 import { createCallService } from './calls/service';
@@ -24,10 +26,12 @@ export interface ServerOptions {
   newId?: () => string;
   /** Підміна REST-викликів LiveKit у тестах. */
   livekitRooms?: RoomApi;
+  /** Доставка кодів входу; поки код = останні 4 цифри номера. */
+  otpSender?: OtpSender;
 }
 
 /** Збирає сервер: БД, токени, присутність, HTTP і WebSocket. */
-export async function createServer({ config, logger, timeouts, clock = realClock, newId = ulid, livekitRooms }: ServerOptions) {
+export async function createServer({ config, logger, timeouts, clock = realClock, newId = ulid, livekitRooms, otpSender = lastDigitsOtp }: ServerOptions) {
   const db = openDb(config.dbPath);
   const users = createUsers(db);
   users.seedBots();
@@ -52,7 +56,9 @@ export async function createServer({ config, logger, timeouts, clock = realClock
   // перевірка кімнат у LiveKit не блокує запуск; помилки логуються всередині
   void calls.restoreMedia();
 
-  const app = buildHttp({ config, users, tokens, hub, calls, livekit, logger });
+  const otp = createOtp(otpSender, clock);
+  const sessions = createSessions(db, clock);
+  const app = buildHttp({ config, users, tokens, hub, calls, livekit, logger, otp, sessions, clock });
   const gateway = attachGateway(app.server, { users, recents, calls, deliver, hub, tokens, logger, timeouts });
 
   return {

@@ -5,8 +5,10 @@ export interface Config {
   host: string;
   jwtSecret: string;
   dbPath: string;
-  /** Origin сторінки демо для CORS `/demo/login`; `null`: CORS вимкнено. */
+  /** Origin застосунку (GitHub Pages) для CORS `/auth/*` і `/demo/login`; `null`: CORS вимкнено. */
   demoOrigin: string | null;
+  /** `/demo/login` без коду: для розробки й прототипів; у production вимкнено, якщо не `DEMO_LOGIN=on`. */
+  demoLogin: boolean;
   logLevel: string;
   /** LiveKit Cloud; `null`: медіа вимкнено (дзвінки без токенів кімнат, лише для розробки). */
   livekit: LiveKitConfig | null;
@@ -28,6 +30,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     jwtSecret,
     dbPath: env.DB_PATH ?? './data/dialer.db',
     demoOrigin: env.DEMO_ORIGIN || null,
+    demoLogin: env.DEMO_LOGIN ? env.DEMO_LOGIN === 'on' : !production,
     logLevel: env.LOG_LEVEL ?? 'info',
     livekit: lkSet === 3 ? (lk as LiveKitConfig) : null,
   };
