@@ -2,10 +2,10 @@
 import Icon from './Icon.vue';
 
 /** Плашка стану дзвінка з design/dialer.pen: Call State / hold, peer-hold, connection-lost, reconnecting, poor-signal, mic-off. */
-export type PillState = 'hold' | 'peerHold' | 'connectionLost' | 'reconnecting' | 'poorSignal' | 'micOff';
+export type PillState = 'hold' | 'peerHold' | 'connectionLost' | 'reconnecting' | 'poorSignal' | 'micOff' | 'cameraUnavailable';
 
-const ICON = { hold: 'pause', peerHold: 'pause', connectionLost: 'wifiOff', reconnecting: 'loader', poorSignal: 'signalLow', micOff: 'micOff' } as const;
-const TONE = { hold: 'text-warn', peerHold: 'text-warn', connectionLost: 'text-call-bad', reconnecting: 'text-accent-icon', poorSignal: 'text-warn', micOff: 'text-mute' } as const;
+const ICON = { hold: 'pause', peerHold: 'pause', connectionLost: 'wifiOff', reconnecting: 'loader', poorSignal: 'signalLow', micOff: 'micOff', cameraUnavailable: 'videoOff' } as const;
+const TONE = { hold: 'text-warn', peerHold: 'text-warn', connectionLost: 'text-call-bad', reconnecting: 'text-accent-icon', poorSignal: 'text-warn', micOff: 'text-mute', cameraUnavailable: 'text-warn' } as const;
 defineProps<{ state: PillState }>();
 </script>
 

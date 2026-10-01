@@ -1,4 +1,4 @@
-# Перевірка типів і тести для pnpm workspaces (apps/server, packages/shared).
+# Перевірка типів, дизайн-токенів і тести для pnpm workspaces (apps/server, apps/web, packages/shared).
 name: CI
 
 on:
@@ -25,4 +25,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
+      - run: pnpm check:design
       - run: pnpm test

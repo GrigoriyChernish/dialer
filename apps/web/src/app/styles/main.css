@@ -1,40 +1,9 @@
 @import "tailwindcss";
+@import "./tokens.css";
 
 /* варіант dark: за атрибутом, а не лише за системною темою */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-:root {
-  --bg: #eef0f6; --card: #fff; --fg: #12151f; --mute: #5b6478; --line: rgba(20, 24, 38, .12);
-  --card-top: #ffffff; --card-bottom: #f1f3fa; --stage-glow: #dfe3f7; --stage-missed-glow: #f3dfe6;
-  --accent-icon: #4f46e5; --surface: rgba(20, 24, 38, .06); --surface-strong: rgba(20, 24, 38, .1); --pip: #e4e7f1;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #0a0c14; --card: #161a24; --fg: #f3f5fa; --mute: #b4bccd; --line: rgba(255, 255, 255, .18); --card-top: #1c2338; --card-bottom: #121726; --stage-glow: #1e2340; --stage-missed-glow: #2a1e28; --accent-icon: #a5a8ff; --surface: rgba(255, 255, 255, .1); --surface-strong: rgba(255, 255, 255, .12); --pip: #1b2030; color-scheme: dark; }
-}
-:root[data-theme="dark"] { --bg: #0a0c14; --card: #161a24; --fg: #f3f5fa; --mute: #b4bccd; --line: rgba(255, 255, 255, .18); --card-top: #1c2338; --card-bottom: #121726; --stage-glow: #1e2340; --stage-missed-glow: #2a1e28; --accent-icon: #a5a8ff; --surface: rgba(255, 255, 255, .1); --surface-strong: rgba(255, 255, 255, .12); --pip: #1b2030; color-scheme: dark; }
-
-@theme inline {
-  --color-bg: var(--bg);
-  --color-card: var(--card);
-  --color-fg: var(--fg);
-  --color-mute: var(--mute);
-  --color-line: var(--line);
-  --color-accent: #6366f1;
-  --color-card-top: var(--card-top);
-  --color-card-bottom: var(--card-bottom);
-  --color-stage-glow: var(--stage-glow);
-  --color-stage-missed-glow: var(--stage-missed-glow);
-  --color-accent-icon: var(--accent-icon);
-  --color-surface: var(--surface);
-  --color-surface-strong: var(--surface-strong);
-  --color-pip: var(--pip);
-  --color-call-ok: #22c55e;
-  --color-call-bad: #f0626b;
-  --color-warn: #f5b84b;
-  --animate-ring: ring 1.6s ease-out infinite;
-  --animate-wave: wave 1s ease-in-out infinite;
-}
 @keyframes ring {
   0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, .5); }
   100% { box-shadow: 0 0 0 28px rgba(99, 102, 241, 0); }

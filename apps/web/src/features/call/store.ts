@@ -14,9 +14,11 @@ export interface CallDeps {
     on(fn: (m: ServerMessage) => void): () => void;
     onStatus(fn: (open: boolean, error?: string) => void): () => void;
   };
-  media: { join(a: { url: string; token: string }): Promise<void>; leave(): void; setMic(on: boolean): void; setDeaf(d: boolean): void; onChange?(fn: (patch: Partial<LinkState>) => void): void };
+  media: { join(a: { url: string; token: string }): Promise<void>; leave(): void; setMic(on: boolean): void; setDeaf(d: boolean): void; onChange?(fn: (patch: Partial<LinkState>) => void): void; setCamera?(on: boolean): void; hasCamera?(): Promise<boolean>; attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void };
   sounds: { play(kind: SoundKind | null, ms?: number): void };
 }
+
+const CAM_HINT_MS = 3000;
 
 const ERRORS: Record<string, string> = {
   already_in_call: 'call.err.alreadyInCall',
@@ -43,7 +45,15 @@ export const useCallStore = defineStore('call', () => {
   const hold = ref(false);
   const peerHold = ref(false);
   const mic = ref(true);
-  const link = ref<LinkState>({ reconnecting: false, poor: false, peerAway: false, peerMuted: false });
+  const NO_LINK: LinkState = { reconnecting: false, poor: false, peerAway: false, peerMuted: false, peerCam: false, localCam: false, camError: false };
+  const link = ref<LinkState>({ ...NO_LINK });
+  const cam = ref(true);
+  const selfHidden = ref(false);
+  /** Камери немає чи немає дозволу: мініатюру себе не показуємо, кнопка камери неактивна. */
+  const camBlocked = ref(false);
+  /** Підказка «Камера недоступна» після натискання на приглушену кнопку камери. */
+  const camHint = ref(false);
+  let camHintTimer: ReturnType<typeof setTimeout> | undefined;
   const missed = ref<{ peer: Peer; reason: MissedReason; note?: string } | null>(null);
   const now = ref(Date.now());
   let offset = 0; // serverTime - локальний час
@@ -75,7 +85,12 @@ export const useCallStore = defineStore('call', () => {
     startedAt.value = 0;
     hold.value = peerHold.value = false;
     mic.value = true;
-    link.value = { reconnecting: false, poor: false, peerAway: false, peerMuted: false };
+    link.value = { ...NO_LINK };
+    cam.value = true;
+    camBlocked.value = false;
+    camHint.value = false;
+    clearTimeout(camHintTimer);
+    selfHidden.value = false;
     syncTimer();
   }
 
@@ -92,6 +107,8 @@ export const useCallStore = defineStore('call', () => {
       deps.sounds.play(peerHold.value ? 'hold' : null);
       deps.media.setDeaf(hold.value);
       deps.media.setMic(mic.value);
+      deps.media.setCamera?.(cam.value);
+      void deps.media.hasCamera?.().then((ok) => ok || blockCamera());
       if (call.livekit) void deps.media.join(call.livekit);
     } else if (call.direction === 'in') {
       status.value = 'incoming';
@@ -182,9 +199,18 @@ export const useCallStore = defineStore('call', () => {
     }
   }
 
+  function blockCamera() {
+    camBlocked.value = true;
+    cam.value = false;
+    deps.media.setCamera?.(false);
+  }
+
   function init(d: CallDeps) {
     deps = d;
-    d.media.onChange?.((patch) => Object.assign(link.value, patch));
+    d.media.onChange?.((patch) => {
+      Object.assign(link.value, patch);
+      if (patch.camError) blockCamera(); // камеру не вдалося ввімкнути (немає пристрою чи дозволу)
+    });
     d.client.on(handle);
     d.client.onStatus((open, error) => {
       online.value = open;
@@ -200,7 +226,7 @@ export const useCallStore = defineStore('call', () => {
     missed.value = null;
     busy = true;
     try {
-      const ack = await deps.client.request('call.invite', { to: userId, video: false });
+      const ack = await deps.client.request('call.invite', { to: userId, video: true });
       if (ack.type === 'ack' && ack.call) applyCall(ack.call);
     } catch (e) {
       const code = e instanceof Error ? e.message : 'error';
@@ -245,13 +271,29 @@ export const useCallStore = defineStore('call', () => {
     deps.media.setMic(mic.value);
   }
 
+  function toggleCam() {
+    if (camBlocked.value) {
+      camHint.value = true;
+      clearTimeout(camHintTimer);
+      camHintTimer = setTimeout(() => (camHint.value = false), CAM_HINT_MS);
+      return;
+    }
+    cam.value = !cam.value;
+    deps.media.setCamera?.(cam.value);
+  }
+
+  /** Підключає відео до елемента (його створює компонент, потоки живуть у `CallMedia`). */
+  function attach(kind: 'local' | 'remote', el: HTMLVideoElement) {
+    deps.media.attach?.(kind, el);
+  }
+
   function dismissMissed() {
     missed.value = null;
     deps.sounds.play(null);
   }
 
   return {
-    online, netError, contacts, status, callId, peer, hold, peerHold, mic, link, missed, left, seconds,
-    init, handle, call, accept, end, toggleHold, toggleMic, dismissMissed,
+    online, netError, contacts, status, callId, peer, hold, peerHold, mic, cam, camBlocked, camHint, selfHidden, link, missed, left, seconds,
+    init, handle, call, accept, end, toggleHold, toggleMic, toggleCam, attach, dismissMissed,
   };
 });
