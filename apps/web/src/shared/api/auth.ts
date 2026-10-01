@@ -38,7 +38,8 @@ export function createAuthApi(server: string, fetchFn: typeof fetch = (...a) => 
     return data as T;
   }
   return {
-    start: (phone: string) => post<{ known: boolean }>('/auth/start', { phone }),
+    /** Підтверджений номер одразу отримує токен і сесію; інакше `{ known }` і код. */
+    start: (phone: string) => post<{ known: boolean } | ({ known: true } & LoginResult)>('/auth/start', { phone }),
     verify: (phone: string, code: string, name?: string) => post<LoginResult>('/auth/verify', { phone, code, ...(name && { name }) }),
     refresh: (refreshToken: string) => post<AccessToken>('/auth/refresh', { refreshToken }),
     logout: (refreshToken: string) => post<void>('/auth/logout', { refreshToken }),

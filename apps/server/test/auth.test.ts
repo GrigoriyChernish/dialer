@@ -36,13 +36,24 @@ describe('вхід за номером', () => {
     c.close();
   });
 
-  it('відомий номер: лише код, ім\'я з бази', async () => {
+  it('підтверджений номер входить без коду, ім\'я з бази', async () => {
     const h = from();
     await post('/auth/start', { phone: '0671110002' }, h);
     await post('/auth/verify', { phone: '0671110002', code: '0002', name: 'Перше' }, h);
-    expect((await post('/auth/start', { phone: '0671110002' }, h)).body).toEqual({ known: true });
-    const ok = await post('/auth/verify', { phone: '0671110002', code: '0002', name: 'Інше' }, h);
-    expect(ok.body.user.name).toBe('Перше');
+    const again = await post('/auth/start', { phone: '0671110002' }, h);
+    expect(again.status).toBe(200);
+    expect(again.body).toMatchObject({ known: true, user: { userId: '+380671110002', name: 'Перше' } });
+    expect(again.body.token).toBeTruthy();
+    expect((await post('/auth/refresh', { refreshToken: again.body.refreshToken })).status).toBe(200);
+  });
+
+  it('відомий, але не підтверджений номер (з /demo/login) один раз питає код', async () => {
+    const h = from();
+    await post('/demo/login', { phone: '0671110006', name: 'Старий' });
+    expect((await post('/auth/start', { phone: '0671110006' }, h)).body).toEqual({ known: true });
+    const ok = await post('/auth/verify', { phone: '0671110006', code: '0006', name: 'Інше' }, h);
+    expect(ok.body.user.name).toBe('Старий');
+    expect((await post('/auth/start', { phone: '0671110006' }, h)).body.token).toBeTruthy();
   });
 
   it('невірний код: лічильник спроб, потім блокування', async () => {
@@ -93,8 +104,7 @@ describe('вхід за номером', () => {
     clock.advance(SESSION_TTL_MS);
     expect((await post('/auth/refresh', { refreshToken: body.refreshToken })).body).toEqual({ error: 'session_invalid' });
 
-    await post('/auth/start', { phone: '0671110005' }, h);
-    const again = await post('/auth/verify', { phone: '0671110005', code: '0005' }, h);
+    const again = await post('/auth/start', { phone: '0671110005' }, h);
     expect((await post('/auth/logout', { refreshToken: again.body.refreshToken })).status).toBe(204);
     expect((await post('/auth/refresh', { refreshToken: again.body.refreshToken })).status).toBe(401);
     expect((await post('/auth/refresh', { refreshToken: 'nope' })).status).toBe(401);

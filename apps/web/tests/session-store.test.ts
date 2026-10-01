@@ -32,6 +32,15 @@ describe('session store', () => {
     expect(setup().store.session?.refreshToken).toBe('r1');
   });
 
+  it('start: підтверджений номер входить одразу, новий іде на код', async () => {
+    const fresh = setup();
+    expect(await fresh.store.start('+380671234567')).toEqual({ known: false, loggedIn: false });
+    expect(fresh.store.loggedIn).toBe(false);
+    const verified = setup({ start: vi.fn(async () => ({ known: true as const, ...login })) });
+    expect(await verified.store.start('+380671234567')).toEqual({ known: true, loggedIn: true });
+    expect(verified.store.token).toBe('t1');
+  });
+
   it('refresh міняє токен доступу й лишає refresh-токен', async () => {
     const { store } = setup();
     await store.verify('+380671234567', '4567');

@@ -43,7 +43,12 @@ export const useSessionStore = defineStore('session', () => {
     configure(a: AuthApi) {
       api = a;
     },
-    start: (phone: string) => api.start(phone),
+    /** `true`: номер уже підтверджений, вхід без коду; інакше `{ known }` і крок коду. */
+    async start(phone: string): Promise<{ known: boolean; loggedIn: boolean }> {
+      const res = await api.start(phone);
+      if ('token' in res) set(res);
+      return { known: res.known, loggedIn: 'token' in res };
+    },
     async verify(phone: string, code: string, name?: string) {
       set(await api.verify(phone, code, name));
     },

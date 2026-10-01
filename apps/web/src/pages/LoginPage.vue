@@ -72,8 +72,10 @@ async function submit() {
   error.value = '';
   try {
     if (step.value === 'phone') {
-      known.value = (await session.start(phone.value)).known;
-      if (known.value) toCode();
+      const res = await session.start(phone.value);
+      known.value = res.known;
+      if (res.loggedIn) await router.replace('/');
+      else if (known.value) toCode();
       else step.value = 'name';
     } else if (step.value === 'name') {
       toCode();

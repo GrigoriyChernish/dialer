@@ -56,7 +56,7 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
     return { token, expiresAt, user: { userId: user.id, name: user.name } };
   };
 
-  // {phone} → чи відомий номер; створює код. Відомому номеру ім'я не потрібне.
+  // {phone} → підтверджений номер входить одразу (токен і сесія), інакше створюємо код і кажемо, чи номер відомий.
   app.post('/auth/start', async (req, reply) => {
     const wait = startLimit(clientIp(req));
     if (wait) return tooMany(reply, wait);
@@ -65,6 +65,12 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
     if (!phone) return reply.code(400).send({ error: 'invalid_phone' });
     const user = users.get(DEMO_SITE_ID, phone);
     if (user?.disabled) return reply.code(403).send({ error: 'disabled' });
+    // код питаємо лише раз: номер, який уже підтверджували, входить без нього (рішення продукту, див. backend.md)
+    if (user?.verifiedAt) {
+      const session = sessions.create(DEMO_SITE_ID, user.id);
+      req.log.info({ userId: user.id }, 'вхід підтвердженим номером');
+      return { known: true, ...(await issue(user)), refreshToken: session.refreshToken, sessionExpiresAt: session.expiresAt };
+    }
     const locked = await otp.start(phone);
     if (locked) return reply.code(429).send({ error: 'too_many_attempts', retryAfter: Math.ceil(locked.retryAfter / 1000) });
     return { known: !!user };
@@ -89,6 +95,7 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
     }
     const user = known ?? users.upsertDemoUser(phone, name);
     if (user.disabled) return reply.code(403).send({ error: 'disabled' });
+    users.markVerified(DEMO_SITE_ID, user.id, clock.now());
     if (!known) hub.announceUser(user);
     const session = sessions.create(DEMO_SITE_ID, user.id);
     req.log.info({ userId: user.id, known: !!known }, 'вхід за номером');
