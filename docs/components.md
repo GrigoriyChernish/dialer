@@ -111,7 +111,7 @@
 - Підказки, що код — останні 4 цифри номера, навмисно немає.
 
 ### `HomePage`
-Шапка (`App Header`): «Дзвонілка» і кнопка «Вийти» (`log-out`, 44 × 44), під нею `ContactsPage`.
+Шапка (`App Header`): назва застосунку «Call» і кнопка «Вийти» (`log-out`, 44 × 44), під нею `ContactsPage`.
 
 ### `features/auth/session.ts` (`useSessionStore`)
 Сесія в `localStorage` (`dialer.session`): токен доступу, `refreshToken`, строки. `start`, `verify`, `refresh`, `logout`.

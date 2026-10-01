@@ -21,7 +21,7 @@ export const messages = {
       err: { generic: 'Спробуйте ще раз', alreadyInCall: 'Ви вже на дзвінку', invalidTarget: 'Такого користувача немає', rateLimited: 'Забагато дзвінків, зачекайте хвилину', offline: "Немає зв'язку з сервером" },
     },
     sound: { on: 'Звук: вкл', off: 'Звук: вимк' },
-    app: { title: 'Дзвонілка', logout: 'Вийти' },
+    app: { title: 'Call', logout: 'Вийти' },
     auth: {
       phone: { title: 'Вхід', subtitle: 'Введіть номер телефону. Якщо ви тут уперше, створимо обліковий запис.', label: 'Номер телефону' },
       name: { title: 'Як вас звати?', subtitle: "{phone} — новий номер. Ім'я побачать ваші співрозмовники.", label: "Ім'я" },
