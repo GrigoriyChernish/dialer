@@ -4,7 +4,8 @@ import { useI18n } from 'vue-i18n';
 import Avatar from '@/shared/ui/Avatar.vue';
 import CallStatePill, { type PillState } from '@/shared/ui/CallStatePill.vue';
 import Icon from '@/shared/ui/Icon.vue';
-import NetworkBanner, { type NetworkKind } from '@/shared/ui/NetworkBanner.vue';
+import BannerStack, { type BannerItem } from '@/shared/ui/BannerStack.vue';
+import { banner } from '@/shared/ui/banners';
 import RoundButton from '@/shared/ui/RoundButton.vue';
 import SelfStatusChip, { type SelfStatus } from '@/shared/ui/SelfStatusChip.vue';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
@@ -21,11 +22,9 @@ const connected = computed(() => call.status === 'connected');
 // екран «In Call · video»: на весь екран відео співрозмовника
 const video = computed(() => connected.value && call.link.peerCam && !call.peerHold);
 
-// плашка під іменем лише про співрозмовника (утримання, зв'язок, мікрофон) та підказки після натискання; наш бік у шапці й смужці
+// плашка під іменем лише про співрозмовника (утримання, зв'язок, мікрофон); наш бік у шапці (значки) і смужках
 const pill = computed<{ state: PillState; text: string } | null>(() => {
   if (!connected.value) return null;
-  if (call.hint === 'cam') return { state: 'cameraUnavailable', text: t('call.state.cameraUnavailable') };
-  if (call.hint === 'mic') return { state: 'micUnavailable', text: t('call.state.micUnavailable') };
   if (call.peerHold) return { state: 'peerHold', text: t(`call.state.peerHold.${g.value}`, { name: first.value }) };
   if (call.link.peerAway) return { state: 'connectionLost', text: t(`call.state.connectionLost.${g.value}`, { name: first.value }) };
   if (call.link.peerMuted) return { state: 'micOff', text: t(`call.state.micOff.${g.value}`, { name: first.value }) };
@@ -33,9 +32,16 @@ const pill = computed<{ state: PillState; text: string } | null>(() => {
 });
 // дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена чи співрозмовник втратив зв'язок
 const dimmed = computed(() => call.hold || call.peerHold || call.link.peerAway);
-// наша мережа: смужка під шапкою, відновлення важливіше за слабкий сигнал
-const network = computed<NetworkKind | null>(() => (!connected.value ? null : call.link.reconnecting ? 'reconnecting' : call.link.poor ? 'poorSignal' : null));
-const networkLabel = computed(() => ({ poorSignal: t('call.network.poorSignal'), reconnecting: t('call.network.reconnecting') }));
+// смужки під шапкою (дизайн: Network Banner, Status Banner): наша мережа, потім сповіщення про наші пристрої
+const banners = computed<BannerItem[]>(() => {
+  if (!connected.value) return [];
+  const list: BannerItem[] = [];
+  if (call.link.reconnecting) list.push(banner('reconnecting', t('call.network.reconnecting')));
+  else if (call.link.poor) list.push(banner('poorSignal', t('call.network.poorSignal')));
+  if (call.hint === 'cam') list.push(banner('cameraUnavailable', t('call.notice.cameraUnavailable')));
+  if (call.hint === 'mic') list.push(banner('micUnavailable', t('call.notice.micUnavailable')));
+  return list;
+});
 const missedIcon = computed(() => (call.missed?.reason === 'incoming' || call.missed?.reason === 'timeout' ? 'phoneMissed' : 'phoneOff'));
 const WAVE = [8, 16, 26, 16, 8];
 // наші статуси в шапці (дизайн: Self Status), зліва направо: утримання, мікрофон, камера; «недоступно» сильніше за «вимкнено»
@@ -87,8 +93,8 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
         <span class="rounded-[14px] bg-surface px-2.5 py-1 text-[13px] font-medium tabular-nums">{{ mm(call.seconds) }}</span>
       </div>
     </header>
-    <!-- наша мережа: смужка під шапкою, вміст під нею з'їжджає вниз разом із мініатюрою -->
-    <NetworkBanner v-if="connected" class="relative z-10" :kind="network" :label="networkLabel" />
+    <!-- смужки-пігулки поверх екрана під шапкою (h-10 + 6), відступ 16 з боків, вміст не зсувають -->
+    <BannerStack v-if="connected" class="pointer-events-none absolute inset-x-4 top-[46px] z-20" :items="banners" />
 
     <div class="relative flex min-h-0 flex-1 flex-col">
       <div v-if="video && pill" class="absolute left-5 top-2 z-10"><CallStatePill :state="pill.state">{{ pill.text }}</CallStatePill></div>

@@ -18,7 +18,7 @@ export interface CallDeps {
   sounds: { play(kind: SoundKind | null, ms?: number): void };
 }
 
-const HINT_MS = 3000;
+const HINT_MS = 4000;
 
 const ERRORS: Record<string, string> = {
   already_in_call: 'call.err.alreadyInCall',

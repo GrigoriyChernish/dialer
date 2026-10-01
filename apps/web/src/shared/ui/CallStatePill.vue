@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Icon from './Icon.vue';
 
-/** Плашка під іменем: лише про співрозмовника й зв'язок з ним (design/dialer.pen: Call State / peer-hold, connection-lost, mic-off) та підказки після натискання (camera-unavailable, mic-unavailable). */
-export type PillState = 'peerHold' | 'connectionLost' | 'micOff' | 'micUnavailable' | 'cameraUnavailable';
+/** Плашка під іменем: лише про співрозмовника й зв'язок з ним (design/dialer.pen: Call State / peer-hold, connection-lost, mic-off). */
+export type PillState = 'peerHold' | 'connectionLost' | 'micOff';
 
-const ICON = { peerHold: 'pause', connectionLost: 'wifiOff', micOff: 'micOff', micUnavailable: 'micOff', cameraUnavailable: 'videoOff' } as const;
-const TONE = { peerHold: 'text-warn', connectionLost: 'text-call-bad', micOff: 'text-mute', micUnavailable: 'text-warn', cameraUnavailable: 'text-warn' } as const;
+const ICON = { peerHold: 'pause', connectionLost: 'wifiOff', micOff: 'micOff' } as const;
+const TONE = { peerHold: 'text-warn', connectionLost: 'text-call-bad', micOff: 'text-mute' } as const;
 defineProps<{ state: PillState }>();
 </script>
 

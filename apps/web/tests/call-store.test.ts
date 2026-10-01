@@ -168,7 +168,7 @@ describe('call store', () => {
     expect(store.hint).toBeNull();
     store.toggleCam();
     expect(store.hint).toBe('cam');
-    vi.advanceTimersByTime(3100);
+    vi.advanceTimersByTime(4100);
     expect(store.hint).toBeNull();
     vi.useRealTimers();
   });
@@ -185,7 +185,7 @@ describe('call store', () => {
     store.toggleMic();
     expect(store.mic).toBe(false);
     expect(store.hint).toBe('mic');
-    vi.advanceTimersByTime(3100);
+    vi.advanceTimersByTime(4100);
     expect(store.hint).toBeNull();
     vi.useRealTimers();
   });

@@ -3,7 +3,8 @@ import { Loader, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneMissed, PhoneOff
 
 // ті самі іконки lucide, що в design/dialer.pen
 const ICONS = { phone: Phone, phoneOutgoing: PhoneOutgoing, phoneIncoming: PhoneIncoming, phoneOff: PhoneOff, phoneMissed: PhoneMissed, x: X, pause: Pause, mic: Mic, micOff: MicOff, wifiOff: WifiOff, loader: Loader, signalLow: SignalLow, video: Video, videoOff: VideoOff };
-defineProps<{ name: keyof typeof ICONS }>();
+export type IconName = keyof typeof ICONS;
+defineProps<{ name: IconName }>();
 </script>
 
 <template>

@@ -8,12 +8,11 @@ export const messages = {
       self: { hold: 'Ви на утриманні', micOff: 'Мікрофон вимкнено', micUnavailable: 'Мікрофон недоступний', camOff: 'Камера вимкнена', camUnavailable: 'Камера недоступна' }, camera: 'Вимкнути камеру', cameraOn: 'Увімкнути камеру', cameraUnavailable: 'Камера недоступна', hideSelf: 'Сховати себе', showSelf: 'Показати себе', incoming: 'Вхідний дзвінок…', left: 'Залишилось {time}',
       accept: 'Прийняти', reject: 'Відхилити', cancel: 'Скасувати', hangup: 'Завершити',
       mute: 'Вимкнути мікрофон', unmute: 'Увімкнути мікрофон', hold: 'Утримання', resume: 'Продовжити',
+      notice: { cameraUnavailable: 'Камера недоступна', micUnavailable: 'Мікрофон недоступний' },
       network: { poorSignal: 'Слабкий сигнал', reconnecting: "Відновлюємо ваше з'єднання" },
       state: {
         peerHold: { f: '{name} поставила на утримання', m: '{name} поставив на утримання' },
         connectionLost: { f: "{name} втратила з'єднання · чекаємо до 30 с", m: "{name} втратив з'єднання · чекаємо до 30 с" },
-        cameraUnavailable: 'Камера недоступна',
-        micUnavailable: 'Мікрофон недоступний',
         micOff: { f: '{name} вимкнула мікрофон', m: '{name} вимкнув мікрофон' },
       },
       close: 'Закрити', redial: 'Передзвонити',
