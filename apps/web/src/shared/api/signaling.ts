@@ -1,7 +1,8 @@
 import type { ServerMessage } from '@dialer/shared';
 import { PING_INTERVAL_MS, PROTOCOL_VERSION } from '@dialer/shared';
 
-const BACKOFF_S = [1, 2, 4, 8, 15];
+// паузи між спробами: перезапуск сервера на Fly.io триває ~10 с, тож довше 5 с не чекаємо
+const BACKOFF_S = [1, 1, 2, 3, 5];
 /** Сервер закрив з'єднання: токен недійсний. Нового токена чекаємо від сайту-господаря. */
 const CLOSE_UNAUTHORIZED = 4401;
 const FATAL_CLOSE = new Set([4403, 4426]);
@@ -89,6 +90,12 @@ export class SignalingClient {
   refreshToken() {
     if (this.open) void this.request('auth.refresh', { token: this.opts.getToken() }).catch(() => {});
     else if (!this.ws || this.ws.readyState > WebSocket.OPEN) this.connect();
+  }
+
+  /** Мережа повернулась чи вкладка знову активна: пробуємо одразу, не чекаючи паузи. */
+  reconnectNow() {
+    if (this.stopped || !this.ws || this.ws.readyState <= WebSocket.OPEN) return;
+    this.connect();
   }
 
   close() {

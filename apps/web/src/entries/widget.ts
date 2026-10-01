@@ -43,6 +43,9 @@ const call = useCallStore(pinia);
 call.init({ client, media: new CallMedia(), sounds: new Sounds() });
 client.on((m) => m.type === 'token.expiring' && toHost({ type: 'token:expired' }));
 client.connect();
+// після обриву не чекаємо паузи, коли мережа повернулась чи вкладку знову відкрили
+addEventListener('online', () => client.reconnectNow());
+document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && client.reconnectNow());
 
 // повідомлення лише від сайту-господаря, який нас вбудував
 addEventListener('message', (e) => {

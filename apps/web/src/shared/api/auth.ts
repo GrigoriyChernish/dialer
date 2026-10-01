@@ -28,7 +28,8 @@ export function createAuthApi(server: string, fetchFn: typeof fetch = (...a) => 
   async function post<T>(path: string, body: object): Promise<T> {
     let res: Response;
     try {
-      res = await fetchFn(base + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      // keepalive: logout довершується, навіть коли сторінка одразу перезавантажується на екран входу
+      res = await fetchFn(base + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true });
     } catch {
       throw new AuthError('network');
     }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCallStore } from '@/features/call/store';
 import Avatar from '@/shared/ui/Avatar.vue';
@@ -25,6 +25,19 @@ const sorted = computed(() =>
   }),
 );
 const dot = (id: string, online: boolean) => BOTS[id]?.dot ?? (online ? 'bg-call-ok' : 'bg-mute');
+// «Немає зв'язку» лише якщо розрив довший за 3 с: короткі перепідключення не блимають
+const offline = ref(false);
+let offlineTimer: ReturnType<typeof setTimeout> | undefined;
+watch(
+  () => call.online,
+  (on) => {
+    clearTimeout(offlineTimer);
+    if (on) offline.value = false;
+    else offlineTimer = setTimeout(() => (offline.value = true), 3_000);
+  },
+  { immediate: true },
+);
+onUnmounted(() => clearTimeout(offlineTimer));
 const sub = (id: string, online: boolean) => {
   const bot = BOTS[id];
   return bot ? t(bot.text) : `${fmt(id)} · ${online ? t('contacts.online') : t('contacts.offline')}`;
@@ -60,7 +73,7 @@ const sub = (id: string, online: boolean) => {
         /></span>
       </button>
     </div>
-    <p v-if="!call.online" class="px-3 pt-3 text-sm text-mute" role="status">
+    <p v-if="offline" class="px-3 pt-3 text-sm text-mute" role="status">
       {{ t('contacts.noConnection') }}{{ call.netError ? ': ' + call.netError : '. ' + t('contacts.connecting') }}
     </p>
   </section>

@@ -77,4 +77,9 @@ watch(
   { immediate: true },
 );
 
+// після обриву не чекаємо паузи, коли мережа повернулась чи вкладку знову відкрили
+const wake = () => session.loggedIn && client.reconnectNow();
+addEventListener('online', wake);
+document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && wake());
+
 createApp(App).use(pinia).use(router).use(i18n).mount('#app');
