@@ -142,6 +142,8 @@ svg .f{fill:currentColor;stroke:none}
 /* ---------- режим віджета: відкрито з demo/embed.js з токеном у URL ---------- */
 const Q=new URLSearchParams(location.search),EMB=Q.has('token'),HOST=Q.get('host')||location.origin;
 let token=Q.get('token'),expSent=0;
+// режим «справжній бекенд»: сайт-господар передав адресу сервера (?server=http://localhost:8787), інакше все імітується
+const SERVER=EMB&&Q.get('server'),LIVE=!!SERVER;
 const toHost=m=>EMB&&parent!==window&&parent.postMessage(m,HOST);
 const setTheme=t=>t&&t!=='auto'?document.documentElement.dataset.theme=t:delete document.documentElement.dataset.theme;
 const fmt=p=>p.replace(/^\+380(\d\d)(\d{3})(\d\d)(\d\d)$/,'+380 $1 $2 $3 $4');
@@ -154,9 +156,10 @@ const BOTS=[
  {id:'u2',name:'Олена Коваль',g:'f',s:'онлайн · відповість'},
  {id:'u3',name:'Андрій Мельник',g:'m',s:'онлайн · не відповість'},
  {id:'u4',name:'Support',g:'m',s:'у розмові · зайнято'}];
-const allContacts=()=>EMB?[...demoContacts(),...BOTS]:BOTS;
+let liveContacts=[];
+const allContacts=()=>LIVE?liveContacts:EMB?[...demoContacts(),...BOTS]:BOTS;
 let contacts=allContacts();
-const S={state:'idle',peer:null,missed:null,mic:1,cam:1,hold:0,peerHold:0,conn:'ok',away:0,q:'excellent',sec:0,left:0,stream:null,pip:1,peerMic:1,peerCam:0};
+const S={callId:null,state:'idle',peer:null,missed:null,mic:1,cam:1,hold:0,peerHold:0,conn:'ok',away:0,q:'excellent',sec:0,left:0,stream:null,pip:1,peerMic:1,peerCam:0};
 const T={};let soundOn=true,ac,stopSnd=()=>{},sndLabel='',gen=0,inCnt=0;
 const vid=Object.assign(document.createElement('video'),{autoplay:true,muted:true,playsInline:true});  // один елемент на весь дзвінок: прев'ю не миготить
 const $=id=>document.getElementById(id);
@@ -192,10 +195,10 @@ const holdSnd=()=>play(S.peerHold?'hold':null);
 
 /* ---------- логіка дзвінка ---------- */
 async function cam(){try{return await navigator.mediaDevices.getUserMedia({video:true})}catch(e){return null}}
-function clearAll(){gen++;['tick','ans','rec','away'].forEach(k=>{clearInterval(T[k]);clearTimeout(T[k])});
+function clearAll(){gen++;if(LIVE)net.leaveMedia();['tick','ans','rec','away'].forEach(k=>{clearInterval(T[k]);clearTimeout(T[k])});
   S.stream?.getTracks().forEach(t=>t.stop());S.stream=null;
-  Object.assign(S,{hold:0,peerHold:0,conn:'ok',away:0,q:'excellent',sec:0,pip:1,peerMic:1,peerCam:0});}
-function call(id){if(S.state!=='idle')return;const c=contacts.find(x=>x.id===id);S.peer=c;S.missed=null;
+  Object.assign(S,{callId:null,hold:0,peerHold:0,conn:'ok',away:0,q:'excellent',sec:0,pip:1,peerMic:1,peerCam:0});}
+function call(id){if(S.state!=='idle')return;if(LIVE)return net.invite(id);const c=contacts.find(x=>x.id===id);S.peer=c;S.missed=null;
   if(id==='u4'){S.state='ringing';S.left=0;render();play(null);
     T.ans=setTimeout(()=>{S.state='idle';S.missed={c,reason:'busy'};play('busy',4000);render();},500);return;}  // сервер: {busy:true}
   S.state='ringing';S.left=8;play('ringback');render();
@@ -212,8 +215,8 @@ async function connect(){clearInterval(T.tick);clearTimeout(T.ans);play(null);S.
   // дзвінок могли завершити, поки чекали дозволу на камеру: тоді одразу гасимо потік
   if(g!==gen||S.state!=='connected'){s?.getTracks().forEach(t=>t.stop());return;}
   S.stream=s;s?.getVideoTracks().forEach(t=>t.enabled=!!S.cam);render();}
-function hangup(){clearAll();vid.srcObject=null;play(null);S.state='idle';S.peer=null;render();}
-function toggleHold(){S.hold=S.hold?0:1;holdSnd();render();}
+function hangup(){if(LIVE)net.leave();clearAll();vid.srcObject=null;play(null);S.state='idle';S.peer=null;render();}
+function toggleHold(){S.hold=S.hold?0:1;if(LIVE){net.hold(S.hold);net.sync();}holdSnd();render();}
 function dropConn(){if(S.state!=='connected'||S.conn!=='ok')return;S.conn='rec';render();
   T.rec=setTimeout(()=>{S.conn='ok';render();},3500);}
 function peerAway(){if(S.state!=='connected'||S.away)return;S.away=1;render();T.away=setTimeout(()=>{S.away=0;render();},6000);}
@@ -223,6 +226,90 @@ function peerCamToggle(){if(S.state!=='connected')return;S.peerCam=S.peerCam?0:1
 function peerMute(){if(S.state!=='connected')return;S.peerMic=S.peerMic?0:1;render();}
 function poorQ(){if(S.state!=='connected')return;S.q=S.q==='poor'?'excellent':'poor';render();}
 
+/* ---------- справжній сервер: сигналізація по WebSocket (docs/signaling.md) ---------- */
+// Стан дзвінка належить серверу: клієнт надсилає наміри, а екрани міняє за подіями.
+const net=(()=>{
+  const N={up:false};let ws,tries=0,hb,rt,off=0,pend={},busy=0,raw=[];
+  // медіа: аудіо розмови йде через кімнату LiveKit (клієнт підвантажуємо лише в режимі з сервером)
+  const media=(()=>{let room,els=[],gen=0;
+    const load=()=>window.LivekitClient?Promise.resolve():new Promise((ok,no)=>{const e=document.createElement('script');
+      e.src='https://cdn.jsdelivr.net/npm/livekit-client@2/dist/livekit-client.umd.js';e.onload=ok;e.onerror=no;document.head.append(e);});
+    const M={leave(){gen++;room?.disconnect();room=null;els.forEach(e=>e.remove());els=[];},
+      sync(){room?.localParticipant.setMicrophoneEnabled(!!S.mic&&!S.hold).catch(()=>{});els.forEach(e=>e.muted=!!S.hold);},
+      async join(a){M.leave();const g=gen;try{await load();}catch(e){console.warn('livekit-client не завантажено',e);return}
+        if(g!==gen)return;const L=LivekitClient,r=room=new L.Room();
+        r.on(L.RoomEvent.TrackSubscribed,t=>{if(t.kind!=='audio')return;const e=t.attach();e.muted=!!S.hold;document.body.append(e);els.push(e);});
+        r.on(L.RoomEvent.TrackUnsubscribed,t=>t.detach().forEach(e=>{e.remove();els=els.filter(x=>x!==e);}));
+        try{await r.connect(a.url,a.token);if(g!==gen){r.disconnect();return}
+          await r.startAudio?.();M.sync();}catch(e){console.warn('livekit',e)}}};
+    return M;})();
+  const rid=()=>crypto.randomUUID?.()||String(Math.random()).slice(2);
+  let dev;try{dev=sessionStorage.getItem('dialer.dev')||'d_'+rid().slice(0,8);sessionStorage.setItem('dialer.dev',dev)}catch(e){dev='d_'+rid().slice(0,8)}
+  const url=SERVER.replace(/^http/,'ws').replace(/\/+$/,'')+'/ws';
+  const send=(type,p,cb)=>{if(!ws||ws.readyState!==1)return false;const id=rid();if(cb)pend[id]=cb;ws.send(JSON.stringify({v:1,type,id,...p}));return true};
+  const ERR={already_in_call:'Ви вже на дзвінку',invalid_target:'Такого користувача немає',rate_limited:'Забагато дзвінків, зачекайте хвилину'};
+  const mapC=c=>({id:c.userId,name:c.name.replace(/[<>&]/g,''),g:c.userId==='bot:olena'?'f':'m',
+    s:c.userId.startsWith('bot:')?'демо-співрозмовник':fmt(c.userId)+' · '+(c.online?'онлайн':'не в мережі')});
+  const setC=()=>{liveContacts=raw.map(mapC);contacts=liveContacts;if(S.state==='idle'&&!S.missed)render();};
+  const peerOf=p=>contacts.find(c=>c.id===p.userId)||mapC({...p,online:true});
+  const localExp=t=>t-off;
+  function countdown(exp){clearInterval(T.tick);if(!exp){S.left=0;return;}
+    const f=()=>{S.left=Math.max(0,Math.ceil((localExp(exp)-Date.now())/1000));$('left')&&($('left').textContent=mm(S.left));};
+    f();T.tick=setInterval(f,1000);}  // лише відлік: дзвінок завершує сервер
+  function ringOut(call){S.callId=call.callId;S.peer=peerOf(call.peer);S.missed=null;S.state='ringing';play('ringback');countdown(call.expiresAt);render();}
+  function ringIn(call){S.callId=call.callId;S.peer=peerOf(call.peer);S.missed=null;S.state='incoming';play('ringtone');countdown(call.expiresAt);render();}
+  function talk(call){clearAll();S.callId=call.callId;S.peer=peerOf(call.peer);S.missed=null;connect();
+    S.sec=Math.max(0,Math.floor((Date.now()+off-(call.startedAt||Date.now()))/1000));S.hold=call.hold?1:0;S.peerHold=call.peerHold?1:0;
+    holdSnd();render();if(call.livekit)media.join(call.livekit);}
+  function idle(){clearAll();vid.srcObject=null;S.state='idle';S.peer=null;}
+  function restore(calls){
+    const c=calls.find(x=>x.state==='connected')||calls[0];
+    if(!c){if(S.callId){idle();play(null);}return;}
+    if(S.callId===c.callId&&(S.state==='connected')===(c.state==='connected'))return;
+    if(S.callId)idle();
+    if(c.state==='connected')talk(c);else if(c.direction==='in'&&!c.waiting)ringIn(c);else if(c.direction==='out')ringOut(c);}
+  function ended(m){
+    if(m.callId!==S.callId)return;
+    const was=S.state,p=S.peer,r=m.reason;idle();
+    const miss=was==='ringing'?({busy:'busy',rejected:'rejected',timeout:'timeout',offline:'timeout',error:'error'})[r]
+      :was==='incoming'?(r==='cancelled'||r==='timeout'?'incoming':null):null;  // answered_elsewhere, hangup: без екрана «пропущений»
+    S.missed=miss?{c:p,reason:miss}:null;play(miss==='busy'?'busy':null,miss==='busy'?4000:0);render();}
+  function onMsg(m){
+    const cb=m.reqId&&pend[m.reqId];if(cb){delete pend[m.reqId];cb(m);}
+    switch(m.type){
+      case 'hello.ok':off=m.serverTime-Date.now();raw=m.contacts||[];N.up=true;tries=0;
+        clearInterval(hb);hb=setInterval(()=>send('ping'),25000);setC();restore(m.calls||[]);render();break;
+      case 'call.incoming':if(S.state!=='idle'||m.call.waiting)send('call.reject',{callId:m.call.callId});else ringIn(m.call);break;  // очікування: беклог, пункт 3
+      case 'call.ringing':if(m.call.callId===S.callId&&S.state==='ringing')countdown(m.call.expiresAt);break;
+      case 'call.connected':if(!S.callId||m.call.callId===S.callId)talk(m.call);break;
+      case 'call.ended':ended(m);break;
+      case 'call.peer':if(m.callId===S.callId){S.peerHold=m.hold?1:0;holdSnd();render();}break;
+      case 'call.updated':if(m.callId===S.callId&&m.hold!==undefined){S.hold=m.hold?1:0;media.sync();holdSnd();render();}break;
+      case 'presence':{const c=raw.find(x=>x.userId===m.userId);if(c){c.online=m.online;setC();}break;}
+      case 'contacts.update':raw=raw.filter(x=>!(m.remove||[]).includes(x.userId)&&!(m.upsert||[]).some(u=>u.userId===x.userId)).concat(m.upsert||[]);setC();break;
+      case 'token.expiring':toHost({type:'token:expired'});break;
+      case 'error':if(/^token_/.test(m.code))toHost({type:'token:expired'});break;
+    }}
+  const retry=()=>{rt=setTimeout(open,[1,2,4,8,15][Math.min(tries++,4)]*1000*(1+Math.random()*.3));};
+  function open(){clearTimeout(rt);let w;
+    try{w=ws=new WebSocket(url);}catch(e){console.error('WebSocket',url,e);N.err=e.message;retry();return}  // неправильна адреса чи змішаний https/ws
+    w.onopen=()=>send('hello',{token,deviceId:dev,locale:'uk'});
+    w.onmessage=e=>{try{onMsg(JSON.parse(e.data))}catch(err){console.error(err)}};
+    w.onclose=e=>{if(w!==ws)return;N.up=false;clearInterval(hb);pend={};busy=0;if(S.state==='idle'&&!S.missed)render();
+      if(e.code===4401){toHost({type:'token:expired'});return;}  // нового токена чекаємо від сайту-господаря
+      if(e.code===4403||e.code===4426)return;
+      retry();};}
+  N.start=open;N.sync=media.sync;N.leaveMedia=media.leave;
+  N.refresh=()=>{if(N.up)send('auth.refresh',{token});else if(!ws||ws.readyState>1)open();};
+  N.invite=id=>{if(busy)return;const c=contacts.find(x=>x.id===id);if(!c)return;S.missed=null;busy=1;
+    const fail=note=>{busy=0;S.missed={c,reason:'error',note};render();};
+    if(!send('call.invite',{to:id,video:false},m=>{busy=0;
+      if(m.type==='ack'&&m.call)ringOut(m.call);else fail(ERR[m.code]);}))fail('Немає зв\'язку з сервером');};
+  N.leave=()=>{const id=S.callId;if(id)send(S.state==='incoming'?'call.reject':S.state==='ringing'?'call.cancel':'call.hangup',{callId:id});};
+  N.accept=()=>{if(S.callId)send('call.accept',{callId:S.callId},m=>{if(m.type==='error'){idle();play(null);render();}});};
+  N.hold=h=>{if(S.callId)send('call.hold',{callId:S.callId,hold:!!h},m=>{if(m.type==='error'){S.hold=h?0:1;render();}});};
+  return N;})();
+
 /* ---------- відображення ---------- */
 function render(){
   const r=$('root'),p=S.peer;
@@ -230,10 +317,12 @@ function render(){
     r.innerHTML=`<section class="list"><h2>Дзвінки</h2>`+contacts.map(c=>`<button class="row" data-c="${c.id}">
       <span class="avatar">${ini(c.name)}</span><span class="meta"><b>${c.name}</b><small>${c.s}</small></span>
       <span class="dial">${svg(PHONE)}</span></button>`).join('')
-      +(EMB&&!contacts.some(c=>c.id[0]==='+')?`<p class="empty">Інші люди з'являться тут, коли увійдуть у демо. Спробуйте: відкрийте демо в іншій вкладці цього браузера й увійдіть з іншим номером.</p>`:'')+`</section>`;
+      +(LIVE&&!net.up?`<p class="empty">Немає зв'язку з сервером${net.err?': '+net.err:'. Підключаємось…'}</p>`:'')
+      +(EMB&&!LIVE&&!contacts.some(c=>c.id[0]==='+')?`<p class="empty">Інші люди з'являться тут, коли увійдуть у демо. Спробуйте: відкрийте демо в іншій вкладці цього браузера й увійдіть з іншим номером.</p>`:'')+`</section>`;
     r.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>call(b.dataset.c));
   } else if(S.state==='idle'){
-    const m=S.missed,M={busy:['Зайнято','Абонент зараз розмовляє'],timeout:['Без відповіді','Абонент не відповів (у демо 8 с, у реалі 60 с)'],incoming:['Пропущений дзвінок','Ви не відповіли на вхідний']}[m.reason];
+    const m=S.missed,M={busy:['Зайнято','Абонент зараз розмовляє'],timeout:['Без відповіді',LIVE?'Абонент не відповів':'Абонент не відповів (у демо 8 с, у реалі 60 с)'],incoming:['Пропущений дзвінок','Ви не відповіли на вхідний'],rejected:['Відхилено','Абонент відхилив дзвінок'],
+      error:['Не вдалося зателефонувати',m.note||'Спробуйте ще раз']}[m.reason];
     r.innerHTML=`<section class="stage missed"><div class="center"><span class="avatar xl dim">${ini(m.c.name)}</span><h3>${m.c.name}</h3>
       <p>${M[0]}</p><small>${M[1]}</small></div>
       <div class="controls"><div class="act"><button class="fab ghost" id="cl" aria-label="Закрити">${svg(X)}</button>Закрити</div>
@@ -247,7 +336,7 @@ function render(){
       ${S.left?`<small>Залишилось <span id="left">${mm(S.left)}</span> · таймер сервера (у демо скорочений)</small>`:''}</div>
       <div class="controls">${inc?`<button class="fab bad" id="rej" aria-label="Відхилити">${svg(X)}</button><button class="fab ok" id="acc" aria-label="Прийняти">${svg(PHONE)}</button>`
       :`<button class="fab bad" id="rej" aria-label="Скасувати">${svg(X)}</button>`}</div></section>`;
-    $('rej').onclick=hangup;if(inc)$('acc').onclick=connect;
+    $('rej').onclick=hangup;if(inc)$('acc').onclick=LIVE?net.accept:connect;
   } else {
     const st=S.hold?'hold':S.peerHold?'peerhold':S.away?'away':S.conn==='rec'?'rec':'ok';
     const fn=p.name.split(' ')[0];
@@ -275,7 +364,7 @@ function render(){
         <button class="fab ghost ${S.hold?'off':''}" id="hd" aria-label="Утримання" aria-pressed="${!!S.hold}">${svg(PAUSE)}</button>
         <button class="fab bad" id="h" aria-label="Завершити">${svg(X)}</button></div></div></section>`;
     if(S.pip&&S.stream&&S.cam){if(vid.srcObject!==S.stream)vid.srcObject=S.stream;$('pip').appendChild(vid);vid.play?.().catch(()=>{});}
-    $('m').onclick=()=>{S.mic=S.mic?0:1;render();};
+    $('m').onclick=()=>{S.mic=S.mic?0:1;if(LIVE)net.sync();render();};
     $('c').onclick=()=>{S.cam=S.cam?0:1;S.stream?.getVideoTracks().forEach(t=>t.enabled=!!S.cam);render();};
     if($('px'))$('px').onclick=togglePip;if($('ps'))$('ps').onclick=togglePip;$('hd').onclick=toggleHold;$('h').onclick=hangup;if($('rs'))$('rs').onclick=toggleHold;
   }
@@ -286,7 +375,7 @@ function render(){
 // коротке зведення стану для скрінрідерів (live-регіон поза #root, тому не перестворюється)
 function announce(){
   const p=S.peer,m=S.missed;let t='';
-  if(S.state==='idle')t=m?({busy:'Зайнято',timeout:'Без відповіді',incoming:'Пропущений дзвінок'})[m.reason]+': '+m.c.name:'';
+  if(S.state==='idle')t=m?({busy:'Зайнято',timeout:'Без відповіді',incoming:'Пропущений дзвінок',rejected:'Відхилено',error:'Не вдалося зателефонувати'})[m.reason]+': '+m.c.name:'';
   else if(S.state==='incoming')t='Вхідний дзвінок: '+p.name;
   else if(S.state==='ringing')t='Дзвонимо: '+p.name;
   else{const fn=p.name.split(' ')[0];
@@ -298,6 +387,7 @@ function announce(){
 function sc(){
   const con=S.state==='connected',idle=S.state==='idle';
   $('snd').textContent=soundOn?'🔊 Звук: вкл':'🔇 Звук: вимк';
+  if(LIVE){$('sc').innerHTML=`<h4>Справжній сервер</h4><p>Дзвінки йдуть через сервер сигналізації. Олена, Андрій і Support — серверні боти зі сценаріями (відповідає, не відповідає, зайнято). Щоб подзвонити людині, відкрийте демо в іншій вкладці й увійдіть з іншим номером.</p><div class="snd">${sndLabel}</div>`;return;}
   $('sc').innerHTML=`<h4>Сценарії</h4><p>Натискайте, щоб побачити фічі. Усе імітується: сервера й LiveKit тут немає.</p>
    <div class="g">
     <button id="s1" ${idle?'':'disabled'}>📲 Вхідний дзвінок</button>
@@ -316,15 +406,16 @@ if(EMB){
   // повідомлення лише від сайту-господаря, який нас вбудував
   addEventListener('message',e=>{if(e.source!==parent||e.origin!==HOST)return;const m=e.data||{};
     if(m.type==='theme')setTheme(m.theme);
-    if(m.type==='token'){token=m.token;expSent=0;}
+    if(m.type==='token'){token=m.token;expSent=0;if(LIVE)net.refresh();}
     if(m.type==='call'&&contacts.some(c=>c.id===m.id))call(m.id);});
   // хтось увійшов в іншій вкладці: оновлюємо контакти
   addEventListener('storage',e=>{if(e.key!=='dialer.demo.users')return;contacts=allContacts();if(S.state==='idle'&&!S.missed)render();});
   addEventListener('keydown',e=>{if(e.key==='Escape')toHost({type:'close'});});  // Esc згортає панель, дзвінок триває
   const chk=()=>{if(!expSent&&+token.split('.')[2]<Date.now()){expSent=1;toHost({type:'token:expired'});}};
-  setInterval(chk,15000);chk();
+  if(!LIVE){setInterval(chk,15000);chk();}
 }
 render();
+if(LIVE)net.start();
 toHost({type:'ready'});
 </script>
 </body>

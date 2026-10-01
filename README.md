@@ -17,9 +17,12 @@
 python3 -m http.server 8080
 ```
 
-і відкрийте http://localhost:8080
+і відкрийте <http://localhost:8080>
 
-Сторінка демо з входом і віджетом у кутку: http://localhost:8080/demo/.
+Сторінка демо з входом і віджетом у кутку: <http://localhost:8080/demo/>.
 Щоб подзвонити «іншому користувачу», відкрийте її ще в одній вкладці й увійдіть з іншим номером.
+Зі справжнім сервером сигналізації (спершу запустіть `apps/server`): <http://localhost:8080/demo/?server=http://localhost:8787>.
 
-Онлайн: https://grigoriychernish.github.io/dialer/ (публікується з гілки `dev`).
+Запуск сервера й налаштування `.env`: [`docs/local-development.md`](docs/local-development.md).
+
+Онлайн: <https://grigoriychernish.github.io/dialer/> (публікується з гілки `dev`).

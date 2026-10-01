@@ -21,7 +21,7 @@ const CSS=`
 .dlr-panel iframe{flex:1;width:100%;border:0;background:#0b0d12}
 @media (max-width:479px){.dlr-panel{inset:0!important;width:auto;height:auto!important;border-radius:0;border:0}}`;
 
-window.Dialer={mount({token,theme='auto',position='bottom-right',offset={x:24,y:24}}){
+window.Dialer={mount({token,server='',theme='auto',position='bottom-right',offset={x:24,y:24}}){
   if(!document.getElementById('dlr-css'))document.head.append(Object.assign(document.createElement('style'),{id:'dlr-css',textContent:CSS}));
   const ls={},emit=(e,d)=>(ls[e]||[]).forEach(f=>f(d));
   const side=position==='bottom-left'?'left':'right';
@@ -31,7 +31,7 @@ window.Dialer={mount({token,theme='auto',position='bottom-right',offset={x:24,y:
   panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Дзвонілка');
   panel.style.cssText=`${side}:${offset.x}px;bottom:${offset.y+76}px;height:min(640px,calc(100vh - ${offset.y+92}px))`;
   panel.innerHTML='<div class="dlr-bar">Дзвонілка<button class="dlr-x" aria-label="Згорнути">–</button></div>';
-  const src=new URL(WIDGET);src.search=new URLSearchParams({token,theme,host:location.origin});
+  const src=new URL(WIDGET);src.search=new URLSearchParams({token,theme,host:location.origin,...(server&&{server}),_:Date.now()});  // _ обходить кеш iframe: статичний сервер не задає Cache-Control
   const frame=Object.assign(document.createElement('iframe'),{src,title:'Дзвонілка'});
   frame.allow='camera; microphone; autoplay; display-capture';  // без цього камера й мікрофон в iframe недоступні
   panel.append(frame);document.body.append(panel,btn);

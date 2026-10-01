@@ -73,18 +73,29 @@ ul.f{margin:0;padding:0;list-style:none;display:grid;gap:8px}ul.f li::before{con
   </main>
 </div>
 <div id="live" class="sr" aria-live="polite"></div>
-<script src="embed.js"></script>
+<script src="embed.js?v=2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const store={get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
-  set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+// ?server=http://localhost:8787 вмикає справжній бекенд; без нього демо імітує все в браузері
+const SERVER=new URLSearchParams(location.search).get('server')?.replace(/\/+$/,'')||'';
+const mk=st=>({get:k=>{try{return JSON.parse(st.getItem(k))}catch(e){return null}},
+  set:(k,v)=>{try{v==null?st.removeItem(k):st.setItem(k,JSON.stringify(v))}catch(e){}}});
+const store=mk(localStorage);
+// з сервером сесія своя в кожній вкладці, щоб у двох вкладках можна було бути двома людьми
+const sess=SERVER?mk(sessionStorage):store;
 const esc=s=>s.replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const fmt=d=>[d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean).join(' ');  // 9 цифр → XX XXX XX XX
 const announce=t=>{$('live').textContent=t};
 
 /* ---------- «бекенд» (імітація): вхід без підтвердження, користувачі в localStorage ---------- */
 const TOKEN_TTL=30*60*1000;
-const API={login({name,phone}){return new Promise(ok=>setTimeout(()=>{
+const LOGIN_ERR={invalid_name:'Некоректне ім\'я',invalid_phone:'Некоректний номер',disabled:'Користувача заблоковано'};
+const API=SERVER?{async login({name,phone}){
+  let r;try{r=await fetch(SERVER+'/demo/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name,phone})});}
+  catch(e){throw new Error('Сервер недоступний: '+SERVER)}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(LOGIN_ERR[j.error]||'Не вдалося увійти');
+  return {token:j.token};}}:
+{login({name,phone}){return new Promise(ok=>setTimeout(()=>{
   const users=(store.get('dialer.demo.users')||[]).filter(u=>u.phone!==phone);  // той самий номер — той самий користувач
   users.push({phone,name});store.set('dialer.demo.users',users);
   ok({token:`demo.${phone}.${Date.now()+TOKEN_TTL}`});},700));}};
@@ -109,7 +120,7 @@ function renderLogin(){
       <div class="field"><label for="nm">Ім'я</label><div class="inp" id="nmBox"><input id="nm" autocomplete="name" maxlength="60" aria-describedby="nmErr"></div><div class="err" id="nmErr"></div></div>
       <div class="field"><label for="ph">Телефон</label><div class="inp" id="phBox"><span aria-hidden="true">+380</span><input id="ph" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="XX XXX XX XX" aria-describedby="phErr"></div><div class="err" id="phErr"></div></div>
       <button class="btn wide" id="go">Увійти</button>
-    </form><p class="hint">Це демо: номер не перевіряється, дзвінки імітуються.</p>`;
+    </form><p class="hint">${SERVER?'Це демо: номер не перевіряється, дзвінки йдуть через справжній сервер.':'Це демо: номер не перевіряється, дзвінки імітуються.'}</p>`;
   const nm=$('nm'),ph=$('ph');nm.value=F.name;ph.value=fmt(F.digits);
   nm.oninput=()=>{F.name=nm.value;check();};
   ph.oninput=()=>{F.digits=digitsOf(ph.value);ph.value=fmt(F.digits);check();};
@@ -127,25 +138,27 @@ function check(){
 async function login(){
   F.busy=true;$('go').innerHTML='<span class="spin"></span>Входимо…';$('nm').disabled=$('ph').disabled=true;check();
   const name=F.name.trim().replace(/\s+/g,' '),phone='+380'+F.digits;
-  const {token}=await API.login({name,phone});
-  store.set('dialer.demo.session',{token,name,phone});F.busy=false;start();announce('Ви увійшли як '+name);
+  let token;
+  try{({token}=await API.login({name,phone}));}
+  catch(e){F.busy=false;renderLogin();$('phErr').textContent=e.message;announce(e.message);return;}
+  sess.set('dialer.demo.session',{token,name,phone});F.busy=false;start();announce('Ви увійшли як '+name);
 }
 
 /* ---------- після входу: віджет, як на справжньому сайті ---------- */
 function start(){
-  const s=store.get('dialer.demo.session');if(!s)return renderLogin();
+  const s=sess.get('dialer.demo.session');if(!s)return renderLogin();
   $('user').innerHTML=`<span><b>${esc(s.name)}</b> <small>+380 ${fmt(s.phone.slice(4))}</small></span><button class="btn ghost" id="out">Вийти</button>`;
   $('card').innerHTML=`<h2>Готово, ${esc(s.name.split(' ')[0])}!</h2><p>Дзвонілка — кнопка в правому нижньому куті.</p>
-    <ol class="steps"><li>Відкрийте цю сторінку в іншій вкладці цього ж браузера.</li><li>Натисніть «Вийти» й увійдіть з іншим ім'ям і номером.</li>
+    <ol class="steps"><li>Відкрийте цю сторінку в іншій вкладці цього ж браузера.</li><li>${SERVER?'Увійдіть там з іншим ім\'ям і номером: вкладки незалежні.':'Натисніть «Вийти» й увійдіть з іншим ім\'ям і номером.'}</li>
     <li>Обидва користувачі з'являться в контактах одне одного.</li></ol>
-    <p class="hint">Сама розмова поки імітується: співрозмовник «відповідає» через 3,5 с. Сценарії — під списком контактів у віджеті.</p>
+    <p class="hint">${SERVER?'Дзвінки йдуть через сервер сигналізації; звук іде через LiveKit (потрібні ключі в .env сервера).':'Сама розмова поки імітується: співрозмовник «відповідає» через 3,5 с. Сценарії — під списком контактів у віджеті.'}</p>
     <p style="margin:16px 0 0"><button class="btn" id="openW">Відкрити дзвонілку</button></p>`;
-  dialer=Dialer.mount({token:s.token,theme,position:'bottom-right',offset:{x:24,y:24}});
+  dialer=Dialer.mount({token:s.token,server:SERVER,theme,position:'bottom-right',offset:{x:24,y:24}});
   // токен сплив: мовчки входимо знову зі збереженими даними
-  dialer.on('token:expired',async()=>{const c=store.get('dialer.demo.session');if(!c)return;
-    const {token}=await API.login(c);store.set('dialer.demo.session',{...c,token});dialer?.setToken(token);});
+  dialer.on('token:expired',async()=>{const c=sess.get('dialer.demo.session');if(!c)return;
+    let t;try{t=(await API.login(c)).token}catch(e){return}sess.set('dialer.demo.session',{...c,token:t});dialer?.setToken(t);});
   $('openW').onclick=()=>dialer.open();
-  $('out').onclick=()=>{dialer.unmount();dialer=null;store.set('dialer.demo.session',null);Object.assign(F,{name:'',digits:'',touched:{}});renderLogin();announce('Ви вийшли');};
+  $('out').onclick=()=>{dialer.unmount();dialer=null;sess.set('dialer.demo.session',null);Object.assign(F,{name:'',digits:'',touched:{}});renderLogin();announce('Ви вийшли');};
 }
 applyTheme();start();
 </script>
