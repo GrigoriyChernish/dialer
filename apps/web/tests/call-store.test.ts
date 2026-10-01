@@ -34,6 +34,9 @@ function setup() {
       hasCamera: vi.fn(async () => true),
       hasMicrophone: vi.fn(async () => true),
       onChange: f => (onLink = f),
+      park: vi.fn(),
+      swap: vi.fn(() => true),
+      dropParked: vi.fn(),
     },
     sounds: { play: vi.fn() },
   };
@@ -288,5 +291,168 @@ describe('call store', () => {
     expect(store.busySelf).toBe(false);
     await store.call(olena.userId);
     expect(store.busySelf).toBe(true);
+  });
+
+  describe('second incoming call (waiting)', () => {
+    const andriy = { userId: '+380502222222', name: 'Андрій' };
+    const lk = (token: string) => ({ url: 'wss://x', token });
+    /** Розмова з Оленою (c1) і другий вхідний від Андрія (c2). */
+    async function talking() {
+      const t = setup();
+      await t.store.call(olena.userId);
+      t.send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: 1, livekit: lk('t1') }) });
+      t.send({
+        v: V,
+        type: 'call.incoming',
+        call: info({ callId: 'c2', direction: 'in', peer: andriy, waiting: true }),
+      });
+      return t;
+    }
+    const connectC2 = (t: Awaited<ReturnType<typeof talking>>) =>
+      t.send({
+        v: V,
+        type: 'call.connected',
+        call: info({
+          callId: 'c2',
+          direction: 'in',
+          peer: andriy,
+          state: 'connected',
+          startedAt: 2,
+          livekit: lk('t2'),
+        }),
+      });
+
+    it('rings quietly over the call instead of rejecting it', async () => {
+      const { store, request, deps } = await talking();
+      expect(store.waiting?.callId).toBe('c2');
+      expect(store.callId).toBe('c1');
+      expect(request).not.toHaveBeenCalledWith('call.reject', expect.anything());
+      expect(deps.sounds.play).toHaveBeenLastCalledWith('waiting', undefined);
+    });
+
+    it('holds the first call and takes the second one', async () => {
+      const t = await talking();
+      vi.mocked(t.deps.media.leave).mockClear();
+      t.store.acceptWaiting('hold');
+      expect(t.request).toHaveBeenCalledWith('call.accept', { callId: 'c2', action: 'hold' });
+      t.send({ v: V, type: 'call.updated', callId: 'c1', hold: true });
+      connectC2(t);
+      expect(t.store.waiting).toBeNull();
+      expect(t.store.callId).toBe('c2');
+      expect(t.store.hold).toBe(false);
+      expect(t.store.held?.callId).toBe('c1');
+      expect(t.deps.media.park).toHaveBeenCalled();
+      expect(t.deps.media.leave).not.toHaveBeenCalled();
+      expect(t.deps.media.join).toHaveBeenLastCalledWith(lk('t2'));
+    });
+
+    it('ends the first call without a result screen, whichever event comes first', async () => {
+      for (const endedFirst of [true, false]) {
+        const t = await talking();
+        t.store.acceptWaiting('end');
+        await Promise.resolve();
+        expect(t.request).toHaveBeenCalledWith('call.accept', { callId: 'c2', action: 'end' });
+        const ended = () => t.send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup' });
+        if (endedFirst) ended();
+        connectC2(t);
+        if (!endedFirst) ended();
+        expect(t.store.callId).toBe('c2');
+        expect(t.store.status).toBe('connected');
+        expect(t.store.missed).toBeNull();
+        expect(t.store.held).toBeNull();
+      }
+    });
+
+    it('declines the second call and keeps talking', async () => {
+      const { store, request, deps } = await talking();
+      store.rejectWaiting();
+      expect(request).toHaveBeenCalledWith('call.reject', { callId: 'c2' });
+      expect(store.waiting).toBeNull();
+      expect(store.callId).toBe('c1');
+      expect(deps.sounds.play).toHaveBeenLastCalledWith(null, undefined);
+    });
+
+    it('stops ringing when the caller gives up', async () => {
+      const { store, send } = await talking();
+      send({ v: V, type: 'call.ended', callId: 'c2', reason: 'timeout' });
+      expect(store.waiting).toBeNull();
+      expect(store.missed).toBeNull();
+      expect(store.callId).toBe('c1');
+    });
+
+    it('switches between the active and the held call', async () => {
+      const t = await talking();
+      t.store.acceptWaiting('hold');
+      connectC2(t);
+      t.store.swapHeld();
+      expect(t.request).toHaveBeenCalledWith('call.hold', { callId: 'c1', hold: false });
+      expect(t.deps.media.swap).toHaveBeenCalled();
+      expect(t.store.callId).toBe('c1');
+      expect(t.store.peer?.name).toBe('Олена');
+      expect(t.store.hold).toBe(false);
+      expect(t.store.held?.callId).toBe('c2');
+    });
+
+    it('brings the held call back on hold when the active one ends', async () => {
+      const t = await talking();
+      t.store.acceptWaiting('hold');
+      connectC2(t);
+      t.send({ v: V, type: 'call.ended', callId: 'c2', reason: 'hangup' });
+      expect(t.store.callId).toBe('c1');
+      expect(t.store.status).toBe('connected');
+      expect(t.store.hold).toBe(true);
+      expect(t.store.held).toBeNull();
+      expect(t.store.missed).toBeNull();
+    });
+
+    it('forgets the held call when its peer hangs up', async () => {
+      const t = await talking();
+      t.store.acceptWaiting('hold');
+      connectC2(t);
+      t.send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup' });
+      expect(t.store.held).toBeNull();
+      expect(t.deps.media.dropParked).toHaveBeenCalled();
+      expect(t.store.callId).toBe('c2');
+      expect(t.store.missed).toBeNull();
+    });
+
+    it('turns into a normal incoming call when the first call ends first', async () => {
+      const { store, send } = await talking();
+      send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup' });
+      send({ v: V, type: 'call.updated', callId: 'c2', waiting: false });
+      expect(store.waiting).toBeNull();
+      expect(store.status).toBe('incoming');
+      expect(store.callId).toBe('c2');
+    });
+
+    it('turns into a normal incoming call even when the update comes before the end', async () => {
+      const { store, send } = await talking();
+      send({ v: V, type: 'call.updated', callId: 'c2', waiting: false });
+      expect(store.waiting?.callId).toBe('c2');
+      send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup' });
+      expect(store.waiting).toBeNull();
+      expect(store.status).toBe('incoming');
+      expect(store.callId).toBe('c2');
+    });
+
+    it('restores both calls after a reload', () => {
+      const { store, send } = setup();
+      send({
+        v: V,
+        type: 'hello.ok',
+        reqId: 'h2',
+        user: { userId: 'me', name: 'Я' },
+        serverTime: Date.now(),
+        settings: { waiting: true, dnd: false },
+        contacts: [],
+        recents: [],
+        calls: [
+          info({ state: 'connected', hold: true, startedAt: 1 }),
+          info({ callId: 'c2', direction: 'in', peer: andriy, state: 'connected', startedAt: 2 }),
+        ],
+      });
+      expect(store.callId).toBe('c2');
+      expect(store.held?.callId).toBe('c1');
+    });
   });
 });

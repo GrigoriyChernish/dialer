@@ -8,8 +8,10 @@ import RoundButton from '@/shared/ui/RoundButton.vue';
 import SelfStatusChip, { type SelfStatus } from '@/shared/ui/SelfStatusChip.vue';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
 import VoiceWave from '@/shared/ui/VoiceWave.vue';
+import HeldCall from './HeldCall.vue';
 import Peer from './Peer.vue';
 import { useCallStore } from './store';
+import WaitingScreen from './WaitingScreen.vue';
 
 const { t } = useI18n();
 const call = useCallStore();
@@ -106,6 +108,9 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
     </div>
   </section>
 
+  <!-- другий вхідний під час розмови: на весь екран, розмова триває під ним -->
+  <WaitingScreen v-else-if="call.waiting" />
+
   <!-- дзвонимо / вхідний / розмова -->
   <section
     v-else
@@ -135,8 +140,15 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
         }}</span>
       </div>
     </header>
-    <!-- смужки-пігулки поверх екрана під шапкою (h-10 + 6), відступ 16 з боків, вміст не зсувають -->
-    <BannerStack v-if="connected" class="pointer-events-none absolute inset-x-4 top-[46px] z-20" :items="banners" />
+    <!-- утримуваний другий дзвінок (дизайн: Self Banner / held-call): у потоці, тож мініатюра себе зсувається під нього -->
+    <div v-if="connected && call.held" class="relative z-10 shrink-0 px-4 pt-1.5"><HeldCall /></div>
+    <!-- смужки-пігулки поверх екрана під шапкою (h-10 + 6, з утримуваним дзвінком ще + 46), відступ 16 з боків, вміст не зсувають -->
+    <BannerStack
+      v-if="connected"
+      class="pointer-events-none absolute inset-x-4 z-20"
+      :class="call.held ? 'top-[92px]' : 'top-[46px]'"
+      :items="banners"
+    />
     <!-- смужка співрозмовника внизу: над панеллю керування (відступ 40 + висота панелі 74 + проміжок 8) -->
     <BannerStack
       v-if="connected"
@@ -145,19 +157,17 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
     />
 
     <div class="relative flex min-h-0 flex-1 flex-col">
-      <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); без камери їх не показуємо -->
-      <template v-if="connected && !call.camBlocked">
+      <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); камери немає чи її вимкнули — їх не показуємо -->
+      <template v-if="connected && !call.camBlocked && call.cam">
         <button
           v-if="!call.selfHidden"
           type="button"
           :aria-label="t('call.hideSelf')"
-          class="absolute right-4 top-8 z-10 grid h-[122px] w-[92px] cursor-pointer place-items-center overflow-hidden rounded-2xl border border-line bg-pip text-[13px] text-mute transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 active:scale-[0.98]"
+          class="absolute right-4 top-8 z-10 grid h-[122px] w-[92px] cursor-pointer place-items-center overflow-hidden rounded-2xl border border-line bg-pip transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 active:scale-[0.98]"
           :class="selfVideo && 'shadow-[0_10px_24px_#00000066]'"
           @click="call.selfHidden = true"
         >
           <VideoSurface v-if="selfVideo" kind="local" :track="selfVideo" class="absolute inset-0" />
-          <span v-if="!call.cam || call.hold" class="px-1 text-xs">{{ t('call.camOff') }}</span>
-          <span v-else class="relative" :class="selfVideo && 'text-fg drop-shadow'">{{ t('call.you') }}</span>
         </button>
         <button
           v-else

@@ -17,14 +17,22 @@ export interface LinkState {
   camError: boolean;
 }
 
-/** Обгортка над livekit-client: аудіо розмови. Мікрофон і приглушення співрозмовника керуються ззовні. */
+/** Підключення до однієї кімнати: свої елементи аудіо й відео співрозмовника. */
+interface Session {
+  room: Room;
+  els: HTMLMediaElement[];
+  remoteVideo?: RemoteTrack;
+}
+
+/**
+ * Обгортка над livekit-client: аудіо й відео розмови. Мікрофон і приглушення співрозмовника керуються ззовні.
+ * Утримуваний другий дзвінок (`park`) лишається в своїй кімнаті, але мовчить: не чуємо його й не надсилаємо нічого (docs/signaling.md, «Медіа»).
+ */
 export class CallMedia {
-  private room?: Room;
-  private els: HTMLMediaElement[] = [];
-  private gen = 0;
+  private cur?: Session;
+  private parked?: Session;
   private micOn = true;
   private camOn = true;
-  private remoteVideo?: RemoteTrack;
   private deaf = false;
   private listeners = new Set<(patch: Partial<LinkState>) => void>();
 
@@ -55,60 +63,62 @@ export class CallMedia {
 
   async join(access: LiveKitAccess) {
     this.leave();
-    const gen = this.gen;
-    const room = (this.room = new Room());
+    const s: Session = { room: new Room(), els: [] };
+    this.cur = s;
+    const room = s.room;
+    // події утримуваної кімнати не показуємо: стан зв'язку належить поточній розмові
+    const emit = (patch: Partial<LinkState>) => s === this.cur && this.emit(patch);
     room.on(RoomEvent.TrackSubscribed, (t: RemoteTrack) => {
       if (t.kind === 'video') {
-        this.remoteVideo = t;
-        this.emit({ peerCam: true });
+        s.remoteVideo = t;
+        emit({ peerCam: true });
         return;
       }
       if (t.kind !== 'audio') return;
       const el = t.attach();
-      el.muted = this.deaf;
+      el.muted = s !== this.cur || this.deaf;
       document.body.append(el);
-      this.els.push(el);
+      s.els.push(el);
     });
     room.on(RoomEvent.TrackUnsubscribed, (t: RemoteTrack) => {
       if (t.kind === 'video') {
         t.detach();
-        this.remoteVideo = undefined;
-        this.emit({ peerCam: false });
+        s.remoteVideo = undefined;
+        emit({ peerCam: false });
         return;
       }
       t.detach().forEach(el => {
         el.remove();
-        this.els = this.els.filter(x => x !== el);
+        s.els = s.els.filter(x => x !== el);
       });
     });
-    room.on(RoomEvent.LocalTrackPublished, pub => pub.source === Track.Source.Camera && this.emit({ localCam: true }));
-    room.on(
-      RoomEvent.LocalTrackUnpublished,
-      pub => pub.source === Track.Source.Camera && this.emit({ localCam: false }),
-    );
-    room.on(RoomEvent.Reconnecting, () => this.emit({ reconnecting: true }));
-    room.on(RoomEvent.Reconnected, () => this.emit({ reconnecting: false }));
+    room.on(RoomEvent.LocalTrackPublished, pub => pub.source === Track.Source.Camera && emit({ localCam: true }));
+    room.on(RoomEvent.LocalTrackUnpublished, pub => pub.source === Track.Source.Camera && emit({ localCam: false }));
+    room.on(RoomEvent.Reconnecting, () => emit({ reconnecting: true }));
+    room.on(RoomEvent.Reconnected, () => emit({ reconnecting: false }));
     room.on(
       RoomEvent.ConnectionQualityChanged,
-      (q, p) => p.isLocal && this.emit({ poor: q === ConnectionQuality.Poor || q === ConnectionQuality.Lost }),
+      (q, p) => p.isLocal && emit({ poor: q === ConnectionQuality.Poor || q === ConnectionQuality.Lost }),
     );
-    room.on(RoomEvent.ParticipantDisconnected, () => this.emit({ peerAway: true }));
-    room.on(RoomEvent.ParticipantConnected, () => this.emit({ peerAway: false }));
+    room.on(RoomEvent.ParticipantDisconnected, () => emit({ peerAway: true }));
+    room.on(RoomEvent.ParticipantConnected, () => emit({ peerAway: false }));
     room.on(RoomEvent.TrackMuted, (pub, p) => {
       if (p.isLocal) return;
-      if (pub.source === Track.Source.Microphone) this.emit({ peerMuted: true });
-      if (pub.source === Track.Source.Camera) this.emit({ peerCam: false });
+      if (pub.source === Track.Source.Microphone) emit({ peerMuted: true });
+      if (pub.source === Track.Source.Camera) emit({ peerCam: false });
     });
     room.on(RoomEvent.TrackUnmuted, (pub, p) => {
       if (p.isLocal) return;
-      if (pub.source === Track.Source.Microphone) this.emit({ peerMuted: false });
-      if (pub.source === Track.Source.Camera) this.emit({ peerCam: true });
+      if (pub.source === Track.Source.Microphone) emit({ peerMuted: false });
+      if (pub.source === Track.Source.Camera) emit({ peerCam: true });
     });
     try {
       await room.connect(access.url, access.token);
-      if (gen !== this.gen) return void room.disconnect();
+      // поки підключались, дзвінок завершили; якщо його лише утримали (park), кімната лишається
+      if (s !== this.cur && s !== this.parked) return void room.disconnect();
       await room.startAudio();
-      this.apply();
+      if (s === this.cur) this.apply();
+      else this.silence(s);
     } catch (e) {
       console.warn('livekit', e);
     }
@@ -128,8 +138,8 @@ export class CallMedia {
   attach(kind: 'local' | 'remote', el: HTMLVideoElement) {
     const track =
       kind === 'remote'
-        ? this.remoteVideo
-        : this.room?.localParticipant.getTrackPublication(Track.Source.Camera)?.videoTrack;
+        ? this.cur?.remoteVideo
+        : this.cur?.room.localParticipant.getTrackPublication(Track.Source.Camera)?.videoTrack;
     track?.attach(el);
   }
 
@@ -139,20 +149,56 @@ export class CallMedia {
     this.apply();
   }
 
+  /** Поточна розмова стає утримуваною: кімната лишається, але мовчить. Наступний `join` підключає новий дзвінок. */
+  park() {
+    if (!this.cur) return;
+    this.dropParked();
+    this.parked = this.cur;
+    this.cur = undefined;
+    this.silence(this.parked);
+  }
+
+  /** Міняє місцями поточну й утримувану кімнати. `false`, якщо утримуваної немає (наприклад, після перезавантаження). */
+  swap() {
+    if (!this.parked) return false;
+    [this.cur, this.parked] = [this.parked, this.cur];
+    if (this.parked) this.silence(this.parked);
+    this.emit({ peerCam: !!this.cur?.remoteVideo, peerAway: false, peerMuted: false });
+    this.apply();
+    return true;
+  }
+
+  /** Утримуваний дзвінок завершився. */
+  dropParked() {
+    if (this.parked) this.close(this.parked);
+    this.parked = undefined;
+  }
+
+  /** Завершує поточну розмову; утримувана лишається. */
   leave() {
-    this.gen++;
-    this.room?.disconnect();
-    this.room = undefined;
-    this.remoteVideo = undefined;
-    this.els.forEach(el => el.remove());
-    this.els = [];
+    if (this.cur) this.close(this.cur);
+    this.cur = undefined;
+  }
+
+  private close(s: Session) {
+    s.room.disconnect();
+    s.els.forEach(el => el.remove());
+    s.els = [];
+    s.remoteVideo = undefined;
+  }
+
+  private silence(s: Session) {
+    const lp = s.room.localParticipant;
+    void lp.setMicrophoneEnabled(false).catch(() => {});
+    void lp.setCameraEnabled(false).catch(() => {});
+    s.els.forEach(el => (el.muted = true));
   }
 
   private apply() {
-    const lp = this.room?.localParticipant;
+    const lp = this.cur?.room.localParticipant;
     const wantMic = this.micOn && !this.deaf;
     void lp?.setMicrophoneEnabled(wantMic).catch(() => wantMic && this.emit({ micError: true }));
     void lp?.setCameraEnabled(this.camOn && !this.deaf).catch(() => this.emit({ camError: true }));
-    this.els.forEach(el => (el.muted = this.deaf));
+    this.cur?.els.forEach(el => (el.muted = this.deaf));
   }
 }

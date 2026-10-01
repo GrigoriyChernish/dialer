@@ -1,4 +1,4 @@
-export type SoundKind = 'ringback' | 'busy' | 'ringtone' | 'hold';
+export type SoundKind = 'ringback' | 'busy' | 'ringtone' | 'hold' | 'waiting';
 
 let ctx: AudioContext | undefined;
 const audio = () => {
@@ -34,6 +34,12 @@ const MAKE: Record<SoundKind, () => () => void> = {
     loop(2.2, () => {
       const t = audio().currentTime;
       [659, 523, 659, 784].forEach((f, i) => note(f, t + i * 0.18, 0.16, 'triangle', 0.2));
+    }),
+  // другий вхідний під час розмови: два тихі короткі сигнали, щоб не заглушати співрозмовника
+  waiting: () =>
+    loop(3, () => {
+      const t = audio().currentTime;
+      [0, 0.3].forEach(d => note(440, t + d, 0.15, 'sine', 0.1));
     }),
   hold: () =>
     loop(2, () => {

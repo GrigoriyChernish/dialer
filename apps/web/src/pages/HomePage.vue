@@ -29,9 +29,13 @@ const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
 <template>
   <div class="flex h-full flex-col gap-3 px-4 pb-6 pt-1">
     <Card class="flex shrink-0 items-center gap-3 py-3 pl-4 pr-3">
-      <!-- ім'я одним рядком, задовге обрізається з «…» -->
-      <h1 class="min-w-0 flex-1 truncate text-lg font-bold">{{ call.me?.name }}</h1>
+      <!-- ім'я одним рядком, задовге обрізається з «…»; до першого hello.ok смужка-заготовка, а мітки присутності немає (дизайн: Home Header / loading) -->
+      <h1 v-if="call.ready" class="min-w-0 flex-1 truncate text-lg font-bold">{{ call.me?.name }}</h1>
+      <span v-else class="flex h-6 flex-1 animate-pulse items-center" aria-hidden="true"
+        ><i class="h-3.5 w-[140px] rounded-full bg-surface"
+      /></span>
       <span
+        v-if="call.ready"
         class="flex shrink-0 items-center gap-1.5 rounded-full py-[3px] pl-2 pr-2.5 text-xs font-medium"
         :class="call.busySelf ? 'bg-call-bad/15 text-call-bad' : 'bg-call-ok/15 text-call-ok'"
         role="status"

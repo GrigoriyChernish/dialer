@@ -789,6 +789,7 @@
               "type": "frame",
               "id": "BEE1F",
               "name": "Self View",
+              "context": "Наше відео. Показуємо лише коли камера ввімкнена: вимкнули камеру самі чи камери немає — мініатюри й кнопки Show Self немає, про стан каже значок Self Status у шапці.",
               "reusable": true,
               "clip": true,
               "width": 92,
@@ -798,32 +799,7 @@
               "stroke": "$line",
               "strokeWidth": 1,
               "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "gnnBB",
-                  "name": "Label",
-                  "fill": "$mute",
-                  "content": "Ви",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "icon",
-                  "id": "XgWNV",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Camera Off Icon",
-                  "enabled": false,
-                  "width": 22,
-                  "height": 22,
-                  "icon": "video-off",
-                  "library": "lucide",
-                  "fill": "$mute"
-                }
-              ]
+              "alignItems": "center"
             },
             {
               "type": "frame",
@@ -1689,6 +1665,23 @@
                   "fontFamily": "Inter",
                   "fontSize": 16,
                   "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "yfdH9",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Caption",
+                  "enabled": false,
+                  "fill": "$mute",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container(0)",
+                  "content": "Підключаємось…",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -1755,6 +1748,92 @@
                       "icon": "search"
                     }
                   }
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "DjTwi",
+              "name": "Contact Row / skeleton",
+              "context": "Рядок-заготовка, поки контакти не прийшли з сервера. Фігури surface-2, пульсують (opacity 1 → 0.5 → 1, 2 с, як animate-pulse); при prefers-reduced-motion без анімації. Не клікабельний.",
+              "reusable": true,
+              "width": 342,
+              "height": 70,
+              "cornerRadius": "$radius-lg",
+              "gap": 14,
+              "padding": [
+                11,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "K4k0m",
+                  "name": "Avatar",
+                  "fill": "$surface-2",
+                  "width": 48,
+                  "height": 48
+                },
+                {
+                  "type": "frame",
+                  "id": "oPJJQ",
+                  "name": "Meta",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 6,
+                      "id": "LGtL6",
+                      "name": "Name",
+                      "fill": "$surface-2",
+                      "width": 132,
+                      "height": 12
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 5,
+                      "id": "kNNcB",
+                      "name": "Status",
+                      "fill": "$surface-2",
+                      "width": 88,
+                      "height": 10
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "SmkWd",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n0Hx1o",
+              "name": "Home Header / loading",
+              "descendants": {
+                "a8EXK": {
+                  "type": "frame",
+                  "id": "rMSMu",
+                  "name": "Name",
+                  "context": "Ім'я ще не прийшло з сервера: смужка-заготовка замість тексту.",
+                  "width": "fill_container",
+                  "height": 24,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 7,
+                      "id": "MJsMI",
+                      "name": "Name Bar",
+                      "fill": "$surface-2",
+                      "width": 140,
+                      "height": 14
+                    }
+                  ]
+                },
+                "X5MCNP": {
+                  "enabled": false
                 }
               }
             }
@@ -2442,6 +2521,249 @@
                   "content": "Мікрофон недоступний"
                 }
               }
+            },
+            {
+              "id": "QUNgl",
+              "type": "ref",
+              "reusable": true,
+              "ref": "Feodh",
+              "name": "Self Banner / active-call",
+              "context": "Над другим вхідним (Incoming · waiting): з ким триває розмова й скільки. Тон ok.",
+              "fill": [
+                {
+                  "type": "gradient",
+                  "gradientType": "linear",
+                  "enabled": true,
+                  "rotation": 270,
+                  "size": {
+                    "height": 1
+                  },
+                  "colors": [
+                    {
+                      "color": "$scrim",
+                      "position": 0
+                    },
+                    {
+                      "color": "$scrim-mid",
+                      "position": 0.65
+                    },
+                    {
+                      "color": "$scrim-clear",
+                      "position": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "gradient",
+                  "gradientType": "linear",
+                  "enabled": true,
+                  "rotation": 270,
+                  "size": {
+                    "height": 1
+                  },
+                  "colors": [
+                    {
+                      "color": "$ok-badge",
+                      "position": 0
+                    },
+                    {
+                      "color": "$ok-faint",
+                      "position": 0.6
+                    },
+                    {
+                      "color": "$ok-clear",
+                      "position": 1
+                    }
+                  ]
+                }
+              ],
+              "stroke": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 270,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "$ok-edge",
+                    "position": 0
+                  },
+                  {
+                    "color": "$ok-badge",
+                    "position": 0.6
+                  },
+                  {
+                    "color": "$ok-clear",
+                    "position": 1
+                  }
+                ]
+              },
+              "descendants": {
+                "yoVcD": {
+                  "fill": "$ok-badge"
+                },
+                "s1KBV": {
+                  "icon": "phone",
+                  "fill": "$ok"
+                },
+                "W4Fv08": {
+                  "content": "Олена Коваль · 02:14"
+                }
+              }
+            },
+            {
+              "id": "B2VOUE",
+              "type": "ref",
+              "reusable": true,
+              "ref": "Feodh",
+              "name": "Self Banner / held-call",
+              "fill": [
+                {
+                  "type": "gradient",
+                  "gradientType": "linear",
+                  "enabled": true,
+                  "rotation": 270,
+                  "size": {
+                    "height": 1
+                  },
+                  "colors": [
+                    {
+                      "color": "$scrim",
+                      "position": 0
+                    },
+                    {
+                      "color": "$scrim-mid",
+                      "position": 0.65
+                    },
+                    {
+                      "color": "$scrim-clear",
+                      "position": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "gradient",
+                  "gradientType": "linear",
+                  "enabled": true,
+                  "rotation": 270,
+                  "size": {
+                    "height": 1
+                  },
+                  "colors": [
+                    {
+                      "color": "$warn-soft",
+                      "position": 0
+                    },
+                    {
+                      "color": "$warn-faint",
+                      "position": 0.6
+                    },
+                    {
+                      "color": "$warn-clear",
+                      "position": 1
+                    }
+                  ]
+                }
+              ],
+              "stroke": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 270,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "$warn-edge",
+                    "position": 0
+                  },
+                  {
+                    "color": "$warn-soft",
+                    "position": 0.6
+                  },
+                  {
+                    "color": "$warn-clear",
+                    "position": 1
+                  }
+                ]
+              },
+              "padding": [
+                8,
+                8,
+                8,
+                10
+              ],
+              "context": "Утримуваний дзвінок під шапкою розмови (у потоці: зсуває мініатюру себе, решта смужок нижче). Кнопка-іконка «Перемкнути» (aria-label «Перемкнутися на {ім'я}»): call.hold { hold: false } для утримуваного, поточна розмова стає утримуваною.",
+              "descendants": {
+                "yoVcD": {
+                  "fill": "$warn-soft"
+                },
+                "s1KBV": {
+                  "icon": "pause",
+                  "fill": "$warn"
+                },
+                "W4Fv08": {
+                  "type": "frame",
+                  "id": "wpdla",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "c2YAgn",
+                      "name": "Label",
+                      "fill": "$fg",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Олена Коваль · 02:14",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "olB3B",
+                      "name": "Switch Button",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "$warn-soft",
+                      "cornerRadius": 999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "NdYG6",
+                          "name": "Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "arrow-left-right",
+                          "library": "lucide",
+                          "fill": "$warn"
+                        },
+                        {
+                          "type": "text",
+                          "id": "bguYS",
+                          "x": 32,
+                          "y": 7,
+                          "name": "Switch Label",
+                          "enabled": false,
+                          "fill": "$fg",
+                          "content": "Перемкнути",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
             }
           ]
         },
@@ -2757,7 +3079,7 @@
           "id": "sYh3i",
           "name": "Note",
           "fill": "$mute",
-          "content": "Порожній список: картку не показуємо, замість неї Empty State по центру тіла. Пошук без результатів: поле лишається, під ним Empty State.",
+          "content": "Порожній список: картку не показуємо, замість неї Empty State по центру тіла. Пошук без результатів: поле лишається, під ним Empty State. Перше завантаження (до hello.ok): заготовка з рядків Contact Row / skeleton і Home Header / loading; без зв'язку довше 3 с — Empty State з підписом.",
           "fontFamily": "Inter",
           "fontSize": 12,
           "fontWeight": "normal"
@@ -4251,6 +4573,501 @@
                   "ref": "yDYF0",
                   "name": "Tab Bar",
                   "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cLV9y",
+              "name": "Home · Contacts · loading",
+              "context": "Перше завантаження: до hello.ok. Показуємо через 300 мс, щоб не блимало. Мітки присутності й лічильника пропущених немає, поки стан невідомий.",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "SqCA2",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar"
+                },
+                {
+                  "id": "S2K4y",
+                  "type": "ref",
+                  "ref": "SmkWd",
+                  "name": "Home Header"
+                },
+                {
+                  "type": "frame",
+                  "id": "C6z6wL",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "OOHfJ",
+                      "type": "ref",
+                      "ref": "aEP8Q",
+                      "name": "Contact List",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "clip": true,
+                      "descendants": {
+                        "CMBt4": {
+                          "type": "frame",
+                          "id": "p3WGCS",
+                          "name": "Content",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "id": "LvFqG",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 1",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 132
+                                },
+                                "kNNcB": {
+                                  "width": 88
+                                }
+                              }
+                            },
+                            {
+                              "id": "N2jyN",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 2",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 108
+                                },
+                                "kNNcB": {
+                                  "width": 120
+                                }
+                              }
+                            },
+                            {
+                              "id": "PLnqh",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 3",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 150
+                                },
+                                "kNNcB": {
+                                  "width": 72
+                                }
+                              }
+                            },
+                            {
+                              "id": "qIXpW",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 4",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 120
+                                },
+                                "kNNcB": {
+                                  "width": 96
+                                }
+                              }
+                            },
+                            {
+                              "id": "DAZgT",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 5",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 96
+                                },
+                                "kNNcB": {
+                                  "width": 110
+                                }
+                              }
+                            },
+                            {
+                              "id": "U4EGXu",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 6",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 140
+                                },
+                                "kNNcB": {
+                                  "width": 80
+                                }
+                              }
+                            },
+                            {
+                              "id": "lVoxq",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 7",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 116
+                                },
+                                "kNNcB": {
+                                  "width": 100
+                                }
+                              }
+                            },
+                            {
+                              "id": "sm1ig",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 8",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 128
+                                },
+                                "kNNcB": {
+                                  "width": 90
+                                }
+                              }
+                            },
+                            {
+                              "id": "WgJu4",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 9",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 104
+                                },
+                                "kNNcB": {
+                                  "width": 76
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "QHQxn",
+                  "type": "ref",
+                  "ref": "dPLmV",
+                  "name": "Tab Bar",
+                  "descendants": {
+                    "rK0hn/b8kpR": {
+                      "enabled": false
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bshIE",
+              "name": "Home · Missed · loading",
+              "context": "Перше завантаження вкладки «Пропущені»: та сама заготовка, що й у контактах.",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "iDesA",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar"
+                },
+                {
+                  "id": "eZw8K",
+                  "type": "ref",
+                  "ref": "SmkWd",
+                  "name": "Home Header"
+                },
+                {
+                  "type": "frame",
+                  "id": "Ftivj",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "F6YW7",
+                      "type": "ref",
+                      "ref": "aEP8Q",
+                      "name": "History",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "clip": true,
+                      "padding": [
+                        14,
+                        12,
+                        10,
+                        12
+                      ],
+                      "descendants": {
+                        "CMBt4": {
+                          "type": "frame",
+                          "id": "nsdmB",
+                          "name": "Content",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "id": "FZ0Of",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 1",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 132
+                                },
+                                "kNNcB": {
+                                  "width": 88
+                                }
+                              }
+                            },
+                            {
+                              "id": "L22Ld",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 2",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 108
+                                },
+                                "kNNcB": {
+                                  "width": 120
+                                }
+                              }
+                            },
+                            {
+                              "id": "Yubnd",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 3",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 150
+                                },
+                                "kNNcB": {
+                                  "width": 72
+                                }
+                              }
+                            },
+                            {
+                              "id": "nNaAa",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 4",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 120
+                                },
+                                "kNNcB": {
+                                  "width": 96
+                                }
+                              }
+                            },
+                            {
+                              "id": "WPog6",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 5",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 96
+                                },
+                                "kNNcB": {
+                                  "width": 110
+                                }
+                              }
+                            },
+                            {
+                              "id": "dyl7w",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 6",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 140
+                                },
+                                "kNNcB": {
+                                  "width": 80
+                                }
+                              }
+                            },
+                            {
+                              "id": "e2ubQY",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 7",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 116
+                                },
+                                "kNNcB": {
+                                  "width": 100
+                                }
+                              }
+                            },
+                            {
+                              "id": "W4ykjC",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 8",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 128
+                                },
+                                "kNNcB": {
+                                  "width": 90
+                                }
+                              }
+                            },
+                            {
+                              "id": "XGuXR",
+                              "type": "ref",
+                              "ref": "DjTwi",
+                              "name": "Skeleton 9",
+                              "width": "fill_container",
+                              "descendants": {
+                                "LGtL6": {
+                                  "width": 104
+                                },
+                                "kNNcB": {
+                                  "width": 76
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "c2n1F7",
+                  "type": "ref",
+                  "ref": "RqHiy",
+                  "name": "Tab Bar"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "w1IXPd",
+              "name": "Home · Contacts · offline",
+              "context": "Перше завантаження, а зв'язку з сервером немає довше 3 с. Замість заготовки Empty State; клієнт сам перепідключається, підпис показує помилку, якщо вона є. Коли дані вже були, показуємо їх далі (пункт 19 беклогу).",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "ns5jL",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar"
+                },
+                {
+                  "id": "yiKuQ",
+                  "type": "ref",
+                  "ref": "SmkWd",
+                  "name": "Home Header"
+                },
+                {
+                  "type": "frame",
+                  "id": "ZKVbq",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    80,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "l62uDC",
+                      "type": "ref",
+                      "ref": "Uz2w8",
+                      "name": "Empty State",
+                      "width": "fill_container",
+                      "descendants": {
+                        "b1vBa": {
+                          "icon": "wifi-off"
+                        },
+                        "S2DMy": {
+                          "content": "Немає зв'язку з сервером"
+                        },
+                        "yfdH9": {
+                          "enabled": true
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "sf68g",
+                  "type": "ref",
+                  "ref": "dPLmV",
+                  "name": "Tab Bar",
+                  "descendants": {
+                    "rK0hn/b8kpR": {
+                      "enabled": false
+                    }
+                  }
                 }
               ]
             }
@@ -6262,23 +7079,6 @@
                       ]
                     }
                   ]
-                },
-                {
-                  "id": "IACjP",
-                  "type": "ref",
-                  "ref": "BEE1F",
-                  "name": "Self View",
-                  "layoutPosition": "absolute",
-                  "x": 267,
-                  "y": 134,
-                  "descendants": {
-                    "gnnBB": {
-                      "enabled": false
-                    },
-                    "XgWNV": {
-                      "enabled": true
-                    }
-                  }
                 }
               ]
             },
@@ -6444,23 +7244,6 @@
                       ]
                     }
                   ]
-                },
-                {
-                  "id": "ERDos",
-                  "type": "ref",
-                  "ref": "BEE1F",
-                  "name": "Self View",
-                  "layoutPosition": "absolute",
-                  "x": 267,
-                  "y": 134,
-                  "descendants": {
-                    "gnnBB": {
-                      "enabled": false
-                    },
-                    "XgWNV": {
-                      "enabled": true
-                    }
-                  }
                 }
               ]
             },
@@ -7513,11 +8296,6 @@
                       "y": 10
                     },
                     "blur": 24
-                  },
-                  "descendants": {
-                    "gnnBB": {
-                      "enabled": false
-                    }
                   }
                 }
               ]
@@ -7720,11 +8498,6 @@
                       "y": 10
                     },
                     "blur": 24
-                  },
-                  "descendants": {
-                    "gnnBB": {
-                      "enabled": false
-                    }
                   }
                 },
                 {
@@ -9264,6 +10037,445 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "Xpa04",
+      "x": 0,
+      "y": 10100,
+      "name": "Flow · Call waiting",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "RAdax",
+          "name": "Title",
+          "fill": "$mute",
+          "content": "Flow · Call waiting",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "SbMnP",
+          "name": "Note",
+          "fill": "$mute",
+          "content": "Другий вхідний під час розмови (docs/signaling.md). Три дії: Відхилити (call.reject), Утримати й прийняти (call.accept action: hold), Завершити й прийняти (action: end). Згори Self Banner / active-call (поточна розмова), після утримання — Self Banner / held-call під шапкою.",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "O8TvB",
+          "name": "Screens",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "VWilH",
+              "name": "Incoming · waiting",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "HzFv4",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "oY8F6",
+                  "name": "Active Call",
+                  "width": "fill_container",
+                  "padding": [
+                    8,
+                    16,
+                    0,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "id": "wGVCz",
+                      "type": "ref",
+                      "ref": "QUNgl",
+                      "name": "Active Call Banner",
+                      "width": "fill_container"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TruCj",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "P3R6u",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        110,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "bh03P",
+                          "type": "ref",
+                          "ref": "b76euv",
+                          "name": "Peer",
+                          "descendants": {
+                            "wBaK6": {
+                              "fill": "$accent-ring-outer"
+                            },
+                            "wBaK6/XBC2T": {
+                              "fill": "$accent-ring-inner"
+                            },
+                            "wBaK6/jbPVz": {
+                              "content": "АМ"
+                            },
+                            "kcNR8": {
+                              "content": "Андрій Мельник"
+                            },
+                            "fAYS0": {
+                              "children": [
+                                {
+                                  "id": "uPym2",
+                                  "type": "ref",
+                                  "ref": "d5Zxq",
+                                  "name": "Call Label",
+                                  "descendants": {
+                                    "TXH07": {
+                                      "icon": "phone-incoming"
+                                    },
+                                    "J7oIrS": {
+                                      "content": "ВХІДНИЙ ВИКЛИК"
+                                    },
+                                    "pzOFN": {
+                                      "content": "Залишилось 00:52"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KmaeT",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "gap": 20,
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "KQQw2",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Decline",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "Gw4Ma",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Decline Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "enabled": false,
+                              "content": "Відхилити",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container(88)",
+                              "textAlign": "center",
+                              "lineHeight": 1.3
+                            }
+                          }
+                        },
+                        {
+                          "id": "Y74DYi",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Hold & Accept",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "cOanT",
+                              "type": "ref",
+                              "ref": "Yk8rH",
+                              "name": "Hold & Accept Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "pause"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "enabled": false,
+                              "content": "Утримати й прийняти",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container(88)",
+                              "textAlign": "center",
+                              "lineHeight": 1.3,
+                              "name": "Label"
+                            }
+                          }
+                        },
+                        {
+                          "id": "E44bz",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "End & Accept",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "T9NimF",
+                              "type": "ref",
+                              "ref": "Yk8rH",
+                              "name": "End & Accept Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "phone-off"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "enabled": false,
+                              "content": "Завершити й прийняти",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container(88)",
+                              "textAlign": "center",
+                              "lineHeight": 1.3
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xdqAO",
+              "name": "In Call · held call",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "wj83k",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "pHW2I",
+                  "type": "ref",
+                  "ref": "dCVmN",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "P6ptR9": {
+                      "content": "Андрій Мельник"
+                    },
+                    "Lm6Lv": {
+                      "content": "00:05"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "bpy6w",
+                  "name": "Held",
+                  "width": "fill_container",
+                  "padding": [
+                    6,
+                    16,
+                    0,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "sOMiO",
+                      "type": "ref",
+                      "ref": "B2VOUE",
+                      "name": "Held Call Banner",
+                      "width": "fill_container"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "BaFQi",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "H6mbqf",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        64,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "d2cscR",
+                          "type": "ref",
+                          "ref": "b76euv",
+                          "name": "Peer",
+                          "descendants": {
+                            "wBaK6/jbPVz": {
+                              "content": "АМ"
+                            },
+                            "kcNR8": {
+                              "content": "Андрій Мельник"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bWd8x",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "iziAf",
+                          "type": "ref",
+                          "ref": "zKP5v",
+                          "name": "Controls Pill",
+                          "descendants": {
+                            "iSBAx": {
+                              "fill": "$surface-3"
+                            },
+                            "iSBAx/gcrxy": {
+                              "icon": "mic"
+                            },
+                            "G51U2F": {
+                              "fill": "$surface-3"
+                            },
+                            "G51U2F/gcrxy": {
+                              "icon": "video"
+                            },
+                            "G0zgSx": {
+                              "fill": "$surface-3"
+                            },
+                            "G0zgSx/gcrxy": {
+                              "icon": "pause"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "x5dHf5",
+                  "type": "ref",
+                  "ref": "BEE1F",
+                  "name": "Self View",
+                  "layoutPosition": "absolute",
+                  "x": 267,
+                  "y": 180
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
@@ -9534,6 +10746,22 @@
     "space-4xl": {
       "type": "number",
       "value": 40
+    },
+    "ok-badge": {
+      "type": "color",
+      "value": "#22C55E33"
+    },
+    "ok-faint": {
+      "type": "color",
+      "value": "#22C55E1A"
+    },
+    "ok-edge": {
+      "type": "color",
+      "value": "#22C55E66"
+    },
+    "ok-clear": {
+      "type": "color",
+      "value": "#22C55E00"
     }
   },
   "fileToken": "8dbbdd0a-a14f-400d-a6f9-149ce907ef90"

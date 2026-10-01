@@ -6,16 +6,18 @@ import Icon, { type IconName } from './Icon.vue';
  * вони лише задають тон, іконку й текст. Нові види смужок додаються так само, власного вигляду не мають.
  *
  * Смужка лежить поверх екрана (абсолютна позиція, її задає BannerStack) і не зсуває вміст.
+ * Слот `action`: кнопка праворуч (Self Banner / held-call); вона, на відміну від смужки, клікабельна, а правий відступ 8.
  * Вигляд: радіус 20; підкладка `bg` (85% → 60% → 0), градієнт тону (20% → 10% → 0) і тонка рамка (40% → 20% → 0)
  * розчиняються вправо, тож праворуч видно екран під смужкою, а текст зліва лишається на щільному тлі.
  */
-export type BannerTone = 'warn' | 'accent' | 'bad' | 'neutral';
+export type BannerTone = 'warn' | 'accent' | 'bad' | 'ok' | 'neutral';
 defineProps<{ tone: BannerTone; icon: IconName; spin?: boolean }>();
 
 const BADGE = {
   warn: 'bg-warn/20 text-warn',
   accent: 'bg-accent/20 text-accent-icon',
   bad: 'bg-call-bad/20 text-call-bad',
+  ok: 'bg-call-ok/20 text-call-ok',
   neutral: 'bg-mute/20 text-mute',
 } as const;
 </script>
@@ -23,11 +25,16 @@ const BADGE = {
 <template>
   <!-- нижній відступ 8 лежить у корені: проміжок між смужками анімується разом із ними -->
   <div class="pointer-events-none overflow-hidden pb-2" role="status">
-    <div class="banner flex items-center gap-2.5 py-2 pl-2.5 pr-3.5 text-[13px] font-semibold" :class="tone">
+    <div
+      class="banner flex items-center gap-2.5 py-2 pl-2.5 text-[13px] font-semibold"
+      :class="[tone, $slots.action ? 'pr-2' : 'pr-3.5']"
+    >
       <span class="grid size-6 shrink-0 place-items-center rounded-full" :class="BADGE[tone]">
         <Icon :name="icon" class="size-3.5" :class="spin && 'motion-safe:animate-spin'" />
       </span>
-      <span><slot /></span>
+      <!-- з кнопкою текст в один рядок, щоб вона не з'їжджала; без неї переноситься як раніше -->
+      <span class="min-w-0 flex-1" :class="$slots.action && 'truncate'"><slot /></span>
+      <span v-if="$slots.action" class="pointer-events-auto shrink-0"><slot name="action" /></span>
     </div>
   </div>
 </template>
@@ -60,6 +67,9 @@ const BADGE = {
 }
 .banner.bad {
   --c: var(--color-call-bad);
+}
+.banner.ok {
+  --c: var(--color-call-ok);
 }
 .banner.neutral {
   --c: var(--mute);

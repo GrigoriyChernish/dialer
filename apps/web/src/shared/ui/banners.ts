@@ -15,6 +15,10 @@ const KINDS = {
   // Self Banner: наші пристрої
   cameraUnavailable: { tone: 'warn', icon: 'videoOff' },
   micUnavailable: { tone: 'warn', icon: 'micOff' },
+  // Self Banner: поточна розмова над другим вхідним (WaitingScreen)
+  activeCall: { tone: 'ok', icon: 'phone' },
+  // Self Banner: утримуваний дзвінок під шапкою (HeldCall, з кнопкою «Перемкнути»)
+  heldCall: { tone: 'warn', icon: 'pause' },
 } as const satisfies Record<string, Omit<BannerItem, 'id' | 'text'>>;
 
 export type BannerKind = keyof typeof KINDS;

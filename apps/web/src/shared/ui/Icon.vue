@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  ArrowLeftRight,
   ChevronLeft,
   CircleX,
   Loader,
@@ -26,6 +27,7 @@ import {
 // ті самі іконки lucide, що в design/dialer.pen
 const ICONS = {
   phone: Phone,
+  arrowLeftRight: ArrowLeftRight,
   phoneOutgoing: PhoneOutgoing,
   phoneIncoming: PhoneIncoming,
   phoneOff: PhoneOff,

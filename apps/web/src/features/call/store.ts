@@ -3,6 +3,7 @@ import {
   type CallInfo,
   type Contact,
   type EndReason,
+  type LiveKitAccess,
   type Peer,
   type RecentEntry,
   type ServerMessage,
@@ -34,8 +35,20 @@ export interface CallDeps {
     hasCamera?(): Promise<boolean>;
     hasMicrophone?(): Promise<boolean>;
     attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void;
+    park?(): void;
+    swap?(): boolean;
+    dropParked?(): void;
   };
   sounds: { play(kind: SoundKind | null, ms?: number): void };
+}
+
+/** Розмова, яку ми утримуємо, поки говоримо з іншим (після «Утримати й прийняти»). */
+export interface HeldCall {
+  callId: string;
+  peer: Peer;
+  startedAt: number;
+  peerHold: boolean;
+  livekit?: LiveKitAccess;
 }
 
 const HINT_MS = 4000;
@@ -65,6 +78,8 @@ export const useCallStore = defineStore('call', () => {
   let deps: CallDeps;
 
   const online = ref(false);
+  /** Перший `hello.ok` прийшов. Після обриву не скидається: старі дані показуємо, поки не прийде новий знімок. */
+  const ready = ref(false);
   const netError = ref('');
   const contacts = ref<Contact[]>([]);
   const me = ref<Peer | null>(null);
@@ -102,6 +117,12 @@ export const useCallStore = defineStore('call', () => {
   const hint = ref<'cam' | 'mic' | null>(null);
   let hintTimer: ReturnType<typeof setTimeout> | undefined;
   const missed = ref<{ peer: Peer; reason: MissedReason; note?: string; duration?: number } | null>(null);
+  /** Другий вхідний під час розмови (docs/signaling.md, «Другий вхідний під час розмови»). */
+  const waiting = ref<CallInfo | null>(null);
+  const held = ref<HeldCall | null>(null);
+  let livekit: LiveKitAccess | undefined;
+  /** Розмова, яку завершуємо самі через «Завершити й прийняти»: її кінець без екрана результату. */
+  let endingId: string | null = null;
   let endedTimer: ReturnType<typeof setTimeout> | undefined;
   const now = ref(Date.now());
   let offset = 0; // serverTime - локальний час
@@ -135,8 +156,14 @@ export const useCallStore = defineStore('call', () => {
     }
   }
 
-  function reset() {
-    deps.media.leave();
+  /** Звук із поправкою на другий вхідний: поки він дзвонить, замість тиші й мелодії утримання тихі сигнали очікування. */
+  function play(kind: SoundKind | null, ms?: number) {
+    deps.sounds.play(waiting.value && (kind === null || kind === 'hold') ? 'waiting' : kind, ms);
+  }
+
+  function reset(leaveMedia = true) {
+    if (leaveMedia) deps.media.leave();
+    livekit = undefined;
     status.value = 'idle';
     callId.value = null;
     peer.value = null;
@@ -164,33 +191,114 @@ export const useCallStore = defineStore('call', () => {
       startedAt.value = call.startedAt ?? Date.now() + offset;
       hold.value = !!call.hold;
       peerHold.value = !!call.peerHold;
-      deps.sounds.play(peerHold.value ? 'hold' : null);
-      deps.media.setDeaf(hold.value);
-      deps.media.setMic(mic.value);
-      deps.media.setCamera?.(cam.value);
-      void deps.media.hasCamera?.().then(ok => ok || blockCamera());
-      void deps.media.hasMicrophone?.().then(ok => ok || blockMic());
+      livekit = call.livekit;
+      enterConnected();
       if (call.livekit) void deps.media.join(call.livekit);
     } else if (call.direction === 'in') {
       status.value = 'incoming';
-      deps.sounds.play('ringtone');
+      play('ringtone');
     } else {
       status.value = 'ringing';
-      deps.sounds.play('ringback');
+      play('ringback');
     }
     syncTimer();
   }
 
+  /** Спільне для розмови, що почалась чи повернулась з утримання: медіа за станом стору, перевірка пристроїв. */
+  function enterConnected() {
+    play(peerHold.value ? 'hold' : null);
+    deps.media.setDeaf(hold.value);
+    deps.media.setMic(mic.value);
+    deps.media.setCamera?.(cam.value);
+    void deps.media.hasCamera?.().then(ok => ok || blockCamera());
+    void deps.media.hasMicrophone?.().then(ok => ok || blockMic());
+  }
+
+  const heldFrom = (c: CallInfo): HeldCall => ({
+    callId: c.callId,
+    peer: c.peer,
+    startedAt: c.startedAt ?? 0,
+    peerHold: !!c.peerHold,
+    livekit: c.livekit,
+  });
+
+  /** Знімок поточної розмови для `held`. */
+  const current = (): HeldCall => ({
+    callId: callId.value!,
+    peer: peer.value!,
+    startedAt: startedAt.value,
+    peerHold: peerHold.value,
+    livekit,
+  });
+
+  /** Поточна розмова йде на утримання й звільняє екран для іншого дзвінка. */
+  function parkCurrent() {
+    held.value = current();
+    deps.media.park?.();
+    reset(false);
+  }
+
+  /** Утримуваний дзвінок стає поточним: після «Перемкнути» (`onHold` false) чи коли активна розмова скінчилась (true). */
+  function resume(h: HeldCall, onHold: boolean) {
+    link.value = { ...NO_LINK };
+    // кімнати утримуваного може не бути (після перезавантаження): тоді підключаємось наново
+    if (!deps.media.swap?.() && h.livekit) {
+      deps.media.park?.();
+      void deps.media.join(h.livekit);
+    }
+    callId.value = h.callId;
+    peer.value = h.peer;
+    startedAt.value = h.startedAt || Date.now() + offset;
+    expiresAt.value = 0;
+    status.value = 'connected';
+    hold.value = onHold;
+    peerHold.value = h.peerHold;
+    livekit = h.livekit;
+    setMissed(null);
+    enterConnected();
+    syncTimer();
+  }
+
+  /**
+   * Активна розмова скінчилась: утримувана стає поточною, але лишається на утриманні (повертає її сам користувач).
+   * Якщо сервер уже зняв з другого вхідного `waiting` (його `call.updated` випередив `call.ended`), той стає звичайним вхідним.
+   */
+  function takeHeld() {
+    const h = held.value;
+    const w = waiting.value;
+    if (h) {
+      held.value = null;
+      resume(h, true);
+      return true;
+    }
+    if (w && !w.waiting) {
+      waiting.value = null;
+      applyCall(w);
+      return true;
+    }
+    return false;
+  }
+
   function restore(calls: CallInfo[]) {
-    const c = calls.find(x => x.state === 'connected') ?? calls[0];
+    const conn = calls.filter(x => x.state === 'connected');
+    const c = conn.find(x => !x.hold) ?? conn[0] ?? calls.find(x => !x.waiting) ?? calls[0];
+    const other = conn.find(x => x !== c);
+    const w = calls.find(x => x.waiting && x.state !== 'connected' && x !== c);
+    if (held.value && held.value.callId !== other?.callId) {
+      held.value = null;
+      deps.media.dropParked?.();
+    }
+    if (other && !held.value) held.value = heldFrom(other);
+    waiting.value = w ?? null;
     if (!c) {
       if (callId.value) {
         reset();
-        deps.sounds.play(null);
+        play(null);
       }
       return;
     }
-    if (callId.value === c.callId && (status.value === 'connected') === (c.state === 'connected')) return;
+    if (callId.value === c.callId && (status.value === 'connected') === (c.state === 'connected'))
+      return play(peerHold.value ? 'hold' : null);
     if (callId.value) reset();
     if (c.state === 'connected' || c.direction === 'out' || !c.waiting) applyCall(c);
   }
@@ -202,11 +310,24 @@ export const useCallStore = defineStore('call', () => {
   }
 
   function onEnded(endedId: string, reason: EndReason, duration?: number) {
+    if (endedId === waiting.value?.callId) {
+      waiting.value = null;
+      return play(status.value === 'connected' && peerHold.value ? 'hold' : null);
+    }
+    if (endedId === held.value?.callId) {
+      held.value = null;
+      return deps.media.dropParked?.();
+    }
     if (endedId !== callId.value) return;
+    if (endedId === endingId) {
+      endingId = null;
+      return reset();
+    }
     const was = status.value;
     const p = peer.value;
     const secs = duration ?? seconds.value;
     reset();
+    if (takeHeld()) return;
     let shown: MissedReason | null = null;
     if (was === 'ringing') {
       shown =
@@ -224,8 +345,8 @@ export const useCallStore = defineStore('call', () => {
         null;
     }
     setMissed(shown && p ? { peer: p, reason: shown, ...(was === 'connected' && { duration: secs }) } : null);
-    if (shown === 'busy') deps.sounds.play('busy', 4000);
-    else deps.sounds.play(null);
+    if (shown === 'busy') play('busy', 4000);
+    else play(null);
   }
 
   function handle(m: ServerMessage) {
@@ -237,10 +358,13 @@ export const useCallStore = defineStore('call', () => {
         contacts.value = m.contacts;
         recents.value = [...m.recents].sort((a, b) => b.startedAt - a.startedAt);
         restore(m.calls);
+        ready.value = true;
         break;
       case 'call.incoming':
-        // другий вхідний під час розмови поки відхиляємо (беклог, пункт 3)
-        if (status.value !== 'idle' || m.call.waiting)
+        if (m.call.waiting && status.value === 'connected' && !waiting.value) {
+          waiting.value = m.call;
+          play(peerHold.value ? 'hold' : null);
+        } else if (status.value !== 'idle' || m.call.waiting)
           void deps.client.request('call.reject', { callId: m.call.callId }).catch(() => {});
         else applyCall(m.call);
         break;
@@ -248,7 +372,15 @@ export const useCallStore = defineStore('call', () => {
         if (m.call.callId === callId.value && status.value === 'ringing') expiresAt.value = m.call.expiresAt ?? 0;
         break;
       case 'call.connected':
-        if (!callId.value || m.call.callId === callId.value) {
+        if (m.call.callId === waiting.value?.callId) {
+          waiting.value = null;
+          if (callId.value && callId.value === endingId) {
+            endingId = null; // «Завершити й прийняти»: наш call.ended прийде пізніше й уже нічого не змінить
+            reset();
+          } else if (status.value === 'connected') parkCurrent();
+          else if (callId.value) reset();
+          applyCall(m.call);
+        } else if (!callId.value || m.call.callId === callId.value) {
           if (callId.value) reset();
           applyCall(m.call);
         }
@@ -262,10 +394,18 @@ export const useCallStore = defineStore('call', () => {
       case 'call.peer':
         if (m.callId === callId.value) {
           peerHold.value = m.hold;
-          deps.sounds.play(m.hold ? 'hold' : null);
-        }
+          play(m.hold ? 'hold' : null);
+        } else if (m.callId === held.value?.callId) held.value.peerHold = m.hold;
         break;
       case 'call.updated':
+        // перша розмова скінчилась, поки другий ще дзвонить: він стає звичайним вхідним
+        if (m.callId === waiting.value?.callId && m.waiting === false) {
+          const w = waiting.value;
+          waiting.value = null;
+          if (status.value === 'idle') applyCall({ ...w, waiting: false });
+          // подія випередила call.ended: дзвонить далі як очікування, звичайним вхідним стане після кінця розмови (takeHeld)
+          else if (status.value === 'connected') waiting.value = { ...w, waiting: false };
+        }
         if (m.callId === callId.value && m.hold !== undefined) {
           hold.value = m.hold;
           deps.media.setDeaf(m.hold);
@@ -342,7 +482,7 @@ export const useCallStore = defineStore('call', () => {
     if (!callId.value) return;
     deps.client.request('call.accept', { callId: callId.value }).catch(() => {
       reset();
-      deps.sounds.play(null);
+      play(null);
     });
   }
 
@@ -354,7 +494,36 @@ export const useCallStore = defineStore('call', () => {
       status.value === 'incoming' ? 'call.reject' : status.value === 'ringing' ? 'call.cancel' : 'call.hangup';
     void deps.client.request(type, { callId: id }).catch(() => {});
     reset();
-    deps.sounds.play(null);
+    if (!takeHeld()) play(null);
+  }
+
+  /** Другий вхідний: «Утримати й прийняти» (`hold`) чи «Завершити й прийняти» (`end`). Екрани міняють події сервера. */
+  function acceptWaiting(action: 'hold' | 'end') {
+    const w = waiting.value;
+    if (!w || busy) return;
+    busy = true;
+    if (action === 'end') endingId = callId.value;
+    deps.client
+      .request('call.accept', { callId: w.callId, action })
+      .catch(() => (endingId = null))
+      .finally(() => (busy = false));
+  }
+
+  function rejectWaiting() {
+    const w = waiting.value;
+    if (!w) return;
+    waiting.value = null;
+    play(peerHold.value ? 'hold' : null);
+    void deps.client.request('call.reject', { callId: w.callId }).catch(() => {});
+  }
+
+  /** «Перемкнути»: утримуваний дзвінок стає поточним, а поточний — утримуваним (сервер робить це однією командою). */
+  function swapHeld() {
+    const h = held.value;
+    if (!h || status.value !== 'connected' || !callId.value) return;
+    held.value = current();
+    resume(h, false);
+    void deps.client.request('call.hold', { callId: h.callId, hold: false }).catch(() => {});
   }
 
   function toggleHold() {
@@ -388,7 +557,7 @@ export const useCallStore = defineStore('call', () => {
 
   function dismissMissed() {
     setMissed(null);
-    deps.sounds.play(null);
+    play(null);
   }
 
   /** Вкладку «Пропущені» переглянуто: лічильник обнуляється. */
@@ -403,6 +572,7 @@ export const useCallStore = defineStore('call', () => {
 
   return {
     online,
+    ready,
     netError,
     contacts,
     me,
@@ -412,6 +582,11 @@ export const useCallStore = defineStore('call', () => {
     unseenMissed,
     busySelf,
     status,
+    waiting,
+    held,
+    acceptWaiting,
+    rejectWaiting,
+    swapHeld,
     callId,
     peer,
     hold,
@@ -426,6 +601,7 @@ export const useCallStore = defineStore('call', () => {
     missed,
     left,
     seconds,
+    serverNow,
     init,
     handle,
     call,
