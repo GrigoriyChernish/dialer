@@ -45,7 +45,7 @@ const sub = (id: string, online: boolean) => (BOTS[id] ? t(BOTS[id].text) : `${f
         <Avatar :name="c.name" />
         <span class="grid min-w-0 flex-1 gap-0.5">
           <b class="truncate text-sm font-semibold">{{ c.name }}</b>
-          <small class="flex items-center gap-1.5 text-[11px] text-mute">
+          <small class="flex items-center gap-1.5 text-xs text-mute">
             <i class="size-[7px] shrink-0 rounded-full" :class="dot(c.userId, c.online)" />
             <span class="truncate">{{ sub(c.userId, c.online) }}</span>
           </small>

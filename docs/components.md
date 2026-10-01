@@ -7,69 +7,90 @@
 Коли компонент з'являється в коді або змінює API, оновлюйте цей документ у тому самому коміті.
 
 ## Відповідність дизайну
+
 Групи збігаються з контейнерами `Components · …` у [`design/dialer.pen`](../design/dialer.pen), див. [design-system.md](design-system.md#структура-файлу-дизайну).
 
 | Група в дизайні | Компонент у дизайні | Компонент у коді | Стан |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Base | `Status Bar` | немає (системна смуга телефона, у віджеті її не малюємо) | не потрібен |
 | Base | `Call Header` | `<header>` у `features/call/CallScreen.vue` | є |
 | Base | `Call Controls` | панель кнопок у `CallScreen.vue` | є |
 | Base | `Self View` | мініатюра у `CallScreen.vue` + `shared/ui/VideoSurface.vue` | є; відео з реальним потоком не перевірено на двох пристроях |
-| Base | `Action Button` | `shared/ui/RoundButton.vue` | є |
+| Base | `Action Button` і варіанти `/ active`, `/ danger`, `/ success`, `/ subtle`, `/ disabled` | `shared/ui/RoundButton.vue`: `ghost`, `ghost` + `active`, `bad`, `ok`, `subtle`, `unavailable` | є |
+| Base | `Labeled Action` | кнопка з підписом у `CallScreen.vue` | є |
+| Base | `Show Self` | кнопка «показати себе» у `CallScreen.vue` | є |
 | Base | (аватар у кожному екрані) | `shared/ui/Avatar.vue` | є |
 | Base | lucide-іконки | `shared/ui/Icon.vue` | є |
-| Contacts | `Meta`, `Contact Row`, `Contact List` | `pages/ContactsPage.vue` (одним файлом) | є, без кнопки чату |
+| Contacts | `Contact Meta`, `Contact Row`, `Contact List` | `pages/ContactsPage.vue` (одним файлом) | є, без кнопки чату |
 | Self Status | `Self Status / *` (5 значків) | `shared/ui/SelfStatusChip.vue` | є |
 | Banners | `Banner` | `shared/ui/Banner.vue` | є |
 | Banners | `Self Banner / *`, `Peer Banner / *` | `shared/ui/banners.ts` + `BannerStack.vue` | є |
 | Peer | `Peer`, `Peer Ring`, `Call Label`, `Result Label` | `features/call/Peer.vue` (+ підписи в слоті з `CallScreen.vue`) | є |
 | Peer | `Voice Wave`, `Voice Wave / silent` | `shared/ui/VoiceWave.vue` (`silent`) | є |
+| Peer | `Peer Video` | `shared/ui/VideoSurface.vue` (`kind: 'remote'`) у `CallScreen.vue` | є |
 | Екрани | `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *`, усі стани розмови | `features/call/CallScreen.vue` | є |
 
 ## Базові: `shared/ui`
 
 ### `Icon`
+
 Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`.
+
 - **Розмір:** за замовчуванням 24; менші задає викликач класом `size-*` (16 у підписах і плашках, 18 у результаті, 12 у бейджі). Власного розміру компонент не нав'язує.
 - **Доступність:** декоративна (`aria-hidden`), підпис дає кнопка.
 
 ### `Avatar`
-Кружок з ініціалами, градієнт 135° `#6366F1 → #A855F7`.
+
+Кружок з ініціалами, градієнт 135° з трьох палітр дизайну: `accent → avatar-end`, `avatar-teal → avatar-blue`, `avatar-amber → avatar-red`.
+  Палітру обирає хеш імені, тож вона однакова в списку й на екрані дзвінка; демо-боти отримують палітри з дизайну (Олена, Андрій, Support).
+
 - **Props:** `name`, `size?: 'md' | 'xl'` (48 / 104), `opacity?: number` (.6 під час утримання й втрати зв'язку),
-  `muted?: boolean` — сірий аватар екрана результату (градієнт `#6B7080 → #7A6E86`, прозорість .55).
+  `muted?: boolean` — сірий аватар екрана результату (градієнт `#6B7080 → #7A6E86`, `avatar-muted-*`, прозорість .55).
 
 ### `RoundButton` (`Action Button`)
+
 Кругла кнопка 54 × 54.
-- **Props:** `variant: 'ok' | 'bad' | 'ghost'`, `label` (для `aria-label`), `active?: boolean` — увімкнений перемикач (білий фон, темна іконка).
-- **Слот:** іконка. **Стани:** звичайна, натиснута (`scale .95`), `active`, вимкнена. `bad` має червону тінь.
+
+- **Props:** `variant: 'ok' | 'bad' | 'ghost' | 'subtle'` (`subtle` — світліше скло, «Закрити» на результаті), `label` (для `aria-label`), `active?: boolean` — увімкнений перемикач (білий фон, темна іконка).
+- **Слот:** іконка. **Стани:** звичайна, натиснута (`scale .95`), `active`, вимкнена. `bad` і `ok` мають тінь свого кольору (`shadow-bad`, `shadow-ok`).
 
 ### `Banner` (базовий) і похідні `Self Banner / *`, `Peer Banner / *`
+
 Базова смужка-пігулка сповіщення. Похідні (див. `shared/ui/banners.ts`) лише задають тон, іконку й текст, власного вигляду не мають.
+
 - **Props:** `tone: 'warn' | 'accent' | 'bad' | 'neutral'`, `icon` (ім'я з `Icon`), `spin?: boolean` (іконка крутиться, для `loader`). **Слот:** текст.
 - Вигляд: радіус 20, підкладка `bg`, градієнт тону й рамка розчиняються вправо (див. [design-system.md](design-system.md#смужки-сповіщень-banner)); `pointer-events-none`.
 - Нижній відступ 8 лежить у корені, тож проміжок між смужками анімується разом із ними. **Доступність:** `role="status"`.
 - Позиціонування: смужка лежить поверх екрана, її розміщує `BannerStack` (абсолютно під шапкою), тож вміст не зсувається.
 
 ### `BannerStack`
+
 Стек смужок із анімацією. **Props:** `items: { id, tone, icon, text, spin? }[]`. Батько ставить його абсолютно
 (`CallScreen`: `absolute inset-x-4 top-[46px]`), стек не бере місця в розкладці.
+
 - Нове сповіщення додається елементом масиву з унікальним `id`, зникає, коли його прибрано; кожне анімується окремо:
   поява 220 мс `ease-out`, зникнення 180 мс `ease-in` (висота, прозорість, зсув 4 px). `prefers-reduced-motion` вимикає анімацію.
 - Текст лишається до кінця зникнення.
 - Додати нове сповіщення: вид у `banners.ts`, рядок у `banners` екрана розмови (`CallScreen`) і `Self Banner / <назва>` у дизайні.
 
 ### `SelfStatusChip` (`Self Status / *`)
+
 Значок нашого стану в шапці розмови: круг 22 × 22, іконка 12.
+
 - **Props:** `status: 'hold' | 'micOff' | 'micUnavailable' | 'camOff' | 'camUnavailable'`, `label` (для `aria-label` і `title`).
 - Лише значок, без дій. Правила показу й порядок в [design-system.md](design-system.md#наші-статуси-self-status).
 
 ### `VideoSurface`
+
 Відео з кімнати LiveKit в елементі `<video>`: `kind: 'remote'` співрозмовника, `'local'` нашої камери (дзеркально).
+
 - **Props:** `kind`, `track` — прапорець, що потік з'явився чи зник (за ним відео підключається знову).
 - Без звуку: аудіо йде окремими елементами в `CallMedia`.
 
 ## Контакти: `pages/ContactsPage`
+
 Картка з рядками контактів: аватар, ім'я, крапка статусу з підписом, кнопка виклику 36 × 36 з іконкою `phone` 16.
+
 - Порядок: демо-боти (Олена, Андрій, Support), далі люди, ті, хто в мережі, вище.
 - Статуси ботів збігаються з їхніми сценаріями: «відповість» (зелена), «не відповість» (жовта), «зайнято» (червона).
 - Весь рядок — кнопка з підписом «Подзвонити: {ім'я}». Кнопки чату з дизайну немає, бо немає чату.
@@ -78,21 +99,28 @@
 ## Дзвінок: `features/call`
 
 ### `store.ts` (`useCallStore`)
+
 Стан дзвінка належить серверу: стор надсилає наміри (`call.invite`, `call.accept`, `call.hangup` …), а екран міняє за подіями
 (див. [signaling.md](signaling.md#відповідність-дій-клієнта)). Отримує залежності через `init({ client, media, sounds })`, тож тестується без мережі.
+
 - Стан: `status` (`idle` / `ringing` / `incoming` / `connected`), `peer`, `hold`, `peerHold`, `mic`, `link` (стан зв'язку з кімнати LiveKit), `missed`, `left`, `seconds`.
 - Дії: `call`, `accept`, `end` (відхилити, скасувати чи завершити залежно від стану), `toggleHold`, `toggleMic`, `dismissMissed`.
 
 ### `Peer`
+
 Блок співрозмовника 327 × 336 з трьома зонами фіксованої висоти (див. [design-system.md](design-system.md#блок-співрозмовника-peer)).
+
 - **Props:** `name`, `variant?: 'default' | 'dimmed' | 'result'`, `ringing?: boolean` (виклик: кільця й пульсація; під час розмови й на результаті кілець немає). **Слот:** вміст зони Status.
 - Розміщується `CallScreen` абсолютно на одній висоті (`.peer-pos`: `top: clamp(16px, 100% - 506px, 158px)`), тож шапка й кнопки його не зсувають.
 
 ### `VoiceWave`
+
 Хвиля голосу: 5 смуг. **Props:** `silent?: boolean` — пласка приглушена (голосу немає: утримання, обрив, вимкнений мікрофон).
 
 ### `CallScreen`
+
 Шар поверх сторінки, показує екран за станом стору:
+
 - **`ringing` / `incoming`:** кільця 200/152, аватар 104, ім'я 26/700, підпис «Вихідний/Вхідний виклик» з іконкою, «Залишилось 00:08».
   Вихідний: «Скасувати». Вхідний: «Відхилити» й «Прийняти» з підписами.
 - **`connected`:** шапка з ім'ям, нашими статусами (`SelfStatusChip`) і таймером, мініатюра «Ви» 92 × 122, аватар, хвиля голосу **або** плашка стану (одна, під іменем),
@@ -115,10 +143,12 @@
 Усі смужки лежать поверх екрана й не зсувають вміст.
 
 ## Медіа й сигналізація: `shared`
+
 - `api/signaling.ts` — `SignalingClient`: `hello`, пінг, перепідключення 1, 2, 4, 8, 15 с із зсувом, запити з відповіддю за `reqId`.
 - `media/room.ts` — `CallMedia` над `livekit-client`: аудіо розмови, мікрофон, приглушення на утриманні; віддає `LinkState`
   (`reconnecting`, `poor`, `peerAway`, `peerMuted`) із подій кімнати.
 - `sounds/sounds.ts` — гудки й мелодії через Web Audio.
 
 ## Ще не зроблено (є в дизайні)
+
 Кнопка чату (`message-circle`). Див. беклог, пункт 18.

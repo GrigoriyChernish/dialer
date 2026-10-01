@@ -6,7 +6,7 @@ import Icon, { type IconName } from './Icon.vue';
  * вони лише задають тон, іконку й текст. Нові види смужок додаються так само, власного вигляду не мають.
  *
  * Смужка лежить поверх екрана (абсолютна позиція, її задає BannerStack) і не зсуває вміст.
- * Вигляд: радіус 20 як у Call State; підкладка `bg` (85% → 0), градієнт тону (20% → 0) і тонка рамка (40% → 0)
+ * Вигляд: радіус 20; підкладка `bg` (85% → 60% → 0), градієнт тону (20% → 10% → 0) і тонка рамка (40% → 20% → 0)
  * розчиняються вправо, тож праворуч видно екран під смужкою, а текст зліва лишається на щільному тлі.
  */
 export type BannerTone = 'warn' | 'accent' | 'bad' | 'neutral';
@@ -34,12 +34,16 @@ const BADGE = {
 
 <style scoped>
 .banner {
-  --c: var(--color-warn);
+  /* база нейтральна, як Banner у дизайні; тон задає клас */
+  --c: var(--mute);
   position: relative;
   border-radius: 20px;
   background:
     linear-gradient(90deg, color-mix(in srgb, var(--bg) 85%, transparent), color-mix(in srgb, var(--bg) 60%, transparent) 65%, transparent),
     linear-gradient(90deg, color-mix(in srgb, var(--c) 20%, transparent), color-mix(in srgb, var(--c) 10%, transparent) 60%, transparent);
+}
+.banner.warn {
+  --c: var(--color-warn);
 }
 .banner.accent {
   --c: var(--color-accent);

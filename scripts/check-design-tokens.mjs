@@ -43,6 +43,11 @@ const theme = css.match(/@theme inline\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
 
 const errors = [];
 for (const [name, value] of Object.entries(variables)) {
+  // числові змінні (радіуси) у CSS не мапляться, у документації шукаємо назву змінної в одному рядку зі значенням
+  if (typeof value === 'number') {
+    if (!new RegExp(`\`${name}\`[^\n]*\\b${value}\\b`).test(doc)) errors.push(`docs/design-system.md: немає ${name} = ${value}`);
+    continue;
+  }
   const want = norm(value);
   const cssName = CSS_VAR[name];
   if (cssName) {

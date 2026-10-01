@@ -67,7 +67,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
       <small class="text-[13px] text-mute">{{ call.missed.note ? t(call.missed.note) : t(`call.missedNote.${call.missed.reason}`) }}</small>
     </Peer>
     <div class="absolute inset-x-0 bottom-10 flex justify-center gap-[72px]">
-      <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton :label="t('call.close')" @click="call.dismissMissed()"><Icon name="x" /></RoundButton>{{ t('call.close') }}</div>
+      <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton variant="subtle" :label="t('call.close')" @click="call.dismissMissed()"><Icon name="x" /></RoundButton>{{ t('call.close') }}</div>
       <div class="grid w-22 justify-items-center gap-2 text-xs font-medium text-mute"><RoundButton variant="ok" :label="t('call.redial')" @click="call.call(call.missed.peer.userId)"><Icon name="phone" /></RoundButton>{{ t('call.redial') }}</div>
     </div>
   </section>

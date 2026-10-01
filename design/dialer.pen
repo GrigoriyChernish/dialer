@@ -4,11 +4,11 @@
     {
       "type": "frame",
       "id": "m1mG0D",
-      "x": -1100,
-      "y": -1400,
+      "x": -376,
+      "y": -1934,
       "name": "Components · Peer",
       "fill": "$bg",
-      "cornerRadius": 16,
+      "cornerRadius": "$radius-md",
       "stroke": "$line",
       "strokeWidth": 1,
       "layout": "vertical",
@@ -39,7 +39,7 @@
               "reusable": true,
               "width": 200,
               "height": 200,
-              "fill": "#00000000",
+              "fill": "$clear",
               "cornerRadius": 100,
               "justifyContent": "center",
               "alignItems": "center",
@@ -50,7 +50,7 @@
                   "name": "Ring Inner",
                   "width": 152,
                   "height": 152,
-                  "fill": "#00000000",
+                  "fill": "$clear",
                   "cornerRadius": 76,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -75,7 +75,7 @@
                             "position": 0
                           },
                           {
-                            "color": "#A855F7",
+                            "color": "$avatar-end",
                             "position": 1
                           }
                         ]
@@ -236,8 +236,7 @@
                   "fill": "$mute",
                   "content": "Залишилось 00:58",
                   "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
+                  "fontSize": 12
                 }
               ]
             },
@@ -286,8 +285,7 @@
                   "fill": "$mute",
                   "content": "Абонент зараз розмовляє",
                   "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
+                  "fontSize": 13
                 }
               ]
             },
@@ -353,6 +351,26 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "tLLor",
+              "name": "Peer Video",
+              "reusable": true,
+              "metadata": {
+                "type": "unsplash",
+                "username": "silverkblack",
+                "link": "https://unsplash.com/@silverkblack",
+                "author": "Vitaly Gariev"
+              },
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
+                "mode": "cover"
+              }
             }
           ]
         },
@@ -365,7 +383,7 @@
             {
               "type": "frame",
               "id": "IRnqO",
-              "name": "Case · ringing · вихідний / вхідний",
+              "name": "Case · ringing",
               "layout": "vertical",
               "gap": 10,
               "alignItems": "center",
@@ -415,15 +433,14 @@
                   "fill": "$mute",
                   "content": "ringing · вихідний / вхідний",
                   "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
+                  "fontSize": 12
                 }
               ]
             },
             {
               "type": "frame",
               "id": "u4pnH",
-              "name": "Case · talking · розмова (без кілець)",
+              "name": "Case · talking",
               "layout": "vertical",
               "gap": 10,
               "alignItems": "center",
@@ -444,15 +461,14 @@
                   "fill": "$mute",
                   "content": "talking · розмова (без кілець)",
                   "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
+                  "fontSize": 12
                 }
               ]
             },
             {
               "type": "frame",
               "id": "As1K1",
-              "name": "Case · silent · утримання, обрив, мікрофон (пласка хвиля)",
+              "name": "Case · silent",
               "layout": "vertical",
               "gap": 10,
               "alignItems": "center",
@@ -488,15 +504,14 @@
                   "fill": "$mute",
                   "content": "silent · утримання, обрив, мікрофон (пласка хвиля)",
                   "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
+                  "fontSize": 12
                 }
               ]
             },
             {
               "type": "frame",
               "id": "ZswKr",
-              "name": "Case · result · зайнято, без відповіді, пропущений",
+              "name": "Case · result",
               "layout": "vertical",
               "gap": 10,
               "alignItems": "center",
@@ -522,11 +537,11 @@
                         },
                         "colors": [
                           {
-                            "color": "#6B7080",
+                            "color": "$avatar-muted-start",
                             "position": 0
                           },
                           {
-                            "color": "#7A6E86",
+                            "color": "$avatar-muted-end",
                             "position": 1
                           }
                         ]
@@ -562,8 +577,7 @@
                   "fill": "$mute",
                   "content": "result · зайнято, без відповіді, пропущений",
                   "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
+                  "fontSize": 12
                 }
               ]
             }
@@ -575,8 +589,9 @@
       "type": "frame",
       "id": "RA8lM",
       "x": -3000,
-      "y": -1400,
+      "y": -1934,
       "name": "Components · Base",
+      "height": 221,
       "layout": "vertical",
       "gap": 16,
       "padding": 24,
@@ -684,7 +699,7 @@
                       "id": "YSzYZ",
                       "name": "Timer",
                       "fill": "$surface-2",
-                      "cornerRadius": 14,
+                      "cornerRadius": "$radius-sm",
                       "padding": [
                         4,
                         10
@@ -712,7 +727,7 @@
               "name": "Call Controls",
               "reusable": true,
               "fill": "$surface-2",
-              "cornerRadius": 40,
+              "cornerRadius": "$radius-3xl",
               "stroke": "$line",
               "strokeWidth": 1,
               "gap": 10,
@@ -758,9 +773,9 @@
                   }
                 },
                 {
-                  "id": "FrLJV",
+                  "id": "RCccb",
                   "type": "ref",
-                  "ref": "JfOe5",
+                  "ref": "GruFA",
                   "name": "End Call"
                 }
               ]
@@ -774,7 +789,7 @@
               "width": 92,
               "height": 122,
               "fill": "$surface-tile",
-              "cornerRadius": 16,
+              "cornerRadius": "$radius-md",
               "stroke": "$line",
               "strokeWidth": 1,
               "justifyContent": "center",
@@ -787,15 +802,14 @@
                   "fill": "$mute",
                   "content": "Ви",
                   "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
+                  "fontSize": 13
                 },
                 {
                   "type": "icon",
                   "id": "XgWNV",
                   "x": 0,
                   "y": 0,
-                  "name": "Cam Off Icon",
+                  "name": "Camera Off Icon",
                   "enabled": false,
                   "width": 22,
                   "height": 22,
@@ -812,18 +826,8 @@
               "reusable": true,
               "width": 54,
               "height": 54,
-              "fill": "$bad",
+              "fill": "$surface-3",
               "cornerRadius": 27,
-              "effect": {
-                "type": "shadow",
-                "shadowType": "outer",
-                "color": "#EF444466",
-                "offset": {
-                  "x": 0,
-                  "y": 8
-                },
-                "blur": 24
-              },
               "justifyContent": "center",
               "alignItems": "center",
               "children": [
@@ -833,9 +837,143 @@
                   "name": "Icon",
                   "width": 24,
                   "height": 24,
-                  "icon": "x",
+                  "icon": "mic",
                   "library": "lucide",
                   "fill": "$on-solid"
+                }
+              ]
+            },
+            {
+              "id": "x5PMr",
+              "type": "ref",
+              "reusable": true,
+              "ref": "JfOe5",
+              "name": "Action Button / active",
+              "fill": "$on-solid",
+              "descendants": {
+                "gcrxy": {
+                  "fill": "$on-light"
+                }
+              }
+            },
+            {
+              "id": "GruFA",
+              "type": "ref",
+              "reusable": true,
+              "ref": "JfOe5",
+              "name": "Action Button / danger",
+              "fill": "$bad",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "$shadow-bad",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "blur": 24
+              },
+              "descendants": {
+                "gcrxy": {
+                  "icon": "x"
+                }
+              }
+            },
+            {
+              "id": "Yk8rH",
+              "type": "ref",
+              "reusable": true,
+              "ref": "JfOe5",
+              "name": "Action Button / success",
+              "fill": "$ok",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "$shadow-ok",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "blur": 24
+              },
+              "descendants": {
+                "gcrxy": {
+                  "icon": "phone"
+                }
+              }
+            },
+            {
+              "id": "ENmpC",
+              "type": "ref",
+              "reusable": true,
+              "ref": "JfOe5",
+              "name": "Action Button / subtle",
+              "fill": "$surface-2",
+              "descendants": {
+                "gcrxy": {
+                  "icon": "x"
+                }
+              }
+            },
+            {
+              "id": "Gf9fn",
+              "type": "ref",
+              "reusable": true,
+              "ref": "JfOe5",
+              "name": "Action Button / disabled",
+              "opacity": 0.4
+            },
+            {
+              "type": "frame",
+              "id": "ib04f",
+              "name": "Labeled Action",
+              "reusable": true,
+              "width": 88,
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "LfiGR",
+                  "type": "ref",
+                  "ref": "JfOe5",
+                  "name": "Button"
+                },
+                {
+                  "type": "text",
+                  "id": "kPwGr",
+                  "name": "Label",
+                  "fill": "$mute",
+                  "content": "Підпис",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "swyac",
+              "name": "Show Self",
+              "reusable": true,
+              "width": 44,
+              "height": 44,
+              "fill": "$surface-2",
+              "cornerRadius": 22,
+              "stroke": "$line",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "RlWz1",
+                  "name": "Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "video",
+                  "library": "lucide",
+                  "fill": "$fg"
                 }
               ]
             }
@@ -847,7 +985,7 @@
       "type": "frame",
       "id": "b6tSk6",
       "x": -3000,
-      "y": -1150,
+      "y": -1591,
       "name": "Components · Contacts",
       "layout": "vertical",
       "gap": 16,
@@ -872,10 +1010,9 @@
             {
               "type": "frame",
               "id": "mN0qk",
-              "name": "Meta",
+              "name": "Contact Meta",
               "reusable": true,
               "width": 200,
-              "height": 30,
               "layout": "vertical",
               "gap": 2,
               "justifyContent": "center",
@@ -896,8 +1033,7 @@
                   "type": "frame",
                   "id": "ZYWNw",
                   "name": "Status Row",
-                  "width": 160,
-                  "height": 10,
+                  "width": "fill_container",
                   "gap": 6,
                   "alignItems": "center",
                   "children": [
@@ -918,8 +1054,7 @@
                       "lineHeight": 1,
                       "textAlignVertical": "middle",
                       "fontFamily": "Inter",
-                      "fontSize": 10,
-                      "fontWeight": "normal"
+                      "fontSize": 12
                     }
                   ]
                 }
@@ -931,7 +1066,7 @@
               "name": "Contact Row",
               "reusable": true,
               "width": 342,
-              "cornerRadius": 18,
+              "cornerRadius": "$radius-lg",
               "gap": 14,
               "padding": [
                 11,
@@ -959,7 +1094,7 @@
                         "position": 0
                       },
                       {
-                        "color": "#A855F7",
+                        "color": "$avatar-end",
                         "position": 1
                       }
                     ]
@@ -1060,7 +1195,7 @@
                   }
                 ]
               },
-              "cornerRadius": 28,
+              "cornerRadius": "$radius-2xl",
               "stroke": "$line",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -1094,7 +1229,7 @@
                             "position": 0
                           },
                           {
-                            "color": "#A855F7",
+                            "color": "$avatar-end",
                             "position": 1
                           }
                         ]
@@ -1136,11 +1271,11 @@
                         },
                         "colors": [
                           {
-                            "color": "#14B8A6",
+                            "color": "$avatar-teal",
                             "position": 0
                           },
                           {
-                            "color": "#3B82F6",
+                            "color": "$avatar-blue",
                             "position": 1
                           }
                         ]
@@ -1182,11 +1317,11 @@
                         },
                         "colors": [
                           {
-                            "color": "#F59E0B",
+                            "color": "$avatar-amber",
                             "position": 0
                           },
                           {
-                            "color": "#EF4444",
+                            "color": "$avatar-red",
                             "position": 1
                           }
                         ]
@@ -1220,7 +1355,7 @@
       "type": "frame",
       "id": "z6V7IV",
       "x": -3000,
-      "y": -900,
+      "y": -1168,
       "name": "Components · Self Status",
       "layout": "vertical",
       "gap": 16,
@@ -1369,11 +1504,11 @@
     {
       "type": "frame",
       "id": "r6uqxn",
-      "x": -1600,
-      "y": -1400,
+      "x": -1841,
+      "y": -1591,
       "name": "Components · Banners",
       "fill": "$bg",
-      "cornerRadius": 16,
+      "cornerRadius": "$radius-md",
       "stroke": "$line",
       "strokeWidth": 1,
       "layout": "vertical",
@@ -1414,15 +1549,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -1437,21 +1572,21 @@
                   },
                   "colors": [
                     {
-                      "color": "$warn-soft",
+                      "color": "$mute-soft",
                       "position": 0
                     },
                     {
-                      "color": "#F5B84B1A",
+                      "color": "$mute-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#F5B84B00",
+                      "color": "$mute-clear",
                       "position": 1
                     }
                   ]
                 }
               ],
-              "cornerRadius": 20,
+              "cornerRadius": "$radius-xl",
               "stroke": {
                 "type": "gradient",
                 "gradientType": "linear",
@@ -1462,15 +1597,15 @@
                 },
                 "colors": [
                   {
-                    "color": "#F5B84B66",
+                    "color": "$mute-edge",
                     "position": 0
                   },
                   {
-                    "color": "$warn-soft",
+                    "color": "$mute-soft",
                     "position": 0.6
                   },
                   {
-                    "color": "#F5B84B00",
+                    "color": "$mute-clear",
                     "position": 1
                   }
                 ]
@@ -1491,7 +1626,7 @@
                   "name": "Icon Badge",
                   "width": 24,
                   "height": 24,
-                  "fill": "$warn-soft",
+                  "fill": "$mute-soft",
                   "cornerRadius": 12,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -1504,7 +1639,7 @@
                       "height": 14,
                       "icon": "info",
                       "library": "lucide",
-                      "fill": "$warn"
+                      "fill": "$mute"
                     }
                   ]
                 },
@@ -1525,7 +1660,7 @@
         {
           "type": "frame",
           "id": "v6bHzl",
-          "name": "Self",
+          "name": "Self Banners",
           "layout": "vertical",
           "gap": 12,
           "children": [
@@ -1548,15 +1683,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -1575,11 +1710,11 @@
                       "position": 0
                     },
                     {
-                      "color": "#F5B84B1A",
+                      "color": "$warn-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#F5B84B00",
+                      "color": "$warn-clear",
                       "position": 1
                     }
                   ]
@@ -1595,7 +1730,7 @@
                 },
                 "colors": [
                   {
-                    "color": "#F5B84B66",
+                    "color": "$warn-edge",
                     "position": 0
                   },
                   {
@@ -1603,7 +1738,7 @@
                     "position": 0.6
                   },
                   {
-                    "color": "#F5B84B00",
+                    "color": "$warn-clear",
                     "position": 1
                   }
                 ]
@@ -1640,15 +1775,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -1667,11 +1802,11 @@
                       "position": 0
                     },
                     {
-                      "color": "#6366F11A",
+                      "color": "$accent-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#6366F100",
+                      "color": "$accent-clear",
                       "position": 1
                     }
                   ]
@@ -1687,7 +1822,7 @@
                 },
                 "colors": [
                   {
-                    "color": "#6366F166",
+                    "color": "$accent-edge",
                     "position": 0
                   },
                   {
@@ -1695,7 +1830,7 @@
                     "position": 0.6
                   },
                   {
-                    "color": "#6366F100",
+                    "color": "$accent-clear",
                     "position": 1
                   }
                 ]
@@ -1732,15 +1867,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -1759,11 +1894,11 @@
                       "position": 0
                     },
                     {
-                      "color": "#F5B84B1A",
+                      "color": "$warn-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#F5B84B00",
+                      "color": "$warn-clear",
                       "position": 1
                     }
                   ]
@@ -1779,7 +1914,7 @@
                 },
                 "colors": [
                   {
-                    "color": "#F5B84B66",
+                    "color": "$warn-edge",
                     "position": 0
                   },
                   {
@@ -1787,7 +1922,7 @@
                     "position": 0.6
                   },
                   {
-                    "color": "#F5B84B00",
+                    "color": "$warn-clear",
                     "position": 1
                   }
                 ]
@@ -1824,15 +1959,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -1851,11 +1986,11 @@
                       "position": 0
                     },
                     {
-                      "color": "#F5B84B1A",
+                      "color": "$warn-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#F5B84B00",
+                      "color": "$warn-clear",
                       "position": 1
                     }
                   ]
@@ -1871,7 +2006,7 @@
                 },
                 "colors": [
                   {
-                    "color": "#F5B84B66",
+                    "color": "$warn-edge",
                     "position": 0
                   },
                   {
@@ -1879,7 +2014,7 @@
                     "position": 0.6
                   },
                   {
-                    "color": "#F5B84B00",
+                    "color": "$warn-clear",
                     "position": 1
                   }
                 ]
@@ -1902,7 +2037,7 @@
         {
           "type": "frame",
           "id": "WEzxU",
-          "name": "Peer",
+          "name": "Peer Banners",
           "layout": "vertical",
           "gap": 12,
           "children": [
@@ -1911,7 +2046,7 @@
               "type": "ref",
               "reusable": true,
               "ref": "Feodh",
-              "name": "Peer Banner / peer-hold",
+              "name": "Peer Banner / hold",
               "x": 0,
               "y": 0,
               "fill": [
@@ -1925,15 +2060,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -1952,11 +2087,11 @@
                       "position": 0
                     },
                     {
-                      "color": "#F5B84B1A",
+                      "color": "$warn-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#F5B84B00",
+                      "color": "$warn-clear",
                       "position": 1
                     }
                   ]
@@ -1972,7 +2107,7 @@
                 },
                 "colors": [
                   {
-                    "color": "#F5B84B66",
+                    "color": "$warn-edge",
                     "position": 0
                   },
                   {
@@ -1980,7 +2115,7 @@
                     "position": 0.6
                   },
                   {
-                    "color": "#F5B84B00",
+                    "color": "$warn-clear",
                     "position": 1
                   }
                 ]
@@ -2017,15 +2152,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -2040,15 +2175,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#F0626B33",
+                      "color": "$bad-soft",
                       "position": 0
                     },
                     {
-                      "color": "#F0626B1A",
+                      "color": "$bad-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#F0626B00",
+                      "color": "$bad-clear",
                       "position": 1
                     }
                   ]
@@ -2064,22 +2199,22 @@
                 },
                 "colors": [
                   {
-                    "color": "#F0626B66",
+                    "color": "$bad-edge",
                     "position": 0
                   },
                   {
-                    "color": "#F0626B33",
+                    "color": "$bad-soft",
                     "position": 0.6
                   },
                   {
-                    "color": "#F0626B00",
+                    "color": "$bad-clear",
                     "position": 1
                   }
                 ]
               },
               "descendants": {
                 "yoVcD": {
-                  "fill": "#F0626B33"
+                  "fill": "$bad-soft"
                 },
                 "s1KBV": {
                   "icon": "wifi-off",
@@ -2109,15 +2244,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#0A0C14D9",
+                      "color": "$scrim",
                       "position": 0
                     },
                     {
-                      "color": "#0A0C1499",
+                      "color": "$scrim-mid",
                       "position": 0.65
                     },
                     {
-                      "color": "#0A0C1400",
+                      "color": "$scrim-clear",
                       "position": 1
                     }
                   ]
@@ -2132,15 +2267,15 @@
                   },
                   "colors": [
                     {
-                      "color": "#B4BCCD33",
+                      "color": "$mute-soft",
                       "position": 0
                     },
                     {
-                      "color": "#B4BCCD1A",
+                      "color": "$mute-faint",
                       "position": 0.6
                     },
                     {
-                      "color": "#B4BCCD00",
+                      "color": "$mute-clear",
                       "position": 1
                     }
                   ]
@@ -2156,22 +2291,22 @@
                 },
                 "colors": [
                   {
-                    "color": "#B4BCCD66",
+                    "color": "$mute-edge",
                     "position": 0
                   },
                   {
-                    "color": "#B4BCCD33",
+                    "color": "$mute-soft",
                     "position": 0.6
                   },
                   {
-                    "color": "#B4BCCD00",
+                    "color": "$mute-clear",
                     "position": 1
                   }
                 ]
               },
               "descendants": {
                 "yoVcD": {
-                  "fill": "#B4BCCD33"
+                  "fill": "$mute-soft"
                 },
                 "s1KBV": {
                   "icon": "mic-off",
@@ -2405,9 +2540,9 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "id": "JeHZU",
+                          "id": "tKciY",
                           "type": "ref",
-                          "ref": "JfOe5",
+                          "ref": "GruFA",
                           "name": "Cancel Call"
                         }
                       ]
@@ -2503,11 +2638,11 @@
                                 },
                                 "colors": [
                                   {
-                                    "color": "#6B7080",
+                                    "color": "$avatar-muted-start",
                                     "position": 0
                                   },
                                   {
-                                    "color": "#7A6E86",
+                                    "color": "$avatar-muted-end",
                                     "position": 1
                                   }
                                 ]
@@ -2553,86 +2688,48 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "type": "frame",
-                          "id": "j4rQos",
+                          "id": "sCENt",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Close",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "D6Tlk",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "tTZcK",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "ENmpC",
                               "name": "Close Button",
-                              "fill": "$surface-2",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "enabled": false,
-                                "color": "#00000000"
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "x"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "XQLql",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Закрити",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Закрити"
                             }
-                          ]
+                          }
                         },
                         {
-                          "type": "frame",
-                          "id": "ntJP0",
+                          "id": "oo2RL",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Redial",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "l4TLB",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "vnXlt",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "Yk8rH",
                               "name": "Redial Button",
-                              "fill": "$ok",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "color": "#22C55E73",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "phone"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "VdCTB",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Передзвонити",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Передзвонити"
                             }
-                          ]
+                          }
                         }
                       ]
                     }
@@ -2727,11 +2824,11 @@
                                 },
                                 "colors": [
                                   {
-                                    "color": "#6B7080",
+                                    "color": "$avatar-muted-start",
                                     "position": 0
                                   },
                                   {
-                                    "color": "#7A6E86",
+                                    "color": "$avatar-muted-end",
                                     "position": 1
                                   }
                                 ]
@@ -2777,86 +2874,48 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "type": "frame",
-                          "id": "T4pbq",
+                          "id": "Z8p3Ki",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Close",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "J1rYkK",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "JnhT2",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "ENmpC",
                               "name": "Close Button",
-                              "fill": "$surface-2",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "enabled": false,
-                                "color": "#00000000"
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "x"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "VtJX9",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Закрити",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Закрити"
                             }
-                          ]
+                          }
                         },
                         {
-                          "type": "frame",
-                          "id": "iYA7L",
+                          "id": "RTmzi",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Redial",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "WQihE",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "h6grV",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "Yk8rH",
                               "name": "Redial Button",
-                              "fill": "$ok",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "color": "#22C55E73",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "phone"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "yX8iZ",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Передзвонити",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Передзвонити"
                             }
-                          ]
+                          }
                         }
                       ]
                     }
@@ -3015,90 +3074,48 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "type": "frame",
-                          "id": "n96Y1Y",
+                          "id": "VR4qD",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Decline",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "MHhxP",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "H0IPg",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "GruFA",
                               "name": "Decline Button",
-                              "fill": "$bad",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "color": "#EF444466",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "x"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "U5lID",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Відхилити",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Відхилити"
                             }
-                          ]
+                          }
                         },
                         {
-                          "type": "frame",
-                          "id": "WhDji",
+                          "id": "MorAj",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Accept",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "bLcPn",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "uoSFq",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "Yk8rH",
                               "name": "Accept Button",
-                              "fill": "$ok",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "color": "#22C55E73",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "phone"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "Ifls4",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Прийняти",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Прийняти"
                             }
-                          ]
+                          }
                         }
                       ]
                     }
@@ -3193,11 +3210,11 @@
                                 },
                                 "colors": [
                                   {
-                                    "color": "#6B7080",
+                                    "color": "$avatar-muted-start",
                                     "position": 0
                                   },
                                   {
-                                    "color": "#7A6E86",
+                                    "color": "$avatar-muted-end",
                                     "position": 1
                                   }
                                 ]
@@ -3243,86 +3260,48 @@
                       "justifyContent": "center",
                       "children": [
                         {
-                          "type": "frame",
-                          "id": "SASfD",
+                          "id": "QqpIo",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Close",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "poQQf",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "XV55C",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "ENmpC",
                               "name": "Close Button",
-                              "fill": "$surface-2",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "enabled": false,
-                                "color": "#00000000"
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "x"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "iAg3k",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Закрити",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Закрити"
                             }
-                          ]
+                          }
                         },
                         {
-                          "type": "frame",
-                          "id": "EpIkJ",
+                          "id": "hfH2K",
+                          "type": "ref",
+                          "ref": "ib04f",
                           "name": "Redial",
-                          "width": 88,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "gIV1V",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "bfZGL",
                               "type": "ref",
-                              "ref": "JfOe5",
+                              "ref": "Yk8rH",
                               "name": "Redial Button",
-                              "fill": "$ok",
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "color": "#22C55E73",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24
-                              },
                               "descendants": {
                                 "gcrxy": {
                                   "icon": "phone"
                                 }
                               }
                             },
-                            {
-                              "type": "text",
-                              "id": "USJS4",
-                              "name": "Label",
-                              "fill": "$mute",
-                              "content": "Передзвонити",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                            "kPwGr": {
+                              "content": "Передзвонити"
                             }
-                          ]
+                          }
                         }
                       ]
                     }
@@ -3657,11 +3636,15 @@
                               "icon": "video"
                             },
                             "G0zgSx": {
-                              "fill": "$on-solid"
-                            },
-                            "G0zgSx/gcrxy": {
-                              "icon": "pause",
-                              "fill": "$on-light"
+                              "id": "ci37H",
+                              "type": "ref",
+                              "ref": "x5PMr",
+                              "name": "Hold",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "pause"
+                                }
+                              }
                             }
                           }
                         }
@@ -4377,18 +4360,26 @@
                           "name": "Controls Pill",
                           "descendants": {
                             "iSBAx": {
-                              "fill": "$on-solid"
-                            },
-                            "iSBAx/gcrxy": {
-                              "icon": "mic-off",
-                              "fill": "$on-light"
+                              "id": "GguTi",
+                              "type": "ref",
+                              "ref": "x5PMr",
+                              "name": "Mic",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "mic-off"
+                                }
+                              }
                             },
                             "G51U2F": {
-                              "fill": "$on-solid"
-                            },
-                            "G51U2F/gcrxy": {
-                              "icon": "video-off",
-                              "fill": "$on-light"
+                              "id": "u2U2Z",
+                              "type": "ref",
+                              "ref": "x5PMr",
+                              "name": "Camera",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "video-off"
+                                }
+                              }
                             },
                             "G0zgSx": {
                               "fill": "$surface-3"
@@ -4551,18 +4542,26 @@
                           "name": "Controls Pill",
                           "descendants": {
                             "iSBAx": {
-                              "fill": "$on-solid"
-                            },
-                            "iSBAx/gcrxy": {
-                              "icon": "mic-off",
-                              "fill": "$on-light"
+                              "id": "wkzKV",
+                              "type": "ref",
+                              "ref": "x5PMr",
+                              "name": "Mic",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "mic-off"
+                                }
+                              }
                             },
                             "G51U2F": {
-                              "fill": "$on-solid"
-                            },
-                            "G51U2F/gcrxy": {
-                              "icon": "video-off",
-                              "fill": "$on-light"
+                              "id": "MW3Vj",
+                              "type": "ref",
+                              "ref": "x5PMr",
+                              "name": "Camera",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "video-off"
+                                }
+                              }
                             },
                             "G0zgSx": {
                               "fill": "$surface-3"
@@ -4715,11 +4714,15 @@
                               "icon": "mic"
                             },
                             "G51U2F": {
-                              "fill": "$surface-3",
-                              "opacity": 0.4
-                            },
-                            "G51U2F/gcrxy": {
-                              "icon": "video-off"
+                              "id": "W61Zna",
+                              "type": "ref",
+                              "ref": "Gf9fn",
+                              "name": "Camera",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "video-off"
+                                }
+                              }
                             },
                             "G0zgSx": {
                               "fill": "$surface-3"
@@ -4892,32 +4895,13 @@
                   "enabled": false
                 },
                 {
-                  "type": "frame",
-                  "id": "C4lHX",
+                  "id": "oeKXx",
+                  "type": "ref",
+                  "ref": "swyac",
+                  "name": "Show Self",
                   "layoutPosition": "absolute",
                   "x": 311,
-                  "y": 118,
-                  "name": "Show Self",
-                  "width": 44,
-                  "height": 44,
-                  "fill": "$surface-2",
-                  "cornerRadius": 22,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "VExHn",
-                      "name": "Icon",
-                      "width": 20,
-                      "height": 20,
-                      "icon": "video",
-                      "library": "lucide",
-                      "fill": "$fg"
-                    }
-                  ]
+                  "y": 118
                 }
               ]
             }
@@ -5164,7 +5148,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "SoOTi",
+                  "id": "HFVnQ",
                   "name": "Content",
                   "width": "fill_container",
                   "height": "fill_container",
@@ -5494,26 +5478,13 @@
               "layout": "vertical",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "CFqVy",
+                  "id": "r8S0I",
+                  "type": "ref",
+                  "ref": "tLLor",
+                  "name": "Peer Video",
                   "layoutPosition": "absolute",
                   "x": 0,
-                  "y": 0,
-                  "name": "Peer Video",
-                  "metadata": {
-                    "type": "unsplash",
-                    "username": "silverkblack",
-                    "link": "https://unsplash.com/@silverkblack",
-                    "author": "Vitaly Gariev"
-                  },
-                  "width": 375,
-                  "height": 844,
-                  "fill": {
-                    "type": "image",
-                    "enabled": true,
-                    "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
-                    "mode": "cover"
-                  }
+                  "y": 0
                 },
                 {
                   "type": "frame",
@@ -5534,11 +5505,11 @@
                     },
                     "colors": [
                       {
-                        "color": "#000000A0",
+                        "color": "$video-scrim",
                         "position": 0
                       },
                       {
-                        "color": "#00000000",
+                        "color": "$clear",
                         "position": 1
                       }
                     ]
@@ -5563,11 +5534,11 @@
                     },
                     "colors": [
                       {
-                        "color": "#000000A0",
+                        "color": "$video-scrim",
                         "position": 0
                       },
                       {
-                        "color": "#00000000",
+                        "color": "$clear",
                         "position": 1
                       }
                     ]
@@ -5666,7 +5637,7 @@
                   "effect": {
                     "type": "shadow",
                     "shadowType": "outer",
-                    "color": "#00000066",
+                    "color": "$shadow-tile",
                     "offset": {
                       "x": 0,
                       "y": 10
@@ -5714,26 +5685,13 @@
               "layout": "vertical",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "kB7II",
+                  "id": "kbdKb",
+                  "type": "ref",
+                  "ref": "tLLor",
+                  "name": "Peer Video",
                   "layoutPosition": "absolute",
                   "x": 0,
-                  "y": 0,
-                  "name": "Peer Video",
-                  "metadata": {
-                    "type": "unsplash",
-                    "username": "silverkblack",
-                    "link": "https://unsplash.com/@silverkblack",
-                    "author": "Vitaly Gariev"
-                  },
-                  "width": 375,
-                  "height": 844,
-                  "fill": {
-                    "type": "image",
-                    "enabled": true,
-                    "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
-                    "mode": "cover"
-                  }
+                  "y": 0
                 },
                 {
                   "type": "frame",
@@ -5754,11 +5712,11 @@
                     },
                     "colors": [
                       {
-                        "color": "#000000A0",
+                        "color": "$video-scrim",
                         "position": 0
                       },
                       {
-                        "color": "#00000000",
+                        "color": "$clear",
                         "position": 1
                       }
                     ]
@@ -5783,11 +5741,11 @@
                     },
                     "colors": [
                       {
-                        "color": "#000000A0",
+                        "color": "$video-scrim",
                         "position": 0
                       },
                       {
-                        "color": "#00000000",
+                        "color": "$clear",
                         "position": 1
                       }
                     ]
@@ -5886,7 +5844,7 @@
                   "effect": {
                     "type": "shadow",
                     "shadowType": "outer",
-                    "color": "#00000066",
+                    "color": "$shadow-tile",
                     "offset": {
                       "x": 0,
                       "y": 10
@@ -6011,6 +5969,146 @@
     "on-light": {
       "type": "color",
       "value": "#111111"
+    },
+    "bad-soft": {
+      "type": "color",
+      "value": "#F0626B33"
+    },
+    "mute-soft": {
+      "type": "color",
+      "value": "#B4BCCD33"
+    },
+    "scrim": {
+      "type": "color",
+      "value": "#0A0C14D9"
+    },
+    "scrim-mid": {
+      "type": "color",
+      "value": "#0A0C1499"
+    },
+    "scrim-clear": {
+      "type": "color",
+      "value": "#0A0C1400"
+    },
+    "clear": {
+      "type": "color",
+      "value": "#00000000"
+    },
+    "video-scrim": {
+      "type": "color",
+      "value": "#000000A0"
+    },
+    "shadow-bad": {
+      "type": "color",
+      "value": "#F0626B66"
+    },
+    "shadow-ok": {
+      "type": "color",
+      "value": "#22C55E73"
+    },
+    "shadow-tile": {
+      "type": "color",
+      "value": "#00000066"
+    },
+    "avatar-end": {
+      "type": "color",
+      "value": "#A855F7"
+    },
+    "avatar-teal": {
+      "type": "color",
+      "value": "#14B8A6"
+    },
+    "avatar-blue": {
+      "type": "color",
+      "value": "#3B82F6"
+    },
+    "avatar-amber": {
+      "type": "color",
+      "value": "#F59E0B"
+    },
+    "avatar-red": {
+      "type": "color",
+      "value": "#EF4444"
+    },
+    "avatar-muted-start": {
+      "type": "color",
+      "value": "#6B7080"
+    },
+    "avatar-muted-end": {
+      "type": "color",
+      "value": "#7A6E86"
+    },
+    "radius-sm": {
+      "type": "number",
+      "value": 14
+    },
+    "radius-md": {
+      "type": "number",
+      "value": 16
+    },
+    "radius-lg": {
+      "type": "number",
+      "value": 18
+    },
+    "radius-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "radius-2xl": {
+      "type": "number",
+      "value": 28
+    },
+    "radius-3xl": {
+      "type": "number",
+      "value": 40
+    },
+    "warn-faint": {
+      "type": "color",
+      "value": "#F5B84B1A"
+    },
+    "warn-edge": {
+      "type": "color",
+      "value": "#F5B84B66"
+    },
+    "warn-clear": {
+      "type": "color",
+      "value": "#F5B84B00"
+    },
+    "accent-faint": {
+      "type": "color",
+      "value": "#6366F11A"
+    },
+    "accent-edge": {
+      "type": "color",
+      "value": "#6366F166"
+    },
+    "accent-clear": {
+      "type": "color",
+      "value": "#6366F100"
+    },
+    "bad-faint": {
+      "type": "color",
+      "value": "#F0626B1A"
+    },
+    "bad-edge": {
+      "type": "color",
+      "value": "#F0626B66"
+    },
+    "bad-clear": {
+      "type": "color",
+      "value": "#F0626B00"
+    },
+    "mute-faint": {
+      "type": "color",
+      "value": "#B4BCCD1A"
+    },
+    "mute-edge": {
+      "type": "color",
+      "value": "#B4BCCD66"
+    },
+    "mute-clear": {
+      "type": "color",
+      "value": "#B4BCCD00"
     }
   },
   "fileToken": "8dbbdd0a-a14f-400d-a6f9-149ce907ef90"
