@@ -2745,19 +2745,6 @@
                           "icon": "arrow-left-right",
                           "library": "lucide",
                           "fill": "$warn"
-                        },
-                        {
-                          "type": "text",
-                          "id": "bguYS",
-                          "x": 32,
-                          "y": 7,
-                          "name": "Switch Label",
-                          "enabled": false,
-                          "fill": "$fg",
-                          "content": "Перемкнути",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
                         }
                       ]
                     }
