@@ -4,8 +4,23 @@
     {
       "name": "dzvonilka",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8080"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8080"
+      ],
       "port": 8080
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": [
+        "pnpm",
+        "--filter",
+        "@dialer/web",
+        "dev"
+      ],
+      "port": 5173
     }
   ]
 }

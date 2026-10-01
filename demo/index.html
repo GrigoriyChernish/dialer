@@ -77,7 +77,7 @@ ul.f{margin:0;padding:0;list-style:none;display:grid;gap:8px}ul.f li::before{con
 <script>
 const $=id=>document.getElementById(id);
 // ?server=http://localhost:8787 вмикає справжній бекенд; без нього демо імітує все в браузері
-const SERVER=new URLSearchParams(location.search).get('server')?.replace(/\/+$/,'')||'';
+const QS=new URLSearchParams(location.search),SERVER=QS.get('server')?.replace(/\/+$/,'')||'',WIDGET=QS.get('widget')||'';  // ?widget=http://localhost:5173/ підставляє Vue-віджет
 const mk=st=>({get:k=>{try{return JSON.parse(st.getItem(k))}catch(e){return null}},
   set:(k,v)=>{try{v==null?st.removeItem(k):st.setItem(k,JSON.stringify(v))}catch(e){}}});
 const store=mk(localStorage);
@@ -153,7 +153,7 @@ function start(){
     <li>Обидва користувачі з'являться в контактах одне одного.</li></ol>
     <p class="hint">${SERVER?'Дзвінки йдуть через сервер сигналізації; звук іде через LiveKit (потрібні ключі в .env сервера).':'Сама розмова поки імітується: співрозмовник «відповідає» через 3,5 с. Сценарії — під списком контактів у віджеті.'}</p>
     <p style="margin:16px 0 0"><button class="btn" id="openW">Відкрити дзвонілку</button></p>`;
-  dialer=Dialer.mount({token:s.token,server:SERVER,theme,position:'bottom-right',offset:{x:24,y:24}});
+  dialer=Dialer.mount({token:s.token,server:SERVER,widget:WIDGET,theme,position:'bottom-right',offset:{x:24,y:24}});
   // токен сплив: мовчки входимо знову зі збереженими даними
   dialer.on('token:expired',async()=>{const c=sess.get('dialer.demo.session');if(!c)return;
     let t;try{t=(await API.login(c)).token}catch(e){return}sess.set('dialer.demo.session',{...c,token:t});dialer?.setToken(t);});

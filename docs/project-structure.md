@@ -31,7 +31,7 @@ dialer/
     server/          # бекенд: Node + TypeScript, Fastify + ws + SQLite, LiveKit; Dockerfile і fly.toml (є), див. backend.md
   packages/
     shared/          # спільні типи й константи сигналізації, `src/signaling.ts` (є)
-  web/               # фронтенд: віджет (Vue SPA) і сторінка демо з вбудованим віджетом (буде)
+  apps/web/          # фронтенд: віджет на Vue 3 (Vite, Tailwind 4, Pinia): дзвінок через сервер і LiveKit; екрани лише контакти й дзвінок
   .dockerignore      # що не потрапляє в образ сервера
   .github/workflows/ # CI: pages.yml публікує прототипи на GitHub Pages, ci.yml перевіряє типи й тести; далі лінт, збірка web/
 ```

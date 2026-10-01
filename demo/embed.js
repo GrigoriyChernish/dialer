@@ -21,8 +21,9 @@ const CSS=`
 .dlr-panel iframe{flex:1;width:100%;border:0;background:#0b0d12}
 @media (max-width:479px){.dlr-panel{inset:0!important;width:auto;height:auto!important;border-radius:0;border:0}}`;
 
-window.Dialer={mount({token,server='',theme='auto',position='bottom-right',offset={x:24,y:24}}){
+window.Dialer={mount({token,server='',widget='',theme='auto',position='bottom-right',offset={x:24,y:24}}){
   if(!document.getElementById('dlr-css'))document.head.append(Object.assign(document.createElement('style'),{id:'dlr-css',textContent:CSS}));
+  const WID=widget?new URL(widget,location.href):WIDGET;  // widget: адреса іншого віджета, напр. Vue-версії на :5173
   const ls={},emit=(e,d)=>(ls[e]||[]).forEach(f=>f(d));
   const side=position==='bottom-left'?'left':'right';
   const btn=Object.assign(document.createElement('button'),{className:'dlr-btn',innerHTML:PHONE});
@@ -31,7 +32,7 @@ window.Dialer={mount({token,server='',theme='auto',position='bottom-right',offse
   panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Дзвонілка');
   panel.style.cssText=`${side}:${offset.x}px;bottom:${offset.y+76}px;height:min(640px,calc(100vh - ${offset.y+92}px))`;
   panel.innerHTML='<div class="dlr-bar">Дзвонілка<button class="dlr-x" aria-label="Згорнути">–</button></div>';
-  const src=new URL(WIDGET);src.search=new URLSearchParams({token,theme,host:location.origin,...(server&&{server}),_:Date.now()});  // _ обходить кеш iframe: статичний сервер не задає Cache-Control
+  const src=new URL(WID);src.search=new URLSearchParams({token,theme,host:location.origin,...(server&&{server}),_:Date.now()});  // _ обходить кеш iframe: статичний сервер не задає Cache-Control
   const frame=Object.assign(document.createElement('iframe'),{src,title:'Дзвонілка'});
   frame.allow='camera; microphone; autoplay; display-capture';  // без цього камера й мікрофон в iframe недоступні
   panel.append(frame);document.body.append(panel,btn);
@@ -45,7 +46,7 @@ window.Dialer={mount({token,server='',theme='auto',position='bottom-right',offse
   panel.querySelector('.dlr-x').onclick=()=>setOpen(false,true);
   const onKey=e=>{if(e.key==='Escape'&&open)setOpen(false,true)};
   // приймаємо повідомлення лише від свого iframe і з його origin
-  const onMsg=e=>{if(e.source!==frame.contentWindow||e.origin!==WIDGET.origin)return;const m=e.data||{};
+  const onMsg=e=>{if(e.source!==frame.contentWindow||e.origin!==WID.origin)return;const m=e.data||{};
     if(m.type==='ready')emit('ready');
     if(m.type==='close')setOpen(false,true);
     if(m.type==='token:expired')emit('token:expired');
@@ -54,7 +55,7 @@ window.Dialer={mount({token,server='',theme='auto',position='bottom-right',offse
       if(state==='connected')emit('call:started');
       if(was==='connected')emit('call:ended');}};
   addEventListener('message',onMsg);addEventListener('keydown',onKey);
-  const send=m=>frame.contentWindow?.postMessage(m,WIDGET.origin);
+  const send=m=>frame.contentWindow?.postMessage(m,WID.origin);
   return {
     on(e,f){(ls[e]??=[]).push(f);return this},
     open:()=>setOpen(true),close:()=>setOpen(false),
