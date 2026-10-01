@@ -7,5 +7,6 @@ defineProps<{ name: keyof typeof ICONS }>();
 </script>
 
 <template>
-  <component :is="ICONS[name]" class="size-6" aria-hidden="true" />
+  <!-- розмір за замовчуванням 24 (атрибут lucide); менші задає викликач класом size-*, як у дизайні: 16, 18, 12 -->
+  <component :is="ICONS[name]" aria-hidden="true" />
 </template>

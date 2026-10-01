@@ -27,6 +27,8 @@ const pill = computed<{ state: PillState; text: string } | null>(() => {
   if (call.link.peerMuted) return { state: 'micOff', text: t(`call.state.micOff.${g.value}`, { name: first.value }) };
   return null;
 });
+// дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена чи співрозмовник втратив зв'язок
+const dimmed = computed(() => ['hold', 'peerHold', 'connectionLost'].includes(pill.value?.state ?? ''));
 const missedIcon = computed(() => (call.missed?.reason === 'incoming' || call.missed?.reason === 'timeout' ? 'phoneMissed' : 'phoneOff'));
 const WAVE = [8, 16, 26, 16, 8];
 </script>
@@ -39,7 +41,7 @@ const WAVE = [8, 16, 26, 16, 8];
     style="background: linear-gradient(180deg, var(--stage-missed-glow), var(--bg))"
   >
     <div class="grid justify-items-center gap-2.5">
-      <Avatar :name="name" size="xl" dim />
+      <Avatar :name="name" size="xl" muted />
       <h3 class="text-[26px] font-bold">{{ name }}</h3>
       <p class="flex items-center gap-2 text-lg font-semibold text-call-bad"><Icon :name="missedIcon" class="size-[18px]" />{{ t(`call.missed.${call.missed.reason}`) }}</p>
       <small class="text-[13px] text-mute">{{ call.missed.note ? t(call.missed.note) : t(`call.missedNote.${call.missed.reason}`) }}</small>
@@ -56,7 +58,6 @@ const WAVE = [8, 16, 26, 16, 8];
       <b class="text-base font-semibold">{{ name }}</b>
       <span class="rounded-[14px] bg-surface px-2.5 py-1 text-[13px] font-medium tabular-nums">{{ mm(call.seconds) }}</span>
     </header>
-    <div v-if="pill" class="px-5 pt-1"><CallStatePill :state="pill.state">{{ pill.text }}</CallStatePill></div>
 
     <!-- «Ви»: мініатюра себе, як у дизайні -->
     <div v-if="connected" class="absolute right-4 top-[104px] z-10 grid h-[122px] w-[92px] place-items-center rounded-2xl border border-line bg-pip text-[13px] text-mute">{{ t('call.you') }}</div>
@@ -64,14 +65,15 @@ const WAVE = [8, 16, 26, 16, 8];
     <div class="flex flex-1 flex-col items-center justify-center gap-3 px-6">
       <span class="grid size-[200px] place-items-center rounded-full bg-accent/[.08]">
         <span class="grid size-[152px] place-items-center rounded-full bg-accent/[.14]" :class="!connected && 'animate-ring'">
-          <Avatar :name="name" size="xl" />
+          <Avatar :name="name" size="xl" :opacity="dimmed ? 0.6 : undefined" />
         </span>
       </span>
       <h3 class="mt-1 text-[26px] font-bold">{{ name }}</h3>
 
       <p v-if="call.status === 'ringing'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}</p>
       <p v-else-if="call.status === 'incoming'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}</p>
-      <div v-else-if="!pill || pill.state === 'micOff'" class="flex h-7 items-center gap-1" aria-hidden="true">
+      <CallStatePill v-else-if="pill" :state="pill.state">{{ pill.text }}</CallStatePill>
+      <div v-else class="flex h-7 items-center gap-1" aria-hidden="true">
         <i v-for="(h, i) in WAVE" :key="i" class="w-1 origin-center rounded-sm bg-accent motion-safe:animate-wave" :style="{ height: h + 'px', animationDelay: i * 0.12 + 's' }" />
       </div>
       <small v-if="!connected && call.left" class="text-xs text-mute">{{ t('call.left', { time: mm(call.left) }) }}</small>

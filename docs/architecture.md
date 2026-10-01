@@ -65,34 +65,39 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
 /* варіант dark: спрацьовує за атрибутом, а не лише за системною темою */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* світла тема */
-:root {
-  --bg: #eef0f6; --card: #fff; --fg: #12151f; --mute: #5b6478; --line: rgba(20, 24, 38, .1);
+/* значення з design/dialer.pen (темна тема, єдина в дизайні) */
+:root, [data-theme="dark"] {
+  --bg: #0a0c14; --fg: #f3f5fa; --mute: #b4bccd; --line: rgba(255, 255, 255, .18);
+  --card-top: #1c2338; --card-bottom: #121726; --stage-glow: #1e2340; --accent-icon: #a5a8ff;
 }
-/* темна тема */
-[data-theme="dark"] {
-  --bg: #0b0d12; --card: #161a24; --fg: #f3f5fa; --mute: #98a2b6; --line: rgba(255, 255, 255, .12);
+/* світла тема: поза дизайном, значення підібрані окремо */
+[data-theme="light"] {
+  --bg: #eef0f6; --fg: #12151f; --mute: #5b6478; --line: rgba(20, 24, 38, .12);
+  --card-top: #fff; --card-bottom: #f1f3fa; --stage-glow: #dfe3f7; --accent-icon: #4f46e5;
 }
 
 /* inline: утиліти посилаються на змінні, тому самі перемикаються разом з темою */
 @theme inline {
   --color-bg: var(--bg);
-  --color-card: var(--card);
+  --color-card-top: var(--card-top);
+  --color-card-bottom: var(--card-bottom);
+  --color-stage-glow: var(--stage-glow);
+  --color-accent-icon: var(--accent-icon);
   --color-fg: var(--fg);
   --color-mute: var(--mute);
   --color-line: var(--line);
   --color-accent: #6366f1;
   --color-call-ok: #22c55e;   /* кнопка «Прийняти» */
-  --color-call-bad: #ef4444;  /* кнопка «Завершити» */
-  --color-warn: #fbbf24;      /* відновлення, слабкий сигнал */
+  --color-call-bad: #f0626b;  /* кнопка «Завершити» */
+  --color-warn: #f5b84b;      /* утримання, слабкий сигнал */
 }
 ```
 
-- Кольори, відступи й радіуси беремо з демо й оголошуємо як токени в `@theme`. Tailwind сам створює з них утиліти,
-  наприклад `bg-card`, `text-mute`, `bg-call-ok`.
+- Кольори, відступи й радіуси беремо з `design/dialer.pen` (дизайн головніший за демо й документи) і оголошуємо як токени в `@theme`.
+  Tailwind сам створює з них утиліти, наприклад `text-mute`, `bg-call-ok`.
 - У компонентах пишемо утиліти прямо в шаблоні. Повторювані елементи (круглі кнопки дзвінка, аватари)
   виносимо в компоненти `shared/ui`, а не в класи з `@apply`.
-- Анімації з демо (пульсація аватара, хвиля голосу, спінер відновлення) описуємо через `@keyframes` у `main.css`
+- Анімації з демо (пульсація кілець, хвиля голосу) описуємо через `@keyframes` у `main.css`
   і токени `--animate-*` у `@theme`.
 - Поважаємо `prefers-reduced-motion`: анімації вимикаються варіантом `motion-reduce:`.
 
