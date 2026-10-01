@@ -10,11 +10,13 @@ const { variables } = JSON.parse(read('design/tokens.json'));
 const css = read('apps/web/src/app/styles/tokens.css');
 const doc = read('docs/design-system.md');
 
-// змінна дизайну → CSS-змінна. ok-soft й accent-soft у CSS задаються прозорістю утиліти (`/15`), тому тут їх немає.
+// змінна дизайну → CSS-змінна. Решта змінних (`*-soft`, `*-badge`, `accent-ring-*`, `on-solid`, `on-light`) у CSS задаються прозорістю утиліти
+// (`bg-warn/20`, `bg-accent/[.08]`) чи кольором `white`, власних CSS-змінних вони не мають, тож перевіряються лише в документації.
 const CSS_VAR = {
   bg: '--bg', fg: '--fg', mute: '--mute', line: '--line',
   'card-top': '--card-top', 'card-bottom': '--card-bottom',
   'stage-glow': '--stage-glow', 'stage-missed-glow': '--stage-missed-glow', 'accent-icon': '--accent-icon',
+  'surface-2': '--surface', 'surface-3': '--surface-strong', 'surface-tile': '--pip',
   accent: '--color-accent', ok: '--color-call-ok', bad: '--color-call-bad', warn: '--color-warn',
 };
 

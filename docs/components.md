@@ -7,16 +7,24 @@
 Коли компонент з'являється в коді або змінює API, оновлюйте цей документ у тому самому коміті.
 
 ## Відповідність дизайну
+Групи збігаються з контейнерами `Components · …` у [`design/dialer.pen`](../design/dialer.pen), див. [design-system.md](design-system.md#структура-файлу-дизайну).
 
-| Компонент у дизайні | Компонент у коді | Стан |
-|---|---|---|
-| `Avatar` | `shared/ui/Avatar.vue` | є |
-| `Action Button` | `shared/ui/RoundButton.vue` | є |
-| `Peer Banner / *` (peer-hold, connection-lost, mic-off) | `shared/ui/banners.ts` + `Banner` | є |
-| lucide-іконки | `shared/ui/Icon.vue` | є |
-| `Meta`, `Contact Row`, `Contact List` | `pages/ContactsPage.vue` (поки одним файлом) | є, без кнопки чату |
-| `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *` | `features/call/CallScreen.vue` | є |
-| `In Call · video`, `self mic & cam off`, `self status`, `self view hidden`, `video · peer-mic-off` | `features/call/CallScreen.vue` + `shared/ui/VideoSurface.vue` | є; відео співрозмовника з реальним потоком ще не перевірено на двох пристроях |
+| Група в дизайні | Компонент у дизайні | Компонент у коді | Стан |
+|---|---|---|---|
+| Base | `Status Bar` | немає (системна смуга телефона, у віджеті її не малюємо) | не потрібен |
+| Base | `Call Header` | `<header>` у `features/call/CallScreen.vue` | є |
+| Base | `Call Controls` | панель кнопок у `CallScreen.vue` | є |
+| Base | `Self View` | мініатюра у `CallScreen.vue` + `shared/ui/VideoSurface.vue` | є; відео з реальним потоком не перевірено на двох пристроях |
+| Base | `Action Button` | `shared/ui/RoundButton.vue` | є |
+| Base | (аватар у кожному екрані) | `shared/ui/Avatar.vue` | є |
+| Base | lucide-іконки | `shared/ui/Icon.vue` | є |
+| Contacts | `Meta`, `Contact Row`, `Contact List` | `pages/ContactsPage.vue` (одним файлом) | є, без кнопки чату |
+| Self Status | `Self Status / *` (5 значків) | `shared/ui/SelfStatusChip.vue` | є |
+| Banners | `Banner` | `shared/ui/Banner.vue` | є |
+| Banners | `Self Banner / *`, `Peer Banner / *` | `shared/ui/banners.ts` + `BannerStack.vue` | є |
+| Peer | `Peer`, `Peer Ring`, `Call Label`, `Result Label` | `features/call/Peer.vue` (+ підписи в слоті з `CallScreen.vue`) | є |
+| Peer | `Voice Wave`, `Voice Wave / silent` | `shared/ui/VoiceWave.vue` (`silent`) | є |
+| Екрани | `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *`, усі стани розмови | `features/call/CallScreen.vue` | є |
 
 ## Базові: `shared/ui`
 
@@ -35,7 +43,7 @@
 - **Props:** `variant: 'ok' | 'bad' | 'ghost'`, `label` (для `aria-label`), `active?: boolean` — увімкнений перемикач (білий фон, темна іконка).
 - **Слот:** іконка. **Стани:** звичайна, натиснута (`scale .95`), `active`, вимкнена. `bad` має червону тінь.
 
-### `Banner` (базовий) і похідні `Network Banner / *`, `Status Banner / *`, `Peer Banner / *`
+### `Banner` (базовий) і похідні `Self Banner / *`, `Peer Banner / *`
 Базова смужка-пігулка сповіщення. Похідні (див. `shared/ui/banners.ts`) лише задають тон, іконку й текст, власного вигляду не мають.
 - **Props:** `tone: 'warn' | 'accent' | 'bad' | 'neutral'`, `icon` (ім'я з `Icon`), `spin?: boolean` (іконка крутиться, для `loader`). **Слот:** текст.
 - Вигляд: радіус 20, підкладка `bg`, градієнт тону й рамка розчиняються вправо (див. [design-system.md](design-system.md#смужки-сповіщень-banner)); `pointer-events-none`.
@@ -48,7 +56,7 @@
 - Нове сповіщення додається елементом масиву з унікальним `id`, зникає, коли його прибрано; кожне анімується окремо:
   поява 220 мс `ease-out`, зникнення 180 мс `ease-in` (висота, прозорість, зсув 4 px). `prefers-reduced-motion` вимикає анімацію.
 - Текст лишається до кінця зникнення.
-- Додати нове сповіщення: вид у `banners.ts`, рядок у `banners` екрана розмови (`CallScreen`) і `Status Banner / <назва>` у дизайні.
+- Додати нове сповіщення: вид у `banners.ts`, рядок у `banners` екрана розмови (`CallScreen`) і `Self Banner / <назва>` у дизайні.
 
 ### `SelfStatusChip` (`Self Status / *`)
 Значок нашого стану в шапці розмови: круг 22 × 22, іконка 12.
@@ -74,6 +82,14 @@
 (див. [signaling.md](signaling.md#відповідність-дій-клієнта)). Отримує залежності через `init({ client, media, sounds })`, тож тестується без мережі.
 - Стан: `status` (`idle` / `ringing` / `incoming` / `connected`), `peer`, `hold`, `peerHold`, `mic`, `link` (стан зв'язку з кімнати LiveKit), `missed`, `left`, `seconds`.
 - Дії: `call`, `accept`, `end` (відхилити, скасувати чи завершити залежно від стану), `toggleHold`, `toggleMic`, `dismissMissed`.
+
+### `Peer`
+Блок співрозмовника 327 × 336 з трьома зонами фіксованої висоти (див. [design-system.md](design-system.md#блок-співрозмовника-peer)).
+- **Props:** `name`, `variant?: 'default' | 'dimmed' | 'result'`, `ringing?: boolean` (виклик: кільця й пульсація; під час розмови й на результаті кілець немає). **Слот:** вміст зони Status.
+- Розміщується `CallScreen` абсолютно на одній висоті (`.peer-pos`: `top: clamp(16px, 100% - 506px, 158px)`), тож шапка й кнопки його не зсувають.
+
+### `VoiceWave`
+Хвиля голосу: 5 смуг. **Props:** `silent?: boolean` — пласка приглушена (голосу немає: утримання, обрив, вимкнений мікрофон).
 
 ### `CallScreen`
 Шар поверх сторінки, показує екран за станом стору:
