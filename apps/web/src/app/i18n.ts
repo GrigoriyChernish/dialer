@@ -2,9 +2,9 @@ import { createI18n } from 'vue-i18n';
 
 export const messages = {
   uk: {
-    contacts: { title: 'Дзвінки', online: 'онлайн', offline: 'не в мережі', demo: 'демо-співрозмовник', noConnection: "Немає зв'язку з сервером", connecting: 'Підключаємось…', call: 'Подзвонити' },
+    contacts: { title: 'Дзвінки', online: 'онлайн', offline: 'не в мережі', demo: 'демо-співрозмовник', bot: { answers: 'онлайн · відповість', ignores: 'онлайн · не відповість', busy: 'у розмові · зайнято' }, noConnection: "Немає зв'язку з сервером", connecting: 'Підключаємось…', call: 'Подзвонити' },
     call: {
-      calling: 'Дзвонимо…', incoming: 'Вхідний дзвінок…', left: 'Залишилось {time}',
+      calling: 'Дзвонимо…', outgoing: 'Вихідний виклик', incomingLabel: 'Вхідний виклик', you: 'Ви', incoming: 'Вхідний дзвінок…', left: 'Залишилось {time}',
       accept: 'Прийняти', reject: 'Відхилити', cancel: 'Скасувати', hangup: 'Завершити',
       mute: 'Вимкнути мікрофон', unmute: 'Увімкнути мікрофон', hold: 'Утримання', resume: 'Продовжити',
       youHold: 'Ви поставили на утримання', peerHold: '{name} поставив(ла) на утримання', close: 'Закрити', redial: 'Передзвонити',

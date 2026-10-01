@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCallStore } from '@/features/call/store';
 import Avatar from '@/shared/ui/Avatar.vue';
@@ -7,27 +8,52 @@ import Icon from '@/shared/ui/Icon.vue';
 const { t } = useI18n();
 const call = useCallStore();
 const fmt = (p: string) => p.replace(/^\+380(\d\d)(\d{3})(\d\d)(\d\d)$/, '+380 $1 $2 $3 $4');
-const sub = (id: string, online: boolean) => (id.startsWith('bot:') ? t('contacts.demo') : `${fmt(id)} · ${online ? t('contacts.online') : t('contacts.offline')}`);
+// демо-боти мають сценарії (docs/demo.md): статус показує, як вони поведуться
+const BOTS: Record<string, { dot: string; text: string }> = {
+  'bot:olena': { dot: 'bg-call-ok', text: 'contacts.bot.answers' },
+  'bot:andriy': { dot: 'bg-warn', text: 'contacts.bot.ignores' },
+  'bot:support': { dot: 'bg-call-bad', text: 'contacts.bot.busy' },
+};
+// порядок з дизайну: спершу демо-боти (Олена, Андрій, Support), далі люди: ті, хто в мережі, вище
+const ORDER = ['bot:olena', 'bot:andriy', 'bot:support'];
+const sorted = computed(() =>
+  [...call.contacts].sort((a, b) => {
+    const ia = ORDER.indexOf(a.userId), ib = ORDER.indexOf(b.userId);
+    if (ia >= 0 || ib >= 0) return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    return Number(b.online) - Number(a.online) || a.name.localeCompare(b.name, 'uk');
+  }),
+);
+const dot = (id: string, online: boolean) => BOTS[id]?.dot ?? (online ? 'bg-call-ok' : 'bg-mute');
+const sub = (id: string, online: boolean) => (BOTS[id] ? t(BOTS[id].text) : `${fmt(id)} · ${online ? t('contacts.online') : t('contacts.offline')}`);
 </script>
 
 <template>
-  <section class="p-3">
-    <h2 class="px-2 pb-2 pt-1 text-xl font-semibold">{{ t('contacts.title') }}</h2>
-    <button
-      v-for="c in call.contacts"
-      :key="c.userId"
-      type="button"
-      class="flex w-full items-center gap-3 rounded-2xl p-2 text-left hover:bg-fg/5 focus-visible:outline-2 focus-visible:outline-accent"
-      @click="call.call(c.userId)"
+  <section class="p-4">
+    <div
+      class="grid gap-1 rounded-[28px] border border-line px-3 pb-2.5 pt-[18px]"
+      style="background: linear-gradient(160deg, var(--card-top), var(--card-bottom))"
     >
-      <Avatar :name="c.name" />
-      <span class="min-w-0 flex-1">
-        <b class="block truncate">{{ c.name }}</b>
-        <small class="text-mute">{{ sub(c.userId, c.online) }}</small>
-      </span>
-      <span class="grid size-10 place-items-center rounded-full bg-call-ok/15 text-call-ok" :title="t('contacts.call')"><Icon name="phone" class="size-5" /></span>
-    </button>
-    <p v-if="!call.online" class="px-3 py-2 text-sm text-mute" role="status">
+      <h2 class="sr-only">{{ t('contacts.title') }}</h2>
+      <button
+        v-for="c in sorted"
+        :key="c.userId"
+        type="button"
+        class="flex w-full items-center gap-3.5 rounded-[18px] px-2.5 py-[11px] text-left hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
+        :aria-label="`${t('contacts.call')}: ${c.name}`"
+        @click="call.call(c.userId)"
+      >
+        <Avatar :name="c.name" />
+        <span class="grid min-w-0 flex-1 gap-0.5">
+          <b class="truncate text-sm font-semibold">{{ c.name }}</b>
+          <small class="flex items-center gap-1.5 text-[11px] text-mute">
+            <i class="size-[7px] shrink-0 rounded-full" :class="dot(c.userId, c.online)" />
+            <span class="truncate">{{ sub(c.userId, c.online) }}</span>
+          </small>
+        </span>
+        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-call-ok/15 text-call-ok"><Icon name="phone" class="size-4" /></span>
+      </button>
+    </div>
+    <p v-if="!call.online" class="px-3 pt-3 text-sm text-mute" role="status">
       {{ t('contacts.noConnection') }}{{ call.netError ? ': ' + call.netError : '. ' + t('contacts.connecting') }}
     </p>
   </section>

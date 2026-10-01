@@ -7,8 +7,9 @@ const initials = computed(() => props.name.split(' ').map((w) => w[0]).join('').
 
 <template>
   <span
-    class="inline-grid shrink-0 place-items-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 font-semibold text-white"
-    :class="[size === 'xl' ? 'size-24 text-3xl' : 'size-11 text-base', dim && 'opacity-50 grayscale']"
+    class="inline-grid shrink-0 place-items-center rounded-full font-semibold text-white"
+    :class="[size === 'xl' ? 'size-26 text-[34px]' : 'size-12 text-sm', dim && 'opacity-50 grayscale']"
+    style="background: linear-gradient(135deg, #6366f1, #a855f7)"
     aria-hidden="true"
     >{{ initials }}</span
   >
