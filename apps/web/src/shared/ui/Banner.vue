@@ -9,10 +9,15 @@ import Icon, { type IconName } from './Icon.vue';
  * Вигляд: радіус 20 як у Call State; підкладка `bg` (85% → 0), градієнт тону (20% → 0) і тонка рамка (40% → 0)
  * розчиняються вправо, тож праворуч видно екран під смужкою, а текст зліва лишається на щільному тлі.
  */
-export type BannerTone = 'warn' | 'accent';
+export type BannerTone = 'warn' | 'accent' | 'bad' | 'neutral';
 defineProps<{ tone: BannerTone; icon: IconName; spin?: boolean }>();
 
-const BADGE = { warn: 'bg-warn/20 text-warn', accent: 'bg-accent/20 text-accent-icon' } as const;
+const BADGE = {
+  warn: 'bg-warn/20 text-warn',
+  accent: 'bg-accent/20 text-accent-icon',
+  bad: 'bg-call-bad/20 text-call-bad',
+  neutral: 'bg-mute/20 text-mute',
+} as const;
 </script>
 
 <template>
@@ -38,6 +43,12 @@ const BADGE = { warn: 'bg-warn/20 text-warn', accent: 'bg-accent/20 text-accent-
 }
 .banner.accent {
   --c: var(--color-accent);
+}
+.banner.bad {
+  --c: var(--color-call-bad);
+}
+.banner.neutral {
+  --c: var(--mute);
 }
 /* рамка теж розчиняється вправо: градієнт, вирізаний маскою в кільце завтовшки 1 px */
 .banner::before {

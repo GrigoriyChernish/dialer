@@ -10,8 +10,8 @@ export const messages = {
       mute: 'Вимкнути мікрофон', unmute: 'Увімкнути мікрофон', hold: 'Утримання', resume: 'Продовжити',
       notice: { cameraUnavailable: 'Камера недоступна', micUnavailable: 'Мікрофон недоступний' },
       network: { poorSignal: 'Слабкий сигнал', reconnecting: "Відновлюємо ваше з'єднання" },
-      state: {
-        peerHold: { f: '{name} поставила на утримання', m: '{name} поставив на утримання' },
+      peer: {
+        hold: { f: '{name} поставила на утримання', m: '{name} поставив на утримання' },
         connectionLost: { f: "{name} втратила з'єднання · чекаємо до 30 с", m: "{name} втратив з'єднання · чекаємо до 30 с" },
         micOff: { f: '{name} вимкнула мікрофон', m: '{name} вимкнув мікрофон' },
       },

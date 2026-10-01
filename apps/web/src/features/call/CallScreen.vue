@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Avatar from '@/shared/ui/Avatar.vue';
-import CallStatePill, { type PillState } from '@/shared/ui/CallStatePill.vue';
 import Icon from '@/shared/ui/Icon.vue';
 import BannerStack, { type BannerItem } from '@/shared/ui/BannerStack.vue';
 import { banner } from '@/shared/ui/banners';
@@ -22,14 +21,17 @@ const connected = computed(() => call.status === 'connected');
 // екран «In Call · video»: на весь екран відео співрозмовника
 const video = computed(() => connected.value && call.link.peerCam && !call.peerHold);
 
-// плашка під іменем лише про співрозмовника (утримання, зв'язок, мікрофон); наш бік у шапці (значки) і смужках
-const pill = computed<{ state: PillState; text: string } | null>(() => {
-  if (!connected.value) return null;
-  if (call.peerHold) return { state: 'peerHold', text: t(`call.state.peerHold.${g.value}`, { name: first.value }) };
-  if (call.link.peerAway) return { state: 'connectionLost', text: t(`call.state.connectionLost.${g.value}`, { name: first.value }) };
-  if (call.link.peerMuted) return { state: 'micOff', text: t(`call.state.micOff.${g.value}`, { name: first.value }) };
-  return null;
+// смужка співрозмовника внизу над панеллю керування (дизайн: Peer Banner), одна за раз: утримання, зв'язок, мікрофон
+const peerBanners = computed<BannerItem[]>(() => {
+  if (!connected.value) return [];
+  const who = { name: first.value };
+  if (call.peerHold) return [banner('peerHold', t(`call.peer.hold.${g.value}`, who))];
+  if (call.link.peerAway) return [banner('connectionLost', t(`call.peer.connectionLost.${g.value}`, who))];
+  if (call.link.peerMuted) return [banner('peerMicOff', t(`call.peer.micOff.${g.value}`, who))];
+  return [];
 });
+// хвиля голосу лише коли співрозмовник на зв'язку й говорить може (без утримання, обриву й вимкненого мікрофона)
+const talking = computed(() => peerBanners.value.length === 0);
 // дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена чи співрозмовник втратив зв'язок
 const dimmed = computed(() => call.hold || call.peerHold || call.link.peerAway);
 // смужки під шапкою (дизайн: Network Banner, Status Banner): наша мережа, потім сповіщення про наші пристрої
@@ -95,10 +97,10 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
     </header>
     <!-- смужки-пігулки поверх екрана під шапкою (h-10 + 6), відступ 16 з боків, вміст не зсувають -->
     <BannerStack v-if="connected" class="pointer-events-none absolute inset-x-4 top-[46px] z-20" :items="banners" />
+    <!-- смужка співрозмовника внизу: над панеллю керування (відступ 40 + висота панелі 74 + проміжок 8) -->
+    <BannerStack v-if="connected" class="pointer-events-none absolute inset-x-4 bottom-[122px] z-20" :items="peerBanners" />
 
     <div class="relative flex min-h-0 flex-1 flex-col">
-      <div v-if="video && pill" class="absolute left-5 top-2 z-10"><CallStatePill :state="pill.state">{{ pill.text }}</CallStatePill></div>
-
       <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); без камери їх не показуємо -->
       <template v-if="connected && !call.camBlocked">
         <button
@@ -134,8 +136,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
 
         <p v-if="call.status === 'ringing'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneOutgoing" class="size-4" />{{ t('call.outgoing') }}</p>
         <p v-else-if="call.status === 'incoming'" class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"><Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}</p>
-        <CallStatePill v-else-if="pill" :state="pill.state">{{ pill.text }}</CallStatePill>
-        <div v-else class="flex h-7 items-center gap-1" aria-hidden="true">
+        <div v-else-if="talking" class="flex h-7 items-center gap-1" aria-hidden="true">
           <i v-for="(h, i) in WAVE" :key="i" class="w-1 origin-center rounded-sm bg-accent motion-safe:animate-wave" :style="{ height: h + 'px', animationDelay: i * 0.12 + 's' }" />
         </div>
         <small v-if="!connected && call.left" class="text-xs text-mute">{{ t('call.left', { time: mm(call.left) }) }}</small>
