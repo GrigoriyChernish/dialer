@@ -77,6 +77,43 @@ describe('медіа і lost через WebSocket та вебхук', () => {
     b.client.close();
   });
 
+  it('без вебхуків сервер питає LiveKit: обидва в кімнаті — розмова триває, хтось вийшов — lost', async () => {
+    const [pa, pb] = [phone(), phone()];
+    const a = await connectUser(server, 'Даша', pa);
+    const b = await connectUser(server, 'Едик', pb);
+    a.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    const callId = (await a.client.next('ack')).call!.callId;
+    await b.client.next('call.incoming');
+    b.client.send({ type: 'call.accept', id: 'x1', callId });
+    await b.client.next('ack');
+    await a.client.next('call.connected');
+    const tick = () => new Promise((r) => setTimeout(r, 30));
+    const ended = () => a.client.frames.filter((f) => f.type === 'call.ended');
+
+    // вебхуків немає, але LiveKit бачить обох: 30 с, ще 60 с — розмова жива
+    server.roomParticipants.set(callId, [`+38${pa}:d1`, `+38${pb}:d1`]);
+    clock.advance(30_000);
+    await tick();
+    clock.advance(60_000);
+    await tick();
+    expect(ended()).toEqual([]);
+
+    // LiveKit недоступний: дзвінок не рвемо
+    server.lk.roomsDown = true;
+    clock.advance(30_000);
+    await tick();
+    expect(ended()).toEqual([]);
+    server.lk.roomsDown = false;
+
+    // Едик вийшов з кімнати: на наступній перевірці lost
+    server.roomParticipants.set(callId, [`+38${pa}:d1`]);
+    clock.advance(30_000);
+    expect(await a.client.next('call.ended')).toMatchObject({ callId, reason: 'lost' });
+    expect(await b.client.next('call.ended')).toMatchObject({ callId, reason: 'lost' });
+    a.client.close();
+    b.client.close();
+  });
+
   it('вебхук з неправильним підписом відхиляється й нічого не змінює', async () => {
     const forged = await signedWebhook({ event: 'room_finished', room: { name: 'call' } }, { ...LIVEKIT_TEST, apiSecret: 'f'.repeat(32) });
     expect((await postWebhook('room_finished', 'call', '', forged)).status).toBe(401);

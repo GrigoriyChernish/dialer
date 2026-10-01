@@ -32,12 +32,23 @@ export async function startServer(
   };
   // REST-виклики LiveKit підмінено: запам'ятовуємо закриті кімнати
   const closedRooms: string[] = [];
-  const livekitRooms = { deleteRoom: async (room: string) => void closedRooms.push(room), listParticipants: async () => [] };
+  // учасники кімнат для listParticipants; `roomsDown` імітує недоступний LiveKit
+  const roomParticipants = new Map<string, string[]>();
+  const lk = { roomsDown: false };
+  const livekitRooms = {
+    deleteRoom: async (room: string) => void closedRooms.push(room),
+    listParticipants: async (room: string) => {
+      if (lk.roomsDown) throw new Error('livekit down');
+      return roomParticipants.get(room) ?? [];
+    },
+  };
   const server = await createServer({ config, logger: pino({ level: 'silent' }), timeouts, clock: extra.clock, livekitRooms });
   const port = await server.listen();
   return {
     ...server,
     closedRooms,
+    roomParticipants,
+    lk,
     http: `http://127.0.0.1:${port}`,
     ws: `ws://127.0.0.1:${port}/ws`,
   };

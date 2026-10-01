@@ -275,12 +275,32 @@ export function createCallService(deps: CallServiceDeps) {
       timers.get(key)?.();
       timers.delete(key);
     } else if (!timers.has(key)) {
-      armTimer(key, LOST_GRACE_MS, () => {
-        timers.delete(key);
-        const current = store.get(id);
-        if (current?.state === 'connected') deps.deliver(end(current, 'lost'));
-      });
+      armTimer(key, LOST_GRACE_MS, () => void checkLost(id));
     }
+  }
+
+  /**
+   * Відлік `lost` сплив: перед завершенням питаємо LiveKit напряму, бо вебхук міг не дійти (чи не налаштований).
+   * Обидва в кімнаті чи LiveKit недоступний: перевіряємо знову через `LOST_GRACE_MS`, тож обрив помітимо й без вебхуків.
+   */
+  async function checkLost(id: string) {
+    const key = `lost:${id}`;
+    timers.delete(key);
+    if (store.get(id)?.state !== 'connected') return;
+    let present: Set<string> | null = null;
+    try {
+      present = new Set(await deps.livekit!.listParticipants(id));
+    } catch (err) {
+      log.warn({ err, callId: id }, 'не вдалося отримати учасників кімнати');
+    }
+    const current = store.get(id);
+    if (current?.state !== 'connected' || timers.has(key)) return;
+    if (present) media.set(id, present);
+    if (present && !expectedIdentities(current).every((identity) => present.has(identity))) {
+      deps.deliver(end(current, 'lost'));
+      return;
+    }
+    armTimer(key, LOST_GRACE_MS, () => void checkLost(id));
   }
 
   function expire(id: string) {

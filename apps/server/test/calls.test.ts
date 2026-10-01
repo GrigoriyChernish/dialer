@@ -417,6 +417,9 @@ describe('другий вхідний (waiting)', () => {
   });
 });
 
+/** Дає завершитись асинхронній перевірці кімнати в LiveKit. */
+const flush = () => new Promise((r) => setTimeout(r, 0));
+
 describe('LiveKit і правило lost', () => {
   let t: ReturnType<typeof setup>;
   const id = (a: Actor) => `${a.userId}:${a.deviceId}`;
@@ -460,11 +463,12 @@ describe('LiveKit і правило lost', () => {
     expect(find(t.delivered, 'call.ended').filter((e) => e.msg.reason === 'lost')).toEqual([]);
   });
 
-  it('lost: ніхто не зайшов у кімнату за 30 с', () => {
+  it('lost: ніхто не зайшов у кімнату за 30 с', async () => {
     connected();
     t.clock.advance(29_999);
     expect(t.delivered).toEqual([]);
     t.clock.advance(1);
+    await flush(); // перед lost сервер питає LiveKit, хто в кімнаті
     expect(find(t.delivered, 'call.ended').map((e) => [e.user, e.msg.reason, e.msg.duration])).toEqual([
       [anna.userId, 'lost', 30],
       [bohdan.userId, 'lost', 30],
@@ -473,7 +477,7 @@ describe('LiveKit і правило lost', () => {
     expect(t.lk.closed).toEqual(['call1']);
   });
 
-  it('обидва в кімнаті: lost не спрацьовує; вихід одного запускає відлік, повернення скасовує', () => {
+  it('обидва в кімнаті: lost не спрацьовує; вихід одного запускає відлік, повернення скасовує', async () => {
     connected();
     t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(anna) });
     t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(bohdan) });
@@ -488,14 +492,16 @@ describe('LiveKit і правило lost', () => {
 
     t.calls.onMedia({ kind: 'left', callId: 'call1', identity: id(anna) });
     t.clock.advance(30_000);
+    await flush();
     expect(find(t.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['lost', 'lost']);
   });
 
-  it('сторонні ідентичності не рахуються, room_finished запускає відлік', () => {
+  it('сторонні ідентичності не рахуються, room_finished запускає відлік', async () => {
     connected();
     t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(anna) });
     t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: `${bohdan.userId}:інший` });
     t.clock.advance(30_000);
+    await flush();
     expect(find(t.delivered, 'call.ended')).toHaveLength(2);
 
     const t2 = setup({ livekit: true });
@@ -505,6 +511,7 @@ describe('LiveKit і правило lost', () => {
     t2.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(bohdan) });
     t2.calls.onMedia({ kind: 'finished', callId: 'call1' });
     t2.clock.advance(30_000);
+    await flush();
     expect(find(t2.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['lost', 'lost']);
   });
 
@@ -551,6 +558,7 @@ describe('LiveKit і правило lost', () => {
     await restarted3.restoreMedia();
     t3.delivered.length = 0;
     t3.clock.advance(30_000);
+    await flush();
     expect(find(t3.delivered, 'call.ended').map((e) => e.msg.reason)).toEqual(['lost', 'lost']);
   });
 
