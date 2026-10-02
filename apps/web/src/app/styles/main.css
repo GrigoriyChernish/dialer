@@ -4,12 +4,13 @@
 /* варіант dark: за атрибутом, а не лише за системною темою */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/* колір пульсації задає Peer через --ring-rgb (accent для вихідного, ok для вхідного) */
 @keyframes ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 0 rgb(var(--ring-rgb, 99 102 241) / 0.5);
   }
   100% {
-    box-shadow: 0 0 0 28px rgba(99, 102, 241, 0);
+    box-shadow: 0 0 0 28px rgb(var(--ring-rgb, 99 102 241) / 0);
   }
 }
 

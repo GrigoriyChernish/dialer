@@ -31,6 +31,14 @@ const CSS_VAR = {
   warn: '--color-warn',
 };
 
+// токени, яких немає в dialer.pen (додані в коді, поки дизайн не оновлено): текстові варіанти кольорів стану для світлої теми.
+// У темній вони збігаються з warn, bad, ok. Перевіряємо CSS (обидві теми) і наявність значень у документації.
+const CODE_ONLY = {
+  '--warn-text': { dark: '#F5B84B', light: '#9A4A08' },
+  '--bad-text': { dark: '#F0626B', light: '#B91C2E' },
+  '--ok-text': { dark: '#22C55E', light: '#0D7030' },
+};
+
 // приводить #RGB, #RRGGBB, #RRGGBBAA і rgba(r,g,b,a) до #rrggbb або #rrggbbaa
 function norm(v) {
   v = v.trim().toLowerCase();
@@ -82,6 +90,17 @@ for (const [name, value] of Object.entries(light)) {
   }
   if (!doc.toLowerCase().includes(value.toLowerCase()))
     errors.push(`docs/design-system.md: немає світлого значення ${value} (${name})`);
+}
+
+for (const [cssName, v] of Object.entries(CODE_ONLY)) {
+  const gotDark = declared(cssName, dark);
+  if (gotDark !== norm(v.dark))
+    errors.push(`CSS: ${cssName} (темна) = ${gotDark ?? 'немає'}, очікується ${norm(v.dark)}`);
+  const gotLight = declared(cssName, lightCss);
+  if (gotLight !== norm(v.light))
+    errors.push(`CSS: ${cssName} (світла) = ${gotLight ?? 'немає'}, очікується ${norm(v.light)}`);
+  if (!doc.toLowerCase().includes(v.light.toLowerCase()))
+    errors.push(`docs/design-system.md: немає значення ${v.light} (${cssName})`);
 }
 
 if (errors.length) {
