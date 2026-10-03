@@ -311,15 +311,47 @@ describe('call store', () => {
     expect(store.micBlocked).toBe(true);
   });
 
-  it('shows the call result when the peer hangs up, and closes it after 2 s', async () => {
+  it('shows the call result when the peer hangs up, and closes it after 5 s', async () => {
     const { store, send } = setup();
     await store.call(olena.userId);
     send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
     vi.useFakeTimers();
     send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup', duration: 222 });
     expect(store.missed).toMatchObject({ reason: 'ended', duration: 222 });
-    vi.advanceTimersByTime(2000);
+    vi.advanceTimersByTime(4999);
+    expect(store.missed).not.toBeNull();
+    vi.advanceTimersByTime(1);
     expect(store.missed).toBeNull();
+  });
+
+  it('replaces the ended screen with a new incoming call, and its timer does not touch the new call', async () => {
+    const { store, send } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    vi.useFakeTimers();
+    send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup', duration: 60 });
+    vi.advanceTimersByTime(2000);
+    send({ v: V, type: 'call.incoming', call: info({ callId: 'c2', direction: 'in' }) });
+    expect(store.status).toBe('incoming');
+    expect(store.missed).toBeNull();
+    vi.advanceTimersByTime(10_000);
+    expect(store.status).toBe('incoming');
+    send({ v: V, type: 'call.ended', callId: 'c2', reason: 'cancelled' });
+    expect(store.missed?.reason).toBe('incoming');
+    vi.advanceTimersByTime(60_000);
+    expect(store.missed?.reason).toBe('incoming'); // пропущений дзвінок сам не зникає
+  });
+
+  it('drops the ended screen when we start a new call', async () => {
+    const { store, send } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    vi.useFakeTimers();
+    send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup', duration: 60 });
+    await store.call(olena.userId);
+    expect(store.missed).toBeNull();
+    vi.advanceTimersByTime(10_000);
+    expect(store.status).toBe('ringing');
   });
 
   it('keeps lost and failed calls on screen, but shows nothing after our own hangup', async () => {
