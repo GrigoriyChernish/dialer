@@ -12,6 +12,7 @@ import SettingsPage from '@/pages/SettingsPage.vue';
 import { usePrefsStore } from '@/features/settings/prefs';
 import { createAuthApi } from '@/shared/api/auth';
 import { SignalingClient } from '@/shared/api/signaling';
+import { applyTheme } from '@/shared/theme';
 import { CallMedia } from '@/shared/media/room';
 import { Sounds } from '@/shared/sounds/sounds';
 
@@ -39,11 +40,11 @@ const client: SignalingClient = new SignalingClient({
   onAuthFailed: () => void session.refresh().then(ok => ok && client.connect()),
 });
 const call = useCallStore(pinia);
-// тема з налаштувань (лише цей пристрій): «Авто» — системна; у віджеті тему задає сайт-господар, тому лише тут
+// тема з налаштувань (лише цей пристрій) і колір статус-бару: «Авто» — системна; у віджеті тему задає сайт-господар, тому лише тут
 const prefs = usePrefsStore(pinia);
 watch(
   () => prefs.theme,
-  th => (th === 'auto' ? delete document.documentElement.dataset.theme : (document.documentElement.dataset.theme = th)),
+  th => applyTheme(th),
   { immediate: true },
 );
 call.init({ client, media: new CallMedia(), sounds: new Sounds() });
