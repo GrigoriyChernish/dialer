@@ -89,6 +89,7 @@ watch(
               :status="status(r)"
               :icon="icon(r)"
               :tone="TONE[r.result]"
+              :direction="r.direction"
               @call="call.call(r.peer)"
             />
           </div>

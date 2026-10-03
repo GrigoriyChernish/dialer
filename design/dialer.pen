@@ -1900,11 +1900,11 @@
                           "id": "rK0hn",
                           "type": "ref",
                           "ref": "c9bZD6",
-                          "name": "Missed",
+                          "name": "History",
                           "width": "fill_container",
                           "descendants": {
                             "c5pK3": {
-                              "icon": "phone-missed"
+                              "icon": "history"
                             },
                             "b8kpR": {
                               "enabled": true
@@ -3478,7 +3478,7 @@
           "id": "DQdii",
           "name": "Title",
           "fill": "$mute",
-          "content": "Flow · Contacts",
+          "content": "Flow · Contacts (вкладки «Історія», «Контакти», «Пошук»)",
           "fontFamily": "Inter",
           "fontSize": 14,
           "fontWeight": "600"
@@ -3488,7 +3488,7 @@
           "id": "sYh3i",
           "name": "Note",
           "fill": "$mute",
-          "content": "Порожній список: картку не показуємо, замість неї Empty State по центру тіла. Пошук без результатів: поле лишається, під ним Empty State. Перше завантаження (до hello.ok): заготовка з рядків Contact Row / skeleton і Home Header / loading; без зв'язку довше 3 с — Empty State з підписом.",
+          "content": "Порожній список: картку не показуємо, замість неї Empty State по центру тіла («Дзвінків ще не було» в історії). Історія: усі дзвінки за днями, напрям значком, результат кольором аватара (пропущений bad, не додзвонились warn, решта звичайний). Пошук без результатів: поле лишається, під ним Empty State. Перше завантаження (до hello.ok): заготовка з рядків Contact Row / skeleton і Home Header / loading; без зв'язку довше 3 с — Empty State з підписом.",
           "fontFamily": "Inter",
           "fontSize": 12,
           "fontWeight": "normal"
@@ -5017,7 +5017,7 @@
               "type": "frame",
               "id": "cLV9y",
               "name": "Home · Contacts · loading",
-              "context": "Перше завантаження: до hello.ok. Показуємо через 300 мс, щоб не блимало. Мітки присутності й лічильника пропущених немає, поки стан невідомий.",
+              "context": "Перше завантаження: до hello.ok. Показуємо через 300 мс, щоб не блимало. Мітки присутності й лічильника пропущених на вкладці «Історія» немає, поки стан невідомий.",
               "clip": true,
               "width": 375,
               "height": 844,
@@ -5227,7 +5227,7 @@
               "type": "frame",
               "id": "bshIE",
               "name": "Home · History · loading",
-              "context": "Перше завантаження вкладки «Пропущені»: та сама заготовка, що й у контактах.",
+              "context": "Перше завантаження вкладки «Історія»: та сама заготовка, що й у контактах.",
               "clip": true,
               "width": 375,
               "height": 844,
@@ -5505,6 +5505,76 @@
                       "enabled": false
                     }
                   }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lwTqI",
+              "name": "Home · History · offline",
+              "context": "Перше завантаження вкладки «Історія», а зв'язку з сервером немає довше 3 с: Empty State, як у контактах.",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "GgXKz",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar"
+                },
+                {
+                  "id": "bPpsx",
+                  "type": "ref",
+                  "ref": "SmkWd",
+                  "name": "Home Header"
+                },
+                {
+                  "type": "frame",
+                  "id": "TTE4i",
+                  "name": "Body",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    80,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "HKr41",
+                      "type": "ref",
+                      "ref": "Uz2w8",
+                      "name": "Empty State",
+                      "width": "fill_container",
+                      "descendants": {
+                        "b1vBa": {
+                          "icon": "wifi-off"
+                        },
+                        "S2DMy": {
+                          "content": "Немає зв'язку з сервером"
+                        },
+                        "yfdH9": {
+                          "enabled": true
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "Ep6Wu",
+                  "type": "ref",
+                  "ref": "RqHiy",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
                 }
               ]
             }

@@ -59,6 +59,8 @@ describe('HistoryPage', () => {
     expect(avatar(0)).toContain('color-mix');
     expect(avatar(3)).toContain('color-mix');
     expect(avatar(1)).not.toContain('color-mix');
+    expect(rows[1]!.find('small span').classes()).toContain('text-ok-text');
+    expect(rows[2]!.find('small span').classes()).toContain('text-accent-icon');
     expect(rows[0]!.find('small span').classes()).toContain('text-bad-text');
   });
 

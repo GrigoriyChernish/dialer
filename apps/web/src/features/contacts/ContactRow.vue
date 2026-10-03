@@ -8,20 +8,22 @@ import Icon, { type IconName } from '@/shared/ui/Icon.vue';
  * Рядок контакту (дизайн: Contact Row, Contact Row / history): весь рядок дзвонить.
  * Контакти: `dot` — клас кольору крапки статусу присутності.
  * Історія: `icon` — напрям дзвінка замість крапки; `tone` — як у станів Peer Ring: приглушений аватар кольору результату
- * (`bad` пропущений, `warn` не додзвонились) і статус того ж кольору; без `tone` звичайний аватар.
+ * (`bad` пропущений, `warn` не додзвонились) і статус того ж кольору; без `tone` звичайний аватар, а значок і статус за `direction`
+ * (вхідний зелений `ok`, вихідний синій `accent`, як кільця виклику в Peer).
  */
-const props = defineProps<{ name: string; status: string; dot?: string; icon?: IconName; tone?: 'bad' | 'warn' }>();
+const props = defineProps<{ name: string; status: string; dot?: string; icon?: IconName; tone?: 'bad' | 'warn'; direction?: 'in' | 'out' }>();
 defineEmits<{ call: [] }>();
 const { t } = useI18n();
 const TONES = {
   bad: { text: 'text-bad-text', color: '#f0626b' },
   warn: { text: 'text-warn-text', color: '#f5b84b' },
 } as const;
-const tone = computed(() => (props.tone ? TONES[props.tone] : null));
+const DIRECTIONS = { in: { text: 'text-ok-text' }, out: { text: 'text-accent-icon' } } as const;
+const tone = computed(() => (props.tone ? TONES[props.tone] : props.direction ? DIRECTIONS[props.direction] : null));
 // приглушений аватар, як у станів Peer Ring: bg + 20% кольору результату, ініціали `*-text`
 const muted = computed(() => {
-  if (!tone.value) return {};
-  const c = `color-mix(in srgb, ${tone.value.color} 20%, var(--bg))`;
+  if (!props.tone) return {};
+  const c = `color-mix(in srgb, ${TONES[props.tone].color} 20%, var(--bg))`;
   return { gradient: [c, c], color: `var(--${props.tone}-text)` };
 });
 </script>
