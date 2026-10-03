@@ -22,6 +22,8 @@ const props = defineProps<{
   muted?: boolean;
   opacity?: number;
   gradient?: string[];
+  /** Колір ініціалів замість білого (приглушені аватари станів співрозмовника). */
+  color?: string;
 }>();
 const SIZES = { sm: 'size-9 text-xs', md: 'size-12 text-sm', lg: 'size-14 text-xl', xl: 'size-26 text-[34px]' };
 const initials = computed(() =>
@@ -35,6 +37,7 @@ const initials = computed(() =>
 const style = computed(() => ({
   background: `linear-gradient(135deg, ${(props.muted ? ['#6b7080', '#7a6e86'] : (props.gradient ?? palette(props.name))).join(', ')})`,
   opacity: props.muted ? 0.55 : props.opacity,
+  color: props.color,
 }));
 </script>
 

@@ -46,6 +46,44 @@
               "children": [
                 {
                   "type": "frame",
+                  "id": "q3YfM",
+                  "layoutPosition": "absolute",
+                  "x": 24,
+                  "y": 24,
+                  "name": "Voice Outer",
+                  "width": 152,
+                  "height": 152,
+                  "fill": "$clear",
+                  "cornerRadius": 76
+                },
+                {
+                  "type": "frame",
+                  "id": "j4nlP8",
+                  "layoutPosition": "absolute",
+                  "x": 36,
+                  "y": 36,
+                  "name": "Voice Inner",
+                  "width": 128,
+                  "height": 128,
+                  "fill": "$clear",
+                  "cornerRadius": 64
+                },
+                {
+                  "type": "frame",
+                  "id": "tquxd",
+                  "layoutPosition": "absolute",
+                  "x": 32,
+                  "y": 32,
+                  "name": "State Ring",
+                  "width": 136,
+                  "height": 136,
+                  "fill": "$clear",
+                  "cornerRadius": 68,
+                  "stroke": "$clear",
+                  "strokeWidth": 2
+                },
+                {
+                  "type": "frame",
                   "id": "XBC2T",
                   "name": "Ring Inner",
                   "width": 152,
@@ -99,96 +137,6 @@
                   ]
                 }
               ]
-            },
-            {
-              "type": "frame",
-              "id": "CDylJ",
-              "name": "Voice Wave",
-              "reusable": true,
-              "height": 28,
-              "gap": 4,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": 2,
-                  "id": "Kbqle",
-                  "name": "Bar",
-                  "fill": "$accent",
-                  "width": 4,
-                  "height": 8
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": 2,
-                  "id": "b5oC3k",
-                  "name": "Bar",
-                  "fill": "$accent",
-                  "width": 4,
-                  "height": 16
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": 2,
-                  "id": "ndvkF",
-                  "name": "Bar",
-                  "fill": "$accent",
-                  "width": 4,
-                  "height": 26
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": 2,
-                  "id": "KPX9K",
-                  "name": "Bar",
-                  "fill": "$accent",
-                  "width": 4,
-                  "height": 16
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": 2,
-                  "id": "cErId",
-                  "name": "Bar",
-                  "fill": "$accent",
-                  "width": 4,
-                  "height": 8
-                }
-              ]
-            },
-            {
-              "id": "ziKFN",
-              "type": "ref",
-              "reusable": true,
-              "ref": "CDylJ",
-              "name": "Voice Wave / silent",
-              "descendants": {
-                "Kbqle": {
-                  "height": 4,
-                  "fill": "$mute",
-                  "opacity": 0.5
-                },
-                "b5oC3k": {
-                  "height": 4,
-                  "fill": "$mute",
-                  "opacity": 0.5
-                },
-                "ndvkF": {
-                  "height": 4,
-                  "fill": "$mute",
-                  "opacity": 0.5
-                },
-                "KPX9K": {
-                  "height": 4,
-                  "fill": "$mute",
-                  "opacity": 0.5
-                },
-                "cErId": {
-                  "height": 4,
-                  "fill": "$mute",
-                  "opacity": 0.5
-                }
-              }
             },
             {
               "type": "frame",
@@ -271,7 +219,7 @@
                       "type": "text",
                       "id": "gvZuH",
                       "name": "Label",
-                      "fill": "$bad",
+                      "fill": "$bad-text",
                       "content": "Зайнято",
                       "fontFamily": "Inter",
                       "fontSize": 18,
@@ -334,23 +282,13 @@
                   "id": "fAYS0",
                   "name": "Status",
                   "slot": [
-                    "CDylJ",
-                    "ziKFN",
                     "d5Zxq",
                     "iLLnQ"
                   ],
                   "width": "fill_container",
                   "height": 64,
                   "layout": "vertical",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "id": "lwNfc",
-                      "type": "ref",
-                      "ref": "CDylJ",
-                      "name": "Voice Wave"
-                    }
-                  ]
+                  "alignItems": "center"
                 }
               ]
             },
@@ -372,6 +310,191 @@
                 "enabled": true,
                 "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
                 "mode": "cover"
+              }
+            },
+            {
+              "id": "Br6wN",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n8jnj",
+              "name": "Peer Ring / out",
+              "fill": "$accent-ring-outer",
+              "descendants": {
+                "XBC2T": {
+                  "fill": "$accent-ring-inner"
+                },
+                "R7iiJ": {
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 135,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$accent",
+                        "position": 0
+                      },
+                      {
+                        "color": "$avatar-blue",
+                        "position": 1
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "id": "XG8uI",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n8jnj",
+              "name": "Peer Ring / in",
+              "fill": "$ok-ring-outer",
+              "descendants": {
+                "XBC2T": {
+                  "fill": "$ok-ring-inner"
+                },
+                "R7iiJ": {
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 135,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$ok",
+                        "position": 0
+                      },
+                      {
+                        "color": "$avatar-teal",
+                        "position": 1
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "id": "Lm0a8",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n8jnj",
+              "name": "Peer Ring / speaking",
+              "descendants": {
+                "q3YfM": {
+                  "fill": "$voice-ring-outer"
+                },
+                "j4nlP8": {
+                  "fill": "$voice-ring-inner"
+                }
+              }
+            },
+            {
+              "id": "w68su",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n8jnj",
+              "name": "Peer Ring / hold",
+              "descendants": {
+                "tquxd": {
+                  "stroke": "$warn-edge"
+                },
+                "R7iiJ": {
+                  "fill": [
+                    "$bg",
+                    "$warn-soft"
+                  ],
+                  "stroke": "$warn-edge",
+                  "strokeWidth": 1
+                },
+                "jbPVz": {
+                  "fill": "$warn-text"
+                }
+              }
+            },
+            {
+              "id": "BqVa3",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n8jnj",
+              "name": "Peer Ring / lost",
+              "descendants": {
+                "tquxd": {
+                  "stroke": "$bad-edge"
+                },
+                "R7iiJ": {
+                  "fill": [
+                    "$bg",
+                    "$bad-soft"
+                  ],
+                  "opacity": 0.6,
+                  "stroke": "$bad-edge",
+                  "strokeWidth": 1
+                },
+                "jbPVz": {
+                  "fill": "$bad-text"
+                }
+              }
+            },
+            {
+              "id": "Bb1Yu",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n8jnj",
+              "name": "Peer Ring / mic-off",
+              "descendants": {
+                "tquxd": {
+                  "stroke": "$mute-edge"
+                },
+                "R7iiJ": {
+                  "fill": [
+                    "$bg",
+                    "$mute-soft"
+                  ],
+                  "stroke": "$mute-edge",
+                  "strokeWidth": 1,
+                  "opacity": 1
+                },
+                "jbPVz": {
+                  "fill": "$mute"
+                }
+              }
+            },
+            {
+              "id": "Ok2fa",
+              "type": "ref",
+              "reusable": true,
+              "ref": "n8jnj",
+              "name": "Peer Ring / result",
+              "descendants": {
+                "R7iiJ": {
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 135,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$avatar-muted-start",
+                        "position": 0
+                      },
+                      {
+                        "color": "$avatar-muted-end",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "opacity": 0.55
+                }
               }
             }
           ]
@@ -400,10 +523,15 @@
                   "cornerRadius": 8,
                   "descendants": {
                     "wBaK6": {
-                      "fill": "$accent-ring-outer"
-                    },
-                    "wBaK6/XBC2T": {
-                      "fill": "$accent-ring-inner"
+                      "id": "k7lcf",
+                      "type": "ref",
+                      "ref": "Br6wN",
+                      "name": "Ring",
+                      "descendants": {
+                        "jbPVz": {
+                          "content": "ОК"
+                        }
+                      }
                     },
                     "fAYS0": {
                       "children": [
@@ -433,7 +561,7 @@
                   "id": "IFvGn",
                   "name": "Caption",
                   "fill": "$mute",
-                  "content": "ringing · вихідний / вхідний",
+                  "content": "ringing · вихідний (вхідний — Peer Ring / in)",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "normal"
@@ -462,7 +590,7 @@
                   "id": "e73rWW",
                   "name": "Caption",
                   "fill": "$mute",
-                  "content": "talking · розмова (без кілець)",
+                  "content": "talking · співрозмовник мовчить",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "normal"
@@ -472,7 +600,7 @@
             {
               "type": "frame",
               "id": "As1K1",
-              "name": "Case · silent",
+              "name": "Case · speaking",
               "layout": "vertical",
               "gap": 10,
               "alignItems": "center",
@@ -486,18 +614,19 @@
                   "strokeWidth": 1,
                   "cornerRadius": 8,
                   "descendants": {
-                    "wBaK6/R7iiJ": {
-                      "opacity": 0.6
+                    "wBaK6": {
+                      "id": "iriAY",
+                      "type": "ref",
+                      "ref": "Lm0a8",
+                      "name": "Ring",
+                      "descendants": {
+                        "jbPVz": {
+                          "content": "ОК"
+                        }
+                      }
                     },
                     "fAYS0": {
-                      "children": [
-                        {
-                          "id": "ayWug",
-                          "type": "ref",
-                          "ref": "ziKFN",
-                          "name": "Voice Wave"
-                        }
-                      ]
+                      "children": []
                     }
                   }
                 },
@@ -506,7 +635,7 @@
                   "id": "MTyKQ",
                   "name": "Caption",
                   "fill": "$mute",
-                  "content": "silent · утримання, обрив, мікрофон (пласка хвиля)",
+                  "content": "talking · співрозмовник говорить (кола голосу)",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "normal"
@@ -1989,7 +2118,7 @@
               "reusable": true,
               "width": 22,
               "height": 22,
-              "fill": "$bad",
+              "fill": "$surface-2",
               "cornerRadius": 11,
               "justifyContent": "center",
               "alignItems": "center",
@@ -2002,7 +2131,7 @@
                   "height": 12,
                   "icon": "mic-off",
                   "library": "lucide",
-                  "fill": "$on-solid"
+                  "fill": "$mute"
                 }
               ]
             },
@@ -5279,13 +5408,15 @@
                           "name": "Peer",
                           "descendants": {
                             "wBaK6": {
-                              "fill": "$accent-ring-outer"
-                            },
-                            "wBaK6/XBC2T": {
-                              "fill": "$accent-ring-inner"
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                              "id": "FyFSR",
+                              "type": "ref",
+                              "ref": "Br6wN",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -5409,30 +5540,16 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.55,
-                              "fill": {
-                                "type": "gradient",
-                                "gradientType": "linear",
-                                "enabled": true,
-                                "rotation": 135,
-                                "size": {
-                                  "height": 1
-                                },
-                                "colors": [
-                                  {
-                                    "color": "$avatar-muted-start",
-                                    "position": 0
-                                  },
-                                  {
-                                    "color": "$avatar-muted-end",
-                                    "position": 1
-                                  }
-                                ]
+                            "wBaK6": {
+                              "id": "dJ4bN",
+                              "type": "ref",
+                              "ref": "Ok2fa",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "S"
+                                }
                               }
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "S"
                             },
                             "kcNR8": {
                               "content": "Support"
@@ -5446,10 +5563,12 @@
                                   "name": "Result Label",
                                   "descendants": {
                                     "NUY3Y": {
-                                      "icon": "phone-off"
+                                      "icon": "phone-off",
+                                      "fill": "$warn"
                                     },
                                     "gvZuH": {
-                                      "content": "Зайнято"
+                                      "content": "Зайнято",
+                                      "fill": "$warn-text"
                                     },
                                     "WAYFM": {
                                       "content": "Абонент зараз розмовляє"
@@ -5597,30 +5716,16 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.55,
-                              "fill": {
-                                "type": "gradient",
-                                "gradientType": "linear",
-                                "enabled": true,
-                                "rotation": 135,
-                                "size": {
-                                  "height": 1
-                                },
-                                "colors": [
-                                  {
-                                    "color": "$avatar-muted-start",
-                                    "position": 0
-                                  },
-                                  {
-                                    "color": "$avatar-muted-end",
-                                    "position": 1
-                                  }
-                                ]
+                            "wBaK6": {
+                              "id": "sxULR",
+                              "type": "ref",
+                              "ref": "Ok2fa",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "АМ"
+                                }
                               }
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "АМ"
                             },
                             "kcNR8": {
                               "content": "Андрій Мельник"
@@ -5689,6 +5794,180 @@
                           "descendants": {
                             "LfiGR": {
                               "id": "wjfEE",
+                              "type": "ref",
+                              "ref": "GruFA",
+                              "name": "Close Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "x"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Закрити",
+                              "enabled": false
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vGh9h",
+              "name": "Result · Rejected",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-missed-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "Q877IS",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "kXzXz",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Wv5Mm",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        158,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "s6yvfB",
+                          "type": "ref",
+                          "ref": "b76euv",
+                          "name": "Peer",
+                          "descendants": {
+                            "wBaK6": {
+                              "id": "FHinE",
+                              "type": "ref",
+                              "ref": "Ok2fa",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "АМ"
+                                }
+                              }
+                            },
+                            "kcNR8": {
+                              "content": "Андрій Мельник"
+                            },
+                            "fAYS0": {
+                              "children": [
+                                {
+                                  "id": "Tti4K",
+                                  "type": "ref",
+                                  "ref": "iLLnQ",
+                                  "name": "Result Label",
+                                  "descendants": {
+                                    "NUY3Y": {
+                                      "icon": "phone-off"
+                                    },
+                                    "gvZuH": {
+                                      "content": "Відхилено"
+                                    },
+                                    "WAYFM": {
+                                      "content": "Абонент відхилив виклик"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q2DuZX",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "gap": 72,
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "Q8hIgD",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Redial",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "Ibl6C",
+                              "type": "ref",
+                              "ref": "Yk8rH",
+                              "name": "Redial Button",
+                              "descendants": {
+                                "gcrxy": {
+                                  "icon": "phone"
+                                }
+                              }
+                            },
+                            "kPwGr": {
+                              "content": "Передзвонити",
+                              "enabled": false
+                            }
+                          }
+                        },
+                        {
+                          "id": "F322t",
+                          "type": "ref",
+                          "ref": "ib04f",
+                          "name": "Close",
+                          "descendants": {
+                            "LfiGR": {
+                              "id": "rxLGZ",
                               "type": "ref",
                               "ref": "GruFA",
                               "name": "Close Button",
@@ -5816,13 +6095,15 @@
                           "name": "Peer",
                           "descendants": {
                             "wBaK6": {
-                              "fill": "$accent-ring-outer"
-                            },
-                            "wBaK6/XBC2T": {
-                              "fill": "$accent-ring-inner"
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                              "id": "dotgC",
+                              "type": "ref",
+                              "ref": "XG8uI",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -5985,30 +6266,16 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.55,
-                              "fill": {
-                                "type": "gradient",
-                                "gradientType": "linear",
-                                "enabled": true,
-                                "rotation": 135,
-                                "size": {
-                                  "height": 1
-                                },
-                                "colors": [
-                                  {
-                                    "color": "$avatar-muted-start",
-                                    "position": 0
-                                  },
-                                  {
-                                    "color": "$avatar-muted-end",
-                                    "position": 1
-                                  }
-                                ]
+                            "wBaK6": {
+                              "id": "aTozD",
+                              "type": "ref",
+                              "ref": "Ok2fa",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
                               }
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -6218,8 +6485,16 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                            "wBaK6": {
+                              "id": "C7N90k",
+                              "type": "ref",
+                              "ref": "Lm0a8",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -6376,24 +6651,25 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.6
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                            "wBaK6": {
+                              "id": "wl4k6",
+                              "type": "ref",
+                              "ref": "n8jnj",
+                              "name": "Ring",
+                              "descendants": {
+                                "R7iiJ": {
+                                  "opacity": 0.6
+                                },
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
                             },
                             "fAYS0": {
-                              "children": [
-                                {
-                                  "id": "bz2NV",
-                                  "type": "ref",
-                                  "ref": "ziKFN",
-                                  "name": "Voice Wave"
-                                }
-                              ]
+                              "children": []
                             }
                           }
                         }
@@ -6572,24 +6848,22 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.6
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                            "wBaK6": {
+                              "id": "jN9Jn",
+                              "type": "ref",
+                              "ref": "w68su",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
                             },
                             "fAYS0": {
-                              "children": [
-                                {
-                                  "id": "x82nGn",
-                                  "type": "ref",
-                                  "ref": "ziKFN",
-                                  "name": "Voice Wave"
-                                }
-                              ]
+                              "children": []
                             }
                           }
                         }
@@ -6742,24 +7016,22 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.6
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                            "wBaK6": {
+                              "id": "a9UHg3",
+                              "type": "ref",
+                              "ref": "BqVa3",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
                             },
                             "fAYS0": {
-                              "children": [
-                                {
-                                  "id": "O9rpj",
-                                  "type": "ref",
-                                  "ref": "ziKFN",
-                                  "name": "Voice Wave"
-                                }
-                              ]
+                              "children": []
                             }
                           }
                         }
@@ -6912,21 +7184,22 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                            "wBaK6": {
+                              "id": "HQtPG",
+                              "type": "ref",
+                              "ref": "Bb1Yu",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
                             },
                             "fAYS0": {
-                              "children": [
-                                {
-                                  "id": "Bwhhw",
-                                  "type": "ref",
-                                  "ref": "ziKFN",
-                                  "name": "Voice Wave"
-                                }
-                              ]
+                              "children": []
                             }
                           }
                         }
@@ -9671,30 +9944,16 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.55,
-                              "fill": {
-                                "type": "gradient",
-                                "gradientType": "linear",
-                                "enabled": true,
-                                "rotation": 135,
-                                "size": {
-                                  "height": 1
-                                },
-                                "colors": [
-                                  {
-                                    "color": "$avatar-muted-start",
-                                    "position": 0
-                                  },
-                                  {
-                                    "color": "$avatar-muted-end",
-                                    "position": 1
-                                  }
-                                ]
+                            "wBaK6": {
+                              "id": "ZY0LC",
+                              "type": "ref",
+                              "ref": "Ok2fa",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
                               }
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -9838,30 +10097,16 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.55,
-                              "fill": {
-                                "type": "gradient",
-                                "gradientType": "linear",
-                                "enabled": true,
-                                "rotation": 135,
-                                "size": {
-                                  "height": 1
-                                },
-                                "colors": [
-                                  {
-                                    "color": "$avatar-muted-start",
-                                    "position": 0
-                                  },
-                                  {
-                                    "color": "$avatar-muted-end",
-                                    "position": 1
-                                  }
-                                ]
+                            "wBaK6": {
+                              "id": "loTUL",
+                              "type": "ref",
+                              "ref": "Ok2fa",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
                               }
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -9880,7 +10125,7 @@
                                     },
                                     "gvZuH": {
                                       "content": "З'єднання втрачено",
-                                      "fill": "$bad"
+                                      "fill": "$bad-text"
                                     },
                                     "WAYFM": {
                                       "content": "Не вдалося відновити зв'язок · 03:42"
@@ -10028,30 +10273,16 @@
                           "ref": "b76euv",
                           "name": "Peer",
                           "descendants": {
-                            "wBaK6/R7iiJ": {
-                              "opacity": 0.55,
-                              "fill": {
-                                "type": "gradient",
-                                "gradientType": "linear",
-                                "enabled": true,
-                                "rotation": 135,
-                                "size": {
-                                  "height": 1
-                                },
-                                "colors": [
-                                  {
-                                    "color": "$avatar-muted-start",
-                                    "position": 0
-                                  },
-                                  {
-                                    "color": "$avatar-muted-end",
-                                    "position": 1
-                                  }
-                                ]
+                            "wBaK6": {
+                              "id": "aHM2d",
+                              "type": "ref",
+                              "ref": "Ok2fa",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
                               }
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -10281,13 +10512,15 @@
                           "name": "Peer",
                           "descendants": {
                             "wBaK6": {
-                              "fill": "$accent-ring-outer"
-                            },
-                            "wBaK6/XBC2T": {
-                              "fill": "$accent-ring-inner"
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "АМ"
+                              "id": "oqDMh",
+                              "type": "ref",
+                              "ref": "XG8uI",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "АМ"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Андрій Мельник"
@@ -13660,13 +13893,15 @@
                           "name": "Peer",
                           "descendants": {
                             "wBaK6": {
-                              "fill": "$accent-ring-outer"
-                            },
-                            "wBaK6/XBC2T": {
-                              "fill": "$accent-ring-inner"
-                            },
-                            "wBaK6/jbPVz": {
-                              "content": "ОК"
+                              "id": "FVRmv",
+                              "type": "ref",
+                              "ref": "XG8uI",
+                              "name": "Ring",
+                              "descendants": {
+                                "jbPVz": {
+                                  "content": "ОК"
+                                }
+                              }
                             },
                             "kcNR8": {
                               "content": "Олена Коваль"
@@ -14798,6 +15033,22 @@
           }
         }
       ]
+    },
+    "ok-ring-outer": {
+      "type": "color",
+      "value": "#22C55E14"
+    },
+    "ok-ring-inner": {
+      "type": "color",
+      "value": "#22C55E24"
+    },
+    "voice-ring-outer": {
+      "type": "color",
+      "value": "#6366F126"
+    },
+    "voice-ring-inner": {
+      "type": "color",
+      "value": "#6366F14D"
     }
   },
   "fileToken": "8dbbdd0a-a14f-400d-a6f9-149ce907ef90"

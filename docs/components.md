@@ -199,8 +199,9 @@
 Блок співрозмовника 327 × 336 з трьома зонами фіксованої висоти (див. [design-system.md](design-system.md#блок-співрозмовника-peer)).
 
 - **Props:** `name`, `variant?: 'default' | 'dimmed' | 'result'`, `ringing?: boolean` (виклик: кільця й пульсація; під час розмови й на результаті кілець немає),
-  `direction?: 'out' | 'in'` (колір кілець і аватара виклику: вихідний синій, вхідний зелений), `state?: 'hold' | 'lost' | 'mic' | null` (обводка й колір аватара за станом співрозмовника),
+  `direction?: 'out' | 'in'` (колір кілець і аватара виклику: вихідний синій, вхідний зелений), `state?: 'hold' | 'lost' | 'mic' | null` (обводка й приглушений аватар за станом співрозмовника: `bg` + 20% кольору стану, ініціали `warn-text`, `bad-text` чи `mute`),
   `speaking?: boolean` (кола голосу, що «дихають»; стан сильніший за голос). **Слот:** вміст зони Status.
+- Варіанти дизайну `Peer Ring`: `/ out`, `/ in` (`ringing` + `direction`), `/ speaking` (`speaking`), `/ hold`, `/ lost`, `/ mic-off` (`state`), `/ result` (`variant="result"`), базовий — нейтральний аватар у розмові.
 - Стан і голос дає стор: `call.peerState` (стан, що настав останнім серед утримання, обриву, вимкненого мікрофона; `features/call/peerState.ts`) і `call.peerSpeaking`
   (`link.peerSpeaking` із `RoomEvent.ActiveSpeakersChanged`, згладжений на 250 мс через `holdFlag`). Правила й кольори: [design-system.md](design-system.md#блок-співрозмовника-peer).
 - Розміщується `CallScreen` абсолютно на одній висоті (`.peer-pos`: `top: clamp(16px, 100% - 506px, 158px)`), тож шапка й кнопки його не зсувають.

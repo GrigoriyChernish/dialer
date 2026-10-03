@@ -11,7 +11,7 @@ import type { PeerState } from './peerState';
  * Що показує Ring:
  * - виклик (`ringing`): пульсуючі кільця й аватар за напрямом: вихідний синій (accent), вхідний зелений (ok);
  * - розмова: нейтральний аватар; коли співрозмовник говорить (`speaking`), навколо «дихають» два заливні кола accent;
- * - стан співрозмовника (`state`): тонка статична обводка кольору стану й колір аватара (утримання жовтий, обрив червоний і .6, мікрофон сірий),
+ * - стан співрозмовника (`state`): тонка статична обводка кольору стану й приглушений аватар (`bg` + 20% кольору стану, ініціали `*-text`; утримання жовтий, обрив червоний і .6, мікрофон сірий),
  *   стан сильніший за голос;
  * - результат (`variant="result"`): сірий аватар .55 без кілець.
  */
@@ -29,19 +29,23 @@ const props = defineProps<{
   speaking?: boolean;
 }>();
 
-// градієнти аватара з дизайну: accent → avatar-blue, ok → avatar-teal, warn → avatar-amber, bad → avatar-red,
-// avatar-muted-start → avatar-muted-end, accent → avatar-end (нейтральний у розмові)
+// градієнти аватара з дизайну: accent → avatar-blue (вихідний), ok → avatar-teal (вхідний), accent → avatar-end (нейтральний у розмові)
 const GRADIENT = {
   out: ['#6366f1', '#3b82f6'],
   in: ['#22c55e', '#14b8a6'],
-  hold: ['#f5b84b', '#f59e0b'],
-  lost: ['#f0626b', '#ef4444'],
-  mic: ['#6b7080', '#7a6e86'],
   neutral: ['#6366f1', '#a855f7'],
 } as const;
-const gradient = computed(() => {
-  if (props.ringing) return GRADIENT[props.direction ?? 'out'];
-  return props.state ? GRADIENT[props.state] : GRADIENT.neutral;
+// стани співрозмовника приглушені, як смужки Peer Banner: bg + колір стану 20% (`*-soft`), ініціали `*-text` (mute для мікрофона)
+const tint = (c: string) => `color-mix(in srgb, ${c} 20%, var(--bg))`;
+const STATE_AVATAR = {
+  hold: { gradient: [tint('#f5b84b'), tint('#f5b84b')], color: 'var(--warn-text)' },
+  lost: { gradient: [tint('#f0626b'), tint('#f0626b')], color: 'var(--bad-text)' },
+  mic: { gradient: [tint('var(--mute)'), tint('var(--mute)')], color: 'var(--mute)' },
+} as const;
+const avatar = computed(() => {
+  if (props.ringing) return { gradient: [...GRADIENT[props.direction ?? 'out']], color: undefined };
+  if (props.state) return { gradient: [...STATE_AVATAR[props.state].gradient], color: STATE_AVATAR[props.state].color };
+  return { gradient: [...GRADIENT.neutral], color: undefined };
 });
 // колір кілець виклику: утиліти статичні, щоб Tailwind їх бачив; пульсація бере колір із --ring-rgb
 const RINGS = {
@@ -49,7 +53,7 @@ const RINGS = {
   in: { outer: 'bg-call-ok/[.08]', inner: 'bg-call-ok/[.14]', rgb: '34 197 94' },
 } as const;
 const rings = computed(() => RINGS[props.direction ?? 'out']);
-const STATE_RING = { hold: 'border-warn', lost: 'border-call-bad', mic: 'border-mute' } as const;
+const STATE_RING = { hold: 'border-warn/40', lost: 'border-call-bad/40', mic: 'border-mute/40' } as const;
 const voice = computed(() => !!props.speaking && !props.state && !props.ringing);
 const opacity = computed(() => (props.variant === 'dimmed' ? 0.6 : undefined));
 </script>
@@ -72,7 +76,14 @@ const opacity = computed(() => (props.variant === 'dimmed' ? 0.6 : undefined));
         :class="ringing && ['animate-ring', rings.inner]"
         :style="ringing ? { '--ring-rgb': rings.rgb } : undefined"
       >
-        <Avatar :name="name" size="xl" :muted="variant === 'result'" :gradient="[...gradient]" :opacity="opacity" />
+        <Avatar
+          :name="name"
+          size="xl"
+          :muted="variant === 'result'"
+          :gradient="avatar.gradient"
+          :color="avatar.color"
+          :opacity="opacity"
+        />
       </span>
     </span>
     <h3 class="flex h-8 w-full shrink-0 items-center justify-center truncate text-[26px] font-bold">{{ name }}</h3>
