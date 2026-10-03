@@ -68,12 +68,6 @@
 Зараз `echoCancellation`, `noiseSuppression` і `autoGainControl` у `room.ts` лише явно повторюють типові значення браузера, якість не змінилась.
 Якщо потрібне краще шумозаглушення: Krisp (`@livekit/krisp-noise-filter`, лише LiveKit Cloud) або RNNoise у WASM; потрібна окрема оцінка, чи варто це в демо.
 
-## 22. Перенести прелоадер і нові стани в Android-дизайн
-
-У `/Users/behr/dev/claude/design/dialer-android.pen` немає `Video Loader`, `Self View / loading`, `Peer Banner / video-stalled` та екранів `In Call · video · loading`, `· unavailable`, `· self-view-loading`.
-Намалювати в палітрі Opti (нейтральні поверхні, лайм лише для індикатора), занести в `CHANGELOG.md` і `dialer-android-gaps.md` того проєкту. Окремо: для `Banner / signal`, `/ reload`, `/ videocam-off`
-зробити `wide`-варіанти з `textGrowth: fixed-width`, щоб довгий текст сповіщення переносився, а не обрізався.
-
 ## 24. Розігрів з'єднання LiveKit до відповіді
 
 `room.prepareConnection(url)` прогріває DNS і TLS, але `livekit.url` приходить лише в `call.connected`. Віддавати `url` (однаковий для всіх дзвінків) у `hello.ok` і викликати `prepareConnection` під час гудків;
@@ -91,14 +85,6 @@
 
 Старий однофайловий прототип лишився, а «Історії» в ньому немає. Вирішити, чи живе він далі: якщо ні, прибрати його разом із `demo/` і оновити `README.md`, `docs/project-structure.md`; якщо так, перенести туди «Історію».
 
-## 27. Перевірити «лише звук» на реальному 3G і перенести в Android-дизайн
+## 27. Перевірити «лише звук» на реальному 3G
 
-Пороги (вхід на `Poor`/`Lost`, повернення через 15 с) і камера 360p підібрані без вимірів. Перевірити на повільному каналі, за потреби підкрутити `RECOVER_MS` у `room.ts`. Додати `Self Banner / poor-signal-audio` і стан без відео в `dialer-android.pen`.
-
-## 28. Перенести «Увімкнути звук» в Android-дизайн
-
-У `dialer-android.pen` немає сповіщення `Self Banner / audio-blocked` (звук заблокований браузером, кнопка-іконка `volume-2`). Додати за зразком веб-дизайну й записати в `dialer-android-gaps.md`.
-
-## 29. Перенести «Камера не відповідає» в Android-дизайн
-
-У `dialer-android.pen` немає `Self View / stalled` (значок `video-off` замість індикатора) і сповіщення `Self Banner / camera-stalled`. Додати разом із пунктом 28 і записати в `dialer-android-gaps.md`.
+Пороги (вхід на `Poor`/`Lost`, повернення через 15 с) і камера 360p підібрані без вимірів. Перевірити на повільному каналі, за потреби підкрутити `RECOVER_MS` у `room.ts`.
