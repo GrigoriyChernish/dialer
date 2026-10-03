@@ -63,6 +63,7 @@ const errorFrame = (code: ErrorCode, reqId?: string, message?: string): ErrorRep
 export function attachGateway(server: HttpServer, deps: GatewayDeps) {
   const timeouts: GatewayTimeouts = { hello: HELLO_TIMEOUT_MS, silence: SILENCE_TIMEOUT_MS, ...deps.timeouts };
   const wss = new WebSocketServer({ noServer: true, maxPayload: MAX_FRAME_BYTES });
+  let closing = false;
 
   server.on('upgrade', (req, socket, head) => {
     if (new URL(req.url ?? '/', 'http://localhost').pathname !== '/ws') {
@@ -400,7 +401,8 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       clearTimeout(helloTimer);
       clearTimeout(expiringTimer);
       clearTimeout(silenceTimer);
-      if (conn) {
+      // сервер зупиняється: база вже може бути закрита, статус і дзвінки не перераховуємо (їх відновить наступний запуск)
+      if (conn && !closing) {
         // зник останній пристрій: його дзвінки, що ще дзвонять, скасуються, якщо він не повернеться за кілька секунд
         if (deps.hub.disconnect(conn)) deps.calls.callerGone(conn.siteId, conn.userId);
         log.info({ userId: conn.userId, code }, 'пристрій відключився');
@@ -412,6 +414,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
 
   return {
     close() {
+      closing = true;
       for (const client of wss.clients) client.close(1001, 'server shutdown');
       wss.close();
     },
