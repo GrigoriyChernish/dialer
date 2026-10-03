@@ -117,7 +117,7 @@ export class CallMedia {
     const s: Session = {
       room: new Room({
         // обидва типово вимкнені: adaptiveStream не качає відео, чий <video> прихований чи відмонтований (утримання, аватар, мініатюра без відео),
-        // dynacast не кодує шари симулкасту, яких ніхто не дивиться (docs/livekit-recommendations.md)
+        // dynacast не кодує шари симулкасту, яких ніхто не дивиться (work/backlog/livekit-recommendations.md)
         adaptiveStream: true,
         dynacast: true,
         // явно, щоб не залежати від типових значень браузера: ехо, шум і гучність обробляє WebRTC (не Krisp чи RNNoise)

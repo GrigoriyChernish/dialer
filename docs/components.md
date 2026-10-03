@@ -280,12 +280,12 @@
 - `api/auth.ts` — HTTP-вхід (`/auth/start`, `/verify`, `/refresh`, `/logout`), помилки як `AuthError` (`network`, якщо сервер недоступний).
 - `api/signaling.ts` — `SignalingClient`: `hello`, пінг, перепідключення 1, 1, 2, 3, 5 с із зсувом і одразу при `online` чи поверненні у вкладку (`reconnectNow`), запити з відповіддю за `reqId`.
 - `media/room.ts` — `CallMedia` над `livekit-client`: аудіо розмови, мікрофон, приглушення на утриманні; віддає `LinkState`
-  (`reconnecting`, `poor`, `audioOnly`, `peerAway`, `peerMuted`) із подій кімнати; `audioOnly`: слабкий наш канал, відео вимкнено; `peerWeak`: слабкий канал співрозмовника, вимкнено лише його відео (камера 360p, деталі в [livekit-recommendations.md](livekit-recommendations.md)). Утримуваний другий дзвінок лишається у своїй кімнаті, але мовчить
+  (`reconnecting`, `poor`, `audioOnly`, `peerAway`, `peerMuted`) із подій кімнати; `audioOnly`: слабкий наш канал, відео вимкнено; `peerWeak`: слабкий канал співрозмовника, вимкнено лише його відео (камера 360p, деталі в [livekit-recommendations.md](../work/backlog/livekit-recommendations.md)). Утримуваний другий дзвінок лишається у своїй кімнаті, але мовчить
   (`park`, `swap`, `dropParked`); `LinkState` береться лише з поточної кімнати.
 - `media/permissions.ts` — `requestMediaPermissions` (запит дозволів, тимчасові треки одразу зупиняються; fallback на лише аудіо) і `watchMediaPermissions`
   (Permissions API та `devicechange`, повертає функцію відписки).
 - `media/videoLoading.ts` — `useVideoLoading`: стани `loading`, `spinner` (через 400 мс), `stalled` (через 10 с) для `VideoSurface`.
-- Налаштування кімнати: `adaptiveStream` і `dynacast` увімкнено (відео не качається, поки `<video>` відмонтований чи прихований; шари симулкасту без глядачів не кодуються); `echoCancellation`, `noiseSuppression` і `autoGainControl` задано явно в `audioCaptureDefaults` (обробка WebRTC браузера; Krisp чи RNNoise не підключено). Деталі: [livekit-recommendations.md](livekit-recommendations.md).
+- Налаштування кімнати: `adaptiveStream` і `dynacast` увімкнено (відео не качається, поки `<video>` відмонтований чи прихований; шари симулкасту без глядачів не кодуються); `echoCancellation`, `noiseSuppression` і `autoGainControl` задано явно в `audioCaptureDefaults` (обробка WebRTC браузера; Krisp чи RNNoise не підключено). Деталі: [livekit-recommendations.md](../work/backlog/livekit-recommendations.md).
 - `sounds/sounds.ts` — гудки й мелодії через Web Audio; `waiting` — два тихі сигнали раз на 3 с для другого вхідного.
 
 ## Ще не зроблено (є в дизайні)

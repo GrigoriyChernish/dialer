@@ -3,7 +3,7 @@
 Що робимо з `livekit-client` у `apps/web` (`shared/media/room.ts`) і чому. Факти звірено з кодом встановленої версії `livekit-client@2.22.3` (типові значення, сигнатури);
 загальна документація: [docs.livekit.io](https://docs.livekit.io/), вихідний код: [client-sdk-js](https://github.com/livekit/client-sdk-js). Цифр виграшу (мілісекунди, мегабайти) тут немає, бо ми їх не вимірювали.
 
-Поведінка екрана розмови (утримання, дозволи, прелоадер) описана в [components.md](components.md) і [signaling.md](signaling.md), тут лише налаштування кімнати.
+Поведінка екрана розмови (утримання, дозволи, прелоадер) описана в [components.md](../../docs/components.md) і [signaling.md](../../docs/signaling.md), тут лише налаштування кімнати.
 
 ## Статус рекомендацій
 
@@ -45,7 +45,7 @@ audioCaptureDefaults: { echoCancellation: true, noiseSuppression: true, autoGain
 
 - `room.startAudio()` викликаємо після `connect`. У `livekit-client` він **кидає помилку**, якщо відтворення заблоковане, тому відмову ловимо (`catch`): раніше вона обривала `join` до `apply()`, і мікрофон не вмикався.
 - Після цього `link.audioBlocked = !room.canPlaybackAudio`; далі стан оновлює подія `RoomEvent.AudioPlaybackStatusChanged`. При `swap` стан береться з кімнати, що стала поточною.
-- Інтерфейс: `CallScreen` додає в користувацьку групу пулу сповіщення `audioBlocked` «Звук вимкнено браузером» з кнопкою-іконкою `volume-2` «Увімкнути звук» ([notifications.md](notifications.md)). Кнопка викликає `call.enableAudio()` → `CallMedia.enableAudio()` → `room.startAudio()` просто з жесту користувача; успіх знімає блок.
+- Інтерфейс: `CallScreen` додає в користувацьку групу пулу сповіщення `audioBlocked` «Звук вимкнено браузером» з кнопкою-іконкою `volume-2` «Увімкнути звук» ([notifications.md](../../docs/notifications.md)). Кнопка викликає `call.enableAudio()` → `CallMedia.enableAudio()` → `room.startAudio()` просто з жесту користувача; успіх знімає блок.
 - Перевірити на реальному Safari/iOS: у Chrome на Android звук зазвичай відтворюється після натискання «Прийняти»/«Подзвонити».
 
 ## 7. Слабкий канал: лише звук
@@ -55,7 +55,7 @@ audioCaptureDefaults: { echoCancellation: true, noiseSuppression: true, autoGain
 - **Камера 640 × 360** (`videoCaptureDefaults: { resolution: VideoPresets.h360.resolution }`) замість типових 720p: менше даних на старті; simulcast, `adaptiveStream` і `dynacast` лишаються.
 - **Деградація** (`degrade`): локальна якість `Poor` чи `Lost` → `degraded = true`: `apply()` вимикає нашу камеру (`camOn && !deaf && !degraded`), а в усіх відеопублікацій співрозмовника викликаємо `setEnabled(false)` (також для відео, що підписалося вже після цього). Звук не чіпаємо. У `LinkState` виставляється `audioOnly`.
 - **Повернення:** лише коли якість `RECOVER_MS` = 15 с без перебоїв не `Poor`/`Lost` (будь-який новий поганий стан скидає відлік), щоб не мигало на межі. Тоді `degraded = false`, камера вмикається за вибором користувача (`camOn`), відео співрозмовника знову підписується. Якщо користувач сам вимкнув камеру, вона не вмикається.
-- **Інтерфейс** (`CallScreen`): `audioOnly` ховає відео співрозмовника (повертається аватар, як без відео) і нашу мініатюру, а в пулі сповіщень `poorSignal` лишається, поки відео вимкнено (навіть коли `Poor` вже минуло), з текстом «Слабкий сигнал · лише звук» ([notifications.md](notifications.md)). Кнопка камери лишається в стані, який вибрав користувач.
+- **Інтерфейс** (`CallScreen`): `audioOnly` ховає відео співрозмовника (повертається аватар, як без відео) і нашу мініатюру, а в пулі сповіщень `poorSignal` лишається, поки відео вимкнено (навіть коли `Poor` вже минуло), з текстом «Слабкий сигнал · лише звук» ([notifications.md](../../docs/notifications.md)). Кнопка камери лишається в стані, який вибрав користувач.
 - **Слабкий канал співрозмовника.** Та сама подія `ConnectionQualityChanged` для віддаленого учасника вмикає окремий `peerLink` (клас `WeakLink` з тим самим гістерезисом 15 с): відео співрозмовника не качаємо (`setEnabled(false)` на його відеопублікаціях, його фрізи), але наша камера і звук працюють. У `LinkState` це `peerWeak`; `CallScreen` повертає аватар і показує `Peer Banner / weak-signal` «{ім'я}: слабкий сигнал · без відео». Поки слабкий хоч один з каналів, відео співрозмовника вимкнене (`videoPaused`).
 - Стани `own` і `peerLink` скидаються при `join`, `leave` і `swap` (між кімнатами якість різна).
 - Порогових цифр бітрейту немає: переходить LiveKit-оцінка якості. Налаштування TURN по TCP/TLS для мереж без UDP робиться на сервері LiveKit і сюди не входить.

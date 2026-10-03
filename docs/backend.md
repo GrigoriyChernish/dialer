@@ -4,8 +4,9 @@
 Протокол сигналізації описано в [signaling.md](signaling.md), загальну картину в [architecture.md](architecture.md).
 
 ## Рішення
+
 | Що | Вибір | Чому |
-|---|---|---|
+| --- | --- | --- |
 | Runtime | Node 22, TypeScript | спільні типи сигналізації з фронтендом через `packages/shared` |
 | WebSocket | нативний, бібліотека `ws` | протокол, ack, повторні запити й відновлення стану вже описані в `signaling.md`; Socket.IO дублював би їх і важив би ~40 КБ у віджеті |
 | HTTP | Fastify | токени, демо-вхід, вебхук LiveKit, health |
@@ -18,6 +19,7 @@
 Залежності мінімальні: `ws`, `fastify`, `better-sqlite3`, `jose` (JWT), `livekit-server-sdk`, `pino`; `web-push` додамо з кроком 6 (Web Push).
 
 ## Запуск
+
 ```bash
 pnpm install                          # з кореня репозиторію
 cp apps/server/.env.example apps/server/.env   # без JWT_SECRET працює ключ для розробки
@@ -25,10 +27,12 @@ pnpm --filter @dialer/server dev      # http://localhost:8787, WebSocket ws://lo
 pnpm test                             # усі тести; лише сервер: pnpm --filter @dialer/server test
 pnpm typecheck
 ```
+
 Сервер запускається через `tsx` без збірки, `start` робить те саме без перезапуску при змінах.
 У `production` без `JWT_SECRET` (від 32 символів) сервер не стартує.
 
 ## Структура `apps/server`
+
 ```
 apps/server/
   src/
@@ -45,12 +49,14 @@ apps/server/
   migrations/        # SQL-файли 001_init.sql …
   test/
 ```
+
 - `calls/` чиста логіка: отримує подію й поточний стан, повертає нові стани й повідомлення. Її тестуємо таблицею
   випадків (порядок перевірок у `call.invite` з [signaling.md](signaling.md#порядок-перевірок-у-callinvite)) без мережі.
 - Присутність і активні дзвінки доступні лише через інтерфейси `store/`, а не через розкидані `Map`.
   Це залишає шлях до кількох інстансів, хоча зараз інстанс один.
 
 ## Як працює дзвінок на сервері
+
 - `calls/service.ts` тримає всю логіку. Команда (`invite`, `accept` …) повертає `{ call?, effects }`: `call` йде в `ack`, а `effects`
   це повідомлення `{ userId, deviceId?, exceptDeviceId?, msg }`. Шлюз спершу надсилає `ack`, потім `deliver(effects)`,
   тому клієнт завжди бачить `ack` раніше за події (`call.ended` для `busy` приходить після `ack` на `call.invite`).
@@ -70,8 +76,9 @@ apps/server/
   зайнятий чи не в мережі, не отримує ні `call.incoming`, ні `call.ended`.
 
 ## База даних
+
 | Таблиця | Що зберігає |
-|---|---|
+| --- | --- |
 | `sites` | сайти-господарі: `id`, назва, секрет, `allowed_origins`; окремий запис `demo` |
 | `users` | ключ `(site_id, id)`, де `id` це E.164 у демо (а в демо-ботів `bot:olena`, `bot:andriy`, `bot:support`), ім'я, `disabled`, `is_bot`, `recents_seen_up_to` (мс, до якого історію переглянуто, `005_recents_seen.sql`), `settings` (JSON: `waiting`, `dnd`) |
 | `calls` | дзвінки: `id`, учасники, стан, `created_at`, `answered_at`, `ended_at`, `reason` |
@@ -85,8 +92,9 @@ apps/server/
   дзвінки, що дзвонять, а таймери відновлюються за `expiresAt`. Саме медіа при цьому не переривається, бо воно йде через LiveKit.
 
 ## HTTP
+
 | Ендпоінт | Для чого |
-|---|---|
+| --- | --- |
 | `POST /auth/start` | `{ phone }` → підтверджений номер: `{ known: true, token, expiresAt, user, refreshToken, sessionExpiresAt }` без коду; інакше `{ known }` і код входу (див. «Вхід за номером») |
 | `POST /auth/verify` | `{ phone, code, name? }` → `{ token, expiresAt, user, refreshToken, sessionExpiresAt }`; `name` лише для нового номера |
 | `POST /auth/refresh` | `{ refreshToken }` → новий `{ token, expiresAt, user, sessionExpiresAt }`, поки сесія чинна |
@@ -99,7 +107,9 @@ apps/server/
 CORS для `/auth/*` і `/demo/login` обмежений origin застосунку (`DEMO_ORIGIN`, на Fly.io це GitHub Pages).
 
 ### Вхід за номером
+
 Застосунок на GitHub Pages входить лише так. Сайт `demo`, номери України (`+380…`).
+
 1. `POST /auth/start { phone }`.
    - **Номер уже підтверджений кодом** (`users.verified_at`): сервер одразу видає токен і сесію, коду немає. Так вирішено для продукту:
      код питаємо один раз на номер. Наслідок: хто знає підтверджений номер, увійде від його імені з будь-якого пристрою.
@@ -122,6 +132,7 @@ CORS для `/auth/*` і `/demo/login` обмежений origin застосу�
 ## Токени
 
 ### Токен користувача (JWT)
+
 - Підпис HS256 секретом з `JWT_SECRET` (секрет Fly.io); у заголовку `kid` для ротації ключів.
 - Claims: `sub` (userId), `sid` (siteId, для демо `demo`), `name`, `iat`, `exp`, `jti`.
 - Термін життя 30 хв, як і в прототипі демо. За 60 с до кінця сервер надсилає `token.expiring`,
@@ -132,7 +143,9 @@ CORS для `/auth/*` і `/demo/login` обмежений origin застосу�
   з'єднання сервер закриває одразу кодом `4403`.
 
 ### Токен LiveKit
+
 Видає сервер під час `call.connected` (і в `hello.ok` для `connected` дзвінків):
+
 - кімната `callId`, `identity` = `userId:deviceId`, термін життя 1 год;
 - права: підключитись, публікувати, підписуватись; без `canPublishData`;
 - токен отримує лише пристрій, який бере участь у розмові (той, з якого дзвонили, і той, що відповів). Інші пристрої
@@ -145,6 +158,7 @@ CORS для `/auth/*` і `/demo/login` обмежений origin застосу�
 обов'язкові, а без них (лише розробка) дзвінки працюють без медіа.
 
 ### Вебхук LiveKit і правило `lost`
+
 - `POST /livekit/webhook` з `Content-Type: application/webhook+json`; тіло читається «сирим», підпис перевіряє `WebhookReceiver`
   (неправильний чи відсутній дає `401`). Ендпоінт є лише коли LiveKit налаштовано. У панелі LiveKit Cloud вебхук спрямовується на
   `https://<застосунок>.fly.dev/livekit/webhook`.
@@ -159,11 +173,13 @@ CORS для `/auth/*` і `/demo/login` обмежений origin застосу�
   не завершуються, лише логується попередження.
 
 ## Конфігурація
+
 Змінні середовища (Fly.io secrets): `JWT_SECRET`, `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`,
 `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `LOG_LEVEL` (за замовчуванням `info`), `DB_PATH` (за замовчуванням `/data/dialer.db`), `DEMO_ORIGIN`, `DEMO_LOGIN` (`on` вмикає `/demo/login` у production), `PORT`.
 У репозиторії лежить лише `.env.example` без значень.
 
 ## Розгортання на Fly.io
+
 - Один застосунок, **одна машина** з томом `/data` для SQLite. Кілька машин не можна: БД і стан дзвінків локальні.
 - `auto_stop_machines = false` і `min_machines_running = 1`: інакше машина засне й вхідні не дійдуть.
 - Регіон ближче до користувачів (`fra`, Франкфурт; Варшави `waw` у Fly.io немає). Перевірка здоров'я `GET /health`.
@@ -176,7 +192,9 @@ CORS для `/auth/*` і `/demo/login` обмежений origin застосу�
 - Збірка: Dockerfile у `apps/server`, контекст від кореня моноrepo, щоб потрапив `packages/shared`.
 
 ### Перший деплой (вручну)
+
 Потрібні `flyctl` і акаунт Fly.io. Застосунок називається `dialer-chat-server` (так у `fly.toml`); інша назва — замініть її там і в командах нижче.
+
 ```bash
 fly apps create dialer-chat-server
 fly volumes create dialer_data --size 1 --region fra --app dialer-chat-server   # том для SQLite
@@ -187,13 +205,16 @@ fly secrets set --app dialer-chat-server \
 fly deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --ha=false .   # з кореня репозиторію
 curl https://dialer-chat-server.fly.dev/health
 ```
+
 `--ha=false` потрібен, щоб Fly не створив другу машину: кілька інстансів не підтримуються. Далі в панелі LiveKit Cloud
 додайте вебхук `https://dialer-chat-server.fly.dev/livekit/webhook`.
 
 ### Автодеплой (GitHub Actions)
+
 Job `deploy` у `.github/workflows/ci.yml` іде після зеленого job `check` на пуші в `dev` (і при ручному запуску CI на `dev`):
 `flyctl deploy --remote-only --ha=false` (образ збирає Fly.io), потім перевіряє `GET /health`.
 Окремий workflow з тригером `workflow_run` не підходить: він спрацьовує лише для файлу з гілки за замовчуванням (`main`), а працюємо в `dev`.
+
 - Деплой рве WebSocket-з'єднання, тож після пушу він іде, лише якщо в пуші (`before..sha`) змінились файли сервера:
   `apps/server`, `packages/shared`, кореневі `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `.dockerignore`
   або `ci.yml`. Зміни дизайну, документації чи `apps/web` деплой не запускають. Ручний запуск деплоїть завжди: так само
@@ -205,18 +226,21 @@ Job `deploy` у `.github/workflows/ci.yml` іде після зеленого jo
   щоб перехід `ubuntu-latest` на Ubuntu 26 (жовтень 2026) не ламав збірку. Оновлюйте версії й образ свідомо, а не через `latest`.
 
 ### Що перевірено без Fly.io
+
 Образ зібрано локально в Docker для `linux/amd64` (як на Fly.io) і запущено з томом `/data`: `/health` відповідає `{"ok":true}`,
 `POST /demo/login` видає токен, вебхук без підпису дає `401`, SQLite створюється на томі, `SIGTERM` зупиняє сервер коректно.
 У production сервер не стартує без `JWT_SECRET` і без змінних `LIVEKIT_*`, тож секрети треба задати до першого деплою.
 Сам деплой на Fly.io ще не перевірено: потрібні акаунт і `flyctl`.
 
 ## Тести
+
 - **Юніт (Vitest).** `calls/`: таблиця правил `call.invite`, таймери на фейковому часі, машина станів, `waiting`, `dnd`.
 - **Інтеграційні.** Сервер у процесі й два справжні WebSocket-клієнти: успішний дзвінок, `busy`, `timeout`,
   два пристрої адресата, `waiting` з обома діями, `dnd`, `settings.update`, перепідключення з `calls`.
   LiveKit замінено заглушкою, яка повертає фіксований токен.
 
 ## Порядок робіт
+
 1. ✅ Каркас моноrepo: `pnpm-workspace.yaml`, `packages/shared` з типами `signaling.ts`, порожній `apps/server`.
 2. ✅ Демо-вхід (`POST /demo/login`), JWT, присутність, `hello` / `hello.ok`, контакти.
 3. ✅ Дзвінок без медіа: `call.invite`/`accept`/`reject`/`cancel`/`hangup`/`hold`, таймаут, історія, боти, відновлення після перезапуску.
@@ -226,7 +250,9 @@ Job `deploy` у `.github/workflows/ci.yml` іде після зеленого jo
 7. ✅ Розгортання на Fly.io: `Dockerfile`, `fly.toml`, автодеплой (job `deploy` у `.github/workflows/ci.yml`) (перший деплой робиться вручну, див. «Розгортання на Fly.io»).
 
 ## Логи
+
 Бібліотека `pino`, JSON у stdout (Fly.io збирає їх сам, `fly logs`).
+
 - Один кореневий логер в `main.ts`, у модулі передаємо дочірні (`logger.child({ module: 'calls' })`).
 - До кожного запису з'єднання додаємо `connId`, `userId`, `deviceId`, до запису про дзвінок `callId`, щоб дзвінок можна було простежити наскрізь.
 - Рівні: `error` збої сервера й LiveKit (`reason: 'error'`), `warn` відхилені кадри, невалідний токен, `rate_limited`,
@@ -236,4 +262,5 @@ Job `deploy` у `.github/workflows/ci.yml` іде після зеленого jo
 - Локально `pino-pretty` для читабельного виводу (лише в `devDependencies`).
 
 ## Відкриті питання
+
 - Метрики (кількість з'єднань, дзвінків, помилок): поки лише логи.
