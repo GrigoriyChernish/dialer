@@ -58,6 +58,8 @@ export const messages = {
       pushHint: 'Коли закрито · цей пристрій',
       pushBlocked: 'Заблоковано в браузері',
       pushError: 'Не вдалося увімкнути',
+      pushSaving: 'Вмикаємо сповіщення…',
+      pushSavingHint: 'Зберігаємо підписку на цьому пристрої',
       look: 'Вигляд',
       theme: { label: 'Тема', auto: 'Авто', light: 'Світла', dark: 'Темна' },
     },

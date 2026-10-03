@@ -223,5 +223,36 @@ const THEMES: { id: Theme; icon: IconName }[] = [
         >{{ t('app.logout') }}
       </button>
     </Card>
+
+    <!-- збереження підписки на сповіщення (дизайн: Push Saving): після дозволу браузера до відповіді сервера, під затемненням -->
+    <Transition name="saving-fade">
+      <div
+        v-if="push.saving.value"
+        class="fixed inset-0 z-50 grid place-items-center bg-bg/60 px-8"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="push-saving-title"
+      >
+        <Card class="grid w-full max-w-[280px] justify-items-center gap-2 px-5 py-6 text-center" role="status">
+          <Icon name="loader" class="mb-1 size-7 text-accent motion-safe:animate-spin" />
+          <b id="push-saving-title" class="text-[15px] font-semibold">{{ t('settings.pushSaving') }}</b>
+          <small class="text-xs text-mute">{{ t('settings.pushSavingHint') }}</small>
+        </Card>
+      </div>
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+/* попап збереження: м'яка поява й зникнення, як розгорнутий пул сповіщень (reduced-motion вимикає main.css) */
+.saving-fade-enter-active {
+  transition: opacity var(--duration-banner-enter) var(--ease-out);
+}
+.saving-fade-leave-active {
+  transition: opacity var(--duration-banner-leave) var(--ease-in);
+}
+.saving-fade-enter-from,
+.saving-fade-leave-to {
+  opacity: 0;
+}
+</style>

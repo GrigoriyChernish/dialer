@@ -31,6 +31,8 @@ export function usePush() {
   const subscribed = ref(false);
   const denied = ref(false);
   const busy = ref(false);
+  /** Підписка зберігається: дозвіл уже дано, лишились сервіс-воркер, `pushManager.subscribe` і сервер (попап із завантаженням). */
+  const saving = ref(false);
   const error = ref(false);
 
   /** Тумблер показуємо, лише коли браузер вміє push і сервер віддав ключ VAPID. */
@@ -57,6 +59,7 @@ export function usePush() {
       if (Notification.permission === 'default') await Notification.requestPermission();
       denied.value = Notification.permission === 'denied';
       if (Notification.permission !== 'granted') return;
+      saving.value = true;
       await register();
       const reg = await navigator.serviceWorker.ready;
       const bytes = keyBytes(key);
@@ -75,6 +78,7 @@ export function usePush() {
       subscribed.value = false;
     } finally {
       busy.value = false;
+      saving.value = false;
     }
   }
 
@@ -97,7 +101,7 @@ export function usePush() {
     set: on => void (on ? enable() : disable()),
   });
 
-  return { available, enabled, model, denied, busy, error, refresh, enable, disable };
+  return { available, enabled, model, denied, busy, saving, error, refresh, enable, disable };
 }
 
 /**

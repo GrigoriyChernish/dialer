@@ -90,6 +90,40 @@ describe('usePush', () => {
     expect(push.error.value).toBe(true);
     expect(push.enabled.value).toBe(false);
     expect(getSub()).toBeNull();
+    expect(push.saving.value).toBe(false);
+  });
+
+  it('попап збереження: лише після дозволу браузера й до відповіді сервера', async () => {
+    const { push, request } = setup();
+    let done!: () => void;
+    let seen = false;
+    request.mockImplementation(() => new Promise<void>(r => ((seen = push.saving.value), (done = r))));
+    (globalThis.Notification as unknown as { requestPermission: () => Promise<string> }).requestPermission = vi.fn(
+      async () => {
+        expect(push.saving.value).toBe(false); // системний запит дозволу не перекриваємо
+        (globalThis.Notification as { permission: string }).permission = 'granted';
+        return 'granted';
+      },
+    );
+    const enabling = push.enable();
+    await vi.waitFor(() => expect(request).toHaveBeenCalled());
+    expect(seen).toBe(true);
+    done();
+    await enabling;
+    expect(push.saving.value).toBe(false);
+    expect(push.enabled.value).toBe(true);
+  });
+
+  it('дозвіл відхилено в запиті: попап не показуємо', async () => {
+    const { push } = setup();
+    (globalThis.Notification as unknown as { requestPermission: () => Promise<string> }).requestPermission = vi.fn(
+      async () => ((globalThis.Notification as { permission: string }).permission = 'denied'),
+    );
+    const enabling = push.enable();
+    expect(push.saving.value).toBe(false);
+    await enabling;
+    expect(push.saving.value).toBe(false);
+    expect(push.denied.value).toBe(true);
   });
 
   it('вимикання: знімає підписку на пристрої й на сервері', async () => {
