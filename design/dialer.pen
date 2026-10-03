@@ -891,14 +891,46 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "text",
-                  "id": "P6ptR9",
-                  "name": "Peer Name",
-                  "fill": "$fg",
-                  "content": "Олена Коваль",
-                  "fontFamily": "Inter",
-                  "fontSize": 16,
-                  "fontWeight": "600"
+                  "type": "frame",
+                  "id": "MMdGr",
+                  "name": "Left",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x6Km6b",
+                      "name": "Minimize Button",
+                      "width": 28,
+                      "height": 28,
+                      "fill": "$surface-2",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "dHTae",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "P6ptR9",
+                      "name": "Peer Name",
+                      "fill": "$fg",
+                      "content": "Олена Коваль",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
                 },
                 {
                   "type": "frame",
@@ -1516,6 +1548,130 @@
                 },
                 "AXbWD": {
                   "content": "зайнятий",
+                  "fill": "$warn-text"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "k5rwgy",
+              "name": "Return Call",
+              "context": "Плашка «Повернутися до дзвінка» на головному, коли розмову згорнуто (кнопка chevron-down у шапці розмови). Уся картка — кнопка, повертає екран розмови. Таймер іде далі; під час утримання іконка pause і підпис «на утриманні».",
+              "reusable": true,
+              "width": 375,
+              "padding": [
+                0,
+                16,
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "x46Irs",
+                  "type": "ref",
+                  "ref": "aEP8Q",
+                  "name": "Card",
+                  "width": "fill_container",
+                  "padding": [
+                    8,
+                    14,
+                    8,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "k8XBJ",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Q50iq",
+                          "name": "Disc",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$ok-soft",
+                          "cornerRadius": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "KSz2C",
+                              "name": "Icon",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "phone",
+                              "library": "lucide",
+                              "fill": "$ok"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "o3LJzU",
+                          "name": "Text",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Q8AZV",
+                              "name": "Name",
+                              "fill": "$fg",
+                              "content": "Олена Коваль",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ETnd1",
+                              "name": "Status",
+                              "fill": "$mute",
+                              "content": "· 02:14",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "icon",
+                          "id": "r4Eug",
+                          "name": "Chevron",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-up",
+                          "library": "lucide",
+                          "fill": "$mute"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "xXVm0",
+              "type": "ref",
+              "ref": "k5rwgy",
+              "name": "Return Call / hold",
+              "descendants": {
+                "Q50iq": {
+                  "fill": "$warn-soft"
+                },
+                "KSz2C": {
+                  "icon": "pause",
+                  "fill": "$warn"
+                },
+                "ETnd1": {
+                  "content": "· на утриманні",
                   "fill": "$warn-text"
                 }
               }
@@ -5654,6 +5810,1165 @@
                   "width": "fill_container"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "NPKgB",
+              "name": "Home · Contacts · in call",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "F2t6FT",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "zionR",
+                  "type": "ref",
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олена Коваль"
+                    }
+                  }
+                },
+                {
+                  "id": "lBNK7",
+                  "type": "ref",
+                  "ref": "k5rwgy",
+                  "name": "Return Call",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "NxSp5",
+                  "name": "Body",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "K0n1x",
+                      "type": "ref",
+                      "ref": "aEP8Q",
+                      "name": "Contact List",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "clip": true,
+                      "descendants": {
+                        "CMBt4": {
+                          "type": "frame",
+                          "id": "cJGju",
+                          "name": "Content",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "id": "PF0i6",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Олена Коваль",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ОК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Олена Коваль"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "vW3Bk",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Андрій Мельник",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "АМ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Андрій Мельник"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$warn"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · не відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "o27iZr",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Support",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "S"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Support"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$bad"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "у розмові · зайнято",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "tBhZ7",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Ірина Петренко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ІП"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Ірина Петренко"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "of1iU",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Дмитро Бондар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ДБ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Дмитро Бондар"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "t47ZW",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Марія Савчук",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "МС"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Марія Савчук"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "pQs6W",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Тарас Кравець",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ТК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Тарас Кравець"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "hYzeB",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Юлія Лисенко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ЮЛ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Юлія Лисенко"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "XtSYV",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Наталія Гончар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "НГ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Наталія Гончар"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$warn"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · не відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "QOtM6",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Василь Шевчук",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ВШ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Василь Шевчук"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "ueLZm",
+                  "type": "ref",
+                  "ref": "dPLmV",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "w1gIHh",
+              "name": "Home · Contacts · in call · hold",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$bg",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "Thy3z",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "W70RH",
+                  "type": "ref",
+                  "ref": "n0Hx1o",
+                  "name": "Home Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mxgcA": {
+                      "content": "Олена Коваль"
+                    }
+                  }
+                },
+                {
+                  "id": "bxs0B",
+                  "type": "ref",
+                  "ref": "k5rwgy",
+                  "name": "Return Call",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q50iq": {
+                      "fill": "$warn-soft"
+                    },
+                    "KSz2C": {
+                      "icon": "pause",
+                      "fill": "$warn"
+                    },
+                    "ETnd1": {
+                      "content": "· на утриманні",
+                      "fill": "$warn-text"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "rEn13",
+                  "name": "Body",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    4,
+                    16,
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "Ge5ZQ",
+                      "type": "ref",
+                      "ref": "aEP8Q",
+                      "name": "Contact List",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "clip": true,
+                      "descendants": {
+                        "CMBt4": {
+                          "type": "frame",
+                          "id": "h1uSzt",
+                          "name": "Content",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "id": "mZT1Z",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Олена Коваль",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ОК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Олена Коваль"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "bEDMg",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Андрій Мельник",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "АМ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Андрій Мельник"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$warn"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · не відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "qwoqv",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Support",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "S"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Support"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$bad"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "у розмові · зайнято",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "bCtLY",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Ірина Петренко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ІП"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Ірина Петренко"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "ULKSV",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Дмитро Бондар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ДБ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Дмитро Бондар"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "q1ickm",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Марія Савчук",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "МС"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Марія Савчук"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "QXlsG",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Тарас Кравець",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ТК"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Тарас Кравець"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "Ez4uD",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Юлія Лисенко",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-teal",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-blue",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ЮЛ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Юлія Лисенко"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$ok"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "FSpkc",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Наталія Гончар",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$avatar-amber",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-red",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "НГ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Наталія Гончар"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$warn"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "онлайн · не відповість",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            },
+                            {
+                              "id": "A41U8",
+                              "type": "ref",
+                              "ref": "ahjhz",
+                              "name": "Василь Шевчук",
+                              "width": "fill_container",
+                              "descendants": {
+                                "dhYFg": {
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 135,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "$accent",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "$avatar-end",
+                                        "position": 1
+                                      }
+                                    ]
+                                  }
+                                },
+                                "P4LlfF": {
+                                  "content": "ВШ"
+                                },
+                                "x6ZWRS/a63lt": {
+                                  "content": "Василь Шевчук"
+                                },
+                                "x6ZWRS/ZYWNw": {
+                                  "width": "fit_content"
+                                },
+                                "x6ZWRS/T2L4QA": {
+                                  "fill": "$mute"
+                                },
+                                "x6ZWRS/RpOJ4": {
+                                  "content": "не в мережі",
+                                  "textGrowth": "auto"
+                                },
+                                "x3sUSs": {
+                                  "enabled": true
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "mXO7u",
+                  "type": "ref",
+                  "ref": "dPLmV",
+                  "name": "Tab Bar",
+                  "width": "fill_container"
+                }
+              ]
             }
           ]
         }
@@ -6794,9 +8109,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -6980,9 +8292,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "MG9z1": {
                       "children": [
                         {
@@ -7187,9 +8496,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -7403,9 +8709,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -7601,9 +8904,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -7799,9 +9099,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -8027,9 +9324,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "MG9z1": {
                       "children": [
                         {
@@ -8192,9 +9486,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "MG9z1": {
                       "children": [
                         {
@@ -8357,9 +9648,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -8534,9 +9822,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -8744,9 +10029,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -8931,9 +10213,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -9118,9 +10397,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -9319,9 +10595,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -9639,9 +10912,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -9841,9 +11111,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -10062,9 +11329,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -10197,9 +11461,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -11924,10 +13185,6 @@
                   "height": 40,
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "enabled": false,
-                      "content": "Андрій Мельник"
-                    },
                     "YSzYZ": {
                       "enabled": false
                     },
@@ -12175,9 +13432,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Андрій Мельник"
-                    },
                     "Lm6Lv": {
                       "content": "00:05"
                     }
@@ -15536,9 +16790,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Олена Коваль"
-                    },
                     "Lm6Lv": {
                       "content": "00:42"
                     }
@@ -15723,9 +16974,6 @@
                   "name": "Header",
                   "width": "fill_container",
                   "descendants": {
-                    "P6ptR9": {
-                      "content": "Андрій Мельник"
-                    },
                     "Lm6Lv": {
                       "content": "00:05"
                     }
