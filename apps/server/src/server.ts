@@ -3,7 +3,7 @@ import { createSessions } from './auth/sessions';
 import { createTokens } from './auth/tokens';
 import { ulid } from './calls/id';
 import { createCallService } from './calls/service';
-import { realClock, type Clock } from './calls/types';
+import { realClock, type Clock, type Effect } from './calls/types';
 import type { Config } from './config';
 import { openDb } from './db';
 import { createLiveKit, type RoomApi } from './livekit';
@@ -54,7 +54,11 @@ export async function createServer({
   users.seedBots();
   const tokens = createTokens(config.jwtSecret);
   const presence = createMemoryPresence();
-  const hub = createHub(presence, users);
+  // дзвінки й підписки створюються нижче; хаб звертається до них лише після запуску
+  const hub = createHub(presence, users, {
+    inCall: (siteId, userId) => callStore.activeFor(siteId, userId).length > 0,
+    hasPush: (siteId, userId) => push.hasSubscriptions(siteId, userId),
+  });
   const recents = createRecents(db);
   const callStore = createCallStore(db);
   const push = createPush({
@@ -66,7 +70,7 @@ export async function createServer({
   });
   const rejectTokens = createRejectTokens(config.jwtSecret);
   // кадри через WebSocket, а на підписані пристрої без з'єднання ще й Web Push
-  const deliver = createPushDispatch({
+  const deliverFrames = createPushDispatch({
     push,
     presence,
     store: callStore,
@@ -75,6 +79,14 @@ export async function createServer({
     now: () => clock.now(),
     logger,
   }).wrap(createDeliver(presence));
+  /** Після подій дзвінка статус учасників міг змінитися (почали чи закінчили розмову): перераховуємо. */
+  const deliver = (effects: Effect[]) => {
+    deliverFrames(effects);
+    const touched = new Map<string, [string, string]>();
+    for (const e of effects)
+      if (e.msg.type.startsWith('call.')) touched.set(`${e.siteId}\u0000${e.userId}`, [e.siteId, e.userId]);
+    for (const [siteId, userId] of touched.values()) hub.refresh(siteId, userId);
+  };
   const livekit = config.livekit ? createLiveKit(config.livekit, livekitRooms) : null;
   const calls = createCallService({
     store: callStore,

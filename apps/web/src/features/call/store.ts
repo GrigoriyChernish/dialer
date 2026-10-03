@@ -463,7 +463,7 @@ export const useCallStore = defineStore('call', () => {
         break;
       case 'presence': {
         const c = contacts.value.find(x => x.userId === m.userId);
-        if (c) c.online = m.online;
+        if (c) c.status = m.status;
         break;
       }
       case 'recents.seen': // інший пристрій переглянув історію

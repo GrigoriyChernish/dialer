@@ -57,7 +57,7 @@ function setup(opts: { seen?: number } = {}) {
     serverTime: Date.now(),
     settings: { waiting: true, dnd: false },
     calls: [],
-    contacts: [{ ...olena, online: true }],
+    contacts: [{ ...olena, status: 'free' }],
     recents: [],
     recentsSeenUpTo: 0,
   });
@@ -76,6 +76,12 @@ describe('call store', () => {
 
   it('loads contacts from hello.ok', () => {
     expect(setup().store.contacts).toHaveLength(1);
+  });
+
+  it('presence updates the contact status', () => {
+    const { store, send } = setup();
+    send({ v: V, type: 'presence', userId: olena.userId, status: 'dnd' });
+    expect(store.contacts[0]!.status).toBe('dnd');
   });
 
   it('goes ringing only after the server ack', async () => {

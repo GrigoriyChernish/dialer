@@ -206,6 +206,19 @@ describe('push на дзвінки (етап C)', () => {
     anna.client.close();
   });
 
+  it('статус: без з’єднання, але з підпискою — away, а не offline', async () => {
+    const { server } = await withPush();
+    const [pa, pb] = [phone(), phone()];
+    const anna = await connectUser(server, 'Анна', pa);
+    const bohdan = await connectUser(server, 'Богдан', pb, 'phone');
+    expect((await anna.client.next('presence')).status).toBe('free');
+    bohdan.client.send({ type: 'push.subscribe', id: 's', subscription: sub() });
+    await bohdan.client.next('ack');
+    bohdan.client.close();
+    expect((await anna.client.next('presence')).status).toBe('away');
+    anna.client.close();
+  });
+
   it('без підписки адресат не в мережі дає offline', async () => {
     const { server } = await withPush();
     const [pa, pb] = [phone(), phone()];

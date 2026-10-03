@@ -255,6 +255,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       const settings = deps.users.updateSettings(conn.siteId, conn.userId, clean);
       log.info({ userId: conn.userId, ...clean }, 'налаштування змінено');
       respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id, settings });
+      deps.hub.refresh(conn.siteId, conn.userId);
       deps.deliver([
         {
           siteId: conn.siteId,
@@ -290,12 +291,14 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       const sub = parseSubscription(msg.subscription);
       if (!sub) return respond(id, errorFrame('bad_request', id, 'push.subscribe: некоректна підписка'));
       deps.push.subscribe(conn.siteId, conn.userId, conn.deviceId, sub);
+      deps.hub.refresh(conn.siteId, conn.userId);
       respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
     }
 
     function onPushUnsubscribe(id: string | undefined) {
       if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
       deps.push.unsubscribe(conn.siteId, conn.userId, conn.deviceId);
+      deps.hub.refresh(conn.siteId, conn.userId);
       respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
     }
 
@@ -375,6 +378,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
           return onPushUnsubscribe(id);
         case 'device.visibility':
           conn.hidden = msg.hidden === true;
+          deps.hub.refresh(conn.siteId, conn.userId);
           if (id) respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
           return;
         default:

@@ -36,7 +36,7 @@ function mountPage(recents: RecentEntry[]) {
     serverTime: Date.now(),
     me: { userId: 'me', name: 'Я' },
     settings: {},
-    contacts: [{ userId: '+380501111111', name: 'Олена Коваль', online: true }],
+    contacts: [{ userId: '+380501111111', name: 'Олена Коваль', status: 'free' }],
     calls: [],
     recents,
   } as never);

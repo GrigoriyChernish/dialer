@@ -45,7 +45,8 @@ describe('WebSocket: підключення', () => {
     const ids = hello.contacts.map(c => c.userId);
     expect(ids).toEqual(expect.arrayContaining(['bot:olena', 'bot:andriy', 'bot:support']));
     expect(ids).not.toContain('+380931111111');
-    expect(hello.contacts.filter(c => c.userId.startsWith('bot:')).every(c => c.online)).toBe(true);
+    const bot = (id: string) => hello.contacts.find(c => c.userId === id)?.status;
+    expect([bot('bot:olena'), bot('bot:andriy'), bot('bot:support')]).toEqual(['free', 'free', 'busy']);
     client.close();
   });
 
@@ -126,12 +127,17 @@ describe('присутність і контакти', () => {
     const b = await connectUser(server, 'Богдан', '0940000002');
 
     // Аня отримала presence про Богдана
-    expect(await a.client.next('presence')).toEqual({ v: 1, type: 'presence', userId: '+380940000002', online: true });
+    expect(await a.client.next('presence')).toEqual({
+      v: 1,
+      type: 'presence',
+      userId: '+380940000002',
+      status: 'free',
+    });
     // Богдан бачить Аню в мережі
-    expect(b.hello.contacts.find(c => c.userId === '+380940000001')?.online).toBe(true);
+    expect(b.hello.contacts.find(c => c.userId === '+380940000001')?.status).toBe('free');
 
     b.client.close();
-    expect(await a.client.next('presence')).toMatchObject({ userId: '+380940000002', online: false });
+    expect(await a.client.next('presence')).toMatchObject({ userId: '+380940000002', status: 'offline' });
     a.client.close();
   });
 
@@ -147,7 +153,7 @@ describe('присутність і контакти', () => {
     await a.client.next('pong');
     expect(a.client.frames.filter(f => f.type === 'presence')).toEqual([]);
     b2.client.close();
-    expect(await a.client.next('presence')).toMatchObject({ userId: '+380940000004', online: false });
+    expect(await a.client.next('presence')).toMatchObject({ userId: '+380940000004', status: 'offline' });
     a.client.close();
   });
 
@@ -155,8 +161,45 @@ describe('присутність і контакти', () => {
     const a = await connectUser(server, 'Дарина', '0940000005');
     await login(server, 'Едуард', '0940000006');
     const update = await a.client.next('contacts.update');
-    expect(update.upsert).toEqual([{ userId: '+380940000006', name: 'Едуард', online: false }]);
+    expect(update.upsert).toEqual([{ userId: '+380940000006', name: 'Едуард', status: 'offline' }]);
     a.client.close();
+  });
+
+  it('статус: «Не турбувати», приховане вікно, дзвінок', async () => {
+    const a = await connectUser(server, 'Жанна', '0940000007');
+    const b = await connectUser(server, 'Зиновій', '0940000008');
+    const c = await connectUser(server, 'Ігор', '0940000009');
+    const status = async (who: typeof a) => (await who.client.next('presence')).status;
+    await a.client.next('presence');
+    await a.client.next('presence');
+    await b.client.next('presence');
+
+    b.client.send({ type: 'settings.update', id: 's1', settings: { dnd: true } });
+    expect(await status(a)).toBe('dnd');
+    b.client.send({ type: 'settings.update', id: 's2', settings: { dnd: false } });
+    expect(await status(a)).toBe('free');
+
+    b.client.send({ type: 'device.visibility', hidden: true });
+    expect(await status(a)).toBe('away');
+    b.client.send({ type: 'device.visibility', hidden: false });
+    expect(await status(a)).toBe('free');
+
+    // Жанна дзвонить Зиновію: Ігор бачить обох зайнятими, після скасування — вільними
+    const seen = new Map<string, string>();
+    const until = async (userId: string, want: string) => {
+      while (seen.get(userId) !== want) {
+        const m = await c.client.next('presence');
+        seen.set(m.userId, m.status);
+      }
+    };
+    a.client.send({ type: 'call.invite', id: 'i1', to: '+380940000008', video: false });
+    const { call } = await a.client.next('ack');
+    await until('+380940000007', 'busy');
+    await until('+380940000008', 'busy');
+    a.client.send({ type: 'call.cancel', id: 'c1', callId: call!.callId });
+    await until('+380940000007', 'free');
+    await until('+380940000008', 'free');
+    for (const x of [a, b, c]) x.client.close();
   });
 });
 

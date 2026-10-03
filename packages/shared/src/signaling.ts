@@ -83,10 +83,17 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = { waiting: true, dnd: false };
 
+/**
+ * Статус контакта, рахує сервер (docs/signaling.md#статус-контакта):
+ * `busy` — у дзвінку (розмова чи виклик), `dnd` — «Не турбувати», `free` — застосунок відкритий на екрані,
+ * `away` — досяжний, але не на екрані (вікно приховане чи лише підписка Web Push), `offline` — недосяжний.
+ */
+export type PresenceStatus = 'free' | 'busy' | 'dnd' | 'away' | 'offline';
+
 export interface Contact {
   userId: UserId;
   name: string;
-  online: boolean;
+  status: PresenceStatus;
 }
 
 export type RecentResult = 'completed' | 'cancelled' | 'rejected' | 'busy' | 'no_answer' | 'missed' | 'failed';
@@ -205,7 +212,7 @@ export type CallUpdated = Frame<'call.updated'> & {
   hold?: boolean;
   waiting?: boolean;
 };
-export type PresenceEvent = Frame<'presence'> & { userId: UserId; online: boolean };
+export type PresenceEvent = Frame<'presence'> & { userId: UserId; status: PresenceStatus };
 export type ContactsUpdate = Frame<'contacts.update'> & {
   upsert: Contact[];
   remove: UserId[];
