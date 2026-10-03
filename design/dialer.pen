@@ -4235,10 +4235,11 @@
                                   "height": 14,
                                   "icon": "phone-outgoing",
                                   "library": "lucide",
-                                  "fill": "$mute"
+                                  "fill": "$accent-icon"
                                 },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "вихідний · 11:05 · 03:42"
+                                  "content": "вихідний · 11:05 · 03:42",
+                                  "fill": "$accent-icon"
                                 }
                               }
                             },
@@ -4332,10 +4333,11 @@
                                   "height": 14,
                                   "icon": "phone-incoming",
                                   "library": "lucide",
-                                  "fill": "$mute"
+                                  "fill": "$ok-text"
                                 },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "вхідний · 21:18 · 12:05"
+                                  "content": "вхідний · 21:18 · 12:05",
+                                  "fill": "$ok-text"
                                 }
                               }
                             },
@@ -4381,10 +4383,11 @@
                                   "height": 14,
                                   "icon": "phone-outgoing",
                                   "library": "lucide",
-                                  "fill": "$mute"
+                                  "fill": "$accent-icon"
                                 },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "скасований · 18:02"
+                                  "content": "скасований · 18:02",
+                                  "fill": "$accent-icon"
                                 }
                               }
                             },
@@ -4478,10 +4481,11 @@
                                   "height": 14,
                                   "icon": "phone-outgoing",
                                   "library": "lucide",
-                                  "fill": "$mute"
+                                  "fill": "$accent-icon"
                                 },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "відхилено · 16:20"
+                                  "content": "відхилено · 16:20",
+                                  "fill": "$accent-icon"
                                 }
                               }
                             },
