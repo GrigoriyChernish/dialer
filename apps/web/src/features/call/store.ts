@@ -60,7 +60,7 @@ const HINT_MS = 4000;
  * Екран «Дзвінок завершено» після того, як поклав слухавку співрозмовник, закривається сам.
  * Новий дзвінок (вхідний чи наш) закриває його одразу й гасить таймер (`setMissed(null)` в `applyCall`/`call`).
  */
-const ENDED_MS = 5000;
+const ENDED_MS = 10_000;
 const SEEN_KEY = 'dialer.missedSeen';
 const loadSeen = () => {
   try {

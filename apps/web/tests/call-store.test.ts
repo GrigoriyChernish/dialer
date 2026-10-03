@@ -311,14 +311,14 @@ describe('call store', () => {
     expect(store.micBlocked).toBe(true);
   });
 
-  it('shows the call result when the peer hangs up, and closes it after 5 s', async () => {
+  it('shows the call result when the peer hangs up, and closes it after 10 s', async () => {
     const { store, send } = setup();
     await store.call(olena.userId);
     send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
     vi.useFakeTimers();
     send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup', duration: 222 });
     expect(store.missed).toMatchObject({ reason: 'ended', duration: 222 });
-    vi.advanceTimersByTime(4999);
+    vi.advanceTimersByTime(9999);
     expect(store.missed).not.toBeNull();
     vi.advanceTimersByTime(1);
     expect(store.missed).toBeNull();
