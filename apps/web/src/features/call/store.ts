@@ -10,10 +10,11 @@ import {
   type Settings,
 } from '@dialer/shared';
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { usePrefsStore } from '@/features/settings/prefs';
 import type { LinkState } from '@/shared/media/room';
 import type { SoundKind } from '@/shared/sounds/sounds';
+import { holdFlag, latestPeerState, trackSince, type PeerSince } from './peerState';
 
 export type CallStatus = 'idle' | 'ringing' | 'incoming' | 'connected';
 /** Екран результату: дзвінок не відбувся (`busy` … `error`) або розмова скінчилась не з нашої волі (`ended`, `lost`, `dropped`). */
@@ -103,12 +104,27 @@ export const useCallStore = defineStore('call', () => {
     poor: false,
     peerAway: false,
     peerMuted: false,
+    peerSpeaking: false,
     peerCam: false,
     localCam: false,
     micError: false,
     camError: false,
   };
   const link = ref<LinkState>({ ...NO_LINK });
+  // коли настав кожен стан співрозмовника: показуємо той, що настав останнім (смужка, обводка й колір аватара в `Peer`)
+  const peerSince = ref<PeerSince>({});
+  watch(
+    () => [peerHold.value, link.value.peerAway, link.value.peerMuted] as const,
+    ([hold, lost, mic]) => {
+      peerSince.value = trackSince(peerSince.value, { hold, lost, mic }, Date.now());
+    },
+    { flush: 'sync' },
+  );
+  const peerState = computed(() =>
+    latestPeerState({ hold: peerHold.value, lost: link.value.peerAway, mic: link.value.peerMuted }, peerSince.value),
+  );
+  // індикатор голосу: тримається 250 мс після останнього звуку, щоб не блимати на паузах між словами
+  const peerSpeaking = holdFlag(() => status.value === 'connected' && link.value.peerSpeaking, 250);
   const cam = ref(prefs.camOnStart);
   const selfHidden = ref(false);
   /** Камери немає чи немає дозволу: мініатюру себе не показуємо, кнопка камери неактивна. */
@@ -625,6 +641,8 @@ export const useCallStore = defineStore('call', () => {
     peer,
     hold,
     peerHold,
+    peerState,
+    peerSpeaking,
     mic,
     cam,
     micBlocked,

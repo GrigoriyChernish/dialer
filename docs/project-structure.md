@@ -26,7 +26,7 @@ dialer/
     project-structure.md
     signaling.md     #   контракт WebSocket
   work/              # робочі матеріали команди й агентів (є)
-    backlog/         #   беклог задач
+    backlog/         #   беклог задач (backlog.md) і беклог UI/UX (uiux.md)
     changelog/       #   ченджлог, файл на день: YYYY-MM-DD.md
   package.json       # корінь pnpm workspaces: скрипти `typecheck` тощо (є)
   pnpm-workspace.yaml

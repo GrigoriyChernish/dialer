@@ -12,11 +12,11 @@ const ICON = {
   camUnavailable: 'videoOff',
 } as const;
 const TONE = {
-  hold: 'bg-white/10 text-warn',
-  micOff: 'bg-call-bad text-white',
-  micUnavailable: 'bg-white/10 text-warn',
-  camOff: 'bg-white/10 text-mute',
-  camUnavailable: 'bg-white/10 text-warn',
+  hold: 'bg-surface text-warn',
+  micOff: 'bg-surface text-mute',
+  micUnavailable: 'bg-surface text-warn',
+  camOff: 'bg-surface text-mute',
+  camUnavailable: 'bg-surface text-warn',
 } as const;
 defineProps<{ status: SelfStatus; label: string }>();
 </script>

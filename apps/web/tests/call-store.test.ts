@@ -165,6 +165,48 @@ describe('call store', () => {
     expect(store.selfHidden).toBe(false);
   });
 
+  it('shows the peer state that started last and falls back to the earlier one', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-02T10:00:00Z'));
+    const { store, send, link } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    expect(store.peerState).toBeNull();
+    link({ peerMuted: true });
+    expect(store.peerState).toBe('mic');
+    vi.setSystemTime(new Date('2026-10-02T10:00:05Z'));
+    send({ v: V, type: 'call.peer', callId: 'c1', hold: true });
+    expect(store.peerState).toBe('hold');
+    vi.setSystemTime(new Date('2026-10-02T10:00:09Z'));
+    link({ peerAway: true });
+    expect(store.peerState).toBe('lost');
+    link({ peerAway: false });
+    expect(store.peerState).toBe('hold');
+    send({ v: V, type: 'call.peer', callId: 'c1', hold: false });
+    expect(store.peerState).toBe('mic');
+    store.end();
+    expect(store.peerState).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it('keeps the voice indicator for 250 ms after the peer stops speaking and clears it with the call', async () => {
+    vi.useFakeTimers();
+    const { store, send, link } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    link({ peerSpeaking: true });
+    expect(store.peerSpeaking).toBe(true);
+    link({ peerSpeaking: false });
+    expect(store.peerSpeaking).toBe(true);
+    vi.advanceTimersByTime(300);
+    expect(store.peerSpeaking).toBe(false);
+    link({ peerSpeaking: true });
+    store.end();
+    vi.advanceTimersByTime(300);
+    expect(store.peerSpeaking).toBe(false);
+    vi.useRealTimers();
+  });
+
   it('blocks the camera (no preview, button disabled) when the camera cannot be started', async () => {
     const { store, deps, send, link } = setup();
     await store.call(olena.userId);

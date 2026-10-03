@@ -7,10 +7,9 @@ import { banner } from '@/shared/ui/banners';
 import RoundButton from '@/shared/ui/RoundButton.vue';
 import SelfStatusChip, { type SelfStatus } from '@/shared/ui/SelfStatusChip.vue';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
-import VoiceWave from '@/shared/ui/VoiceWave.vue';
 import HeldCall from './HeldCall.vue';
 import Peer from './Peer.vue';
-import { useCallStore } from './store';
+import { useCallStore, type MissedReason } from './store';
 import WaitingScreen from './WaitingScreen.vue';
 
 const { t } = useI18n();
@@ -24,19 +23,17 @@ const connected = computed(() => call.status === 'connected');
 // екран «In Call · video»: на весь екран відео співрозмовника
 const video = computed(() => connected.value && call.link.peerCam && !call.peerHold);
 
-// смужка співрозмовника внизу над панеллю керування (дизайн: Peer Banner), одна за раз: утримання, зв'язок, мікрофон
+// смужка співрозмовника внизу над панеллю керування (дизайн: Peer Banner): одна, за станом, що настав останнім (як обводка й колір аватара в Peer)
 const peerBanners = computed<BannerItem[]>(() => {
   if (!connected.value) return [];
   const who = { name: first.value };
-  if (call.peerHold) return [banner('peerHold', t(`call.peer.hold.${g.value}`, who))];
-  if (call.link.peerAway) return [banner('connectionLost', t(`call.peer.connectionLost.${g.value}`, who))];
-  if (call.link.peerMuted) return [banner('peerMicOff', t(`call.peer.micOff.${g.value}`, who))];
+  if (call.peerState === 'hold') return [banner('peerHold', t(`call.peer.hold.${g.value}`, who))];
+  if (call.peerState === 'lost') return [banner('connectionLost', t(`call.peer.connectionLost.${g.value}`, who))];
+  if (call.peerState === 'mic') return [banner('peerMicOff', t(`call.peer.micOff.${g.value}`, who))];
   return [];
 });
-// хвиля голосу лише коли співрозмовник на зв'язку й говорить може (без утримання, обриву й вимкненого мікрофона)
-const talking = computed(() => peerBanners.value.length === 0);
-// дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена чи співрозмовник втратив зв'язок
-const dimmed = computed(() => call.hold || call.peerHold || call.link.peerAway);
+// дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена нами чи співрозмовник втратив зв'язок
+const dimmed = computed(() => call.hold || call.peerState === 'lost');
 // смужки під шапкою (дизайн: Self Banner): наша мережа, потім сповіщення про наші пристрої
 const banners = computed<BannerItem[]>(() => {
   if (!connected.value) return [];
@@ -47,6 +44,8 @@ const banners = computed<BannerItem[]>(() => {
   if (call.hint === 'mic') list.push(banner('micUnavailable', t('call.notice.micUnavailable')));
   return list;
 });
+// колір підпису результату: завершено fg, зайнято жовтий, решта (не вдалося зв'язатися, збій) червоний
+const RESULT_TEXT: Partial<Record<MissedReason, string>> = { ended: 'text-fg', busy: 'text-warn-text' };
 const MISSED_ICON = {
   incoming: 'phoneMissed',
   timeout: 'phoneMissed',
@@ -83,7 +82,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
     <Peer class="peer-pos" :name="name" variant="result">
       <p
         class="flex items-center gap-2 text-lg font-semibold"
-        :class="call.missed.reason === 'ended' ? 'text-fg' : 'text-call-bad'"
+        :class="RESULT_TEXT[call.missed.reason] ?? 'text-bad-text'"
       >
         <Icon :name="missedIcon" class="size-[18px]" />{{ t(`call.missed.${call.missed.reason}`) }}
       </p>
@@ -183,7 +182,16 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
       <div class="flex-1" />
     </div>
     <!-- блок співрозмовника на одній висоті в усіх станах (поза потоком, тож шапка й кнопки його не зсувають) -->
-    <Peer v-if="!video" class="peer-pos" :name="name" :variant="dimmed ? 'dimmed' : 'default'" :ringing="!connected">
+    <Peer
+      v-if="!video"
+      class="peer-pos"
+      :name="name"
+      :variant="dimmed ? 'dimmed' : 'default'"
+      :ringing="!connected"
+      :direction="call.status === 'incoming' ? 'in' : 'out'"
+      :state="connected ? call.peerState : null"
+      :speaking="call.peerSpeaking"
+    >
       <p
         v-if="call.status === 'ringing'"
         class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon"
@@ -196,7 +204,6 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
       >
         <Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}
       </p>
-      <VoiceWave v-else :silent="!talking || call.hold" />
       <small v-if="!connected && call.left" class="text-xs text-mute">{{
         t('call.left', { time: mm(call.left) })
       }}</small>
