@@ -20,6 +20,34 @@ const supported = () => 'serviceWorker' in navigator && 'PushManager' in window 
  * Реєстрація сервіс-воркера (відносний шлях: за будь-якою адресою, на Pages це `/dialer/`). Адреса сервера передається в
  * параметрі `server`: воркер не бачить налаштувань застосунку, а йому треба `POST /push/reject` для кнопки «Відхилити».
  */
+/**
+ * Хто ввімкнув сповіщення на цьому пристрої (`userId`). Вихід знімає підписку лише на сервері, а в браузері лишає: після входу
+ * того самого користувача її віддає `resyncPush`, і вмикати заново не треба. Іншому користувачу чужа підписка не дістається.
+ */
+const OWNER_KEY = 'dialer.push.owner';
+const readOwner = () => {
+  try {
+    return localStorage.getItem(OWNER_KEY);
+  } catch {
+    return null;
+  }
+};
+const writeOwner = (id: string | null) => {
+  try {
+    if (id) localStorage.setItem(OWNER_KEY, id);
+    else localStorage.removeItem(OWNER_KEY);
+  } catch {
+    // без сховища після виходу доведеться ввімкнути заново
+  }
+};
+/** Підписка належить користувачу; без запису власника (підписки до цієї зміни) вона дістається тому, хто увійшов. */
+const ownedBy = (id: string | undefined) => {
+  if (!id) return false;
+  const owner = readOwner();
+  if (!owner) writeOwner(id);
+  return !owner || owner === id;
+};
+
 const register = () => navigator.serviceWorker.register(`sw.js?server=${encodeURIComponent(serverUrl)}`);
 
 /**
@@ -47,7 +75,7 @@ export function usePush() {
   async function refresh() {
     if (!supported()) return;
     denied.value = Notification.permission === 'denied';
-    subscribed.value = !denied.value && !!(await current());
+    subscribed.value = !denied.value && !!(await current()) && ownedBy(call.me?.userId);
   }
 
   async function enable() {
@@ -71,6 +99,7 @@ export function usePush() {
       }
       sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: bytes });
       await call.pushSubscribe(sub.toJSON());
+      writeOwner(call.me?.userId ?? null);
       subscribed.value = true;
     } catch {
       error.value = true;
@@ -88,11 +117,20 @@ export function usePush() {
     busy.value = true;
     try {
       await (await current())?.unsubscribe().catch(() => {});
+      writeOwner(null);
       subscribed.value = false;
       await Promise.race([call.pushUnsubscribe().catch(() => {}), new Promise(r => setTimeout(r, 1000))]);
     } finally {
       busy.value = false;
     }
+  }
+
+  /**
+   * Вихід: відв'язує підписку від користувача лише на сервері (не довше за секунду), у браузері вона лишається разом із власником,
+   * тож після повторного входу сповіщення вже ввімкнені.
+   */
+  async function release() {
+    await Promise.race([call.pushUnsubscribe().catch(() => {}), new Promise(r => setTimeout(r, 1000))]);
   }
 
   /** Тумблер: увімкнути чи вимкнути. */
@@ -101,19 +139,19 @@ export function usePush() {
     set: on => void (on ? enable() : disable()),
   });
 
-  return { available, enabled, model, denied, busy, saving, error, refresh, enable, disable };
+  return { available, enabled, model, denied, busy, saving, error, refresh, enable, disable, release };
 }
 
 /**
- * Після `hello.ok` повторно віддає серверу підписку пристрою, якщо вона є: сервер міг її втратити, а на пристрої міг увійти інший
- * користувач. Без дозволу чи підписки нічого не робить.
+ * Після `hello.ok` повторно віддає серверу підписку пристрою, якщо вона є й належить тому, хто увійшов: сервер міг її втратити,
+ * а після виходу й повторного входу вона знову прив'язується до користувача. Без дозволу, підписки чи чужу — нічого не робить.
  */
 export async function resyncPush(call: ReturnType<typeof useCallStore>) {
   if (!supported() || !call.vapidKey || Notification.permission !== 'granted') return;
   try {
     const reg = await navigator.serviceWorker.getRegistration();
     const sub = await reg?.pushManager.getSubscription();
-    if (sub && sameKey(sub.options.applicationServerKey, keyBytes(call.vapidKey)))
+    if (sub && sameKey(sub.options.applicationServerKey, keyBytes(call.vapidKey)) && ownedBy(call.me?.userId))
       await call.pushSubscribe(sub.toJSON());
   } catch {
     // не вдалося: повторимо після наступного підключення

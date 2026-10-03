@@ -43,12 +43,16 @@ function setup({ permission = 'default', existing = null as FakeSub | null } = {
 
   const call = useCallStore();
   call.vapidKey = KEY;
+  call.me = { userId: '+380501111111', name: 'Оля' } as typeof call.me;
   const request = vi.spyOn(call, 'pushSubscribe').mockResolvedValue();
   const unsubscribe = vi.spyOn(call, 'pushUnsubscribe').mockResolvedValue();
   return { call, push: usePush(), request, unsubscribe, subscribe, nav, getSub: () => sub };
 }
 
-beforeEach(() => setActivePinia(createPinia()));
+beforeEach(() => {
+  setActivePinia(createPinia());
+  localStorage.clear();
+});
 afterEach(() => {
   vi.unstubAllGlobals();
   Reflect.deleteProperty(navigator, 'serviceWorker');
@@ -145,6 +149,57 @@ describe('usePush', () => {
     const { push } = setup({ permission: 'granted', existing });
     await push.refresh();
     expect(push.enabled.value).toBe(true);
+  });
+});
+
+describe('вихід і повторний вхід', () => {
+  it('вихід знімає підписку лише на сервері; той самий користувач після входу отримує її назад', async () => {
+    const { call, push, request, unsubscribe, getSub } = setup();
+    await push.enable();
+    await push.release();
+    expect(unsubscribe).toHaveBeenCalled();
+    expect(getSub()).not.toBeNull();
+
+    setActivePinia(createPinia());
+    const again = useCallStore();
+    again.vapidKey = KEY;
+    again.me = call.me;
+    const resend = vi.spyOn(again, 'pushSubscribe').mockResolvedValue();
+    await resyncPush(again);
+    expect(resend).toHaveBeenCalledTimes(1);
+    const next = usePush();
+    await next.refresh();
+    expect(next.enabled.value).toBe(true);
+    expect(request).toHaveBeenCalledTimes(1);
+  });
+
+  it('інший користувач чужої підписки не отримує, поки не ввімкне сам', async () => {
+    const { call, push, request } = setup();
+    await push.enable();
+    await push.release();
+    request.mockClear();
+
+    call.me = { userId: '+380502222222', name: 'Петро' } as typeof call.me;
+    await resyncPush(call);
+    expect(request).not.toHaveBeenCalled();
+    const other = usePush();
+    await other.refresh();
+    expect(other.enabled.value).toBe(false);
+
+    await other.enable();
+    expect(request).toHaveBeenCalledTimes(1);
+    call.me = { userId: '+380501111111', name: 'Оля' } as typeof call.me;
+    request.mockClear();
+    await resyncPush(call);
+    expect(request).not.toHaveBeenCalled();
+  });
+
+  it('вимкнення тумблером забуває власника', async () => {
+    const { push } = setup();
+    await push.enable();
+    expect(localStorage.getItem('dialer.push.owner')).toBe('+380501111111');
+    await push.disable();
+    expect(localStorage.getItem('dialer.push.owner')).toBeNull();
   });
 });
 

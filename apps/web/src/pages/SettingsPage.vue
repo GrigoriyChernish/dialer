@@ -79,9 +79,12 @@ const rows = computed(() => [
     : []),
 ]);
 
-/** Вихід: підписку на сповіщення знімаємо, щоб наступний користувач цього браузера не отримував чужі дзвінки. */
+/**
+ * Вихід: підписку на сповіщення відв'язуємо на сервері, щоб після виходу дзвінки не приходили; у браузері вона лишається за
+ * цим користувачем і повертається після його повторного входу (`resyncPush`).
+ */
 async function logout() {
-  if (push.enabled.value) await push.disable();
+  if (push.enabled.value) await push.release();
   session.logout();
 }
 const THEMES: { id: Theme; icon: IconName }[] = [
