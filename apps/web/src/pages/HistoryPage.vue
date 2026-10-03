@@ -27,13 +27,14 @@ const dayLabel = (ms: number) => {
       : new Date(ms).toLocaleDateString('uk', { day: 'numeric', month: 'long' });
 };
 const mmss = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-// крапка: червона пропущений, жовта «не додзвонились» (зайнято, без відповіді, помилка), решта нейтральна
-const DOT: Partial<Record<RecentResult, string>> = {
-  missed: 'bg-call-bad',
-  busy: 'bg-warn',
-  no_answer: 'bg-warn',
-  failed: 'bg-warn',
+// колір аватара й статусу (як у станів Peer Ring): пропущений `bad`, «не додзвонились» `warn`, решта нейтральна
+const TONE: Partial<Record<RecentResult, 'bad' | 'warn'>> = {
+  missed: 'bad',
+  busy: 'warn',
+  no_answer: 'warn',
+  failed: 'warn',
 };
+const icon = (r: RecentEntry) => (r.result === 'missed' ? 'phoneMissed' : r.direction === 'in' ? 'phoneIncoming' : 'phoneOutgoing');
 const status = (r: RecentEntry) => {
   const label = r.result === 'completed' ? t(`history.${r.direction}`) : t(`history.result.${r.result}`);
   return [label, time(r.startedAt), r.result === 'completed' && r.duration !== undefined && mmss(r.duration)]
@@ -86,7 +87,8 @@ watch(
               :key="r.callId"
               :name="name(r.peer)"
               :status="status(r)"
-              :dot="DOT[r.result] ?? 'bg-mute'"
+              :icon="icon(r)"
+              :tone="TONE[r.result]"
               @call="call.call(r.peer)"
             />
           </div>

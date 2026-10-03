@@ -55,9 +55,11 @@ describe('HistoryPage', () => {
     expect(text(2)).toMatch(/^вихідний · .+ · 00:07$/);
     expect(text(3)).toMatch(/^без відповіді · /);
     expect(text(4)).toMatch(/^скасований · /);
-    expect(rows[0]!.find('small i').classes()).toContain('bg-call-bad');
-    expect(rows[3]!.find('small i').classes()).toContain('bg-warn');
-    expect(rows[1]!.find('small i').classes()).toContain('bg-mute');
+    const avatar = (i: number) => rows[i]!.find('[aria-hidden]').attributes('style') ?? '';
+    expect(avatar(0)).toContain('color-mix');
+    expect(avatar(3)).toContain('color-mix');
+    expect(avatar(1)).not.toContain('color-mix');
+    expect(rows[0]!.find('small span').classes()).toContain('text-bad-text');
   });
 
   it('shows an empty state when there are no calls', () => {
