@@ -36,8 +36,9 @@ const actions = computed(
     style="background: linear-gradient(180deg, var(--stage-glow), var(--bg))"
     aria-live="polite"
   >
-    <!-- смужка поточної розмови (дизайн: Self Banner / active-call); таймер прихований від читачів екрана, щоб не озвучувався щосекунди -->
-    <div class="px-4 pt-2">
+    <!-- смужка поточної розмови (дизайн: Self Banner / active-call) на тій самій висоті, що й сповіщення Self-зони на екрані розмови
+         (під порожньою шапкою 40, відступ 6); таймер прихований від читачів екрана, щоб не озвучувався щосекунди -->
+    <div class="px-4 pt-[46px]">
       <Banner :tone="active.tone" :icon="active.icon"
         ><span class="sr-only">{{ t('call.waiting.active', { name: call.peer?.name }) }}</span
         ><span aria-hidden="true">{{ call.peer?.name }} · {{ mm(call.seconds) }}</span></Banner

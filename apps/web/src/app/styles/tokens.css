@@ -38,6 +38,11 @@
   --transition-banner-leave:
     height var(--duration-banner-leave) var(--ease-in), opacity var(--duration-banner-leave) var(--ease-in),
     translate var(--duration-banner-leave) var(--ease-in);
+  /* заміна сповіщення в слоті пулу: без зміни висоти, лише прозорість і зсув 4 px */
+  --transition-fade-enter:
+    opacity var(--duration-banner-enter) var(--ease-out), translate var(--duration-banner-enter) var(--ease-out);
+  --transition-fade-leave:
+    opacity var(--duration-banner-leave) var(--ease-in), translate var(--duration-banner-leave) var(--ease-in);
   --transition-press: transform var(--duration-press) var(--ease-out);
 }
 @media (prefers-color-scheme: dark) {

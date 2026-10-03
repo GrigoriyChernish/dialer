@@ -23,8 +23,8 @@ const BADGE = {
 </script>
 
 <template>
-  <!-- нижній відступ 8 лежить у корені: проміжок між смужками анімується разом із ними -->
   <div class="pointer-events-none overflow-hidden pb-2" role="status">
+    <!-- нижній відступ 8 лежить у корені: проміжок між смужками анімується разом із ними; коментар не виносимо за корінь, інакше у dev корінь стає фрагментом і Transition не працює -->
     <div
       class="banner flex items-center gap-2.5 py-2 pl-2.5 text-[13px] font-semibold"
       :class="[tone, $slots.action ? 'pr-2' : 'pr-3.5']"

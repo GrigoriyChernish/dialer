@@ -19,7 +19,7 @@ const KINDS = {
   micUnavailable: { tone: 'warn', icon: 'micOff' },
   // Self Banner: поточна розмова над другим вхідним (WaitingScreen)
   activeCall: { tone: 'ok', icon: 'phone' },
-  // Self Banner: утримуваний дзвінок під шапкою (HeldCall, з кнопкою «Перемкнути»)
+  // Self Banner: утримуваний дзвінок у пулі сповіщень (CallScreen, з кнопкою «Перемкнути»)
   heldCall: { tone: 'warn', icon: 'pause' },
 } as const satisfies Record<string, Omit<BannerItem, 'id' | 'text'>>;
 

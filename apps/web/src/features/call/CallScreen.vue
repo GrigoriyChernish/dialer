@@ -7,7 +7,8 @@ import { banner } from '@/shared/ui/banners';
 import RoundButton from '@/shared/ui/RoundButton.vue';
 import SelfStatusChip, { type SelfStatus } from '@/shared/ui/SelfStatusChip.vue';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
-import HeldCall from './HeldCall.vue';
+import NotificationPool from './NotificationPool.vue';
+import { usePool, type PoolSource } from './notifications';
 import Peer from './Peer.vue';
 import { useCallStore, type MissedReason } from './store';
 import WaitingScreen from './WaitingScreen.vue';
@@ -34,14 +35,33 @@ const peerBanners = computed<BannerItem[]>(() => {
 });
 // дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена нами чи співрозмовник втратив зв'язок
 const dimmed = computed(() => call.hold || call.peerState === 'lost');
-// смужки під шапкою (дизайн: Self Banner): наша мережа, потім сповіщення про наші пристрої
-const banners = computed<BannerItem[]>(() => {
+// сповіщення Self-зони під шапкою (дизайн: Self Banner): пул, у слоті видно одне. Системні (наша мережа) сильніші за користувацькі
+// (наші пристрої, утримуваний дзвінок), усередині групи вище новіше (docs/design-system.md, «Пул сповіщень»)
+const heldSecs = computed(() =>
+  call.held ? Math.max(0, Math.floor((call.serverNow - call.held.startedAt) / 1000)) : 0,
+);
+const pool = usePool(() => {
   if (!connected.value) return [];
-  const list: BannerItem[] = [];
-  if (call.link.reconnecting) list.push(banner('reconnecting', t('call.network.reconnecting')));
-  else if (call.link.poor) list.push(banner('poorSignal', t('call.network.poorSignal')));
-  if (call.hint === 'cam') list.push(banner('cameraUnavailable', t('call.notice.cameraUnavailable')));
-  if (call.hint === 'mic') list.push(banner('micUnavailable', t('call.notice.micUnavailable')));
+  const list: PoolSource[] = [];
+  if (call.link.reconnecting) list.push({ group: 'system', ...banner('reconnecting', t('call.network.reconnecting')) });
+  else if (call.link.poor) list.push({ group: 'system', ...banner('poorSignal', t('call.network.poorSignal')) });
+  if (call.hint === 'cam')
+    list.push({ group: 'user', ...banner('cameraUnavailable', t('call.notice.cameraUnavailable')) });
+  if (call.hint === 'mic') list.push({ group: 'user', ...banner('micUnavailable', t('call.notice.micUnavailable')) });
+  if (call.held) {
+    const h = call.held;
+    list.push({
+      group: 'user',
+      // таймер ховаємо від читачів екрана, щоб не озвучувався щосекунди
+      ...banner('heldCall', `${h.peer.name} · ${mm(heldSecs.value)}`),
+      srLabel: t('call.held.label', { name: h.peer.name }),
+      action: {
+        label: t('call.held.switchTo', { name: h.peer.name }),
+        title: t('call.held.switch'),
+        run: () => call.swapHeld(),
+      },
+    });
+  }
   return list;
 });
 // колір підпису результату: завершено fg, зайнято жовтий, решта (не вдалося зв'язатися, збій) червоний
@@ -139,21 +159,10 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
         }}</span>
       </div>
     </header>
-    <!-- утримуваний другий дзвінок (дизайн: Self Banner / held-call): у потоці, тож мініатюра себе зсувається під нього -->
-    <div v-if="connected && call.held" class="relative z-10 shrink-0 px-4 pt-1.5"><HeldCall /></div>
-    <!-- смужки-пігулки поверх екрана під шапкою (h-10 + 6, з утримуваним дзвінком ще + 46), відступ 16 з боків, вміст не зсувають -->
-    <BannerStack
-      v-if="connected"
-      class="pointer-events-none absolute inset-x-4 z-20"
-      :class="call.held ? 'top-[92px]' : 'top-[46px]'"
-      :items="banners"
-    />
-    <!-- смужка співрозмовника внизу: над панеллю керування (відступ 40 + висота панелі 74 + проміжок 8) -->
-    <BannerStack
-      v-if="connected"
-      class="pointer-events-none absolute inset-x-4 bottom-[122px] z-20"
-      :items="peerBanners"
-    />
+    <!-- пул сповіщень Self-зони: слот 40 під шапкою (дизайн: Self Banner Slot), поверх екрана, вміст не зсуває -->
+    <NotificationPool v-if="connected" :items="pool" />
+    <!-- з відео співрозмовника блок Peer ховається, тож смужка його стану лишається внизу над панеллю керування -->
+    <BannerStack v-if="video" class="pointer-events-none absolute inset-x-4 bottom-[122px] z-20" :items="peerBanners" />
 
     <div class="relative flex min-h-0 flex-1 flex-col">
       <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); камери немає чи її вимкнули — їх не показуємо -->
@@ -162,7 +171,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
           v-if="!call.selfHidden"
           type="button"
           :aria-label="t('call.hideSelf')"
-          class="absolute right-4 top-8 z-10 grid h-[122px] w-[92px] cursor-pointer place-items-center overflow-hidden rounded-2xl border border-line bg-pip transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 active:scale-[0.98]"
+          class="absolute right-4 top-[54px] z-10 grid h-[122px] w-[92px] cursor-pointer place-items-center overflow-hidden rounded-2xl border border-line bg-pip transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 active:scale-[0.98]"
           :class="selfVideo && 'shadow-[0_10px_24px_#00000066]'"
           @click="call.selfHidden = true"
         >
@@ -172,7 +181,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
           v-else
           type="button"
           :aria-label="t('call.showSelf')"
-          class="absolute right-5 top-4 z-10 grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-fg transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 hover:bg-surface-strong active:scale-95"
+          class="absolute right-5 top-[54px] z-10 grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-fg transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:border-white/30 hover:bg-surface-strong active:scale-95"
           @click="call.selfHidden = false"
         >
           <Icon name="video" class="size-5" />
@@ -207,6 +216,8 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
       <small v-if="!connected && call.left" class="text-xs text-mute">{{
         t('call.left', { time: mm(call.left) })
       }}</small>
+      <!-- стан співрозмовника (дизайн: Peer Banner у слоті Status): по центру слота, одна смужка -->
+      <BannerStack v-if="connected" class="my-auto w-full translate-y-1" :items="peerBanners" />
     </Peer>
 
     <div class="relative z-10 flex justify-center pb-10">
