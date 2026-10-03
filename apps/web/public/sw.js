@@ -18,18 +18,24 @@ self.addEventListener('push', e => {
 
   if (data.type === 'call.incoming') {
     e.waitUntil(
-      self.registration.showNotification(data.from?.name || 'Дзвінок', {
-        body: 'Вхідний дзвінок',
-        tag: data.callId,
-        icon: ICON,
-        requireInteraction: true,
-        vibrate: [500, 250, 500, 250, 500],
-        actions: [
-          { action: 'answer', title: 'Відповісти' },
-          { action: 'reject', title: 'Відхилити' },
-        ],
-        data: { callId: data.callId, rejectToken: data.rejectToken },
-      }),
+      (async () => {
+        // прихований пристрій отримує вхідний і сокетом, і push; якщо вікно вже на екрані, дзвінок видно в ньому.
+        // Chrome не вимагає сповіщення, поки сторінка сайту видима
+        const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        if (windows.some(c => c.visibilityState === 'visible')) return;
+        await self.registration.showNotification(data.from?.name || 'Дзвінок', {
+          body: 'Вхідний дзвінок',
+          tag: data.callId,
+          icon: ICON,
+          requireInteraction: true,
+          vibrate: [500, 250, 500, 250, 500],
+          actions: [
+            { action: 'answer', title: 'Відповісти' },
+            { action: 'reject', title: 'Відхилити' },
+          ],
+          data: { callId: data.callId, rejectToken: data.rejectToken },
+        });
+      })(),
     );
   } else if (data.type === 'call.ended' && data.missed) {
     // той самий тег замінює «Вхідний дзвінок» на «Пропущений»

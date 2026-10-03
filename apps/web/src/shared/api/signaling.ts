@@ -6,6 +6,8 @@ const BACKOFF_S = [1, 1, 2, 3, 5];
 /** Сервер закрив з'єднання: токен недійсний. Нового токена чекаємо від сайту-господаря. */
 const CLOSE_UNAUTHORIZED = 4401;
 const FATAL_CLOSE = new Set([4403, 4426]);
+/** Скільки чекаємо відповіді на пінг-перевірку, перш ніж вважати сокет мертвим. */
+const PROBE_MS = 3_000;
 
 export class SignalingError extends Error {
   constructor(readonly code: string) {
@@ -20,6 +22,8 @@ export interface SignalingOptions {
   /** Підміна для тестів. */
   createSocket?: (url: string) => WebSocket;
   onAuthFailed?: () => void;
+  /** Чи приховане вікно: передається в `hello` (`hidden`), щоб сервер одразу слав вхідні й через Web Push. */
+  getHidden?: () => boolean;
 }
 
 type Pending = { resolve: (m: ServerMessage) => void; reject: (e: SignalingError) => void };
@@ -33,6 +37,7 @@ export class SignalingClient {
   private tries = 0;
   private ping?: ReturnType<typeof setInterval>;
   private retry?: ReturnType<typeof setTimeout>;
+  private probe?: ReturnType<typeof setTimeout>;
   private stopped = false;
 
   constructor(private opts: SignalingOptions) {}
@@ -54,6 +59,8 @@ export class SignalingClient {
   connect() {
     this.stopped = false;
     clearTimeout(this.retry);
+    clearTimeout(this.probe);
+    this.probe = undefined;
     let ws: WebSocket;
     try {
       ws = this.ws = (this.opts.createSocket ?? (u => new WebSocket(u)))(this.opts.url);
@@ -64,11 +71,19 @@ export class SignalingClient {
       return;
     }
     ws.onopen = () => {
-      void this.request('hello', { token: this.opts.getToken(), deviceId: this.opts.deviceId, locale: 'uk' }).catch(
-        () => {},
-      );
+      const hidden = this.opts.getHidden?.();
+      void this.request('hello', {
+        token: this.opts.getToken(),
+        deviceId: this.opts.deviceId,
+        locale: 'uk',
+        ...(hidden !== undefined && { hidden }),
+      }).catch(() => {});
     };
     ws.onmessage = e => {
+      if (ws !== this.ws) return;
+      // будь-який кадр (зокрема `pong`) доводить, що сокет живий
+      clearTimeout(this.probe);
+      this.probe = undefined;
       let m: ServerMessage;
       try {
         m = JSON.parse(String(e.data));
@@ -94,15 +109,38 @@ export class SignalingClient {
     else if (!this.ws || this.ws.readyState > WebSocket.OPEN) this.connect();
   }
 
-  /** Мережа повернулась чи вкладка знову активна: пробуємо одразу, не чекаючи паузи. */
+  /**
+   * Мережа повернулась чи вкладка знову активна: закритий сокет відкриваємо одразу, не чекаючи паузи. Відкритий перевіряємо пінгом:
+   * після заморожування у фоні (Android) браузер ще вважає його відкритим, а сервер уже закрив через тишу. Без відповіді за
+   * `PROBE_MS` сокет кидаємо й підключаємось наново.
+   */
   reconnectNow() {
-    if (this.stopped || !this.ws || this.ws.readyState <= WebSocket.OPEN) return;
-    this.connect();
+    if (this.stopped || !this.ws || this.ws.readyState === WebSocket.CONNECTING) return;
+    if (this.ws.readyState > WebSocket.OPEN) return this.connect();
+    if (this.probe) return;
+    this.ws.send(JSON.stringify({ v: PROTOCOL_VERSION, type: 'ping' }));
+    this.probe = setTimeout(() => {
+      this.probe = undefined;
+      const dead = this.ws!;
+      this.ws = undefined; // його `onclose` уже нічого не зробить
+      clearInterval(this.ping);
+      this.rejectAll();
+      this.statusHandlers.forEach(f => f(false));
+      dead.close();
+      this.connect();
+    }, PROBE_MS);
+  }
+
+  /** Вікно сховали чи показали (`device.visibility`): прихований пристрій сервер кличе й через Web Push. */
+  setHidden(hidden: boolean) {
+    if (this.open) this.ws!.send(JSON.stringify({ v: PROTOCOL_VERSION, type: 'device.visibility', hidden }));
   }
 
   close() {
     this.stopped = true;
     clearTimeout(this.retry);
+    clearTimeout(this.probe);
+    this.probe = undefined;
     clearInterval(this.ping);
     this.ws?.close();
   }

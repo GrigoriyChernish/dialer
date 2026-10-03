@@ -85,7 +85,7 @@ apps/server/
 | `recents` | історія: чий запис, `call_id`, співрозмовник, напрям, результат, `silent`, тривалість |
 | `push_subscriptions` | підписка Web Push на пристрій (`006_push_subscriptions.sql`): ключ `endpoint`, `site_id`, `user_id`, `device_id`, `p256dh`, `auth`; каскадне видалення разом з користувачем |
 
-- Зараз у БД `sites`, `users` (`001_init.sql`), `calls` і `recents` (`002_calls.sql`); `push_subscriptions` (`006`). Підписки зберігаються командами `push.subscribe`/`push.unsubscribe`; `push/dispatch.ts` обгортає `deliver` і шле Web Push на вхідний та його завершення пристроям без WebSocket.
+- Зараз у БД `sites`, `users` (`001_init.sql`), `calls` і `recents` (`002_calls.sql`); `push_subscriptions` (`006`). Підписки зберігаються командами `push.subscribe`/`push.unsubscribe`; `push/dispatch.ts` обгортає `deliver` і шле Web Push на вхідний та його завершення пристроям без WebSocket або з прихованим вікном (`Connection.hidden`, кадр `device.visibility`).
 - Міграції простими SQL-файлами, що застосовуються за порядком при старті. Окремих ORM не беремо.
 - `better-sqlite3` синхронний, що для одного інстансу прийнятно, а код простіший. Режим WAL увімкнений.
 - Активні дзвінки пишемо в `calls` одразу (write-through) і читаємо при старті: так перезапуск чи деплой не губить

@@ -143,6 +143,20 @@ export function usePush() {
 }
 
 /**
+ * Закриває сповіщення «Вхідний дзвінок» (у них є `rejectToken`), коли застосунок на екрані: дзвінок видно в ньому самому.
+ * «Пропущений» лишається.
+ */
+export async function closeIncomingNotifications() {
+  if (!supported()) return;
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    for (const n of (await reg?.getNotifications()) ?? []) if (n.data?.rejectToken) n.close();
+  } catch {
+    // не страшно: сповіщення закриється з push про завершення
+  }
+}
+
+/**
  * Після `hello.ok` повторно віддає серверу підписку пристрою, якщо вона є й належить тому, хто увійшов: сервер міг її втратити,
  * а після виходу й повторного входу вона знову прив'язується до користувача. Без дозволу, підписки чи чужу — нічого не робить.
  */

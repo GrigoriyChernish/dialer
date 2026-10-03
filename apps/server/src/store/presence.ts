@@ -6,6 +6,8 @@ export interface Connection {
   siteId: string;
   userId: string;
   deviceId: string;
+  /** Вікно пристрою приховане (`device.visibility`): з'єднання може вже не жити, тож push він теж отримує. */
+  hidden?: boolean;
   send(msg: ServerMessage): void;
   close(code: number, reason?: string): void;
 }

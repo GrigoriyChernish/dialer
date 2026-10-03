@@ -156,6 +156,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         siteId: user.siteId,
         userId: user.id,
         deviceId,
+        hidden: msg.hidden === true,
         send,
         close: (code, reason) => ws.close(code, reason),
       };
@@ -372,6 +373,10 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
           return onPushSubscribe(msg, id);
         case 'push.unsubscribe':
           return onPushUnsubscribe(id);
+        case 'device.visibility':
+          conn.hidden = msg.hidden === true;
+          if (id) respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
+          return;
         default:
           return respond(id, errorFrame('unknown_type', id));
       }

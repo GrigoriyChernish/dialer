@@ -115,7 +115,8 @@ type Request<T extends string, P = object> = Frame<T> & { id: string } & P;
 
 // Клієнт → сервер
 
-export type HelloRequest = Request<'hello', { token: string; deviceId: DeviceId; locale?: string }>;
+/** `hidden`: вікно пристрою зараз приховане (див. `device.visibility`). */
+export type HelloRequest = Request<'hello', { token: string; deviceId: DeviceId; locale?: string; hidden?: boolean }>;
 export type PingRequest = Frame<'ping'> & { id?: string };
 export type AuthRefreshRequest = Request<'auth.refresh', { token: string }>;
 export type CallInviteRequest = Request<'call.invite', { to: UserId; video: boolean }>;
@@ -136,6 +137,11 @@ export type PushSubscribeRequest = Request<
   { subscription: { endpoint: string; keys: { p256dh: string; auth: string } } }
 >;
 export type PushUnsubscribeRequest = Request<'push.unsubscribe', object>;
+/**
+ * Вікно пристрою сховали чи показали. Прихований пристрій (PWA у фоні Android заморожується, а сокет ще живий до тиші)
+ * отримує вхідні й через Web Push. Без `id` відповіді немає.
+ */
+export type DeviceVisibilityRequest = Frame<'device.visibility'> & { hidden: boolean; id?: string };
 
 export type ClientMessage =
   | HelloRequest
@@ -151,7 +157,8 @@ export type ClientMessage =
   | ProfileUpdateRequest
   | RecentsSeenRequest
   | PushSubscribeRequest
-  | PushUnsubscribeRequest;
+  | PushUnsubscribeRequest
+  | DeviceVisibilityRequest;
 
 // Сервер → клієнт
 

@@ -10,7 +10,7 @@ import HomePage from '@/pages/HomePage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import SettingsPage from '@/pages/SettingsPage.vue';
 import { usePrefsStore } from '@/features/settings/prefs';
-import { resyncPush } from '@/features/settings/push';
+import { closeIncomingNotifications, resyncPush } from '@/features/settings/push';
 import { createAuthApi } from '@/shared/api/auth';
 import { serverUrl } from '@/shared/api/server';
 import { SignalingClient } from '@/shared/api/signaling';
@@ -37,6 +37,7 @@ const client: SignalingClient = new SignalingClient({
   url: server.replace(/^http/, 'ws').replace(/\/+$/, '') + '/ws',
   deviceId,
   getToken: () => session.token,
+  getHidden: () => document.visibilityState === 'hidden',
   // токен відхилено: пробуємо оновити, інакше сесія закінчилась і гард поверне на вхід
   onAuthFailed: () => void session.refresh().then(ok => ok && client.connect()),
 });
@@ -99,9 +100,19 @@ watch(
   { immediate: true },
 );
 
-// після обриву не чекаємо паузи, коли мережа повернулась чи вкладку знову відкрили
+// після обриву не чекаємо паузи, коли мережа повернулась чи вкладку знову відкрили; живий на вигляд сокет перевіряємо пінгом
 const wake = () => session.loggedIn && client.reconnectNow();
 addEventListener('online', wake);
-document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && wake());
+// Android заморожує PWA у фоні, а сервер закриває сокет лише після хвилини тиші: на цей час прихований пристрій отримує
+// вхідні й через Web Push (`device.visibility`); показані знову сповіщення про вхідні закриваємо, дзвінок уже на екрані
+document.addEventListener('visibilitychange', () => {
+  const hidden = document.visibilityState === 'hidden';
+  client.setHidden(hidden);
+  if (!hidden) {
+    wake();
+    void closeIncomingNotifications();
+  }
+});
+void closeIncomingNotifications();
 
 createApp(App).use(pinia).use(router).use(i18n).mount('#app');

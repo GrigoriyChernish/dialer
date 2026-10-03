@@ -247,6 +247,56 @@ describe('push на дзвінки (етап C)', () => {
     phoneDev.client.close();
   });
 
+  it('пристрій із прихованим вікном (PWA у фоні) отримує і кадр, і push; показаний знову — лише кадр', async () => {
+    const { server, sender } = await withPush();
+    const [pa, pb] = [phone(), phone()];
+    const anna = await connectUser(server, 'Анна', pa);
+    const bohdan = await connectUser(server, 'Богдан', pb, 'phone');
+    bohdan.client.send({ type: 'push.subscribe', id: 's', subscription: sub() });
+    await bohdan.client.next('ack');
+    bohdan.client.send({ type: 'device.visibility', id: 'v1', hidden: true });
+    await bohdan.client.next('ack');
+
+    anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    const { call } = await anna.client.next('ack');
+    await bohdan.client.next('call.incoming');
+    await waitFor(() => incoming(sender));
+    expect(sender.sent.map(s => s.sub.deviceId)).toEqual(['phone']);
+    anna.client.send({ type: 'call.cancel', id: 'c1', callId: call!.callId });
+    await waitFor(() => sender.sent.some(s => s.payload.type === 'call.ended'));
+
+    sender.sent.length = 0;
+    bohdan.client.send({ type: 'device.visibility', hidden: false }); // без id: без відповіді
+    anna.client.send({ type: 'call.invite', id: 'i2', to: `+38${pb}`, video: false });
+    await anna.client.next('ack');
+    await bohdan.client.next('call.incoming');
+    await settle();
+    expect(sender.sent).toEqual([]);
+    anna.client.close();
+    bohdan.client.close();
+  });
+
+  it('hello з hidden: прихований з першого кадру', async () => {
+    const { server, sender } = await withPush();
+    const [pa, pb] = [phone(), phone()];
+    const anna = await connectUser(server, 'Анна', pa);
+    const first = await connectUser(server, 'Богдан', pb, 'phone');
+    first.client.send({ type: 'push.subscribe', id: 's', subscription: sub() });
+    await first.client.next('ack');
+    first.client.close();
+    const { TestClient } = await import('./helpers');
+    const c = await TestClient.connect(server.ws);
+    c.send({ type: 'hello', id: 'h2', token: first.token, deviceId: 'phone', hidden: true });
+    await c.next('hello.ok');
+
+    anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    await anna.client.next('ack');
+    await c.next('call.incoming');
+    await waitFor(() => incoming(sender));
+    c.close();
+    anna.client.close();
+  });
+
   it('скасований дзвінок: push «пропущений» із ім’ям; прийнятий деінде: push лише закриває сповіщення', async () => {
     const { anna, pb, sender } = await offlineCallee();
     anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });

@@ -12,7 +12,8 @@ const MISSED: ReadonlySet<string> = new Set(['cancelled', 'timeout']);
 
 /**
  * Додає Web Push до доставки: вхідний дзвінок і його завершення, окрім WebSocket, йдуть на підписані пристрої адресата,
- * які зараз без з'єднання. Пристрої з WebSocket отримують лише кадри (сервіс-воркер зобов'язаний показати сповіщення на кожен push).
+ * які зараз без з'єднання або з прихованим вікном (`device.visibility`: Android заморожує PWA у фоні, а сервер закриває сокет
+ * лише після хвилини тиші). Пристрої з видимим вікном отримують лише кадри (сервіс-воркер зобов'язаний показати сповіщення на кожен push).
  * Push не блокує доставку кадрів і не ламає її помилками.
  */
 export function createPushDispatch(deps: {
@@ -31,7 +32,12 @@ export function createPushDispatch(deps: {
     const msg = e.msg;
     // `deviceId`: кадр для одного пристрою, який уже в мережі (відповів чи відхилив), push йому не потрібен
     if ((msg.type !== 'call.incoming' && msg.type !== 'call.ended') || e.deviceId !== undefined) return;
-    const online = new Set(presence.connections(e.siteId, e.userId).map(c => c.deviceId));
+    const online = new Set(
+      presence
+        .connections(e.siteId, e.userId)
+        .filter(c => !c.hidden)
+        .map(c => c.deviceId),
+    );
     if (e.exceptDeviceId !== undefined) online.add(e.exceptDeviceId);
 
     if (msg.type === 'call.incoming') {
