@@ -25,6 +25,7 @@ export function createPushDispatch(deps: {
   logger: Logger;
 }) {
   const { push, presence, store, users, rejectTokens } = deps;
+  const chains = new Map<string, Promise<unknown>>();
 
   async function forEffect(e: Effect): Promise<void> {
     const msg = e.msg;
@@ -67,8 +68,17 @@ export function createPushDispatch(deps: {
     wrap(deliver: (effects: Effect[]) => void) {
       return (effects: Effect[]): void => {
         deliver(effects);
-        for (const e of effects)
-          forEffect(e).catch(err => deps.logger.warn({ err }, 'не вдалося розіслати push про дзвінок'));
+        for (const e of effects) {
+          // push одного дзвінка йдуть по черзі: «завершено» не має обігнати «вхідний» (підпис токена асинхронний)
+          const key =
+            e.msg.type === 'call.incoming' ? e.msg.call.callId : e.msg.type === 'call.ended' ? e.msg.callId : null;
+          if (!key) continue;
+          const run = (chains.get(key) ?? Promise.resolve())
+            .then(() => forEffect(e))
+            .catch(err => deps.logger.warn({ err }, 'не вдалося розіслати push про дзвінок'));
+          chains.set(key, run);
+          void run.then(() => chains.get(key) === run && chains.delete(key));
+        }
       };
     },
   };
