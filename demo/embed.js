@@ -1,8 +1,8 @@
 // Імітація завантажувача embed.js: плаваюча кнопка й панель з віджетом в iframe.
 // API як у docs/architecture.md: Dialer.mount(...) → { on, open, close, setTheme, setToken, call, unmount }.
 (()=>{
-// адреса віджета відносно embed.js: у репозиторії ../index.html, на Pages — widget/ (атрибут data-widget)
-const WIDGET=new URL(document.currentScript.dataset.widget||'../index.html',document.currentScript.src);
+// адреса віджета: типово Vue-віджет з dev-сервера apps/web (`pnpm --filter @dialer/web dev`), інший задає атрибут data-widget чи опція widget у Dialer.mount
+const WIDGET=new URL(document.currentScript.dataset.widget||'http://localhost:5173/widget.html',document.currentScript.src);
 const PHONE='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11 11 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"/></svg>';
 const CSS=`
 .dlr-btn{all:unset;position:fixed;z-index:2147483000;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
@@ -21,8 +21,9 @@ const CSS=`
 .dlr-panel iframe{flex:1;width:100%;border:0;background:#0b0d12}
 @media (max-width:479px){.dlr-panel{inset:0!important;width:auto;height:auto!important;border-radius:0;border:0}}`;
 
-window.Dialer={mount({token,theme='auto',position='bottom-right',offset={x:24,y:24}}){
+window.Dialer={mount({token,server='',widget='',theme='auto',position='bottom-right',offset={x:24,y:24}}){
   if(!document.getElementById('dlr-css'))document.head.append(Object.assign(document.createElement('style'),{id:'dlr-css',textContent:CSS}));
+  const WID=widget?new URL(widget,location.href):WIDGET;  // widget: адреса іншого віджета, напр. Vue-версії на :5173
   const ls={},emit=(e,d)=>(ls[e]||[]).forEach(f=>f(d));
   const side=position==='bottom-left'?'left':'right';
   const btn=Object.assign(document.createElement('button'),{className:'dlr-btn',innerHTML:PHONE});
@@ -31,7 +32,7 @@ window.Dialer={mount({token,theme='auto',position='bottom-right',offset={x:24,y:
   panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Дзвонілка');
   panel.style.cssText=`${side}:${offset.x}px;bottom:${offset.y+76}px;height:min(640px,calc(100vh - ${offset.y+92}px))`;
   panel.innerHTML='<div class="dlr-bar">Дзвонілка<button class="dlr-x" aria-label="Згорнути">–</button></div>';
-  const src=new URL(WIDGET);src.search=new URLSearchParams({token,theme,host:location.origin});
+  const src=new URL(WID);src.search=new URLSearchParams({token,theme,host:location.origin,...(server&&{server}),_:Date.now()});  // _ обходить кеш iframe: статичний сервер не задає Cache-Control
   const frame=Object.assign(document.createElement('iframe'),{src,title:'Дзвонілка'});
   frame.allow='camera; microphone; autoplay; display-capture';  // без цього камера й мікрофон в iframe недоступні
   panel.append(frame);document.body.append(panel,btn);
@@ -45,7 +46,7 @@ window.Dialer={mount({token,theme='auto',position='bottom-right',offset={x:24,y:
   panel.querySelector('.dlr-x').onclick=()=>setOpen(false,true);
   const onKey=e=>{if(e.key==='Escape'&&open)setOpen(false,true)};
   // приймаємо повідомлення лише від свого iframe і з його origin
-  const onMsg=e=>{if(e.source!==frame.contentWindow||e.origin!==WIDGET.origin)return;const m=e.data||{};
+  const onMsg=e=>{if(e.source!==frame.contentWindow||e.origin!==WID.origin)return;const m=e.data||{};
     if(m.type==='ready')emit('ready');
     if(m.type==='close')setOpen(false,true);
     if(m.type==='token:expired')emit('token:expired');
@@ -54,7 +55,7 @@ window.Dialer={mount({token,theme='auto',position='bottom-right',offset={x:24,y:
       if(state==='connected')emit('call:started');
       if(was==='connected')emit('call:ended');}};
   addEventListener('message',onMsg);addEventListener('keydown',onKey);
-  const send=m=>frame.contentWindow?.postMessage(m,WIDGET.origin);
+  const send=m=>frame.contentWindow?.postMessage(m,WID.origin);
   return {
     on(e,f){(ls[e]??=[]).push(f);return this},
     open:()=>setOpen(true),close:()=>setOpen(false),

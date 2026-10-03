@@ -1,8 +1,6 @@
-# Публікація прототипів на GitHub Pages після пушу в dev.
-# Розкладка як у docs/architecture.md, розділ «Хостинг»:
-#   /dialer/          сторінка демо (demo/index.html)
-#   /dialer/embed.js  імітація завантажувача
-#   /dialer/widget/   прототип віджета (index.html)
+# Публікація застосунку на GitHub Pages після пушу в dev (docs/architecture.md, «Хостинг»):
+#   /dialer/  застосунок apps/web (entries/app.ts): вхід за номером, контакти й дзвінки через бекенд на Fly.io.
+# Демо-сторінка, embed.js і віджет лишаються в репозиторії для локальної розробки й на Pages не публікуються.
 name: Pages
 
 on:
@@ -19,25 +17,35 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  SERVER: https://dialer-chat-server.fly.dev
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @dialer/web...
+      - run: pnpm --filter @dialer/web build
+        env:
+          VITE_SERVER_URL: ${{ env.SERVER }}
       - name: Build site
         run: |
-          mkdir -p _site/widget
-          cp demo/embed.js _site/embed.js
-          cp index.html _site/widget/index.html
-          # віджет лежить у widget/, а не поруч у ../index.html, як у репозиторії
-          sed 's|<script src="embed.js"></script>|<script src="embed.js" data-widget="widget/"></script>|' demo/index.html > _site/index.html
-          grep -q 'data-widget="widget/"' _site/index.html
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+          cp -r apps/web/dist _site
+          # віджет для iframe на Pages не потрібен
+          rm _site/widget.html
+          test -f _site/index.html
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

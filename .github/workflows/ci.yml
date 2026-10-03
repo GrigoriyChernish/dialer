@@ -1,0 +1,68 @@
+# Перевірка типів, дизайн-токенів і тести для pnpm workspaces (apps/server, apps/web, packages/shared),
+# після зеленої перевірки пушу в dev — деплой сервера на Fly.io (docs/backend.md, «Автодеплой»).
+# Деплой окремим job тут, а не workflow_run: той спрацьовує лише для workflow з гілки за замовчуванням (main).
+name: CI
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+  # ручний запуск на dev деплоїть сервер без перевірки змін
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # пуші в dev не скасовують одне одного, щоб не перервати деплой посередині
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm check:design
+      - run: pnpm test
+
+  # Потрібен секрет репозиторію FLY_API_TOKEN (fly tokens create deploy --app dialer-chat-server); без нього деплой пропускається.
+  # Деплой рве WebSocket-з'єднання, тож після пушу деплоїмо лише коли в пуші змінились файли сервера.
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/dev' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: fly-deploy
+      cancel-in-progress: false
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Check changes
+        id: changes
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -z "$FLY_API_TOKEN" ]; then echo "Немає секрету FLY_API_TOKEN, деплой пропущено."; echo "deploy=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          # новий чи перезаписаний force-push'ем dev: попереднього коміту немає, деплоїмо
+          if [ -z "$BEFORE" ] || ! git cat-file -e "$BEFORE" 2>/dev/null; then echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          changed=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" -- apps/server packages/shared package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json .dockerignore .github/workflows/ci.yml)
+          echo "Змінені файли сервера:"; echo "${changed:-(немає)}"
+          echo "deploy=$([ -n "$changed" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - if: steps.changes.outputs.deploy == 'true'
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - if: steps.changes.outputs.deploy == 'true'
+        run: flyctl deploy --config apps/server/fly.toml --dockerfile apps/server/Dockerfile --remote-only --ha=false .
+      - if: steps.changes.outputs.deploy == 'true'
+        run: curl -fsS --retry 10 --retry-delay 3 --retry-all-errors "https://$(grep -m1 '^app' apps/server/fly.toml | cut -d'"' -f2).fly.dev/health"
