@@ -15,7 +15,14 @@ const palette = (name: string) => {
 };
 
 // muted: сірий аватар екрана результату (дизайн: avatar-muted-start → avatar-muted-end, #6B7080 → #7A6E86, прозорість .55)
-const props = defineProps<{ name: string; size?: 'sm' | 'md' | 'lg' | 'xl'; muted?: boolean; opacity?: number }>();
+// gradient: свій градієнт замість палітри за іменем (екран дзвінка: колір за напрямом чи станом співрозмовника)
+const props = defineProps<{
+  name: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  muted?: boolean;
+  opacity?: number;
+  gradient?: string[];
+}>();
 const SIZES = { sm: 'size-9 text-xs', md: 'size-12 text-sm', lg: 'size-14 text-xl', xl: 'size-26 text-[34px]' };
 const initials = computed(() =>
   props.name
@@ -26,7 +33,7 @@ const initials = computed(() =>
     .toUpperCase(),
 );
 const style = computed(() => ({
-  background: `linear-gradient(135deg, ${(props.muted ? ['#6b7080', '#7a6e86'] : palette(props.name)).join(', ')})`,
+  background: `linear-gradient(135deg, ${(props.muted ? ['#6b7080', '#7a6e86'] : (props.gradient ?? palette(props.name))).join(', ')})`,
   opacity: props.muted ? 0.55 : props.opacity,
 }));
 </script>

@@ -25,9 +25,9 @@ const PAGES = { missed: MissedPage, contacts: ContactsPage, search: SearchPage }
 // лічильник ховаємо, поки відкрита сама вкладка «Пропущені»
 // мітка присутності (дизайн: Presence, / busy, / dnd)
 const PRESENCE = {
-  free: 'bg-call-ok/15 text-call-ok',
-  busy: 'bg-call-bad/15 text-call-bad',
-  dnd: 'bg-accent/[.18] text-accent-icon',
+  free: 'bg-call-ok/15 text-ok-text',
+  busy: 'bg-warn/15 text-warn-text',
+  dnd: 'bg-call-bad/15 text-bad-text',
 } as const;
 const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
 </script>

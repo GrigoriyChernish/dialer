@@ -7,6 +7,8 @@ export interface LinkState {
   poor: boolean;
   peerAway: boolean;
   peerMuted: boolean;
+  /** Співрозмовник зараз говорить (серед активних мовців кімнати є віддалений учасник). */
+  peerSpeaking: boolean;
   /** Співрозмовник публікує камеру. */
   peerCam: boolean;
   /** Наша камера справді публікується. */
@@ -100,7 +102,8 @@ export class CallMedia {
       RoomEvent.ConnectionQualityChanged,
       (q, p) => p.isLocal && emit({ poor: q === ConnectionQuality.Poor || q === ConnectionQuality.Lost }),
     );
-    room.on(RoomEvent.ParticipantDisconnected, () => emit({ peerAway: true }));
+    room.on(RoomEvent.ActiveSpeakersChanged, speakers => emit({ peerSpeaking: speakers.some(p => !p.isLocal) }));
+    room.on(RoomEvent.ParticipantDisconnected, () => emit({ peerAway: true, peerSpeaking: false }));
     room.on(RoomEvent.ParticipantConnected, () => emit({ peerAway: false }));
     room.on(RoomEvent.TrackMuted, (pub, p) => {
       if (p.isLocal) return;

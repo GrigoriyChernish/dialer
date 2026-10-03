@@ -43,7 +43,7 @@ const actions = computed(
         ><span aria-hidden="true">{{ call.peer?.name }} · {{ mm(call.seconds) }}</span></Banner
       >
     </div>
-    <Peer class="peer-pos" :name="w.peer.name" ringing>
+    <Peer class="peer-pos" :name="w.peer.name" ringing direction="in">
       <p class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-icon">
         <Icon name="phoneIncoming" class="size-4" />{{ t('call.incomingLabel') }}
       </p>

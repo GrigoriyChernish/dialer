@@ -23,8 +23,7 @@
 
   /* Токени анімацій та переходів (поза дизайном) */
   --duration-ring: 1.6s;
-  --duration-wave: 1s;
-  --duration-wave-stagger: 0.12s;
+  --duration-breathe: 0.9s;
   --duration-banner-enter: 220ms;
   --duration-banner-leave: 180ms;
   --duration-press: 100ms;
@@ -101,5 +100,5 @@
   --color-call-bad: #f0626b;
   --color-warn: #f5b84b;
   --animate-ring: ring var(--duration-ring) var(--ease-out) infinite;
-  --animate-wave: wave var(--duration-wave) var(--ease-in-out) infinite;
+  --animate-breathe: breathe var(--duration-breathe) var(--ease-in-out) infinite alternate;
 }
