@@ -7,7 +7,14 @@ import WebSocket from 'ws';
 import { loadConfig, type Config } from '../src/config';
 import type { Clock } from '../src/calls/types';
 import { createServer } from '../src/server';
+import type { PushSender } from '../src/push/sender';
 import type { GatewayTimeouts } from '../src/ws/gateway';
+
+export const VAPID_TEST = {
+  publicKey: 'BPublicKeyForTests',
+  privateKey: 'private-key-for-tests',
+  subject: 'mailto:test@example.com',
+};
 
 export const LIVEKIT_TEST = { url: 'wss://lk.test', apiKey: 'testkey', apiSecret: 'k'.repeat(32) };
 
@@ -21,7 +28,7 @@ export async function signedWebhook(body: object, cfg = LIVEKIT_TEST) {
 
 export async function startServer(
   timeouts?: Partial<GatewayTimeouts>,
-  extra: { clock?: Clock; dbPath?: string; livekit?: boolean; config?: Partial<Config> } = {},
+  extra: { clock?: Clock; dbPath?: string; livekit?: boolean; config?: Partial<Config>; pushSender?: PushSender } = {},
 ) {
   const config = {
     ...loadConfig({ JWT_SECRET: 's'.repeat(32) }),
@@ -49,6 +56,7 @@ export async function startServer(
     timeouts,
     clock: extra.clock,
     livekitRooms,
+    pushSender: extra.pushSender,
   });
   const port = await server.listen();
   return {

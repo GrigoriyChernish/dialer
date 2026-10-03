@@ -130,7 +130,11 @@ export type SettingsUpdateRequest = Request<'settings.update', { settings: Parti
 export type ProfileUpdateRequest = Request<'profile.update', { name: string }>;
 /** Історію переглянуто до `upTo` (мс від епохи); сервер бере більше з наявного й нового, а майбутній час обрізає до «зараз». */
 export type RecentsSeenRequest = Request<'recents.seen', { upTo: number }>;
-export type PushSubscribeRequest = Request<'push.subscribe', { subscription: unknown }>;
+/** `subscription` це `PushSubscription.toJSON()` браузера. Пристрій має одну підписку: нова замінює стару. */
+export type PushSubscribeRequest = Request<
+  'push.subscribe',
+  { subscription: { endpoint: string; keys: { p256dh: string; auth: string } } }
+>;
 export type PushUnsubscribeRequest = Request<'push.unsubscribe', object>;
 
 export type ClientMessage =
@@ -166,6 +170,8 @@ export type HelloOk = Reply<
     recents: RecentEntry[];
     /** До якого часу історію переглянуто (мс): пропущені новіші за нього рахуються в лічильнику. */
     recentsSeenUpTo: number;
+    /** Публічний ключ VAPID для підписки на Web Push; немає: сервер push не підтримує. */
+    vapidPublicKey?: string;
   }
 >;
 /** Порожній ack, або з `call` (на `call.invite`), або з повними `settings` (на `settings.update`). */

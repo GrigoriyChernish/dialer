@@ -7,10 +7,13 @@ import { realClock, type Clock } from './calls/types';
 import type { Config } from './config';
 import { openDb } from './db';
 import { createLiveKit, type RoomApi } from './livekit';
+import { createPushSubs } from './db/push';
 import { createRecents } from './db/recents';
 import { createUsers } from './db/users';
 import { buildHttp } from './http/app';
 import type { Logger } from './logger';
+import { createPush } from './push';
+import { createPushSender, type PushSender } from './push/sender';
 import { createCallStore } from './store/calls';
 import { createMemoryPresence } from './store/presence';
 import { createDeliver } from './ws/deliver';
@@ -29,6 +32,8 @@ export interface ServerOptions {
   livekitRooms?: RoomApi;
   /** Доставка кодів входу; поки код = останні 4 цифри номера. */
   otpSender?: OtpSender;
+  /** Підміна відправника Web Push у тестах. */
+  pushSender?: PushSender;
 }
 
 /** Збирає сервер: БД, токени, присутність, HTTP і WebSocket. */
@@ -40,6 +45,7 @@ export async function createServer({
   newId = ulid,
   livekitRooms,
   otpSender = lastDigitsOtp,
+  pushSender,
 }: ServerOptions) {
   const db = openDb(config.dbPath);
   const users = createUsers(db);
@@ -49,6 +55,13 @@ export async function createServer({
   const hub = createHub(presence, users);
   const recents = createRecents(db);
   const deliver = createDeliver(presence);
+  const push = createPush({
+    subs: createPushSubs(db),
+    sender: pushSender ?? (config.vapid ? createPushSender(config.vapid) : null),
+    vapidPublicKey: config.vapid?.publicKey ?? null,
+    logger,
+    now: () => clock.now(),
+  });
   const livekit = config.livekit ? createLiveKit(config.livekit, livekitRooms) : null;
   const calls = createCallService({
     store: createCallStore(db),
@@ -72,6 +85,7 @@ export async function createServer({
     users,
     recents,
     calls,
+    push,
     deliver,
     hub,
     tokens,
@@ -84,6 +98,7 @@ export async function createServer({
     app,
     db,
     users,
+    push,
     /** Повертає фактичну адресу (корисно з портом 0). */
     async listen() {
       await app.listen({ port: config.port, host: config.host });

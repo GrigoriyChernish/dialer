@@ -93,6 +93,8 @@ export const useCallStore = defineStore('call', () => {
   const netError = ref('');
   const contacts = ref<Contact[]>([]);
   const me = ref<Peer | null>(null);
+  /** Публічний ключ VAPID із `hello.ok`; `null`: сервер не підтримує Web Push. */
+  const vapidKey = ref<string | null>(null);
   const settings = ref<Settings>({ ...DEFAULT_SETTINGS });
   /** Історія дзвінків, новіші першими (docs/signaling.md, «Історія»). */
   const recents = ref<RecentEntry[]>([]);
@@ -396,6 +398,7 @@ export const useCallStore = defineStore('call', () => {
       case 'hello.ok':
         offset = m.serverTime - Date.now();
         me.value = m.user;
+        vapidKey.value = m.vapidPublicKey ?? null;
         settings.value = m.settings;
         contacts.value = m.contacts;
         recents.value = [...m.recents].sort((a, b) => b.startedAt - a.startedAt);
@@ -705,9 +708,21 @@ export const useCallStore = defineStore('call', () => {
     if (rememberSeen(upTo)) void deps.client.request('recents.seen', { upTo }).catch(() => {});
   }
 
+  /** Підписка пристрою на Web Push (`PushSubscription.toJSON()`); нова замінює стару. */
+  async function pushSubscribe(subscription: PushSubscriptionJSON) {
+    await deps.client.request('push.subscribe', { subscription });
+  }
+
+  async function pushUnsubscribe() {
+    await deps.client.request('push.unsubscribe');
+  }
+
   return {
     online,
     ready,
+    vapidKey,
+    pushSubscribe,
+    pushUnsubscribe,
     netError,
     contacts,
     me,

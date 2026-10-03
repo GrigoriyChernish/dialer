@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSessionStore } from '@/features/auth/session';
 import { useCallStore } from '@/features/call/store';
 import { usePrefsStore, type Theme } from '@/features/settings/prefs';
+import { usePush } from '@/features/settings/push';
 import Avatar from '@/shared/ui/Avatar.vue';
 import Card from '@/shared/ui/Card.vue';
 import Icon, { type IconName } from '@/shared/ui/Icon.vue';
@@ -19,6 +20,8 @@ const router = useRouter();
 const session = useSessionStore();
 const call = useCallStore();
 const prefs = usePrefsStore();
+const push = usePush();
+onMounted(() => void push.refresh());
 const fmt = (p: string) => p.replace(/^\+380(\d\d)(\d{3})(\d\d)(\d\d)$/, '+380 $1 $2 $3 $4');
 
 // редагування імені (дизайн: Settings · edit name)
@@ -57,7 +60,30 @@ const rows = computed(() => [
   { icon: 'phoneCall' as IconName, title: t('settings.waiting'), hint: t('settings.waitingHint'), model: waiting },
   { icon: 'bell' as IconName, title: t('settings.ringtone'), hint: t('settings.thisDevice'), model: ringtone },
   { icon: 'video' as IconName, title: t('settings.camOnStart'), hint: t('settings.thisDevice'), model: camOnStart },
+  // сповіщення про дзвінки (Web Push): лише коли браузер і сервер це вміють; заблоковані браузером недоступні
+  ...(push.available.value
+    ? [
+        {
+          icon: 'bellRing' as IconName,
+          title: t('settings.push'),
+          hint: push.denied.value
+            ? t('settings.pushBlocked')
+            : push.error.value
+              ? t('settings.pushError')
+              : t('settings.pushHint'),
+          warn: push.denied.value || push.error.value,
+          disabled: push.denied.value || push.busy.value,
+          model: push.model,
+        },
+      ]
+    : []),
 ]);
+
+/** Вихід: підписку на сповіщення знімаємо, щоб наступний користувач цього браузера не отримував чужі дзвінки. */
+async function logout() {
+  if (push.enabled.value) await push.disable();
+  session.logout();
+}
 const THEMES: { id: Theme; icon: IconName }[] = [
   { id: 'auto', icon: 'monitorSmartphone' },
   { id: 'light', icon: 'sun' },
@@ -153,9 +179,9 @@ const THEMES: { id: Theme; icon: IconName }[] = [
         /></span>
         <span class="grid min-w-0 flex-1 gap-0.5">
           <b class="text-[15px] font-medium">{{ r.title }}</b>
-          <small class="text-xs text-mute">{{ r.hint }}</small>
+          <small class="text-xs" :class="r.warn ? 'text-warn-text' : 'text-mute'">{{ r.hint }}</small>
         </span>
-        <Toggle v-model="r.model.value" :label="r.title" />
+        <Toggle v-model="r.model.value" :label="r.title" :disabled="r.disabled" />
       </div>
     </Card>
 
@@ -190,7 +216,7 @@ const THEMES: { id: Theme; icon: IconName }[] = [
       <button
         type="button"
         class="flex w-full cursor-pointer items-center gap-3 rounded-[28px] p-3.5 text-left text-[15px] font-medium text-call-bad focus-visible:outline-2 focus-visible:outline-accent"
-        @click="session.logout()"
+        @click="logout()"
       >
         <span class="grid size-8 place-items-center rounded-full bg-call-bad/20"
           ><Icon name="logOut" class="size-4" /></span

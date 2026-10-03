@@ -34,7 +34,7 @@ cp apps/server/.env.example apps/server/.env
 
 У `apps/server/.env` задайте `JWT_SECRET`, наприклад згенерований командою `openssl rand -hex 32`.
 Без нього сервер підставляє ключ для розробки й попереджає про це в логах. `LIVEKIT_*` можна не заповнювати:
-дзвінки працюватимуть без медіа.
+дзвінки працюватимуть без медіа. Сповіщення про дзвінки (Web Push) вмикаються лише з ключами VAPID: `npx web-push generate-vapid-keys` і `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:…` у `.env`; без них рядка «Сповіщення про дзвінки» в Налаштуваннях немає. Сервіс-воркер працює на `localhost` без HTTPS.
 
 ```bash
 cd apps/server

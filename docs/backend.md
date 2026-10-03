@@ -83,9 +83,9 @@ apps/server/
 | `users` | ключ `(site_id, id)`, де `id` це E.164 у демо (а в демо-ботів `bot:olena`, `bot:andriy`, `bot:support`), ім'я, `disabled`, `is_bot`, `recents_seen_up_to` (мс, до якого історію переглянуто, `005_recents_seen.sql`), `settings` (JSON: `waiting`, `dnd`) |
 | `calls` | дзвінки: `id`, учасники, стан, `created_at`, `answered_at`, `ended_at`, `reason` |
 | `recents` | історія: чий запис, `call_id`, співрозмовник, напрям, результат, `silent`, тривалість |
-| `push_subscriptions` | підписка Web Push на пристрій: `user_id`, `device_id`, дані підписки |
+| `push_subscriptions` | підписка Web Push на пристрій (`006_push_subscriptions.sql`): ключ `endpoint`, `site_id`, `user_id`, `device_id`, `p256dh`, `auth`; каскадне видалення разом з користувачем |
 
-- Зараз у БД `sites`, `users` (`001_init.sql`), `calls` і `recents` (`002_calls.sql`); `push_subscriptions` з'явиться з кроком 6.
+- Зараз у БД `sites`, `users` (`001_init.sql`), `calls` і `recents` (`002_calls.sql`); `push_subscriptions` (`006`). Підписки зберігаються й видаються командами `push.subscribe`/`push.unsubscribe`, відправка push на дзвінки ще ні.
 - Міграції простими SQL-файлами, що застосовуються за порядком при старті. Окремих ORM не беремо.
 - `better-sqlite3` синхронний, що для одного інстансу прийнятно, а код простіший. Режим WAL увімкнений.
 - Активні дзвінки пишемо в `calls` одразу (write-through) і читаємо при старті: так перезапуск чи деплой не губить
@@ -177,7 +177,7 @@ WebSocket `/ws` перевіряє `Origin` рукостискання (`ws/orig
 ## Конфігурація
 
 Змінні середовища (Fly.io secrets): `JWT_SECRET`, `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`,
-`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `LOG_LEVEL` (за замовчуванням `info`), `DB_PATH` (за замовчуванням `/data/dialer.db`), `DEMO_ORIGIN`, `DEMO_LOGIN` (`on` вмикає `/demo/login` у production), `PORT`.
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (задаються разом; пару створює `npx web-push generate-vapid-keys`, а `VAPID_SUBJECT` це `mailto:` власника; без них Web Push вимкнено й `hello.ok` не містить `vapidPublicKey`; генерувати на льоту не можна, бо після перезапуску всі підписки стали б недійсними), `LOG_LEVEL` (за замовчуванням `info`), `DB_PATH` (за замовчуванням `/data/dialer.db`), `DEMO_ORIGIN`, `DEMO_LOGIN` (`on` вмикає `/demo/login` у production), `PORT`.
 У репозиторії лежить лише `.env.example` без значень.
 
 ## Розгортання на Fly.io

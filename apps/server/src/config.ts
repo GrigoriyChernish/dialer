@@ -1,4 +1,5 @@
 import type { LiveKitConfig } from './livekit';
+import type { VapidConfig } from './push/sender';
 
 export interface Config {
   port: number;
@@ -14,6 +15,8 @@ export interface Config {
   production: boolean;
   /** LiveKit Cloud; `null`: медіа вимкнено (дзвінки без токенів кімнат, лише для розробки). */
   livekit: LiveKitConfig | null;
+  /** Ключі VAPID для Web Push; `null`: push вимкнено (див. docs/pwa-and-push.md). */
+  vapid: VapidConfig | null;
 }
 
 const DEV_SECRET = 'dev-only-secret-change-me-0123456789';
@@ -27,6 +30,14 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
   if (lkSet > 0 && lkSet < 3) throw new Error('LIVEKIT_URL, LIVEKIT_API_KEY і LIVEKIT_API_SECRET задаються разом');
   if (production && lkSet === 0)
     throw new Error('У production потрібні LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET');
+  const vapid = {
+    publicKey: env.VAPID_PUBLIC_KEY,
+    privateKey: env.VAPID_PRIVATE_KEY,
+    subject: env.VAPID_SUBJECT,
+  };
+  const vapidSet = Object.values(vapid).filter(Boolean).length;
+  if (vapidSet > 0 && vapidSet < 3)
+    throw new Error('VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY і VAPID_SUBJECT задаються разом');
   return {
     port: Number(env.PORT ?? 8787),
     host: env.HOST ?? '0.0.0.0',
@@ -37,6 +48,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     logLevel: env.LOG_LEVEL ?? 'info',
     production,
     livekit: lkSet === 3 ? (lk as LiveKitConfig) : null,
+    vapid: vapidSet === 3 ? (vapid as VapidConfig) : null,
   };
 }
 

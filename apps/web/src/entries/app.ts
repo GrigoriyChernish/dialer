@@ -10,6 +10,7 @@ import HomePage from '@/pages/HomePage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import SettingsPage from '@/pages/SettingsPage.vue';
 import { usePrefsStore } from '@/features/settings/prefs';
+import { resyncPush } from '@/features/settings/push';
 import { createAuthApi } from '@/shared/api/auth';
 import { SignalingClient } from '@/shared/api/signaling';
 import { applyTheme } from '@/shared/theme';
@@ -48,6 +49,12 @@ watch(
   { immediate: true },
 );
 call.init({ client, media: new CallMedia(), sounds: new Sounds() });
+// після кожного hello.ok віддаємо серверу підписку пристрою на сповіщення, якщо вона є
+watch(
+  () => call.ready,
+  ready => ready && void resyncPush(call),
+  { immediate: true },
+);
 
 // токен доступу живе 30 хв: оновлюємо за хвилину до кінця (і за запитом сервера `token.expiring`)
 let refreshTimer: ReturnType<typeof setTimeout> | undefined;

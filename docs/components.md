@@ -178,7 +178,7 @@
 
 ### `Toggle` (`shared/ui/Toggle.vue`)
 
-Перемикач 44 × 26 (`role="switch"`, `aria-checked`). **Props:** `v-model` (`boolean`), `label` (для `aria-label`).
+Перемикач 44 × 26 (`role="switch"`, `aria-checked`). **Props:** `v-model` (`boolean`), `label` (для `aria-label`), `disabled` (недоступний: напівпрозорий, не реагує на натискання; так показано «Заблоковано в браузері»).
 
 ### `HistoryPage` (дизайн: `Home · History`)
 

@@ -22,6 +22,7 @@ import { TokenError, type TokenClaims, type Tokens } from '../auth/tokens';
 import type { Recents } from '../db/recents';
 import type { Users } from '../db/users';
 import type { Logger } from '../logger';
+import { parseSubscription, type Push } from '../push';
 import type { Connection } from '../store/presence';
 import type { Hub } from './hub';
 import type { OriginPolicy } from './origin';
@@ -35,6 +36,7 @@ export interface GatewayDeps {
   users: Users;
   recents: Recents;
   calls: CallService;
+  push: Push;
   deliver(effects: Effect[]): void;
   hub: Hub;
   tokens: Tokens;
@@ -170,6 +172,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         contacts: deps.hub.contactsFor(user.siteId, user.id),
         recents: deps.recents.list(user.siteId, user.id),
         recentsSeenUpTo: user.recentsSeenUpTo,
+        ...(deps.push.vapidPublicKey && { vapidPublicKey: deps.push.vapidPublicKey }),
       });
       scheduleExpiring(verified.expiresAt);
     }
@@ -279,6 +282,22 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       ]);
     }
 
+    function onPushSubscribe(msg: Record<string, unknown>, id: string | undefined) {
+      if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
+      if (!deps.push.enabled)
+        return respond(id, errorFrame('bad_request', id, 'push.subscribe: push вимкнено на сервері'));
+      const sub = parseSubscription(msg.subscription);
+      if (!sub) return respond(id, errorFrame('bad_request', id, 'push.subscribe: некоректна підписка'));
+      deps.push.subscribe(conn.siteId, conn.userId, conn.deviceId, sub);
+      respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
+    }
+
+    function onPushUnsubscribe(id: string | undefined) {
+      if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
+      deps.push.unsubscribe(conn.siteId, conn.userId, conn.deviceId);
+      respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
+    }
+
     /** Нове ім'я: зберігає, повідомляє інші пристрої (`profile.updated`) і решту користувачів (`contacts.update`). */
     function onProfile(msg: Record<string, unknown>, id: string | undefined) {
       if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
@@ -349,8 +368,11 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
           return onProfile(msg, id);
         case 'recents.seen':
           return onRecentsSeen(msg, id);
+        case 'push.subscribe':
+          return onPushSubscribe(msg, id);
+        case 'push.unsubscribe':
+          return onPushUnsubscribe(id);
         default:
-          // push.* з'явиться на наступному кроці
           return respond(id, errorFrame('unknown_type', id));
       }
     }
