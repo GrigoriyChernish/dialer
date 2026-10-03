@@ -105,6 +105,8 @@ apps/server/
 | `GET /health` | для Fly.io |
 
 CORS для `/auth/*` і `/demo/login` обмежений origin застосунку (`DEMO_ORIGIN`, на Fly.io це GitHub Pages).
+WebSocket `/ws` перевіряє `Origin` рукостискання (`ws/origin.ts`): `DEMO_ORIGIN`, `sites.allowed_origins` і поза production localhost, інакше `403` (див. [signaling.md](signaling.md#origin-рукостискання)).
+У production сторінка з іншим origin (наприклад, локальна `localhost:8080` до сервера на Fly.io) підключитись не може: додайте її origin в `sites.allowed_origins`.
 
 ### Вхід за номером
 

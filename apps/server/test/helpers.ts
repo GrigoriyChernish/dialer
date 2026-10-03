@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { AccessToken } from 'livekit-server-sdk';
 import { pino } from 'pino';
 import WebSocket from 'ws';
-import { loadConfig } from '../src/config';
+import { loadConfig, type Config } from '../src/config';
 import type { Clock } from '../src/calls/types';
 import { createServer } from '../src/server';
 import type { GatewayTimeouts } from '../src/ws/gateway';
@@ -21,7 +21,7 @@ export async function signedWebhook(body: object, cfg = LIVEKIT_TEST) {
 
 export async function startServer(
   timeouts?: Partial<GatewayTimeouts>,
-  extra: { clock?: Clock; dbPath?: string; livekit?: boolean } = {},
+  extra: { clock?: Clock; dbPath?: string; livekit?: boolean; config?: Partial<Config> } = {},
 ) {
   const config = {
     ...loadConfig({ JWT_SECRET: 's'.repeat(32) }),
@@ -29,6 +29,7 @@ export async function startServer(
     host: '127.0.0.1',
     dbPath: extra.dbPath ?? ':memory:',
     livekit: extra.livekit ? LIVEKIT_TEST : null,
+    ...extra.config,
   };
   // REST-виклики LiveKit підмінено: запам'ятовуємо закриті кімнати
   const closedRooms: string[] = [];

@@ -10,6 +10,8 @@ export interface Config {
   /** `/demo/login` без коду: для розробки й прототипів; у production вимкнено, якщо не `DEMO_LOGIN=on`. */
   demoLogin: boolean;
   logLevel: string;
+  /** `NODE_ENV=production`: суворіші правила (джерела WebSocket, секрети). */
+  production: boolean;
   /** LiveKit Cloud; `null`: медіа вимкнено (дзвінки без токенів кімнат, лише для розробки). */
   livekit: LiveKitConfig | null;
 }
@@ -33,6 +35,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     demoOrigin: env.DEMO_ORIGIN || null,
     demoLogin: env.DEMO_LOGIN ? env.DEMO_LOGIN === 'on' : !production,
     logLevel: env.LOG_LEVEL ?? 'info',
+    production,
     livekit: lkSet === 3 ? (lk as LiveKitConfig) : null,
   };
 }

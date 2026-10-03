@@ -15,6 +15,7 @@ import { createCallStore } from './store/calls';
 import { createMemoryPresence } from './store/presence';
 import { createDeliver } from './ws/deliver';
 import { attachGateway, type GatewayTimeouts } from './ws/gateway';
+import { createOriginPolicy } from './ws/origin';
 import { createHub } from './ws/hub';
 
 export interface ServerOptions {
@@ -67,7 +68,17 @@ export async function createServer({
   const otp = createOtp(otpSender, clock);
   const sessions = createSessions(db, clock);
   const app = buildHttp({ config, users, tokens, hub, calls, livekit, logger, otp, sessions, clock });
-  const gateway = attachGateway(app.server, { users, recents, calls, deliver, hub, tokens, logger, timeouts });
+  const gateway = attachGateway(app.server, {
+    users,
+    recents,
+    calls,
+    deliver,
+    hub,
+    tokens,
+    originAllowed: createOriginPolicy(config, db),
+    logger,
+    timeouts,
+  });
 
   return {
     app,

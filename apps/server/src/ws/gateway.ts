@@ -24,6 +24,7 @@ import type { Users } from '../db/users';
 import type { Logger } from '../logger';
 import type { Connection } from '../store/presence';
 import type { Hub } from './hub';
+import type { OriginPolicy } from './origin';
 
 export interface GatewayTimeouts {
   hello: number;
@@ -37,6 +38,8 @@ export interface GatewayDeps {
   deliver(effects: Effect[]): void;
   hub: Hub;
   tokens: Tokens;
+  /** Чи приймати `Origin` рукостискання (`undefined`: не браузер). */
+  originAllowed: OriginPolicy;
   logger: Logger;
   timeouts?: Partial<GatewayTimeouts>;
 }
@@ -61,6 +64,13 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
 
   server.on('upgrade', (req, socket, head) => {
     if (new URL(req.url ?? '/', 'http://localhost').pathname !== '/ws') {
+      socket.destroy();
+      return;
+    }
+    const origin = req.headers.origin;
+    if (!deps.originAllowed(origin)) {
+      deps.logger.warn({ module: 'ws', origin }, 'чужий Origin відхилено');
+      socket.write('HTTP/1.1 403 Forbidden\r\nConnection: close\r\nContent-Length: 0\r\n\r\n');
       socket.destroy();
       return;
     }

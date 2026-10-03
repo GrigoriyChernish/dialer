@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import WebSocket from 'ws';
 import { connectUser, login, startServer, TestClient, type TestServer } from './helpers';
 
 let server: TestServer;
@@ -156,5 +157,44 @@ describe('присутність і контакти', () => {
     const update = await a.client.next('contacts.update');
     expect(update.upsert).toEqual([{ userId: '+380940000006', name: 'Едуард', online: false }]);
     a.client.close();
+  });
+});
+
+/** Рукостискання з заголовком `Origin`: `open` або HTTP-статус відмови. */
+function handshake(url: string, origin?: string): Promise<number> {
+  return new Promise(resolve => {
+    const ws = new WebSocket(url, origin ? { headers: { origin } } : undefined);
+    ws.once('open', () => {
+      ws.close();
+      resolve(101);
+    });
+    ws.once('unexpected-response', (_req, res) => resolve(res.statusCode ?? 0));
+    ws.once('error', () => {});
+  });
+}
+
+describe('WebSocket: Origin', () => {
+  it('поза production приймає localhost і запити без Origin, чужий origin відхиляє з 403', async () => {
+    expect(await handshake(server.ws)).toBe(101);
+    expect(await handshake(server.ws, 'http://localhost:5173')).toBe(101);
+    expect(await handshake(server.ws, 'https://evil.example')).toBe(403);
+  });
+
+  it('у production приймає лише DEMO_ORIGIN і allowed_origins сайтів', async () => {
+    const prod = await startServer(undefined, {
+      config: { production: true, demoOrigin: 'https://pages.example' },
+    });
+    try {
+      expect(await handshake(prod.ws, 'https://pages.example')).toBe(101);
+      expect(await handshake(prod.ws, 'http://localhost:5173')).toBe(403);
+      expect(await handshake(prod.ws, 'https://host.example')).toBe(403);
+      prod.db
+        .prepare("UPDATE sites SET allowed_origins = ? WHERE id = 'demo'")
+        .run(JSON.stringify(['https://host.example']));
+      expect(await handshake(prod.ws, 'https://host.example')).toBe(101);
+      expect(await handshake(prod.ws)).toBe(101); // не браузер: доступ дає токен
+    } finally {
+      await prod.close();
+    }
   });
 });
