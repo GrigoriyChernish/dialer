@@ -201,6 +201,8 @@ Job `deploy` у `.github/workflows/ci.yml` іде після зеленого jo
 - Деплої йдуть по черзі (`concurrency: fly-deploy`), і новий пуш у `dev` не скасовує попередній запуск CI (скасовуються лише PR).
 - Потрібен секрет репозиторію `FLY_API_TOKEN`: `fly tokens create deploy --app dialer-chat-server`, далі GitHub → Settings → Secrets → Actions.
   Без секрету job завершується успішно й нічого не деплоїть.
+- Версії дій і образ: `checkout@v7`, `setup-node@v7`, `pnpm/action-setup@v6`, `configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5` (усі на Node 24); образ зафіксовано на `ubuntu-24.04`,
+  щоб перехід `ubuntu-latest` на Ubuntu 26 (жовтень 2026) не ламав збірку. Оновлюйте версії й образ свідомо, а не через `latest`.
 
 ### Що перевірено без Fly.io
 Образ зібрано локально в Docker для `linux/amd64` (як на Fly.io) і запущено з томом `/data`: `/health` відповідає `{"ok":true}`,

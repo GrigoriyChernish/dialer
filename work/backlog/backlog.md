@@ -63,11 +63,6 @@
 Перенести з `index.html`:
 перемикач теми, згорнутий дзвінок (пункт 4). Потім замінити `index.html` у `demo/` на `apps/web` за замовчуванням, додати e2e (Playwright) (лінт і форматування вже налаштовано).
 
-## 19. Оновити версії GitHub Actions
-
-У `ci.yml` і `pages.yml` дії `actions/checkout@v4`, `actions/setup-node@v4` і `pnpm/action-setup@v4` націлені на Node.js 20, який GitHub примусово запускає на Node 24 (попередження в кожному прогоні).
-До 19 жовтня 2026 мітка `ubuntu-latest` перейде на Ubuntu 26: перевірити, що збірка й `pnpm` працюють, або зафіксувати `ubuntu-24.04`.
-
 ## 20. Справжнє шумозаглушення мікрофона
 
 Зараз `echoCancellation`, `noiseSuppression` і `autoGainControl` у `room.ts` лише явно повторюють типові значення браузера, якість не змінилась.
