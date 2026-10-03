@@ -94,8 +94,5 @@ const sub = (id: string, online: boolean) => {
       :icon="searching ? 'searchX' : 'users'"
       :title="searching ? t('contacts.notFound') : t('contacts.empty')"
     />
-    <p v-if="call.ready && offline" class="px-3 pt-3 text-sm text-mute" role="status">
-      {{ t('contacts.noConnection') }}{{ call.netError ? ': ' + call.netError : '. ' + t('contacts.connecting') }}
-    </p>
   </section>
 </template>

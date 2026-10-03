@@ -1276,7 +1276,7 @@
                   "type": "text",
                   "id": "AXbWD",
                   "name": "Status",
-                  "fill": "$ok",
+                  "fill": "$ok-text",
                   "content": "вільний",
                   "fontFamily": "Inter",
                   "fontSize": 12,
@@ -1290,14 +1290,14 @@
               "reusable": true,
               "ref": "V0mdUm",
               "name": "Presence / busy",
-              "fill": "$bad-soft",
+              "fill": "$warn-soft",
               "descendants": {
                 "JdWY2": {
-                  "fill": "$bad"
+                  "fill": "$warn"
                 },
                 "AXbWD": {
                   "content": "зайнятий",
-                  "fill": "$bad"
+                  "fill": "$warn-text"
                 }
               }
             }
@@ -8711,7 +8711,8 @@
                   "fill": "$bad",
                   "content": "Номер у форматі +380 XX XXX XX XX",
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -8934,7 +8935,8 @@
                           "width": "fill_container",
                           "content": "Введіть номер телефону. Якщо ви тут уперше, створимо обліковий запис.",
                           "fontFamily": "Inter",
-                          "fontSize": 15
+                          "fontSize": 15,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -9041,7 +9043,8 @@
                           "width": "fill_container",
                           "content": "Введіть номер телефону. Якщо ви тут уперше, створимо обліковий запис.",
                           "fontFamily": "Inter",
-                          "fontSize": 15
+                          "fontSize": 15,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -9154,7 +9157,8 @@
                           "width": "fill_container",
                           "content": "+380 67 123 45 67 — новий номер. Ім'я побачать ваші співрозмовники.",
                           "fontFamily": "Inter",
-                          "fontSize": 15
+                          "fontSize": 15,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -9267,7 +9271,8 @@
                           "width": "fill_container",
                           "content": "Код для +380 67 123 45 67",
                           "fontFamily": "Inter",
-                          "fontSize": 15
+                          "fontSize": 15,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -9435,7 +9440,8 @@
                           "width": "fill_container",
                           "content": "Код для +380 67 123 45 67",
                           "fontFamily": "Inter",
-                          "fontSize": 15
+                          "fontSize": 15,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -9510,7 +9516,8 @@
                           "fill": "$bad",
                           "content": "Невірний код. Залишилось спроб: 3",
                           "fontFamily": "Inter",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -10857,14 +10864,14 @@
               "reusable": true,
               "ref": "V0mdUm",
               "name": "Presence / dnd",
-              "fill": "$accent-soft",
+              "fill": "$bad-soft",
               "descendants": {
                 "JdWY2": {
-                  "fill": "$accent-icon"
+                  "fill": "$bad"
                 },
                 "AXbWD": {
                   "content": "не турбувати",
-                  "fill": "$accent-icon"
+                  "fill": "$bad-text"
                 }
               }
             }
@@ -14132,7 +14139,8 @@
                           "width": "fill_container",
                           "content": "Введіть номер телефону. Якщо ви тут уперше, створимо обліковий запис.",
                           "fontFamily": "Inter",
-                          "fontSize": 15
+                          "fontSize": 15,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -14734,6 +14742,57 @@
         },
         {
           "value": "#12151F",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "warn-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F5B84B",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#9A4A08",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "bad-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F0626B",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#B91C2E",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "ok-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#22C55E",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#0D7030",
           "theme": {
             "mode": "light"
           }

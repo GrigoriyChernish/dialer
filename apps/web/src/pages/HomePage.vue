@@ -3,16 +3,22 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import { useCallStore } from '@/features/call/store';
+import { useLoadState } from '@/features/contacts/loadState';
 import ContactsPage from '@/pages/ContactsPage.vue';
 import MissedPage from '@/pages/MissedPage.vue';
 import SearchPage from '@/pages/SearchPage.vue';
 import Avatar from '@/shared/ui/Avatar.vue';
 import Card from '@/shared/ui/Card.vue';
+import BannerStack from '@/shared/ui/BannerStack.vue';
+import { banner } from '@/shared/ui/banners';
 import Icon, { type IconName } from '@/shared/ui/Icon.vue';
 
 // Головна застосунку (дизайн: Flow · Contacts): три картки — шапка (Home Header), вміст вкладки, вкладки (Tab Bar).
 const { t } = useI18n();
 const call = useCallStore();
+// обрив після першого hello.ok: банер у шапці замість аватара, імені й мітки (дизайн: Home · Contacts · connection lost); до нього — Empty State у ContactsPage
+const { offline } = useLoadState();
+const lost = computed(() => call.ready && offline.value);
 
 type Tab = 'missed' | 'contacts' | 'search';
 const TABS: { id: Tab; icon: IconName }[] = [
@@ -38,24 +44,31 @@ const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
     <Card class="shrink-0">
       <RouterLink
         to="/settings"
-        class="flex items-center gap-2.5 rounded-[28px] py-2.5 pl-2.5 pr-3.5 focus-visible:outline-2 focus-visible:outline-accent"
+        class="relative flex items-center gap-2.5 rounded-[28px] py-2.5 pl-2.5 pr-3.5 focus-visible:outline-2 focus-visible:outline-accent"
         :aria-label="t('settings.open')"
       >
-        <Avatar v-if="call.ready" :name="call.me?.name ?? ''" size="sm" />
+        <Avatar v-if="call.ready" :name="call.me?.name ?? ''" size="sm" :class="lost && 'invisible'" />
         <i v-else class="size-9 shrink-0 animate-pulse rounded-full bg-surface" />
         <!-- ім'я одним рядком, задовге обрізається з «…» -->
-        <h1 v-if="call.ready" class="min-w-0 flex-1 truncate text-lg font-bold">{{ call.me?.name }}</h1>
+        <h1 v-if="call.ready" class="min-w-0 flex-1 truncate text-lg font-bold" :class="lost && 'invisible'">
+          {{ call.me?.name }}
+        </h1>
         <span v-else class="flex h-6 flex-1 animate-pulse items-center" aria-hidden="true"
           ><i class="h-3.5 w-35 rounded-full bg-surface"
         /></span>
         <span
           v-if="call.ready"
           class="flex shrink-0 items-center gap-1.5 rounded-full py-[3px] pl-2 pr-2.5 text-xs font-medium"
-          :class="PRESENCE[call.presence]"
-          role="status"
+          :class="[PRESENCE[call.presence], lost && 'invisible']"
+          :role="lost ? undefined : 'status'"
         >
           <i class="size-1.75 rounded-full bg-current" />{{ t(`presence.${call.presence}`) }}
         </span>
+        <!-- банер лежить поверх рядка до chevron; висоту шапки не змінює -->
+        <BannerStack
+          class="pointer-events-none absolute inset-y-0 left-2.5 right-10 flex flex-col justify-center pt-2"
+          :items="lost ? [banner('noConnection', t('contacts.noConnection'))] : []"
+        />
         <Icon name="chevronRight" class="size-4.5 shrink-0 text-mute" />
       </RouterLink>
     </Card>

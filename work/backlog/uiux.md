@@ -7,11 +7,11 @@
 
 У коді вже реалізовано (див. [`docs/design-system.md`](../../docs/design-system.md), розділи «Блок співрозмовника (Peer)» і «Семантика кольорів»),
 у `dialer.pen` цього ще немає. Намалювати в сесії з Pencil, потім оновити `design/tokens.json`:
-- Змінні `ok-ring-outer` (`#22C55E14`), `ok-ring-inner` (`#22C55E24`), `voice-ring-outer` (`#6366F126`), `voice-ring-inner` (`#6366F14D`) і текстові `warn-text`, `bad-text`, `ok-text` зі світлими значеннями (`#9A4A08`, `#B91C2E`, `#0D7030`), після чого прибрати їх з `CODE_ONLY` у `scripts/check-design-tokens.mjs`.
+- Змінні `ok-ring-outer` (`#22C55E14`), `ok-ring-inner` (`#22C55E24`), `voice-ring-outer` (`#6366F126`), `voice-ring-inner` (`#6366F14D`).
 - `Peer Ring`: варіанти за напрямом (вихідний синій, вхідний зелений: кільця й аватар) і за станом співрозмовника (обводка 136 / 2 px й колір аватара: `peer-hold` жовтий без затемнення, `peer-connection-lost` червоний .6, `peer-mic-off` сірий); кола голосу, що «дихають» (`Case · talking`); нейтральний аватар у розмові. Застосувати на `Outgoing Call`, `Incoming Call`, `Incoming · waiting`, `In Call · peer-*`.
 - Видалити `Voice Wave`, `Voice Wave / silent` і `Case · silent`.
-- `Presence / busy` → `warn-soft` / `warn`, `Presence / dnd` → `bad-soft` / `bad`; `Self Status / mic-off` → скло / `mute`; `Result · Busy` → `warn`; додати `Result · Rejected` («Відхилено», `bad`).
-- Світлі копії екранів перевірити з текстовими токенами.
+- `Self Status / mic-off` → скло / `mute`; `Result · Busy` → `warn`; додати `Result · Rejected` («Відхилено», `bad`).
+- Світлі копії екранів перевірити з текстовими токенами; `Result · Busy` і решту підписів результату перевести на `warn-text` / `bad-text`.
 
 ## 2. Нагадування про наш вимкнений мікрофон
 

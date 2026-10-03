@@ -8,6 +8,8 @@ const KINDS = {
   // Self Banner: наша мережа
   poorSignal: { tone: 'warn', icon: 'signalLow' },
   reconnecting: { tone: 'accent', icon: 'loader', spin: true },
+  // обрив сокета на головній (HomePage): той самий Banner з тоном warn, у дизайні Home · Contacts · connection lost окремого компонента немає
+  noConnection: { tone: 'warn', icon: 'wifiOff' },
   // Peer Banner: співрозмовник і зв'язок з ним
   peerHold: { tone: 'warn', icon: 'pause' },
   connectionLost: { tone: 'bad', icon: 'wifiOff' },

@@ -99,7 +99,7 @@
 
 ### Текстові варіанти станів
 
-Поза дизайном: токени додано в коді, поки `dialer.pen` не оновлено. Використовуємо їх, коли колір стану фарбує **текст** (мітка присутності,
+Змінні є в `dialer.pen` і в `design/tokens.json`. Використовуємо їх, коли колір стану фарбує **текст** (мітка присутності,
 підпис результату дзвінка); іконки, крапки й суцільні фони лишаються на `warn`, `bad`, `ok`. У темній темі значення збігаються з основними.
 Контраст (WCAG) на світлому фоні `#EEF0F6` і на мітці (колір стану 15% поверх фону) не нижче 4,5:1.
 
@@ -406,7 +406,7 @@
 | Флоу | Екрани |
 | --- | --- |
 | `Flow · Auth` | `Auth · Phone`, `Auth · Phone error`, `Auth · Name`, `Auth · Code`, `Auth · Code error` |
-| `Flow · Contacts` | `Home · Contacts`, `Home · Missed`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · Missed · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · Missed · loading`, `Home · Contacts · offline` |
+| `Flow · Contacts` | `Home · Contacts`, `Home · Missed`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · Missed · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · Missed · loading`, `Home · Contacts · offline`; обрив зв'язку `Home · Contacts · connection lost` |
 | `Flow · Outgoing call` | `Outgoing Call`, `Result · Busy`, `Result · No Answer` |
 | `Flow · Incoming call` | `Incoming Call`, `Result · Missed` |
 | `Flow · In call · base` | `In Call`, `In Call · self-hold` |
@@ -534,7 +534,7 @@
 - **`Home Header / loading`**: аватар — коло `surface-2`, замість імені смужка 140 × 14 (`surface-2`), `Presence` немає, бо наш стан ще невідомий.
 - **Перше завантаження**: картка вкладки з рядками `Contact Row / skeleton` (з'являється через 300 мс, щоб не блимати), лічильника пропущених немає.
   Без зв'язку довше 3 с замість заготовки `Empty State` з `wifi-off`, «Немає зв'язку з сервером» і підписом «Підключаємось…» (`Home · Contacts · offline`).
-  Коли дані вже були, після обриву показуємо їх далі.
+  Коли дані вже були, після обриву показуємо їх далі, а в `Home Header` замість аватара, імені й мітки присутності з'являється звичайний `Banner` (тон `warn`, `wifi-off`, «Немає зв'язку з сервером»; `Home · Contacts · connection lost`). Лишається тільки chevron, Banner лежить поверх рядка, тож шапка не змінює висоту. Діє на всіх вкладках, з'являється після розриву довше 3 с і зникає сам.
 
 ## Налаштування (Flow · Settings)
 
