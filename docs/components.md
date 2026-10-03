@@ -274,7 +274,7 @@
 - `api/auth.ts` — HTTP-вхід (`/auth/start`, `/verify`, `/refresh`, `/logout`), помилки як `AuthError` (`network`, якщо сервер недоступний).
 - `api/signaling.ts` — `SignalingClient`: `hello`, пінг, перепідключення 1, 1, 2, 3, 5 с із зсувом і одразу при `online` чи поверненні у вкладку (`reconnectNow`), запити з відповіддю за `reqId`.
 - `media/room.ts` — `CallMedia` над `livekit-client`: аудіо розмови, мікрофон, приглушення на утриманні; віддає `LinkState`
-  (`reconnecting`, `poor`, `peerAway`, `peerMuted`) із подій кімнати. Утримуваний другий дзвінок лишається у своїй кімнаті, але мовчить
+  (`reconnecting`, `poor`, `audioOnly`, `peerAway`, `peerMuted`) із подій кімнати; `audioOnly`: слабкий канал, відео вимкнено (камера 360p, деталі в [livekit-recommendations.md](livekit-recommendations.md)). Утримуваний другий дзвінок лишається у своїй кімнаті, але мовчить
   (`park`, `swap`, `dropParked`); `LinkState` береться лише з поточної кімнати.
 - `media/permissions.ts` — `requestMediaPermissions` (запит дозволів, тимчасові треки одразу зупиняються; fallback на лише аудіо) і `watchMediaPermissions`
   (Permissions API та `devicechange`, повертає функцію відписки).

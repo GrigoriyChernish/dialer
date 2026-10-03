@@ -94,7 +94,7 @@ export const messages = {
       hold: 'Утримання',
       resume: 'Продовжити',
       notice: { cameraUnavailable: 'Камера недоступна', micUnavailable: 'Мікрофон недоступний' },
-      network: { poorSignal: 'Слабкий сигнал', reconnecting: "Відновлюємо ваше з'єднання" },
+      network: { poorSignal: 'Слабкий сигнал', poorSignalAudio: 'Слабкий сигнал · лише звук', reconnecting: "Відновлюємо ваше з'єднання" },
       peer: {
         hold: { f: '{name} поставила на утримання', m: '{name} поставив на утримання' },
         connectionLost: {

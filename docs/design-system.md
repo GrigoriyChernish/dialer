@@ -256,6 +256,7 @@
 | `Peer Banner / mic-off` | `mic-off` | `neutral` (`mute`) | {Ім'я} вимкнула мікрофон | співрозмовник вимкнув мікрофон |
 | `Peer Banner / video-stalled` | `video-off` | `neutral` (`mute`) | Відео не завантажується | відео співрозмовника не стартувало за 10 с: екран повертається до аватара |
 | `Self Banner / poor-signal` | `signal-low` | `warn` `#F5B84B` | Слабкий сигнал | наша мережа слабка |
+| `Self Banner / poor-signal-audio` | `signal-low` | `warn` `#F5B84B` | Слабкий сигнал · лише звук | слабкий канал, відео вимкнено (камера й відео співрозмовника) |
 | `Self Banner / reconnecting` | `loader` | `accent` `#6366F1` (іконка `accent-icon`) | Відновлюємо ваше з'єднання | ми перепідключаємось |
 | `Self Banner / camera-unavailable` | `video-off` | `warn` | Камера недоступна | натиснули приглушену кнопку камери |
 | `Self Banner / mic-unavailable` | `mic-off` | `warn` | Мікрофон недоступний | натиснули приглушену кнопку мікрофона |

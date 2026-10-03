@@ -21,8 +21,10 @@ const first = computed(() => name.value.split(' ')[0]);
 // рід співрозмовника: сервер його не віддає, тож як у прототипі: жіночий лише для Олени (беклог, пункт 6)
 const g = computed(() => ((call.peer ?? call.missed?.peer)?.userId === 'bot:olena' ? 'f' : 'm'));
 const connected = computed(() => call.status === 'connected');
-// відео співрозмовника є (розмова не на утриманні); потік може не стартувати (`videoStalled`), тоді повертаємось до аватара
-const peerVideoOn = computed(() => connected.value && call.link.peerCam && !call.peerHold && !call.hold);
+// відео співрозмовника є (розмова не на утриманні, канал не слабкий: `audioOnly`); потік може не стартувати (`videoStalled`), тоді повертаємось до аватара
+const peerVideoOn = computed(
+  () => connected.value && call.link.peerCam && !call.link.audioOnly && !call.peerHold && !call.hold,
+);
 const videoStalled = ref(false);
 watch(peerVideoOn, on => on || (videoStalled.value = false));
 // екран «In Call · video»: на весь екран відео співрозмовника
@@ -49,7 +51,11 @@ const pool = usePool(() => {
   if (!connected.value) return [];
   const list: PoolSource[] = [];
   if (call.link.reconnecting) list.push({ group: 'system', ...banner('reconnecting', t('call.network.reconnecting')) });
-  else if (call.link.poor) list.push({ group: 'system', ...banner('poorSignal', t('call.network.poorSignal')) });
+  else if (call.link.poor || call.link.audioOnly)
+    list.push({
+      group: 'system',
+      ...banner('poorSignal', t(call.link.audioOnly ? 'call.network.poorSignalAudio' : 'call.network.poorSignal')),
+    });
   if (call.hint === 'cam')
     list.push({ group: 'user', ...banner('cameraUnavailable', t('call.notice.cameraUnavailable')) });
   if (call.hint === 'mic') list.push({ group: 'user', ...banner('micUnavailable', t('call.notice.micUnavailable')) });
@@ -179,7 +185,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold &&
 
     <div class="relative flex min-h-0 flex-1 flex-col">
       <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); камери немає чи її вимкнули — їх не показуємо -->
-      <template v-if="connected && !call.camBlocked && call.cam">
+      <template v-if="connected && !call.camBlocked && call.cam && !call.link.audioOnly">
         <button
           v-if="!call.selfHidden"
           type="button"
