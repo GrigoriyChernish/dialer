@@ -13,6 +13,8 @@ import { createUsers } from './db/users';
 import { buildHttp } from './http/app';
 import type { Logger } from './logger';
 import { createPush } from './push';
+import { createPushDispatch } from './push/dispatch';
+import { createRejectTokens } from './push/reject-token';
 import { createPushSender, type PushSender } from './push/sender';
 import { createCallStore } from './store/calls';
 import { createMemoryPresence } from './store/presence';
@@ -54,7 +56,7 @@ export async function createServer({
   const presence = createMemoryPresence();
   const hub = createHub(presence, users);
   const recents = createRecents(db);
-  const deliver = createDeliver(presence);
+  const callStore = createCallStore(db);
   const push = createPush({
     subs: createPushSubs(db),
     sender: pushSender ?? (config.vapid ? createPushSender(config.vapid) : null),
@@ -62,14 +64,26 @@ export async function createServer({
     logger,
     now: () => clock.now(),
   });
+  const rejectTokens = createRejectTokens(config.jwtSecret);
+  // кадри через WebSocket, а на підписані пристрої без з'єднання ще й Web Push
+  const deliver = createPushDispatch({
+    push,
+    presence,
+    store: callStore,
+    users,
+    rejectTokens,
+    now: () => clock.now(),
+    logger,
+  }).wrap(createDeliver(presence));
   const livekit = config.livekit ? createLiveKit(config.livekit, livekitRooms) : null;
   const calls = createCallService({
-    store: createCallStore(db),
+    store: callStore,
     users,
     recents,
     clock,
     livekit,
     isOnline: presence.isOnline,
+    isReachable: (siteId, userId) => presence.isOnline(siteId, userId) || push.hasSubscriptions(siteId, userId),
     deliver,
     newId,
     logger,
@@ -80,7 +94,20 @@ export async function createServer({
 
   const otp = createOtp(otpSender, clock);
   const sessions = createSessions(db, clock);
-  const app = buildHttp({ config, users, tokens, hub, calls, livekit, logger, otp, sessions, clock });
+  const app = buildHttp({
+    config,
+    users,
+    tokens,
+    hub,
+    calls,
+    livekit,
+    logger,
+    otp,
+    sessions,
+    clock,
+    deliver,
+    rejectTokens,
+  });
   const gateway = attachGateway(app.server, {
     users,
     recents,

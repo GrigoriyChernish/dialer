@@ -1,10 +1,11 @@
-// Сервіс-воркер лише для Web Push (docs/pwa-and-push.md). Без кешування й `fetch`: застосунок офлайн не працює.
-// Поки що дві події: вхідний дзвінок (сповіщення) і його завершення (сповіщення закривається).
+// Сервіс-воркер лише для Web Push (docs/pwa-and-push.md). Без кешування й `fetch` сторінок: застосунок офлайн не працює.
+// Адреса сервера для «Відхилити» приходить параметром `server` при реєстрації (`sw.js?server=…`).
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
 const ICON = 'icons/icon-192.png';
+const SERVER = new URL(self.location.href).searchParams.get('server') || self.location.origin;
 
 self.addEventListener('push', e => {
   let data = null;
@@ -23,6 +24,20 @@ self.addEventListener('push', e => {
         icon: ICON,
         requireInteraction: true,
         vibrate: [500, 250, 500, 250, 500],
+        actions: [
+          { action: 'answer', title: 'Відповісти' },
+          { action: 'reject', title: 'Відхилити' },
+        ],
+        data: { callId: data.callId, rejectToken: data.rejectToken },
+      }),
+    );
+  } else if (data.type === 'call.ended' && data.missed) {
+    // той самий тег замінює «Вхідний дзвінок» на «Пропущений»
+    e.waitUntil(
+      self.registration.showNotification('Пропущений дзвінок', {
+        body: data.from?.name || '',
+        tag: data.callId,
+        icon: ICON,
         data: { callId: data.callId },
       }),
     );
@@ -37,14 +52,26 @@ self.addEventListener('push', e => {
   }
 });
 
+async function openApp() {
+  const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  const open = windows.find(c => 'focus' in c);
+  // застосунок сам підхопить дзвінок: після `hello.ok` він приходить у `calls`, відповідь за користувачем
+  return open ? open.focus() : self.clients.openWindow(self.registration.scope);
+}
+
 self.addEventListener('notificationclick', e => {
+  const { rejectToken } = e.notification.data || {};
   e.notification.close();
-  e.waitUntil(
-    (async () => {
-      const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      const open = windows.find(c => 'focus' in c);
-      if (open) return open.focus();
-      return self.clients.openWindow(self.registration.scope);
-    })(),
-  );
+  if (e.action === 'reject' && rejectToken) {
+    // без вікна: сервер завершує дзвінок із `rejected`, у того, хто дзвонить, гудки припиняються
+    e.waitUntil(
+      fetch(`${SERVER}/push/reject`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ token: rejectToken }),
+      }).catch(() => {}),
+    );
+    return;
+  }
+  e.waitUntil(openApp());
 });

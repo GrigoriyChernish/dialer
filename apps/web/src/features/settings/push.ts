@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { useCallStore } from '@/features/call/store';
+import { serverUrl } from '@/shared/api/server';
 
 /** Ключ VAPID приходить у base64url, `pushManager.subscribe` чекає байти. */
 function keyBytes(key: string): Uint8Array<ArrayBuffer> {
@@ -15,8 +16,11 @@ const sameKey = (a: ArrayBuffer | null | undefined, b: Uint8Array) => {
 
 const supported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 
-/** Реєстрація сервіс-воркера (відносний шлях: за будь-якою адресою, на Pages це `/dialer/`). */
-const register = () => navigator.serviceWorker.register('sw.js');
+/**
+ * Реєстрація сервіс-воркера (відносний шлях: за будь-якою адресою, на Pages це `/dialer/`). Адреса сервера передається в
+ * параметрі `server`: воркер не бачить налаштувань застосунку, а йому треба `POST /push/reject` для кнопки «Відхилити».
+ */
+const register = () => navigator.serviceWorker.register(`sw.js?server=${encodeURIComponent(serverUrl)}`);
 
 /**
  * Сповіщення про дзвінки (docs/pwa-and-push.md): стан тумблера береться з `pushManager.getSubscription()` і дозволу браузера,

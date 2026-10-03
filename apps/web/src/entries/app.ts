@@ -12,14 +12,14 @@ import SettingsPage from '@/pages/SettingsPage.vue';
 import { usePrefsStore } from '@/features/settings/prefs';
 import { resyncPush } from '@/features/settings/push';
 import { createAuthApi } from '@/shared/api/auth';
+import { serverUrl } from '@/shared/api/server';
 import { SignalingClient } from '@/shared/api/signaling';
 import { applyTheme } from '@/shared/theme';
 import { CallMedia } from '@/shared/media/room';
 import { Sounds } from '@/shared/sounds/sounds';
 
 // Окремий застосунок (GitHub Pages): вхід за номером, далі контакти й дзвінки. Віджет для iframe — entries/widget.ts.
-// без VITE_SERVER_URL (локально) сервер за проксі Vite на тому самому origin
-const server = import.meta.env.VITE_SERVER_URL || location.origin;
+const server = serverUrl;
 
 let deviceId: string;
 try {

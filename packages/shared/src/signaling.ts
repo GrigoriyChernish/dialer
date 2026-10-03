@@ -238,11 +238,16 @@ export interface PushIncoming {
   callId: CallId;
   from: Peer;
   expiresAt: number;
+  /** Токен для `POST /push/reject`: кнопка «Відхилити» працює без сесії. */
+  rejectToken: string;
 }
 
 export interface PushEnded {
   type: 'call.ended';
   callId: CallId;
+  /** Дзвінок пропущено (скасований чи без відповіді): сповіщення стає «Пропущений дзвінок від {from}». Інакше воно просто закривається. */
+  missed?: true;
+  from?: Peer;
 }
 
 export type PushPayload = PushIncoming | PushEnded;

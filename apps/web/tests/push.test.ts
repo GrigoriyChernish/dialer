@@ -68,7 +68,7 @@ describe('usePush', () => {
     expect(push.enabled.value).toBe(false);
 
     await push.enable();
-    expect(nav.register).toHaveBeenCalledWith('sw.js');
+    expect(nav.register).toHaveBeenCalledWith(expect.stringMatching(/^sw\.js\?server=/));
     expect(subscribe).toHaveBeenCalledWith(expect.objectContaining({ userVisibleOnly: true }));
     expect(request).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.any(String) }));
     expect(push.enabled.value).toBe(true);

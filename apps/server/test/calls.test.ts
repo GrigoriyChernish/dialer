@@ -28,6 +28,8 @@ function setup(opts: { livekit?: boolean } = {}) {
     users.upsertDemoUser(a.userId, name);
   const clock = createFakeClock();
   const online = new Set<string>([anna.userId, bohdan.userId, clara.userId]);
+  /** Користувачі без з'єднання, але з підпискою Web Push. */
+  const pushable = new Set<string>();
   const delivered: Effect[] = [];
   let n = 0;
   const recents = createRecents(db);
@@ -39,11 +41,12 @@ function setup(opts: { livekit?: boolean } = {}) {
       clock,
       livekit: opts.livekit ? lk.livekit : null,
       isOnline: (_s, u) => online.has(u),
+      isReachable: (_s, u) => online.has(u) || pushable.has(u),
       deliver: e => void delivered.push(...e),
       newId: () => `call${++n}`,
       logger: pino({ level: 'silent' }),
     });
-  return { db, calls: make(), make, clock, online, delivered, recents, users, lk };
+  return { db, calls: make(), make, clock, online, pushable, delivered, recents, users, lk };
 }
 
 /** Повідомлення типу `type` серед effects, з адресатами. */
@@ -105,6 +108,15 @@ describe('call.invite', () => {
     expect(t.recents.list(SITE, bohdan.userId)).toEqual([]);
     // завершений дзвінок не займає користувача
     expect(t.calls.callsFor(SITE, clara.userId)).toEqual([]);
+  });
+
+  it('адресат без з’єднання, але з підпискою push: дзвінок дзвонить, а не offline', () => {
+    t.online.delete(bohdan.userId);
+    t.pushable.add(bohdan.userId);
+    const r = t.calls.invite(anna, { to: bohdan.userId, video: false });
+    expect(find(r.effects, 'call.incoming').map(e => e.user)).toEqual([bohdan.userId]);
+    expect(find(r.effects, 'call.ringing').map(e => e.user)).toEqual([anna.userId]);
+    expect(t.calls.callsFor(SITE, bohdan.userId)).toMatchObject([{ state: 'ringing', direction: 'in' }]);
   });
 
   it('offline, якщо адресата немає в мережі', () => {

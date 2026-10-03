@@ -159,3 +159,128 @@ describe('notify', () => {
     b.client.close();
   });
 });
+
+describe('push на дзвінки (етап C)', () => {
+  const settle = () => new Promise(r => setTimeout(r, 120));
+  const waitFor = async (fn: () => unknown) => {
+    for (let i = 0; i < 40 && !fn(); i++) await new Promise(r => setTimeout(r, 25));
+    expect(fn()).toBeTruthy();
+  };
+
+  /** Анна дзвонить Богдану, який підписаний на push, але без з'єднання. */
+  async function offlineCallee() {
+    const { server, sender } = await withPush();
+    const [pa, pb] = [phone(), phone()];
+    const anna = await connectUser(server, 'Анна', pa);
+    const bohdan = await connectUser(server, 'Богдан', pb, 'phone');
+    bohdan.client.send({ type: 'push.subscribe', id: 's', subscription: sub() });
+    await bohdan.client.next('ack');
+    bohdan.client.close();
+    await settle();
+    return { server, sender, anna, pa, pb, bohdanToken: bohdan.token };
+  }
+
+  const incoming = (sender: FakeSender) =>
+    sender.sent.map(s => s.payload).find(p => p.type === 'call.incoming') as Extract<
+      PushPayload,
+      { type: 'call.incoming' }
+    >;
+
+  it('адресат без з’єднання: дзвінок дзвонить, push з даними дзвінка й токеном відхилення, hello.ok віддає дзвінок', async () => {
+    const { server, sender, anna, pb, bohdanToken } = await offlineCallee();
+    anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    expect((await anna.client.next('ack')).call?.state).toBe('ringing');
+
+    await waitFor(() => incoming(sender));
+    const p = incoming(sender);
+    expect(p).toMatchObject({ from: { name: 'Анна' }, rejectToken: expect.any(String) });
+    expect(sender.sent[0]!.sub.deviceId).toBe('phone');
+
+    // адресат відкрив застосунок із сповіщення: дзвінок чекає на нього
+    const { TestClient } = await import('./helpers');
+    const c = await TestClient.connect(server.ws);
+    c.send({ type: 'hello', id: 'h2', token: bohdanToken, deviceId: 'phone' });
+    const hello = await c.next('hello.ok');
+    expect(hello.calls).toMatchObject([{ callId: p.callId, state: 'ringing', direction: 'in' }]);
+    c.close();
+    anna.client.close();
+  });
+
+  it('без підписки адресат не в мережі дає offline', async () => {
+    const { server } = await withPush();
+    const [pa, pb] = [phone(), phone()];
+    const anna = await connectUser(server, 'Анна', pa);
+    (await connectUser(server, 'Богдан', pb)).client.close();
+    await settle();
+    anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    expect((await anna.client.next('call.ended')).reason).toBe('offline');
+    anna.client.close();
+  });
+
+  it('пристрій із WebSocket push не отримує, пристрій без нього отримує', async () => {
+    const { server, sender } = await withPush();
+    const [pa, pb] = [phone(), phone()];
+    const anna = await connectUser(server, 'Анна', pa);
+    const phoneDev = await connectUser(server, 'Богдан', pb, 'phone');
+    const laptop = await connectUser(server, 'Богдан', pb, 'laptop');
+    for (const [d, ep] of [
+      [phoneDev, 'a'],
+      [laptop, 'b'],
+    ] as const) {
+      d.client.send({
+        type: 'push.subscribe',
+        id: 's',
+        subscription: sub(`https://fcm.googleapis.com/fcm/send/${ep}`),
+      });
+      await d.client.next('ack');
+    }
+    laptop.client.close();
+    await settle();
+
+    anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    await anna.client.next('ack');
+    await phoneDev.client.next('call.incoming');
+    await waitFor(() => sender.sent.length > 0);
+    await settle();
+    expect(sender.sent.map(s => s.sub.deviceId)).toEqual(['laptop']);
+    anna.client.close();
+    phoneDev.client.close();
+  });
+
+  it('скасований дзвінок: push «пропущений» із ім’ям; прийнятий деінде: push лише закриває сповіщення', async () => {
+    const { anna, pb, sender } = await offlineCallee();
+    anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    const { call } = await anna.client.next('ack');
+    anna.client.send({ type: 'call.cancel', id: 'c1', callId: call!.callId });
+    await waitFor(() => sender.sent.some(s => s.payload.type === 'call.ended'));
+    expect(sender.sent.at(-1)!.payload).toMatchObject({
+      type: 'call.ended',
+      callId: call!.callId,
+      missed: true,
+      from: { name: 'Анна' },
+    });
+    anna.client.close();
+  });
+
+  it('POST /push/reject з токеном із push відхиляє дзвінок і закриває сповіщення на інших пристроях', async () => {
+    const { server, sender, anna, pb } = await offlineCallee();
+    anna.client.send({ type: 'call.invite', id: 'i1', to: `+38${pb}`, video: false });
+    await anna.client.next('ack');
+    await waitFor(() => incoming(sender));
+    const { rejectToken } = incoming(sender);
+
+    const post = (token: unknown) =>
+      fetch(`${server.http}/push/reject`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+    expect((await post('підробка')).status).toBe(401);
+    expect((await post(rejectToken)).status).toBe(200);
+    expect((await anna.client.next('call.ended')).reason).toBe('rejected');
+    await waitFor(() => sender.sent.some(s => s.payload.type === 'call.ended'));
+    expect(sender.sent.at(-1)!.payload).toEqual({ type: 'call.ended', callId: incoming(sender).callId });
+    expect((await post(rejectToken)).status).toBe(409);
+    anna.client.close();
+  });
+});

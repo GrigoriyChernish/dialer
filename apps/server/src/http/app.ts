@@ -5,10 +5,12 @@ import type { Sessions } from '../auth/sessions';
 import type { Tokens } from '../auth/tokens';
 import type { Clock } from '../calls/types';
 import type { Config } from '../config';
+import type { Effect } from '../calls/types';
 import { DEMO_SITE_ID, type Users } from '../db/users';
-import type { CallService } from '../calls/service';
+import { CallError, type CallService } from '../calls/service';
 import type { LiveKit } from '../livekit';
 import type { Logger } from '../logger';
+import type { RejectTokens } from '../push/reject-token';
 import type { Hub } from '../ws/hub';
 import { createRateLimit } from './rate-limit';
 
@@ -23,9 +25,24 @@ export interface HttpDeps {
   otp: Otp;
   sessions: Sessions;
   clock: Clock;
+  deliver(effects: Effect[]): void;
+  rejectTokens: RejectTokens;
 }
 
-export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, otp, sessions, clock }: HttpDeps) {
+export function buildHttp({
+  config,
+  users,
+  tokens,
+  hub,
+  calls,
+  livekit,
+  logger,
+  otp,
+  sessions,
+  clock,
+  deliver,
+  rejectTokens,
+}: HttpDeps) {
   const app = Fastify({ loggerInstance: logger.child({ module: 'http' }) });
 
   // CORS лише для застосунку (GitHub Pages)
@@ -43,6 +60,25 @@ export function buildHttp({ config, users, tokens, hub, calls, livekit, logger, 
   });
 
   app.get('/health', async () => ({ ok: true }));
+
+  // «Відхилити» зі сповіщення: сервіс-воркер без сесії, лише з токеном із push (docs/pwa-and-push.md).
+  // Пристрій `push` не підключений, тож інші пристрої адресата отримають `answered_elsewhere` і закриють сповіщення.
+  app.post('/push/reject', async (req, reply) => {
+    const claims = await rejectTokens.verify((req.body as { token?: unknown } | null)?.token);
+    if (!claims) return reply.code(401).send({ error: 'token_invalid' });
+    try {
+      const { effects } = calls.reject(
+        { siteId: claims.siteId, userId: claims.userId, deviceId: 'push' },
+        { callId: claims.callId },
+      );
+      deliver(effects);
+      return { ok: true };
+    } catch (e) {
+      // дзвінок уже завершено чи прийнято: відхиляти нічого
+      if (e instanceof CallError) return reply.code(409).send({ error: e.code });
+      throw e;
+    }
+  });
 
   // Вхід за номером (docs/backend.md, «Вхід»): номер → код → токен доступу й сесія на 7 днів.
   // На Fly.io справжня адреса клієнта в Fly-Client-IP (заголовок ставить проксі Fly).

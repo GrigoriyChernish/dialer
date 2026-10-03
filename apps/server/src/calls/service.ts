@@ -40,6 +40,8 @@ export interface CallServiceDeps {
   /** `null`: медіа вимкнено, дзвінки без токенів кімнат. */
   livekit: LiveKit | null;
   isOnline(siteId: string, userId: string): boolean;
+  /** Адресата можна сповістити: він у мережі або має підписку Web Push. */
+  isReachable(siteId: string, userId: string): boolean;
   /** Доставляє повідомлення, які виникли без команди (таймери, боти). */
   deliver(effects: Effect[]): void;
   newId(): string;
@@ -424,7 +426,7 @@ export function createCallService(deps: CallServiceDeps) {
         refusal = { reason: 'busy' };
       } else if (others.length === 1 && !callee.settings.waiting) {
         refusal = { reason: 'busy', silent: true };
-      } else if (!deps.isOnline(actor.siteId, callee.id)) {
+      } else if (!deps.isReachable(actor.siteId, callee.id)) {
         refusal = { reason: 'offline' };
       }
       const ack = info(call, actor.userId);
