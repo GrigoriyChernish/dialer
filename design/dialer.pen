@@ -3078,6 +3078,18 @@
                   ]
                 }
               }
+            },
+            {
+              "id": "xpRHd",
+              "type": "ref",
+              "reusable": true,
+              "ref": "mMxft",
+              "name": "Self Banner / poor-signal-audio",
+              "descendants": {
+                "W4Fv08": {
+                  "content": "Слабкий сигнал · лише звук"
+                }
+              }
             }
           ]
         },
