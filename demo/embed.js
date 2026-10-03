@@ -1,8 +1,8 @@
 // Імітація завантажувача embed.js: плаваюча кнопка й панель з віджетом в iframe.
 // API як у docs/architecture.md: Dialer.mount(...) → { on, open, close, setTheme, setToken, call, unmount }.
 (()=>{
-// адреса віджета відносно embed.js: у репозиторії ../index.html, на Pages — widget/ (атрибут data-widget)
-const WIDGET=new URL(document.currentScript.dataset.widget||'../index.html',document.currentScript.src);
+// адреса віджета: типово Vue-віджет з dev-сервера apps/web (`pnpm --filter @dialer/web dev`), інший задає атрибут data-widget чи опція widget у Dialer.mount
+const WIDGET=new URL(document.currentScript.dataset.widget||'http://localhost:5173/widget.html',document.currentScript.src);
 const PHONE='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11 11 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"/></svg>';
 const CSS=`
 .dlr-btn{all:unset;position:fixed;z-index:2147483000;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;cursor:pointer;

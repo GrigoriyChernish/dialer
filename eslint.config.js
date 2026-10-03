@@ -13,7 +13,6 @@ export default [
       '**/.pnpm-store/**',
       '**/*.pen',
       '**/data/**',
-      'index.html',
       'demo/**',
       '.claude/**',
     ],

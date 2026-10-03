@@ -2,15 +2,14 @@
 
 Усі команди виконуються з кореня репозиторію, якщо не сказано інше.
 
-## Демо (`index.html`)
+## Сторінка демо (`demo/`)
 
-Збірки немає, потрібен лише статичний сервер (камера працює тільки на `localhost` чи HTTPS):
+Збірки немає, потрібен лише статичний сервер (камера працює тільки на `localhost` чи HTTPS); віджет у ній це `apps/web`, його треба запустити окремо (нижче):
 
 ```bash
 python3 -m http.server 8080
 ```
 
-- прототип: <http://localhost:8080>
 - сторінка демо з входом і віджетом: <http://localhost:8080/demo/>
 
 - демо зі справжнім сервером: <http://localhost:8080/demo/?server=http://localhost:8787> (спершу запустіть сервер, див. нижче).
@@ -20,7 +19,7 @@ python3 -m http.server 8080
 - `apps/web`: `corepack pnpm --filter @dialer/web dev` піднімає його на <http://localhost:5173>.
   - <http://localhost:5173/> — застосунок із входом за номером (як на GitHub Pages). Запити `/auth/*` і `/ws` Vite проксіює на сервер
     `:8787`, тож CORS для `:5173` не потрібен. Код входу — останні 4 цифри номера.
-  - Віджет у демо: параметр `widget`, <http://localhost:8080/demo/?server=http://localhost:8787&widget=http://localhost:5173/widget.html>. Тести й типи: `pnpm --filter @dialer/web test` та `typecheck`.
+  - Віджет у демо: типово береться з <http://localhost:5173/widget.html>, тож достатньо <http://localhost:8080/demo/?server=http://localhost:8787> (інша адреса: параметр `widget`). Тести й типи: `pnpm --filter @dialer/web test` та `typecheck`.
 
 Порт `8080` збігається з `DEMO_ORIGIN` у `apps/server/.env.example`, тож CORS сервера пропустить демо.
 

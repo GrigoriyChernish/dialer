@@ -1,8 +1,8 @@
 # Інструкції для агентів
 
 ## Проєкт
-Клікабельне демо дзвонілки в одному файлі `index.html` без збірки. Сервера й LiveKit немає,
-усе імітується в браузері. Деталі в `README.md`, структура репозиторію в [`docs/project-structure.md`](docs/project-structure.md).
+Демо дзвонілки: застосунок і віджет у `apps/web` (Vue), сервер сигналізації й LiveKit у `apps/server`, спільні типи в `packages/shared`.
+Деталі в `README.md`, структура репозиторію в [`docs/project-structure.md`](docs/project-structure.md).
 
 ## Беклог
 Беклог проєкту: [`work/backlog/backlog.md`](work/backlog/backlog.md).
