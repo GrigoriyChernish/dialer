@@ -10,7 +10,7 @@ import HomePage from '@/pages/HomePage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import SettingsPage from '@/pages/SettingsPage.vue';
 import { usePrefsStore } from '@/features/settings/prefs';
-import { closeIncomingNotifications, resyncPush, updateWorker } from '@/features/settings/push';
+import { closeIncomingNotifications, listenAnswer, resyncPush, updateWorker } from '@/features/settings/push';
 import { createAuthApi } from '@/shared/api/auth';
 import { serverUrl } from '@/shared/api/server';
 import { SignalingClient } from '@/shared/api/signaling';
@@ -116,5 +116,6 @@ document.addEventListener('visibilitychange', () => {
 });
 void closeIncomingNotifications();
 void updateWorker(true);
+listenAnswer(call);
 
 createApp(App).use(pinia).use(router).use(i18n).mount('#app');

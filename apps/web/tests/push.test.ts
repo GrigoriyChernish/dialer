@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCallStore } from '@/features/call/store';
-import { resyncPush, updateWorker, usePush } from '@/features/settings/push';
+import { listenAnswer, resyncPush, updateWorker, usePush } from '@/features/settings/push';
 
 const BYTES = new Uint8Array([4, 1, 3, 0, 1]);
 const KEY = btoa(String.fromCharCode(...BYTES))
@@ -227,6 +227,25 @@ describe('updateWorker', () => {
     nav.getRegistration = async () => undefined as never;
     await updateWorker(true);
     expect(nav.register).not.toHaveBeenCalled();
+  });
+});
+
+describe('listenAnswer', () => {
+  it('питає воркер про «Відповісти» й приймає дзвінок із його повідомлення', () => {
+    const { call, nav } = setup({ permission: 'granted' });
+    let onMessage: (e: { data: unknown }) => void = () => {};
+    const post = vi.fn();
+    Object.assign(nav, {
+      addEventListener: (_: string, f: typeof onMessage) => (onMessage = f),
+      controller: { postMessage: post },
+    });
+    const answer = vi.spyOn(call, 'answerFromPush').mockImplementation(() => {});
+    listenAnswer(call);
+    expect(post).toHaveBeenCalledWith({ type: 'answer.pending' });
+    onMessage({ data: { type: 'answer', callId: 'c7' } });
+    onMessage({ data: { type: 'other' } });
+    expect(answer).toHaveBeenCalledTimes(1);
+    expect(answer).toHaveBeenCalledWith('c7');
   });
 });
 

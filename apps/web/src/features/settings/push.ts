@@ -167,6 +167,21 @@ export async function updateWorker(start = false) {
 }
 
 /**
+ * Кнопка «Відповісти» в сповіщенні: воркер передає `callId` повідомленням (`answer`) у вже відкрите вікно, а щойно відкрите
+ * питає його саме (`answer.pending`). Через посилання не передаємо: інакше чуже посилання вмикало б камеру й мікрофон.
+ */
+export function listenAnswer(call: ReturnType<typeof useCallStore>) {
+  if (!supported()) return;
+  const sw = navigator.serviceWorker;
+  sw.addEventListener('message', e => {
+    const m = e.data as { type?: string; callId?: unknown } | null;
+    if (m?.type === 'answer' && typeof m.callId === 'string') call.answerFromPush(m.callId);
+  });
+  sw.startMessages?.();
+  sw.controller?.postMessage({ type: 'answer.pending' });
+}
+
+/**
  * Закриває сповіщення «Вхідний дзвінок» (у них є `rejectToken`), коли застосунок на екрані: дзвінок видно в ньому самому.
  * «Пропущений» лишається.
  */

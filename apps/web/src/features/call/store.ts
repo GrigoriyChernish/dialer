@@ -574,6 +574,25 @@ export const useCallStore = defineStore('call', () => {
     });
   }
 
+  // «Відповісти» в сповіщенні Web Push: дзвінок приймаємо, щойно він з'явиться (після `hello.ok`), без екрана підтвердження
+  let answerId: string | null = null;
+  let answerUntil = 0;
+  function tryAnswer() {
+    if (!answerId) return;
+    if (Date.now() > answerUntil) return void (answerId = null);
+    if (status.value === 'incoming' && callId.value === answerId) {
+      answerId = null;
+      accept();
+    } else if (waiting.value?.callId === answerId) answerId = null; // другий вхідний: «утримати» чи «завершити» вирішує користувач
+  }
+  watch([status, callId, waiting], tryAnswer);
+  /** Прийняти дзвінок `id` з кнопки «Відповісти» сповіщення; чекаємо на нього не довше за хвилину (таймаут дзвінка). */
+  function answerFromPush(id: string) {
+    answerId = id;
+    answerUntil = Date.now() + 60_000;
+    tryAnswer();
+  }
+
   /** Відхилити вхідний, скасувати вихідний чи завершити розмову: що саме, залежить від стану. */
   function end() {
     const id = callId.value;
@@ -738,6 +757,7 @@ export const useCallStore = defineStore('call', () => {
     waiting,
     held,
     acceptWaiting,
+    answerFromPush,
     rejectWaiting,
     swapHeld,
     enableAudio,

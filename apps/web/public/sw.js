@@ -58,15 +58,38 @@ self.addEventListener('push', e => {
   }
 });
 
-async function openApp() {
+/** «Відповісти» для вікна, що ще відкривається: віддаємо його на запит `answer.pending` (не довше за 30 с). */
+let pendingAnswer = null;
+let answerTaken = null;
+
+self.addEventListener('message', e => {
+  if (e.data?.type !== 'answer.pending') return;
+  const p = pendingAnswer;
+  pendingAnswer = null;
+  if (p && p.until > Date.now()) e.source?.postMessage({ type: 'answer', callId: p.callId });
+  answerTaken?.();
+});
+
+/**
+ * Відкриває застосунок. З `answerCallId` («Відповісти») застосунок одразу приймає цей дзвінок, без екрана підтвердження;
+ * інакше він підхопить дзвінок сам (після `hello.ok` той приходить у `calls`), а відповідь за користувачем.
+ */
+async function openApp(answerCallId) {
   const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
   const open = windows.find(c => 'focus' in c);
-  // застосунок сам підхопить дзвінок: після `hello.ok` він приходить у `calls`, відповідь за користувачем
-  return open ? open.focus() : self.clients.openWindow(self.registration.scope);
+  if (open) {
+    await open.focus();
+    if (answerCallId) open.postMessage({ type: 'answer', callId: answerCallId });
+    return;
+  }
+  if (answerCallId) pendingAnswer = { callId: answerCallId, until: Date.now() + 30_000 };
+  await self.clients.openWindow(self.registration.scope);
+  // воркер не має заснути, поки нове вікно не забрало відповідь
+  if (answerCallId) await new Promise(r => ((answerTaken = r), setTimeout(r, 15_000)));
 }
 
 self.addEventListener('notificationclick', e => {
-  const { rejectToken } = e.notification.data || {};
+  const { callId, rejectToken } = e.notification.data || {};
   e.notification.close();
   if (e.action === 'reject' && rejectToken) {
     // без вікна: сервер завершує дзвінок із `rejected`, у того, хто дзвонить, гудки припиняються
@@ -79,5 +102,5 @@ self.addEventListener('notificationclick', e => {
     );
     return;
   }
-  e.waitUntil(openApp());
+  e.waitUntil(openApp(e.action === 'answer' ? callId : undefined));
 });

@@ -1,5 +1,6 @@
 import type { CallInfo, ServerMessage } from '@dialer/shared';
 import { createPinia, setActivePinia } from 'pinia';
+import { nextTick } from 'vue';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCallStore, type CallDeps } from '@/features/call/store';
 import { usePrefsStore } from '@/features/settings/prefs';
@@ -771,6 +772,37 @@ describe('call store', () => {
       expect(deps.media.setDeaf).toHaveBeenLastCalledWith(true);
       send({ v: V, type: 'call.peer', callId: 'c1', hold: false });
       expect(deps.media.setDeaf).toHaveBeenLastCalledWith(false);
+    });
+  });
+
+  describe('answer from a push notification', () => {
+    it('accepts the call as soon as it arrives, without the confirmation screen', async () => {
+      const { store, request, send } = setup();
+      store.answerFromPush('c2');
+      expect(request).not.toHaveBeenCalledWith('call.accept', expect.anything());
+      send({ v: V, type: 'call.incoming', call: info({ callId: 'c2', direction: 'in' }) });
+      await nextTick();
+      expect(request).toHaveBeenCalledWith('call.accept', { callId: 'c2' });
+    });
+
+    it('accepts a call that is already ringing, but not another one', async () => {
+      const { store, request, send } = setup();
+      send({ v: V, type: 'call.incoming', call: info({ callId: 'c3', direction: 'in' }) });
+      store.answerFromPush('c2');
+      await nextTick();
+      expect(request).not.toHaveBeenCalledWith('call.accept', expect.anything());
+      store.answerFromPush('c3');
+      expect(request).toHaveBeenCalledWith('call.accept', { callId: 'c3' });
+    });
+
+    it('a second incoming call during a conversation still asks hold or end', async () => {
+      const { store, request, send } = setup();
+      send({ v: V, type: 'call.incoming', call: info({ callId: 'c1', direction: 'in', state: 'connected' }) });
+      store.answerFromPush('c2');
+      send({ v: V, type: 'call.incoming', call: info({ callId: 'c2', direction: 'in', waiting: true }) });
+      await nextTick();
+      expect(store.waiting?.callId).toBe('c2');
+      expect(request).not.toHaveBeenCalledWith('call.accept', expect.objectContaining({ callId: 'c2' }));
     });
   });
 });
