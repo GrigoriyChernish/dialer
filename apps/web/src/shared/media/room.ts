@@ -198,7 +198,16 @@ export class CallMedia {
     this.cur = undefined;
   }
 
+  /**
+   * Зупиняє захоплення камери й мікрофона сесії. `setCameraEnabled(true)` може завершитись уже після `disconnect` (дзвінок скінчився, поки камера
+   * ще вмикалась): трек тоді нікому не належить і тримає камеру, а Chrome показує, що сайт її використовує, навіть без розмови.
+   */
+  private release(s: Session) {
+    s.room.localParticipant.trackPublications?.forEach(pub => pub.track?.stop());
+  }
+
   private close(s: Session) {
+    this.release(s);
     s.room.disconnect();
     s.els.forEach(el => el.remove());
     s.els = [];
@@ -208,15 +217,27 @@ export class CallMedia {
   private silence(s: Session) {
     const lp = s.room.localParticipant;
     void lp.setMicrophoneEnabled(false).catch(() => {});
-    void lp.setCameraEnabled(false).catch(() => {});
+    void lp
+      .setCameraEnabled(false)
+      .catch(() => {})
+      .then(() => this.release(s));
     s.els.forEach(el => (el.muted = true));
   }
 
   private apply() {
-    const lp = this.cur?.room.localParticipant;
+    const s = this.cur;
+    const lp = s?.room.localParticipant;
     const wantMic = this.micOn && !this.deaf;
-    void lp?.setMicrophoneEnabled(wantMic).catch(() => wantMic && this.emit({ micError: true }));
-    void lp?.setCameraEnabled(this.camOn && !this.deaf).catch(() => this.emit({ camError: true }));
+    // якщо поки пристрій вмикався, сесія вже не поточна (завершена чи утримана), знімаємо захоплення
+    const settled = () => s && s !== this.cur && this.release(s);
+    void lp
+      ?.setMicrophoneEnabled(wantMic)
+      .catch(() => wantMic && this.emit({ micError: true }))
+      .then(settled);
+    void lp
+      ?.setCameraEnabled(this.camOn && !this.deaf)
+      .catch(() => this.emit({ camError: true }))
+      .then(settled);
     this.cur?.els.forEach(el => (el.muted = this.deaf));
   }
 
