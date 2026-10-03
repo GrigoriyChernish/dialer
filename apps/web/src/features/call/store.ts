@@ -35,6 +35,7 @@ export interface CallDeps {
     onChange?(fn: (patch: Partial<LinkState>) => void): void;
     setCamera?(on: boolean): void;
     enableAudio?(): Promise<void>;
+    restartCamera?(): Promise<void>;
     hasCamera?(): Promise<boolean>;
     hasMicrophone?(): Promise<boolean>;
     attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void;
@@ -590,6 +591,11 @@ export const useCallStore = defineStore('call', () => {
     void deps.media.enableAudio?.();
   }
 
+  /** Камера не віддала кадр: один перезапуск треку (рішення в `CallScreen`). */
+  function restartCamera() {
+    void deps.media.restartCamera?.();
+  }
+
   function swapHeld() {
     const h = held.value;
     if (!h || status.value !== 'connected' || !callId.value) return;
@@ -681,6 +687,7 @@ export const useCallStore = defineStore('call', () => {
     rejectWaiting,
     swapHeld,
     enableAudio,
+    restartCamera,
     callId,
     peer,
     hold,

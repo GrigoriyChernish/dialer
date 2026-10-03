@@ -73,11 +73,6 @@
 Зараз `echoCancellation`, `noiseSuppression` і `autoGainControl` у `room.ts` лише явно повторюють типові значення браузера, якість не змінилась.
 Якщо потрібне краще шумозаглушення: Krisp (`@livekit/krisp-noise-filter`, лише LiveKit Cloud) або RNNoise у WASM; потрібна окрема оцінка, чи варто це в демо.
 
-## 21. Стан «камера не працює» на мініатюрі себе
-
-Прелоадер мініатюри (`Self View / loading`) не має таймауту: якщо наша камера не віддає кадр, плитка лишається порожньою з вічним індикатором. Додати таймаут 10 с і значок/сповіщення в пулі
-(наприклад, «Камера не відповідає») та перевірити, чи не потрібен автоматичний перезапуск треку.
-
 ## 22. Перенести прелоадер і нові стани в Android-дизайн
 
 У `/Users/behr/dev/claude/design/dialer-android.pen` немає `Video Loader`, `Self View / loading`, `Peer Banner / video-stalled` та екранів `In Call · video · loading`, `· unavailable`, `· self-view-loading`.
@@ -108,3 +103,7 @@
 ## 28. Перенести «Увімкнути звук» в Android-дизайн
 
 У `dialer-android.pen` немає сповіщення `Self Banner / audio-blocked` (звук заблокований браузером, кнопка-іконка `volume-2`). Додати за зразком веб-дизайну й записати в `dialer-android-gaps.md`.
+
+## 29. Перенести «Камера не відповідає» в Android-дизайн
+
+У `dialer-android.pen` немає `Self View / stalled` (значок `video-off` замість індикатора) і сповіщення `Self Banner / camera-stalled`. Додати разом із пунктом 28 і записати в `dialer-android-gaps.md`.

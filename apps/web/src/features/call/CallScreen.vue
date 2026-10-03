@@ -69,6 +69,8 @@ const pool = usePool(() => {
     });
   if (call.hint === 'cam')
     list.push({ group: 'user', ...banner('cameraUnavailable', t('call.notice.cameraUnavailable')) });
+  if (selfStalled.value && stalls.value > 1)
+    list.push({ group: 'user', ...banner('cameraStalled', t('call.notice.cameraStalled')) });
   if (call.hint === 'mic') list.push({ group: 'user', ...banner('micUnavailable', t('call.notice.micUnavailable')) });
   if (call.held) {
     const h = call.held;
@@ -110,6 +112,19 @@ const selfStatuses = computed<{ status: SelfStatus; label: string }[]>(() => {
   return list;
 });
 const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold && !call.peerHold);
+// наша камера не віддала кадр за 10 с: перший раз перезапускаємо трек, якщо й після цього кадру немає, сповіщення «Камера не відповідає» (беклог 21)
+const selfStalled = ref(false);
+const stalls = ref(0);
+watch(selfVideo, on => on || (selfStalled.value = false));
+watch(
+  () => call.callId,
+  () => (stalls.value = 0),
+);
+watch(selfStalled, on => {
+  if (!on) return;
+  stalls.value++;
+  if (stalls.value === 1) call.restartCamera();
+});
 </script>
 
 <template>
@@ -205,7 +220,13 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold &&
           :class="selfVideo && 'shadow-[0_10px_24px_#00000066]'"
           @click="call.selfHidden = true"
         >
-          <VideoSurface v-if="selfVideo" kind="local" :track="selfVideo" class="absolute inset-0" />
+          <VideoSurface
+            v-if="selfVideo"
+            kind="local"
+            :track="selfVideo"
+            class="absolute inset-0"
+            @stalled="selfStalled = $event"
+          />
         </button>
         <button
           v-else

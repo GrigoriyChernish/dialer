@@ -5,7 +5,7 @@
       "type": "frame",
       "id": "m1mG0D",
       "x": -5200,
-      "y": 2514,
+      "y": 2866,
       "name": "Components · Peer",
       "fill": "$bg",
       "cornerRadius": "$radius-md",
@@ -3088,6 +3088,25 @@
               "descendants": {
                 "W4Fv08": {
                   "content": "Слабкий сигнал · лише звук"
+                }
+              }
+            },
+            {
+              "id": "NXp2L",
+              "type": "ref",
+              "reusable": true,
+              "ref": "B2VOUE",
+              "name": "Self Banner / audio-blocked",
+              "context": "Браузер заблокував відтворення звуку співрозмовника (автовідтворення): користувацьке сповіщення пулу з кнопкою-іконкою «Увімкнути звук» (room.startAudio() із жесту користувача).",
+              "descendants": {
+                "s1KBV": {
+                  "icon": "volume-x"
+                },
+                "c2YAgn": {
+                  "content": "Звук вимкнено браузером"
+                },
+                "NdYG6": {
+                  "icon": "volume-2"
                 }
               }
             }

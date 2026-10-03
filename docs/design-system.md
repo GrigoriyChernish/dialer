@@ -261,6 +261,7 @@
 | `Self Banner / poor-signal-audio` | `signal-low` | `warn` `#F5B84B` | Слабкий сигнал · лише звук | слабкий канал, відео вимкнено (камера й відео співрозмовника) |
 | `Self Banner / reconnecting` | `loader` | `accent` `#6366F1` (іконка `accent-icon`) | Відновлюємо ваше з'єднання | ми перепідключаємось |
 | `Self Banner / camera-unavailable` | `video-off` | `warn` | Камера недоступна | натиснули приглушену кнопку камери |
+| `Self Banner / camera-stalled` | `video-off` | `warn` | Камера не відповідає | наша камера не віддала кадр за 10 с, і перезапуск треку не допоміг |
 | `Self Banner / mic-unavailable` | `mic-off` | `warn` | Мікрофон недоступний | натиснули приглушену кнопку мікрофона |
 | `Self Banner / audio-blocked` | `volume-x` | `warn` | Звук вимкнено браузером + кнопка-іконка `volume-2` 14 у колі 24 | браузер заблокував відтворення; користувацька група пулу, відступи 8 8 8 10 |
 | `Self Banner / held-call` | `pause` | `warn` | Олена Коваль · 02:14 + кнопка-іконка `arrow-left-right` 14 у колі 24 (`warn-soft` / `warn`) | утримуваний дзвінок; користувацька група пулу, відступи 8 8 8 10 |
@@ -276,7 +277,7 @@
 - **Слот.** `Self Banner Slot` 40 завжди зарезервований: `y` 108 (низ шапки + 6), `x` 16, і мініатюра себе завжди на `y` 156 (слот + проміжок 8),
   `Peer` на 220. Порожній слот просто лишає місце, тож ні мініатюра, ні блок `Peer` не стрибають.
 - **Одне сповіщення.** У слоті видно одне. Порядок: спершу **системні** (мережа: `reconnecting`, `poor-signal`), потім **користувацькі**
-  (наші пристрої та дії: `camera-unavailable`, `mic-unavailable`, `audio-blocked`, `held-call`); усередині групи вище те, що з'явилося пізніше.
+  (наші пристрої та дії: `camera-unavailable`, `camera-stalled`, `mic-unavailable`, `audio-blocked`, `held-call`); усередині групи вище те, що з'явилося пізніше.
   Коли верхнє зникає, показується наступне з пулу. Повторна поява сповіщення вважається новою.
 - **Бейдж `Pool Badge` «+N»** праворуч у слоті, коли в пулі є ще сповіщення. Колір бейджа береться з тону верхнього сповіщення
   (`*-soft` заливка, `*-edge` рамка, `*-text` цифра; для `accent` цифра `accent-icon`). Компонент `Pool Badge` (+ `/ warn`, `/ ok`, `/ bad`) у `Components · Banners`.
@@ -420,7 +421,7 @@
 | `Components · Settings` | `Toggle`, `Toggle / on`, `Settings Row`, `Segmented`, `Presence / dnd` |
 | `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` |
 | `Components · Banners` | `Banner` (база); контейнери `Self Banners` (`Self Banner / *`), `Peer Banners` (`Peer Banner / *`) і `Pool Badges` (`Pool Badge`, `/ warn`, `/ ok`, `/ bad`) |
-| `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring` (варіанти за напрямом виклику й за станом співрозмовника), `Call Label`, `Result Label`, `Peer Video`, `Video Loader`, `Self View / loading`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `speaking`, `result`) |
+| `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring` (варіанти за напрямом виклику й за станом співрозмовника), `Call Label`, `Result Label`, `Peer Video`, `Video Loader`, `Self View / loading`, `Self View / stalled`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `speaking`, `result`) |
 
 | Флоу | Екрани |
 | --- | --- |
@@ -518,6 +519,7 @@
   (відео лишається змонтованим невидимим: коли потік оживе, екран знову стає відео). Для скрінрідерів індикатор має `role="status"` і підпис «Завантажуємо відео…», під `prefers-reduced-motion` не обертається.
   Екрани: `In Call · video · loading`, `In Call · video · unavailable`.
 - **`Self View / loading`** 92 × 122: мініатюра себе, поки немає першого кадру нашої камери (`Components · Peer`). Та сама плитка `surface-tile` з рамкою `line`, без затемнення; по центру менше коло 24
+- **`Self View / stalled`** 92 × 122: та сама плитка, коли камера не віддала кадр за 10 с; замість індикатора коло 24 (`surface-2`) із `video-off` 14 кольору `mute`. Сповіщення пулу `Self Banner / camera-stalled` («Камера не відповідає») з'являється, якщо кадру немає й після одного перезапуску треку.
   (`surface-2`) з `loader` 14 (`accent-icon`). Правила ті самі: індикатор через 400 мс, поява відео 300 мс. Таймаут 10 с на мініатюрі нічого не змінює (стан не виносимо, плитка просто лишається порожньою).
   Екран: `In Call · self-view-loading`.
 

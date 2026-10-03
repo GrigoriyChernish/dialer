@@ -9,7 +9,8 @@ import Icon from '@/shared/ui/Icon.vue';
  * Відео з кімнати: `remote` співрозмовника, `local` нашої камери (дзеркально). `track` змінюється, коли потік з'явився чи зник.
  * Поки немає першого кадру, відео прозоре; через 400 мс з'являється індикатор: на `remote` із затемненням і колом 32 (дизайн: Video Loader),
  * на `local` менше коло 24 без затемнення, на плитці мініатюри (дизайн: Self View / loading).
- * Якщо потік не стартував за 10 с, подія `stalled`: екран розмови повертається до аватара.
+ * Якщо потік не стартував за 10 с, подія `stalled`: екран розмови повертається до аватара, а на `local` індикатор змінює значок `video-off`
+ * (камера не віддає кадр, дизайн: Self View / stalled).
  *
  * Корінь без `relative`: позицію (`absolute inset-0`) задає батько, а `relative` в одному елементі перемагає `absolute` у CSS Tailwind і виводить відео з екрана в потік
  * (шапка й кнопки з'їжджали вниз). `contain: layout` дає лоадеру власний containing block. Коментар не можна ставити в шаблоні перед коренем: у dev корінь стає фрагментом.
@@ -57,7 +58,7 @@ watch(stalled, v => emit('stalled', v));
     />
     <!-- Video Loader (remote: затемнення 60%, коло 32) і Self View / loading (local: коло 24, плитка вже має фон); з затримкою, щоб не блимав -->
     <div
-      v-if="spinner"
+      v-if="spinner && !stalled"
       class="pointer-events-none absolute inset-0 grid place-items-center"
       :class="kind === 'remote' && 'bg-bg/60'"
       role="status"
@@ -69,6 +70,11 @@ watch(stalled, v => emit('stalled', v));
         aria-hidden="true"
       >
         <Icon name="loader" class="motion-safe:animate-spin" :class="kind === 'remote' ? 'size-4' : 'size-3.5'" />
+      </span>
+    </div>
+    <div v-else-if="stalled && kind === 'local'" class="pointer-events-none absolute inset-0 grid place-items-center">
+      <span class="grid size-6 place-items-center rounded-full bg-surface text-mute" aria-hidden="true">
+        <Icon name="videoOff" class="size-3.5" />
       </span>
     </div>
   </div>

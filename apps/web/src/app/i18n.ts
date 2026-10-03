@@ -95,6 +95,7 @@ export const messages = {
       resume: 'Продовжити',
       notice: {
         cameraUnavailable: 'Камера недоступна',
+        cameraStalled: 'Камера не відповідає',
         micUnavailable: 'Мікрофон недоступний',
         audioBlocked: 'Звук вимкнено браузером',
         enableAudio: 'Увімкнути звук',

@@ -19,6 +19,8 @@ const KINDS = {
   // Self Banner: наші пристрої
   cameraUnavailable: { tone: 'warn', icon: 'videoOff' },
   micUnavailable: { tone: 'warn', icon: 'micOff' },
+  // наша камера не віддала кадр за 10 с (мініатюра Self View / stalled)
+  cameraStalled: { tone: 'warn', icon: 'videoOff' },
   // Self Banner: поточна розмова над другим вхідним (WaitingScreen)
   activeCall: { tone: 'ok', icon: 'phone' },
   // Self Banner: утримуваний дзвінок у пулі сповіщень (CallScreen, з кнопкою «Перемкнути»)

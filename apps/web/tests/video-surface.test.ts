@@ -67,4 +67,15 @@ describe('VideoSurface', () => {
     await vi.advanceTimersByTimeAsync(400);
     expect(w.find('[role=status]').exists()).toBe(true);
   });
+
+  it('replaces the self view spinner with a video-off icon when the camera gives no frame', async () => {
+    const w = mountSurface('local');
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(w.find('[role=status]').exists()).toBe(true);
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(w.find('[role=status]').exists()).toBe(false);
+    expect(w.find('svg').exists()).toBe(true);
+    await w.find('video').trigger('playing');
+    expect(w.find('svg').exists()).toBe(false);
+  });
 });

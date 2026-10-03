@@ -157,4 +157,14 @@ describe('CallMedia room options', () => {
       expect(patches.at(-1)).toEqual({ audioBlocked: false });
     });
   });
+
+  it('restarts the camera track: off, then on by the current state', async () => {
+    const media = new CallMedia();
+    await media.join({ url: 'wss://lk.example', token: 't' });
+    media.setCamera(true);
+    const cam = created.at(-1)!.localParticipant.setCameraEnabled;
+    cam.mockClear();
+    await media.restartCamera();
+    expect(cam.mock.calls.map(c => c[0])).toEqual([false, true]);
+  });
 });

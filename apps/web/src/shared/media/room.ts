@@ -196,6 +196,12 @@ export class CallMedia {
     this.degraded = false;
   }
 
+  /** Перезапуск треку камери: вимикаємо й вмикаємо за поточним станом (`apply`). Допомагає, коли камера не віддає кадр. */
+  async restartCamera() {
+    await this.cur?.room.localParticipant.setCameraEnabled(false).catch(() => {});
+    this.apply();
+  }
+
   /** Кнопка «Увімкнути звук»: `startAudio` має викликатись із жесту користувача. */
   async enableAudio() {
     const room = this.cur?.room;
