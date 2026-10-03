@@ -5,7 +5,7 @@ import { i18n } from '@/app/i18n';
 import { useCallStore, type CallDeps } from '@/features/call/store';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
 
-function mountSurface(kind: 'local' | 'remote') {
+function mountSurface(kind: 'local' | 'remote', cls = '') {
   setActivePinia(createPinia());
   const deps = {
     client: { request: vi.fn(), on: () => () => {}, onStatus: () => () => {} },
@@ -13,12 +13,18 @@ function mountSurface(kind: 'local' | 'remote') {
     sounds: { play: vi.fn() },
   } as unknown as CallDeps;
   useCallStore().init(deps);
-  return mount(VideoSurface, { props: { kind, track: true }, global: { plugins: [i18n] } });
+  return mount(VideoSurface, { props: { kind, track: true }, attrs: { class: cls }, global: { plugins: [i18n] } });
 }
 
 describe('VideoSurface', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
+
+  it('keeps the position given by the parent (a `relative` root would override `absolute` and push the video into the flow)', () => {
+    const w = mountSurface('remote', 'absolute inset-0');
+    expect(w.classes()).toContain('absolute');
+    expect(w.classes()).not.toContain('relative');
+  });
 
   it('hides the video until the first frame and shows an accessible loader only after a delay', async () => {
     const w = mountSurface('remote');

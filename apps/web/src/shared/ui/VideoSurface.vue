@@ -10,6 +10,9 @@ import Icon from '@/shared/ui/Icon.vue';
  * Поки немає першого кадру, відео прозоре; через 400 мс з'являється індикатор: на `remote` із затемненням і колом 32 (дизайн: Video Loader),
  * на `local` менше коло 24 без затемнення, на плитці мініатюри (дизайн: Self View / loading).
  * Якщо потік не стартував за 10 с, подія `stalled`: екран розмови повертається до аватара.
+ *
+ * Корінь без `relative`: позицію (`absolute inset-0`) задає батько, а `relative` в одному елементі перемагає `absolute` у CSS Tailwind і виводить відео з екрана в потік
+ * (шапка й кнопки з'їжджали вниз). `contain: layout` дає лоадеру власний containing block. Коментар не можна ставити в шаблоні перед коренем: у dev корінь стає фрагментом.
  */
 const props = defineProps<{ kind: 'local' | 'remote'; track: boolean }>();
 const emit = defineEmits<{ stalled: [value: boolean] }>();
@@ -38,7 +41,7 @@ watch(stalled, v => emit('stalled', v));
 </script>
 
 <template>
-  <div class="relative size-full overflow-hidden bg-bg">
+  <div class="size-full overflow-hidden bg-bg [contain:layout]">
     <!-- звук іде окремо (аудіо-елементи в CallMedia), тому відео без звуку -->
     <video
       ref="el"
