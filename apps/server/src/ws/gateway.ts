@@ -360,7 +360,8 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       clearTimeout(expiringTimer);
       clearTimeout(silenceTimer);
       if (conn) {
-        deps.hub.disconnect(conn);
+        // зник останній пристрій: його дзвінки, що ще дзвонять, скасуються, якщо він не повернеться за кілька секунд
+        if (deps.hub.disconnect(conn)) deps.calls.callerGone(conn.siteId, conn.userId);
         log.info({ userId: conn.userId, code }, 'пристрій відключився');
       }
     });

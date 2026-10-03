@@ -126,6 +126,34 @@ describe('дзвінок через WebSocket', () => {
     b.client.close();
   });
 
+  it('той, хто дзвонить, закрив вкладку: через 5 с дзвінок скасовується, а повернувшись раніше, він дзвонить далі', async () => {
+    const pb = phone();
+    const b = await connectUser(server, 'Роман', pb);
+
+    const pa = phone();
+    const a = await connectUser(server, 'Оксана', pa);
+    a.client.send({ type: 'call.invite', id: 'g1', to: `+38${pb}`, video: false });
+    const { call } = await a.client.next('ack');
+    await b.client.next('call.incoming');
+    a.client.close();
+    await new Promise(r => setTimeout(r, 20)); // сервер має побачити закриття
+    clock.advance(5_000);
+    expect(await b.client.next('call.ended')).toMatchObject({ callId: call!.callId, reason: 'cancelled' });
+
+    const pc = phone();
+    const c = await connectUser(server, 'Павло', pc);
+    c.client.send({ type: 'call.invite', id: 'g2', to: `+38${pb}`, video: false });
+    const second = await c.client.next('ack');
+    await b.client.next('call.incoming');
+    c.client.close();
+    await new Promise(r => setTimeout(r, 20));
+    const back = await connectUser(server, 'Павло', pc, 'phone2');
+    clock.advance(10_000);
+    expect(back.hello.calls).toMatchObject([{ callId: second.call!.callId, state: 'ringing' }]);
+    expect(b.client.frames.filter(f => f.type === 'call.ended' && f.callId === second.call!.callId)).toEqual([]);
+    for (const x of [b, back]) x.client.close();
+  });
+
   it('settings.update: ack з повними налаштуваннями, інші пристрої отримують settings.updated, значення переживають перепідключення', async () => {
     const p = phone();
     const d1 = await connectUser(server, 'Лілія', p, 'phone');

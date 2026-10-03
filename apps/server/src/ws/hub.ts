@@ -31,14 +31,15 @@ export function createHub(presence: PresenceStore, users: Users) {
       }
     },
 
-    disconnect(conn: Connection) {
-      if (presence.remove(conn)) {
-        broadcast(
-          conn.siteId,
-          { v: PROTOCOL_VERSION, type: 'presence', userId: conn.userId, online: false },
-          conn.userId,
-        );
-      }
+    /** Повертає `true`, якщо це був останній пристрій користувача. */
+    disconnect(conn: Connection): boolean {
+      if (!presence.remove(conn)) return false;
+      broadcast(
+        conn.siteId,
+        { v: PROTOCOL_VERSION, type: 'presence', userId: conn.userId, online: false },
+        conn.userId,
+      );
+      return true;
     },
 
     /** Хтось увійшов чи змінив ім'я: решта бачить це в контактах. */

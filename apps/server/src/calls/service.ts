@@ -80,7 +80,7 @@ export function createCallService(deps: CallServiceDeps) {
     timers.set(id, clock.after(ms, fn));
   };
   const clearTimer = (id: string) => {
-    for (const key of [id, `bot:${id}`, `lost:${id}`]) {
+    for (const key of [id, `bot:${id}`, `lost:${id}`, `gone:${id}`]) {
       timers.get(key)?.();
       timers.delete(key);
     }
@@ -321,6 +321,17 @@ export function createCallService(deps: CallServiceDeps) {
     armTimer(key, LOST_GRACE_MS, () => void checkLost(id));
   }
 
+  /** Пауза, після якої дзвінок, що дзвонить, скасовується, якщо той, хто дзвонить, так і не повернувся. */
+  const CALLER_GONE_MS = 5_000;
+
+  /** Спливла пауза: якщо пристрої того, хто дзвонить, не повернулись, а дзвінок ще дзвонить, скасовуємо його. */
+  function cancelIfCallerGone(id: string) {
+    timers.delete(`gone:${id}`);
+    const call = store.get(id);
+    if (!call || call.state !== 'ringing' || deps.isOnline(call.siteId, call.callerId)) return;
+    deps.deliver(end(call, 'cancelled'));
+  }
+
   function expire(id: string) {
     const call = store.get(id);
     if (!call || call.state !== 'ringing') return;
@@ -431,6 +442,17 @@ export function createCallService(deps: CallServiceDeps) {
           toCaller(call, { v: V, type: 'call.ringing', call: info(call, actor.userId) }),
         ],
       };
+    },
+
+    /**
+     * Зник останній пристрій користувача: його вихідні дзвінки, що ще дзвонять, скасуються через `CALLER_GONE_MS`,
+     * якщо він за цей час не повернеться (коротке перепідключення дзвінок не рве).
+     */
+    callerGone(siteId: string, userId: string): void {
+      for (const call of store.activeFor(siteId, userId)) {
+        if (call.state !== 'ringing' || call.callerId !== userId) continue;
+        armTimer(`gone:${call.id}`, CALLER_GONE_MS, () => cancelIfCallerGone(call.id));
+      }
     },
 
     cancel(actor: Actor, req: { callId: string }): Result {

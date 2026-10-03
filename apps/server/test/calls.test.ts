@@ -174,6 +174,41 @@ describe('життєвий цикл', () => {
     expect(t.recents.list(SITE, bohdan.userId)[0]!.result).toBe('missed');
   });
 
+  it('зник той, хто дзвонить: дзвінок скасовується через 5 с, а коротке перепідключення його не рве', () => {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    t.online.delete(anna.userId);
+    t.calls.callerGone(SITE, anna.userId);
+    t.clock.advance(4_999);
+    expect(find(t.delivered, 'call.ended')).toEqual([]);
+    t.clock.advance(1);
+    const ended = find(t.delivered, 'call.ended');
+    expect(ended.find(e => e.user === bohdan.userId)!.msg).toMatchObject({ reason: 'cancelled' });
+    expect(t.recents.list(SITE, bohdan.userId)[0]!.result).toBe('missed');
+    expect(t.recents.list(SITE, anna.userId)[0]!.result).toBe('cancelled');
+    t.clock.advance(60_000); // таймаут очікування вже не спрацьовує
+    expect(find(t.delivered, 'call.ended').filter(e => e.user === bohdan.userId)).toHaveLength(1);
+
+    const t2 = setup();
+    t2.calls.invite(anna, { to: bohdan.userId, video: false });
+    t2.online.delete(anna.userId);
+    t2.calls.callerGone(SITE, anna.userId);
+    t2.clock.advance(2_000);
+    t2.online.add(anna.userId); // повернувся
+    t2.clock.advance(10_000);
+    expect(find(t2.delivered, 'call.ended')).toEqual([]);
+    expect(t2.calls.callsFor(SITE, bohdan.userId)).toHaveLength(1);
+  });
+
+  it('зник той, хто відповідає, чи розмова вже триває: callerGone дзвінок не чіпає', () => {
+    t.calls.invite(anna, { to: bohdan.userId, video: false });
+    t.calls.callerGone(SITE, bohdan.userId); // не він дзвонив
+    t.calls.accept(bohdan, { callId: 'call1' });
+    t.online.delete(anna.userId);
+    t.calls.callerGone(SITE, anna.userId); // дзвінок уже connected
+    t.clock.advance(30_000);
+    expect(find(t.delivered, 'call.ended')).toEqual([]);
+  });
+
   it('reject: інші пристрої адресата бачать answered_elsewhere', () => {
     t.calls.invite(anna, { to: bohdan.userId, video: false });
     const r = t.calls.reject(bohdan2, { callId: 'call1' });
