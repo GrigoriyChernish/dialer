@@ -22,9 +22,9 @@
 | Base | `Show Self` | кнопка «показати себе» у `CallScreen.vue` | є |
 | Base | (аватар у кожному екрані) | `shared/ui/Avatar.vue` | є |
 | Base | lucide-іконки | `shared/ui/Icon.vue` | є |
-| Contacts | `Contact Meta`, `Contact Row`, `Contact Row / missed` | `features/contacts/ContactRow.vue` | є, без кнопки чату |
-| Contacts | `Home Header`, `Presence` (+ `/ busy`, `/ dnd`), `Tab` (+ `/ active`), `Tab Bar` (+ `/ missed`, `/ search`) | `pages/HomePage.vue` | є |
-| Contacts | `Section Label`, `Search Field` | `pages/MissedPage.vue`, `pages/SearchPage.vue` | є |
+| Contacts | `Contact Meta`, `Contact Row`, `Contact Row / history` | `features/contacts/ContactRow.vue` | є, без кнопки чату |
+| Contacts | `Home Header`, `Presence` (+ `/ busy`, `/ dnd`), `Tab` (+ `/ active`), `Tab Bar` (+ `/ history`, `/ search`) | `pages/HomePage.vue` | є |
+| Contacts | `Section Label`, `Search Field` | `pages/HistoryPage.vue`, `pages/SearchPage.vue` | є |
 | Contacts | `Empty State` | `shared/ui/EmptyState.vue` | є |
 | Contacts | `Contact Row / skeleton`, `Home Header / loading` | `features/contacts/ContactRowSkeleton.vue`, `pages/HomePage.vue` | є |
 | Settings | `Toggle` (+ `/ on`) | `shared/ui/Toggle.vue` | є |
@@ -39,13 +39,13 @@
 | Екрани | `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *`, `Ended · *`, усі стани розмови | `features/call/CallScreen.vue` | є |
 | Banners | `Self Banner / held-call`, `Self Banner / active-call`, `Pool Badge` | `features/call/CallScreen.vue` (пул), `features/call/NotificationPool.vue`, `features/call/WaitingScreen.vue` (на `Banner`) | є |
 | Екрани | `Incoming · waiting`, `In Call · held call` (`Flow · Call waiting`) | `features/call/WaitingScreen.vue`, `CallScreen.vue` | є |
-| Екрани | `Home · Contacts`, `Home · Missed`, `Home · Search` і їхні `· empty`, `· loading`, `Home · Contacts · offline`, `Home · Contacts · connection lost` | `pages/HomePage.vue` + `ContactsPage`, `MissedPage`, `SearchPage` | є |
+| Екрани | `Home · Contacts`, `Home · History`, `Home · Search` і їхні `· empty`, `· loading`, `Home · Contacts · offline`, `Home · Contacts · connection lost` | `pages/HomePage.vue` + `ContactsPage`, `HistoryPage`, `SearchPage` | є |
 
 ## Базові: `shared/ui`
 
 ### `Icon`
 
-Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
+Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `history`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
 
 - **Розмір:** за замовчуванням 24; менші задає викликач класом `size-*` (16 у підписах і плашках, 18 у результаті, 12 у бейджі). Власного розміру компонент не нав'язує.
 - **Доступність:** декоративна (`aria-hidden`), підпис дає кнопка.
@@ -160,9 +160,9 @@
 - **Шапка** (`Home Header`; до першого `hello.ok` — `Home Header / loading`: коло й смужка замість аватара й імені, без `Presence`): уся картка —
   посилання на `#/settings`: аватар 36, наше ім'я з `hello.ok` одним рядком (задовге обрізається з «…»), мітка `Presence` за `presence`:
   «вільний» (зелена), «зайнятий» (жовта, на дзвінку), «не турбувати» (червона, `settings.dnd`); текст мітки `ok-text`, `warn-text`, `bad-text`, і `chevron-right`.
-- **Вміст вкладки** займає решту висоти: `MissedPage`, `ContactsPage` (за замовчуванням) чи `SearchPage`.
-- **Вкладки** (`Tab Bar`): лише іконки `phone-missed`, `users`, `search`; активна `accent-icon`, решта `mute`. На «Пропущених» червоний лічильник
-  нових (`unseenMissed`), поки вкладка не відкрита.
+- **Вміст вкладки** займає решту висоти: `HistoryPage`, `ContactsPage` (за замовчуванням) чи `SearchPage`.
+- **Вкладки** (`Tab Bar`): лише іконки `history`, `users`, `search`; активна `accent-icon`, решта `mute`. На «Історії» червоний лічильник
+  нових пропущених (`unseenMissed`), поки вкладка не відкрита.
 
 ### `SettingsPage` (дизайн: `Flow · Settings`)
 
@@ -177,11 +177,13 @@
 
 Перемикач 44 × 26 (`role="switch"`, `aria-checked`). **Props:** `v-model` (`boolean`), `label` (для `aria-label`).
 
-### `MissedPage` (дизайн: `Home · Missed`)
+### `HistoryPage` (дизайн: `Home · History`)
 
-Пропущені з історії (`recents` з результатом `missed`) в одній картці, групи за днями («Сьогодні», «Вчора», «28 вересня»), рядок
-`Contact Row / missed`: червона крапка, «пропущений · 14:32», натискання дзвонить. Немає → `EmptyState` «Пропущених немає». Перше завантаження й відсутність зв'язку — як у `ContactsPage`.
-Поки вкладка відкрита, пропущені вважаються переглянутими (`markMissedSeen`, час у `localStorage` `dialer.missedSeen`).
+Усі дзвінки з `recents` (до 50, новіші першими) в одній картці, групи за днями («Сьогодні», «Вчора», «28 вересня»), рядок `Contact Row / history`, натискання дзвонить.
+Статус: «{що} · {час}», для розмови ще «· 03:42» (тривалість `mm:ss`). «Що»: `completed` → «вхідний» / «вихідний» за `direction`, решта за результатом:
+«пропущений», «скасований», «відхилено», «зайнято», «без відповіді», «помилка». Крапка: `bad` для пропущеного, `warn` для «не додзвонились» (`busy`, `no_answer`, `failed`),
+решта `mute`. Немає записів → `EmptyState` «Дзвінків ще не було». Перше завантаження й відсутність зв'язку — як у `ContactsPage`.
+Поки вкладка відкрита, пропущені вважаються переглянутими (`markMissedSeen`, час у `localStorage` `dialer.missedSeen`). Фільтра «лише пропущені» немає: їх видно за червоною крапкою.
 
 ### `SearchPage` (дизайн: `Home · Search`)
 

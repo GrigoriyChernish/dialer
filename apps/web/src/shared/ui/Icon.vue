@@ -2,6 +2,7 @@
 import {
   ArrowLeftRight,
   Bell,
+  History,
   ChevronLeft,
   ChevronRight,
   CircleX,
@@ -38,6 +39,7 @@ const ICONS = {
   phoneCall: PhoneCall,
   chevronRight: ChevronRight,
   bell: Bell,
+  history: History,
   moon: Moon,
   sun: Sun,
   monitorSmartphone: MonitorSmartphone,

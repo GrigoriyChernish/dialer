@@ -94,7 +94,7 @@ export const useCallStore = defineStore('call', () => {
   const settings = ref<Settings>({ ...DEFAULT_SETTINGS });
   /** Історія дзвінків, новіші першими (docs/signaling.md, «Історія»). */
   const recents = ref<RecentEntry[]>([]);
-  /** Час останнього перегляду вкладки «Пропущені»: поки лише на цьому пристрої (беклог, пункт 13). */
+  /** Час останнього перегляду вкладки «Історія»: поки лише на цьому пристрої (беклог, пункт 13). */
   const missedSeenAt = ref(loadSeen());
   const status = ref<CallStatus>('idle');
   const callId = ref<string | null>(null);
@@ -642,7 +642,7 @@ export const useCallStore = defineStore('call', () => {
     if (ack.type === 'ack' && ack.user) me.value = ack.user;
   }
 
-  /** Вкладку «Пропущені» переглянуто: лічильник обнуляється. */
+  /** Вкладку «Історія» переглянуто: лічильник обнуляється. */
   function markMissedSeen() {
     missedSeenAt.value = Math.max(missedSeenAt.value, ...missedCalls.value.map(r => r.startedAt));
     try {

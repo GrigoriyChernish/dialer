@@ -17,13 +17,22 @@ export const messages = {
       clear: 'Очистити',
       notFound: 'Нікого не знайдено',
     },
-    missed: {
-      title: 'Пропущені',
-      label: 'пропущений',
+    history: {
+      title: 'Історія',
+      in: 'вхідний',
+      out: 'вихідний',
+      result: {
+        missed: 'пропущений',
+        cancelled: 'скасований',
+        rejected: 'відхилено',
+        busy: 'зайнято',
+        no_answer: 'без відповіді',
+        failed: 'помилка',
+      },
       today: 'Сьогодні',
       yesterday: 'Вчора',
-      empty: 'Пропущених немає',
-      loading: 'Завантажуємо пропущені…',
+      empty: 'Дзвінків ще не було',
+      loading: 'Завантажуємо історію…',
     },
     presence: { free: 'вільний', busy: 'зайнятий', dnd: 'не турбувати' },
     settings: {
@@ -48,7 +57,7 @@ export const messages = {
       look: 'Вигляд',
       theme: { label: 'Тема', auto: 'Авто', light: 'Світла', dark: 'Темна' },
     },
-    tabs: { label: 'Розділи', missed: 'Пропущені', contacts: 'Контакти', search: 'Пошук' },
+    tabs: { label: 'Розділи', history: 'Історія', contacts: 'Контакти', search: 'Пошук' },
     call: {
       calling: 'Дзвонимо…',
       outgoing: 'Вихідний виклик',

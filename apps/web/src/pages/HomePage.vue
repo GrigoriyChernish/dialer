@@ -5,7 +5,7 @@ import { RouterLink } from 'vue-router';
 import { useCallStore } from '@/features/call/store';
 import { useLoadState } from '@/features/contacts/loadState';
 import ContactsPage from '@/pages/ContactsPage.vue';
-import MissedPage from '@/pages/MissedPage.vue';
+import HistoryPage from '@/pages/HistoryPage.vue';
 import SearchPage from '@/pages/SearchPage.vue';
 import Avatar from '@/shared/ui/Avatar.vue';
 import Card from '@/shared/ui/Card.vue';
@@ -20,22 +20,22 @@ const call = useCallStore();
 const { offline } = useLoadState();
 const lost = computed(() => call.ready && offline.value);
 
-type Tab = 'missed' | 'contacts' | 'search';
+type Tab = 'history' | 'contacts' | 'search';
 const TABS: { id: Tab; icon: IconName }[] = [
-  { id: 'missed', icon: 'phoneMissed' },
+  { id: 'history', icon: 'history' },
   { id: 'contacts', icon: 'users' },
   { id: 'search', icon: 'search' },
 ];
 const tab = ref<Tab>('contacts');
-const PAGES = { missed: MissedPage, contacts: ContactsPage, search: SearchPage };
-// лічильник ховаємо, поки відкрита сама вкладка «Пропущені»
+const PAGES = { history: HistoryPage, contacts: ContactsPage, search: SearchPage };
+// лічильник ховаємо, поки відкрита сама вкладка «Історія»
 // мітка присутності (дизайн: Presence, / busy, / dnd)
 const PRESENCE = {
   free: 'bg-call-ok/15 text-ok-text',
   busy: 'bg-warn/15 text-warn-text',
   dnd: 'bg-call-bad/15 text-bad-text',
 } as const;
-const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
+const badge = computed(() => (tab.value === 'history' ? 0 : call.unseenMissed));
 </script>
 
 <template>
@@ -90,7 +90,7 @@ const badge = computed(() => (tab.value === 'missed' ? 0 : call.unseenMissed));
           <span class="relative grid h-6 w-7 place-items-center">
             <Icon :name="x.icon" class="size-5.5" />
             <b
-              v-if="x.id === 'missed' && badge"
+              v-if="x.id === 'history' && badge"
               class="absolute -top-1 left-4 grid h-4 min-w-4 place-items-center rounded-full bg-call-bad px-1.25 text-[10px] font-bold text-white"
               >{{ badge }}</b
             >

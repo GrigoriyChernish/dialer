@@ -411,7 +411,7 @@
 | Група компонентів | Що в ній |
 | --- | --- |
 | `Components · Base` | Контейнер у колонку: підгрупи `Bars` (`Status Bar`, `Call Header`), `Controls` (`Call Controls`, `Self View`, `Show Self`), `Actions` (`Action Button` і варіанти `/ active, danger, success, subtle, disabled`, `Labeled Action`), `Card` (`Card`) |
-| `Components · Contacts` | Контейнер у колонку: підгрупи `Headers` (`Home Header`, `Home Header / loading`, `Presence`, `Presence / busy`), `Rows` (`Contact Meta`, `Contact Row`, `Contact Row / missed`, `Contact Row / skeleton`), `Navigation` (`Tab`, `Tab / active`, `Tab Bar`, `Tab Bar / missed`, `Tab Bar / search`), `Elements` (`Section Label`, `Search Field`, `Empty State`) |
+| `Components · Contacts` | Контейнер у колонку: підгрупи `Headers` (`Home Header`, `Home Header / loading`, `Presence`, `Presence / busy`), `Rows` (`Contact Meta`, `Contact Row`, `Contact Row / history`, `Contact Row / skeleton`), `Navigation` (`Tab`, `Tab / active`, `Tab Bar`, `Tab Bar / history`, `Tab Bar / search`), `Elements` (`Section Label`, `Search Field`, `Empty State`) |
 | `Components · Self Status` | `Self Status / mic-off`, `mic-unavailable`, `camera-off`, `camera-unavailable`, `hold` |
 | `Components · Settings` | `Toggle`, `Toggle / on`, `Settings Row`, `Segmented`, `Presence / dnd` |
 | `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` |
@@ -421,7 +421,7 @@
 | Флоу | Екрани |
 | --- | --- |
 | `Flow · Auth` | `Auth · Phone`, `Auth · Phone error`, `Auth · Name`, `Auth · Code`, `Auth · Code error` |
-| `Flow · Contacts` | `Home · Contacts`, `Home · Missed`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · Missed · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · Missed · loading`, `Home · Contacts · offline`; обрив зв'язку `Home · Contacts · connection lost` |
+| `Flow · Contacts` | `Home · Contacts`, `Home · History`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · History · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · History · loading`, `Home · Contacts · offline`; обрив зв'язку `Home · Contacts · connection lost` |
 | `Flow · Outgoing call` | `Outgoing Call`, `Result · Busy`, `Result · No Answer`, `Result · Rejected` |
 | `Flow · Incoming call` | `Incoming Call`, `Result · Missed` |
 | `Flow · In call · base` | `In Call`, `In Call · self-hold`, `In Call · self-view-loading` |
@@ -548,9 +548,9 @@
 - **`Presence`**: пігулка, крапка 7 і текст 12 / 500. «вільний»: `ok-soft` / `ok`; `/ busy` «зайнятий»: `warn-soft` / `warn`;
   `/ dnd` «не турбувати»: `bad-soft` / `bad` (лише для себе, дзвінок сильніший за «не турбувати»). Текст мітки: `ok-text`, `warn-text`, `bad-text`.
 - **`Tab Bar`**: картка з трьома `Tab` без підписів (іконка 22, `mute`; `Tab / active` — `accent-icon`). Лічильник на «Пропущених»:
-  `bad`, висота 16, текст 10 / 700. Варіанти `/ missed`, `/ search` — та сама панель з іншою активною вкладкою.
+  `bad`, висота 16, текст 10 / 700. Варіанти `/ history`, `/ search` — та сама панель з іншою активною вкладкою.
 - **`Section Label`**: заголовок групи 12 / 600 `mute` («Сьогодні», «Вчора»).
-- **`Contact Row / missed`**: `Contact Row` без кнопки чату, крапка `bad`, «пропущений · 14:32».
+- **`Contact Row / history`**: `Contact Row` без кнопки чату, крапка за результатом (`bad` пропущений, `warn` не додзвонились, `mute` решта), статус «вхідний · 21:18 · 12:05», «пропущений · 14:32», «без відповіді · 09:47».
 - **`Search Field`**: 48 заввишки, радіус `radius-md`, фон `bg` (як у сторінки), рамка `accent`, іконка `search` і `circle-x` 18, текст 16 / 500.
 - **`Empty State`**: коло 64 (`surface-2`, рамка `line`) з іконкою 26 `mute`, заголовок 16 / 600 і необов'язковий `Caption` 14 / 400 `mute`; стоїть по центру замість порожньої картки.
 - **`Contact Row / skeleton`**: заготовка рядка до першого `hello.ok`: коло 48 і дві смужки 12 і 10 заввишки (`surface-2`, ширина від рядка до рядка різна), без кнопок; пульсує.

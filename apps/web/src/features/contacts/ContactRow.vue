@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import Avatar from '@/shared/ui/Avatar.vue';
 import Icon from '@/shared/ui/Icon.vue';
 
-/** Рядок контакту (дизайн: Contact Row, Contact Row / missed): весь рядок дзвонить. `dot`: клас кольору крапки статусу. */
+/** Рядок контакту (дизайн: Contact Row, Contact Row / history): весь рядок дзвонить. `dot`: клас кольору крапки статусу. */
 defineProps<{ name: string; status: string; dot: string }>();
 defineEmits<{ call: [] }>();
 const { t } = useI18n();
