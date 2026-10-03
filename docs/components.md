@@ -39,7 +39,7 @@
 | Екрани | `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *`, `Ended · *`, усі стани розмови | `features/call/CallScreen.vue` | є |
 | Banners | `Self Banner / held-call`, `Self Banner / active-call`, `Pool Badge` | `features/call/CallScreen.vue` (пул), `features/call/NotificationPool.vue`, `features/call/WaitingScreen.vue` (на `Banner`) | є |
 | Екрани | `Incoming · waiting`, `In Call · held call` (`Flow · Call waiting`) | `features/call/WaitingScreen.vue`, `CallScreen.vue` | є |
-| Екрани | `Home · Contacts`, `Home · History`, `Home · Search` і їхні `· empty`, `· loading`, `Home · Contacts · offline`, `Home · Contacts · connection lost` | `pages/HomePage.vue` + `ContactsPage`, `HistoryPage`, `SearchPage` | є |
+| Екрани | `Home · Contacts`, `Home · History`, `Home · Search` і їхні `· empty`, `· loading`, `Home · Contacts · offline`, `Home · History · offline`, `Home · Contacts · connection lost` | `pages/HomePage.vue` + `ContactsPage`, `HistoryPage`, `SearchPage` | є |
 
 ## Базові: `shared/ui`
 

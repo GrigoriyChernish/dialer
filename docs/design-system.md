@@ -421,7 +421,7 @@
 | Флоу | Екрани |
 | --- | --- |
 | `Flow · Auth` | `Auth · Phone`, `Auth · Phone error`, `Auth · Name`, `Auth · Code`, `Auth · Code error` |
-| `Flow · Contacts` | `Home · Contacts`, `Home · History`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · History · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · History · loading`, `Home · Contacts · offline`; обрив зв'язку `Home · Contacts · connection lost` |
+| `Flow · Contacts` | `Home · Contacts`, `Home · History`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · History · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · History · loading`, `Home · Contacts · offline`, `Home · History · offline`; обрив зв'язку `Home · Contacts · connection lost` |
 | `Flow · Outgoing call` | `Outgoing Call`, `Result · Busy`, `Result · No Answer`, `Result · Rejected` |
 | `Flow · Incoming call` | `Incoming Call`, `Result · Missed` |
 | `Flow · In call · base` | `In Call`, `In Call · self-hold`, `In Call · self-view-loading` |
@@ -547,7 +547,7 @@
   і `chevron-right` 18 `mute`; відступи картки 10 14 10 10, проміжок 10. «Вийти» — у налаштуваннях.
 - **`Presence`**: пігулка, крапка 7 і текст 12 / 500. «вільний»: `ok-soft` / `ok`; `/ busy` «зайнятий»: `warn-soft` / `warn`;
   `/ dnd` «не турбувати»: `bad-soft` / `bad` (лише для себе, дзвінок сильніший за «не турбувати»). Текст мітки: `ok-text`, `warn-text`, `bad-text`.
-- **`Tab Bar`**: картка з трьома `Tab` без підписів (іконка 22, `mute`; `Tab / active` — `accent-icon`). Лічильник на «Пропущених»:
+- **`Tab Bar`**: картка з трьома `Tab` без підписів (іконка 22, `mute`; `Tab / active` — `accent-icon`). Лічильник на «Історії»:
   `bad`, висота 16, текст 10 / 700. Варіанти `/ history`, `/ search` — та сама панель з іншою активною вкладкою.
 - **`Section Label`**: заголовок групи 12 / 600 `mute` («Сьогодні», «Вчора»).
 - **`Contact Row / history`**: `Contact Row` без кнопки чату; замість крапки значок напряму 14 (`phone-incoming`, `phone-outgoing`, `phone-missed`), «вхідний · 21:18 · 12:05», «пропущений · 14:32». Пропущений: аватар `bg` + `bad-soft`, ініціали, значок і статус `bad-text`; «не додзвонились» так само з `warn`; решта звичайний аватар і `mute`.

@@ -1684,12 +1684,19 @@
               "type": "ref",
               "reusable": true,
               "ref": "ahjhz",
-              "name": "Contact Row / missed",
+              "name": "Contact Row / history",
               "descendants": {
                 "x6ZWRS/ZYWNw": {
                   "width": "fit_content"
                 },
                 "x6ZWRS/T2L4QA": {
+                  "type": "icon",
+                  "id": "BAQ9k",
+                  "name": "Direction",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "phone-missed",
+                  "library": "lucide",
                   "fill": "$bad"
                 },
                 "x6ZWRS/RpOJ4": {
@@ -1939,7 +1946,7 @@
               "type": "ref",
               "reusable": true,
               "ref": "dPLmV",
-              "name": "Tab Bar / missed",
+              "name": "Tab Bar / history",
               "descendants": {
                 "rK0hn": {
                   "id": "Q2KdY",
@@ -1949,7 +1956,7 @@
                   "width": "fill_container",
                   "descendants": {
                     "c5pK3": {
-                      "icon": "phone-missed"
+                      "icon": "history"
                     }
                   }
                 },
@@ -4061,7 +4068,7 @@
             {
               "type": "frame",
               "id": "UltX2",
-              "name": "Home · Missed",
+              "name": "Home · History",
               "clip": true,
               "width": 375,
               "height": 844,
@@ -4158,34 +4165,31 @@
                               "width": "fill_container",
                               "descendants": {
                                 "dhYFg": {
-                                  "fill": {
-                                    "type": "gradient",
-                                    "gradientType": "linear",
-                                    "enabled": true,
-                                    "rotation": 135,
-                                    "size": {
-                                      "height": 1
-                                    },
-                                    "colors": [
-                                      {
-                                        "color": "$accent",
-                                        "position": 0
-                                      },
-                                      {
-                                        "color": "$avatar-end",
-                                        "position": 1
-                                      }
-                                    ]
-                                  }
+                                  "fill": [
+                                    "$bg",
+                                    "$bad-soft"
+                                  ]
                                 },
                                 "P4LlfF": {
-                                  "content": "ОК"
+                                  "content": "ОК",
+                                  "fill": "$bad-text"
                                 },
                                 "x6ZWRS/a63lt": {
                                   "content": "Олена Коваль"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "Qno82",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-missed",
+                                  "library": "lucide",
+                                  "fill": "$bad-text"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 14:32"
+                                  "content": "пропущений · 14:32",
+                                  "fill": "$bad-text"
                                 }
                               }
                             },
@@ -4223,8 +4227,18 @@
                                 "x6ZWRS/a63lt": {
                                   "content": "Ірина Петренко"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "KTehp",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-outgoing",
+                                  "library": "lucide",
+                                  "fill": "$mute"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 11:05"
+                                  "content": "вихідний · 11:05 · 03:42"
                                 }
                               }
                             },
@@ -4236,34 +4250,31 @@
                               "width": "fill_container",
                               "descendants": {
                                 "dhYFg": {
-                                  "fill": {
-                                    "type": "gradient",
-                                    "gradientType": "linear",
-                                    "enabled": true,
-                                    "rotation": 135,
-                                    "size": {
-                                      "height": 1
-                                    },
-                                    "colors": [
-                                      {
-                                        "color": "$avatar-teal",
-                                        "position": 0
-                                      },
-                                      {
-                                        "color": "$avatar-blue",
-                                        "position": 1
-                                      }
-                                    ]
-                                  }
+                                  "fill": [
+                                    "$bg",
+                                    "$warn-soft"
+                                  ]
                                 },
                                 "P4LlfF": {
-                                  "content": "АМ"
+                                  "content": "АМ",
+                                  "fill": "$warn-text"
                                 },
                                 "x6ZWRS/a63lt": {
                                   "content": "Андрій Мельник"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "peuZi",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-outgoing",
+                                  "library": "lucide",
+                                  "fill": "$warn-text"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 09:47"
+                                  "content": "без відповіді · 09:47",
+                                  "fill": "$warn-text"
                                 }
                               }
                             },
@@ -4313,8 +4324,18 @@
                                 "x6ZWRS/a63lt": {
                                   "content": "Марія Савчук"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "K4VEfg",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-incoming",
+                                  "library": "lucide",
+                                  "fill": "$mute"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 21:18"
+                                  "content": "вхідний · 21:18 · 12:05"
                                 }
                               }
                             },
@@ -4352,8 +4373,18 @@
                                 "x6ZWRS/a63lt": {
                                   "content": "Олена Коваль"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "lAAvj",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-outgoing",
+                                  "library": "lucide",
+                                  "fill": "$mute"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 18:02"
+                                  "content": "скасований · 18:02"
                                 }
                               }
                             },
@@ -4365,34 +4396,31 @@
                               "width": "fill_container",
                               "descendants": {
                                 "dhYFg": {
-                                  "fill": {
-                                    "type": "gradient",
-                                    "gradientType": "linear",
-                                    "enabled": true,
-                                    "rotation": 135,
-                                    "size": {
-                                      "height": 1
-                                    },
-                                    "colors": [
-                                      {
-                                        "color": "$avatar-teal",
-                                        "position": 0
-                                      },
-                                      {
-                                        "color": "$avatar-blue",
-                                        "position": 1
-                                      }
-                                    ]
-                                  }
+                                  "fill": [
+                                    "$bg",
+                                    "$bad-soft"
+                                  ]
                                 },
                                 "P4LlfF": {
-                                  "content": "ЮЛ"
+                                  "content": "ЮЛ",
+                                  "fill": "$bad-text"
                                 },
                                 "x6ZWRS/a63lt": {
                                   "content": "Юлія Лисенко"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "b4YDC",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-missed",
+                                  "library": "lucide",
+                                  "fill": "$bad-text"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 12:40"
+                                  "content": "пропущений · 12:40",
+                                  "fill": "$bad-text"
                                 }
                               }
                             },
@@ -4442,8 +4470,18 @@
                                 "x6ZWRS/a63lt": {
                                   "content": "Support"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "uso3z",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-outgoing",
+                                  "library": "lucide",
+                                  "fill": "$mute"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 16:20"
+                                  "content": "відхилено · 16:20"
                                 }
                               }
                             },
@@ -4455,34 +4493,31 @@
                               "width": "fill_container",
                               "descendants": {
                                 "dhYFg": {
-                                  "fill": {
-                                    "type": "gradient",
-                                    "gradientType": "linear",
-                                    "enabled": true,
-                                    "rotation": 135,
-                                    "size": {
-                                      "height": 1
-                                    },
-                                    "colors": [
-                                      {
-                                        "color": "$avatar-amber",
-                                        "position": 0
-                                      },
-                                      {
-                                        "color": "$avatar-red",
-                                        "position": 1
-                                      }
-                                    ]
-                                  }
+                                  "fill": [
+                                    "$bg",
+                                    "$warn-soft"
+                                  ]
                                 },
                                 "P4LlfF": {
-                                  "content": "НГ"
+                                  "content": "НГ",
+                                  "fill": "$warn-text"
                                 },
                                 "x6ZWRS/a63lt": {
                                   "content": "Наталія Гончар"
                                 },
+                                "BAQ9k": {
+                                  "type": "icon",
+                                  "id": "EYqIo",
+                                  "name": "Direction",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "phone-outgoing",
+                                  "library": "lucide",
+                                  "fill": "$warn-text"
+                                },
                                 "x6ZWRS/RpOJ4": {
-                                  "content": "пропущений · 10:11"
+                                  "content": "зайнято · 10:11",
+                                  "fill": "$warn-text"
                                 }
                               }
                             }
@@ -4802,7 +4837,7 @@
             {
               "type": "frame",
               "id": "Tnnuq",
-              "name": "Home · Missed · empty",
+              "name": "Home · History · empty",
               "clip": true,
               "width": 375,
               "height": 844,
@@ -4860,10 +4895,10 @@
                       "width": "fill_container",
                       "descendants": {
                         "b1vBa": {
-                          "icon": "phone-missed"
+                          "icon": "history"
                         },
                         "S2DMy": {
-                          "content": "Пропущених немає"
+                          "content": "Дзвінків ще не було"
                         }
                       }
                     }
@@ -5191,7 +5226,7 @@
             {
               "type": "frame",
               "id": "bshIE",
-              "name": "Home · Missed · loading",
+              "name": "Home · History · loading",
               "context": "Перше завантаження вкладки «Пропущені»: та сама заготовка, що й у контактах.",
               "clip": true,
               "width": 375,
