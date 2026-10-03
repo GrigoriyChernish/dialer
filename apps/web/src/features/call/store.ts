@@ -115,6 +115,7 @@ export const useCallStore = defineStore('call', () => {
     peerCam: false,
     localCam: false,
     audioOnly: false,
+    peerWeak: false,
     audioBlocked: false,
     micError: false,
     camError: false,

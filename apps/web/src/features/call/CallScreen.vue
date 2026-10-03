@@ -23,7 +23,8 @@ const g = computed(() => ((call.peer ?? call.missed?.peer)?.userId === 'bot:olen
 const connected = computed(() => call.status === 'connected');
 // відео співрозмовника є (розмова не на утриманні, канал не слабкий: `audioOnly`); потік може не стартувати (`videoStalled`), тоді повертаємось до аватара
 const peerVideoOn = computed(
-  () => connected.value && call.link.peerCam && !call.link.audioOnly && !call.peerHold && !call.hold,
+  () =>
+    connected.value && call.link.peerCam && !call.link.audioOnly && !call.link.peerWeak && !call.peerHold && !call.hold,
 );
 const videoStalled = ref(false);
 watch(peerVideoOn, on => on || (videoStalled.value = false));
@@ -37,6 +38,7 @@ const peerBanners = computed<BannerItem[]>(() => {
   if (call.peerState === 'hold') return [banner('peerHold', t(`call.peer.hold.${g.value}`, who))];
   if (call.peerState === 'lost') return [banner('connectionLost', t(`call.peer.connectionLost.${g.value}`, who))];
   if (call.peerState === 'mic') return [banner('peerMicOff', t(`call.peer.micOff.${g.value}`, who))];
+  if (call.link.peerWeak) return [banner('peerWeakSignal', t('call.peer.weakSignal', who))];
   if (videoStalled.value) return [banner('videoStalled', t('call.peer.videoStalled'))];
   return [];
 });

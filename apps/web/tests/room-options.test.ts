@@ -6,6 +6,7 @@ interface MockRoom {
   handlers: Map<string, (...a: unknown[]) => void>;
   localParticipant: { setCameraEnabled: ReturnType<typeof vi.fn>; setMicrophoneEnabled: ReturnType<typeof vi.fn> };
   startAudio: ReturnType<typeof vi.fn>;
+  remoteVideo: { setEnabled: ReturnType<typeof vi.fn> };
   canPlaybackAudio: boolean;
 }
 const created: MockRoom[] = [];
@@ -14,6 +15,8 @@ vi.mock('livekit-client', () => {
   class Room {
     options: Record<string, unknown>;
     stopped: string[] = [];
+    remoteVideo = { setEnabled: vi.fn() };
+    remoteParticipants = new Map([['peer', { videoTrackPublications: new Map([['v', this.remoteVideo]]) }]]);
     localParticipant = {
       setMicrophoneEnabled: vi.fn(async () => {}),
       setCameraEnabled: vi.fn(async () => {}),
@@ -166,5 +169,48 @@ describe('CallMedia room options', () => {
     cam.mockClear();
     await media.restartCamera();
     expect(cam.mock.calls.map(c => c[0])).toEqual([false, true]);
+  });
+
+  describe('weak peer channel', () => {
+    const peerQuality = (room: MockRoom, q: string) =>
+      room.handlers.get('ConnectionQualityChanged')!(q, { isLocal: false });
+
+    it('stops only the peer video (our camera keeps working) and brings it back after a stable period', async () => {
+      vi.useFakeTimers();
+      const media = new CallMedia();
+      const patches: Record<string, boolean>[] = [];
+      media.onChange(p => patches.push(p as Record<string, boolean>));
+      await media.join({ url: 'wss://lk.example', token: 't' });
+      media.setCamera(true);
+      const room = created.at(-1)!;
+      room.localParticipant.setCameraEnabled.mockClear();
+
+      peerQuality(room, 'poor');
+      expect(patches).toContainEqual({ peerWeak: true });
+      expect(room.remoteVideo.setEnabled).toHaveBeenLastCalledWith(false);
+      expect(room.localParticipant.setCameraEnabled).not.toHaveBeenCalled();
+      expect(patches).not.toContainEqual({ audioOnly: true });
+
+      peerQuality(room, 'good');
+      vi.advanceTimersByTime(14_999);
+      expect(patches).not.toContainEqual({ peerWeak: false });
+      vi.advanceTimersByTime(1);
+      expect(patches).toContainEqual({ peerWeak: false });
+      expect(room.remoteVideo.setEnabled).toHaveBeenLastCalledWith(true);
+      vi.useRealTimers();
+    });
+
+    it('keeps the peer video off while our own channel is still weak', async () => {
+      vi.useFakeTimers();
+      const media = new CallMedia();
+      await media.join({ url: 'wss://lk.example', token: 't' });
+      const room = created.at(-1)!;
+      room.handlers.get('ConnectionQualityChanged')!('poor', { isLocal: true });
+      peerQuality(room, 'poor');
+      peerQuality(room, 'good');
+      vi.advanceTimersByTime(15_000);
+      expect(room.remoteVideo.setEnabled).toHaveBeenLastCalledWith(false);
+      vi.useRealTimers();
+    });
   });
 });

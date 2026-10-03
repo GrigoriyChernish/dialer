@@ -16,6 +16,8 @@ export interface LinkState {
   localCam: boolean;
   /** Браузер заблокував відтворення звуку співрозмовника (автовідтворення), потрібне натискання «Увімкнути звук». */
   audioBlocked: boolean;
+  /** Слабкий канал співрозмовника: його відео не качаємо (фрізи), звук і наша камера працюють. */
+  peerWeak: boolean;
   /** Слабкий канал: свою камеру вимкнено, відео співрозмовника не качаємо, лишився звук (повертається, коли канал стабільний). */
   audioOnly: boolean;
   /** Мікрофон не вдалося ввімкнути (немає пристрою чи дозволу). */
@@ -26,6 +28,40 @@ export interface LinkState {
 
 /** Скільки канал має бути нормальним, щоб після слабкого сигналу повернути відео. */
 const RECOVER_MS = 15_000;
+
+/**
+ * Слабкий канал з гістерезисом: `set(true)` вмикає одразу, `set(false)` вимикає лише коли канал `RECOVER_MS` без перебоїв нормальний
+ * (будь-який новий поганий стан скидає відлік), щоб не мигало на межі. `onChange` викликається при зміні `active`.
+ */
+class WeakLink {
+  active = false;
+  private timer?: ReturnType<typeof setTimeout>;
+
+  constructor(private onChange: () => void) {}
+
+  set(bad: boolean) {
+    if (bad) {
+      clearTimeout(this.timer);
+      this.timer = undefined;
+      if (this.active) return;
+      this.active = true;
+      this.onChange();
+      return;
+    }
+    if (!this.active || this.timer) return;
+    this.timer = setTimeout(() => {
+      this.timer = undefined;
+      this.active = false;
+      this.onChange();
+    }, RECOVER_MS);
+  }
+
+  reset() {
+    clearTimeout(this.timer);
+    this.timer = undefined;
+    this.active = false;
+  }
+}
 
 /** Підключення до однієї кімнати: свої елементи аудіо й відео співрозмовника. */
 interface Session {
@@ -44,8 +80,10 @@ export class CallMedia {
   private micOn = true;
   private camOn = true;
   private deaf = false;
-  private degraded = false;
-  private recoverTimer?: ReturnType<typeof setTimeout>;
+  /** Наш канал слабкий: камеру вимкнено, відео співрозмовника не качаємо. */
+  private own = new WeakLink(() => this.syncOwn());
+  /** Канал співрозмовника слабкий: його відео фризить, не качаємо лише його (наша камера працює). */
+  private peerLink = new WeakLink(() => this.syncPeer());
   private listeners = new Set<(patch: Partial<LinkState>) => void>();
 
   onChange(fn: (patch: Partial<LinkState>) => void) {
@@ -75,7 +113,7 @@ export class CallMedia {
 
   async join(access: LiveKitAccess) {
     this.leave();
-    this.resetDegraded();
+    this.resetWeak();
     const s: Session = {
       room: new Room({
         // обидва типово вимкнені: adaptiveStream не качає відео, чий <video> прихований чи відмонтований (утримання, аватар, мініатюра без відео),
@@ -99,7 +137,7 @@ export class CallMedia {
     const emit = (patch: Partial<LinkState>) => s === this.cur && this.emit(patch);
     room.on(RoomEvent.TrackSubscribed, (t: RemoteTrack, pub) => {
       if (t.kind === 'video') {
-        if (this.degraded && s === this.cur) pub?.setEnabled?.(false);
+        if (this.videoPaused && s === this.cur) pub?.setEnabled?.(false);
         s.remoteVideo = t;
         emit({ peerCam: true });
         return;
@@ -128,10 +166,11 @@ export class CallMedia {
     room.on(RoomEvent.Reconnecting, () => emit({ reconnecting: true }));
     room.on(RoomEvent.Reconnected, () => emit({ reconnecting: false }));
     room.on(RoomEvent.ConnectionQualityChanged, (q, p) => {
-      if (!p.isLocal) return;
       const bad = q === ConnectionQuality.Poor || q === ConnectionQuality.Lost;
-      emit({ poor: bad });
-      if (s === this.cur) this.degrade(bad);
+      if (p.isLocal) {
+        emit({ poor: bad });
+        if (s === this.cur) this.own.set(bad);
+      } else if (s === this.cur) this.peerLink.set(bad);
     });
     room.on(RoomEvent.ActiveSpeakersChanged, speakers => emit({ peerSpeaking: speakers.some(p => !p.isLocal) }));
     room.on(RoomEvent.ParticipantDisconnected, () => emit({ peerAway: true, peerSpeaking: false }));
@@ -160,40 +199,36 @@ export class CallMedia {
     }
   }
 
-  /**
-   * Слабкий канал (`Poor`, `Lost`): одразу лишаємо звук, а відео вимикаємо; вмикаємо назад, коли канал `RECOVER_MS` без перебоїв нормальний,
-   * щоб не мигало на межі. Користувацькі `micOn`/`camOn` не змінюються: після відновлення все повертається за ними.
-   */
-  private degrade(bad: boolean) {
-    if (bad) {
-      clearTimeout(this.recoverTimer);
-      this.recoverTimer = undefined;
-      if (this.degraded) return;
-      this.degraded = true;
-    } else {
-      if (!this.degraded || this.recoverTimer) return;
-      this.recoverTimer = setTimeout(() => {
-        this.recoverTimer = undefined;
-        this.degraded = false;
-        this.syncDegraded();
-      }, RECOVER_MS);
-      return;
-    }
-    this.syncDegraded();
+  /** Відео співрозмовника не качаємо, якщо слабкий наш канал чи його. */
+  private get videoPaused() {
+    return this.own.active || this.peerLink.active;
   }
 
-  private syncDegraded() {
-    this.emit({ audioOnly: this.degraded });
+  /**
+   * Слабкий наш канал (`Poor`, `Lost`, див. `WeakLink`): лишаємо звук, свою камеру й відео співрозмовника вимикаємо.
+   * Користувацькі `micOn`/`camOn` не змінюються: після відновлення все повертається за ними.
+   */
+  private syncOwn() {
+    this.emit({ audioOnly: this.own.active });
     this.apply();
+    this.syncRemoteVideo();
+  }
+
+  /** Слабкий канал співрозмовника: вимикаємо лише його відео (фрізи), наша камера працює. */
+  private syncPeer() {
+    this.emit({ peerWeak: this.peerLink.active });
+    this.syncRemoteVideo();
+  }
+
+  private syncRemoteVideo() {
     this.cur?.room.remoteParticipants?.forEach(p =>
-      p.videoTrackPublications?.forEach(pub => pub.setEnabled?.(!this.degraded)),
+      p.videoTrackPublications?.forEach(pub => pub.setEnabled?.(!this.videoPaused)),
     );
   }
 
-  private resetDegraded() {
-    clearTimeout(this.recoverTimer);
-    this.recoverTimer = undefined;
-    this.degraded = false;
+  private resetWeak() {
+    this.own.reset();
+    this.peerLink.reset();
   }
 
   /** Перезапуск треку камери: вимикаємо й вмикаємо за поточним станом (`apply`). Допомагає, коли камера не віддає кадр. */
@@ -247,7 +282,7 @@ export class CallMedia {
   /** Міняє місцями поточну й утримувану кімнати. `false`, якщо утримуваної немає (наприклад, після перезавантаження). */
   swap() {
     if (!this.parked) return false;
-    this.resetDegraded();
+    this.resetWeak();
     [this.cur, this.parked] = [this.parked, this.cur];
     if (this.parked) this.silence(this.parked);
     this.emit({
@@ -255,6 +290,7 @@ export class CallMedia {
       peerAway: false,
       peerMuted: false,
       audioOnly: false,
+      peerWeak: false,
       audioBlocked: !!this.cur && !this.cur.room.canPlaybackAudio,
     });
     this.apply();
@@ -269,7 +305,7 @@ export class CallMedia {
 
   /** Завершує поточну розмову; утримувана лишається. */
   leave() {
-    this.resetDegraded();
+    this.resetWeak();
     if (this.cur) this.close(this.cur);
     this.cur = undefined;
   }
@@ -311,7 +347,7 @@ export class CallMedia {
       .catch(() => wantMic && this.emit({ micError: true }))
       .then(settled);
     void lp
-      ?.setCameraEnabled(this.camOn && !this.deaf && !this.degraded)
+      ?.setCameraEnabled(this.camOn && !this.deaf && !this.own.active)
       .catch(() => this.emit({ camError: true }))
       .then(settled);
     this.cur?.els.forEach(el => (el.muted = this.deaf));

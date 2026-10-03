@@ -106,6 +106,7 @@ export const messages = {
         reconnecting: "Відновлюємо ваше з'єднання",
       },
       peer: {
+        weakSignal: '{name}: слабкий сигнал · без відео',
         hold: { f: '{name} поставила на утримання', m: '{name} поставив на утримання' },
         connectionLost: {
           f: "{name} втратила з'єднання · до 30 с",
