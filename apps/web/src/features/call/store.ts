@@ -389,6 +389,10 @@ export const useCallStore = defineStore('call', () => {
         settings.value = m.settings;
         contacts.value = m.contacts;
         recents.value = [...m.recents].sort((a, b) => b.startedAt - a.startedAt);
+        rememberSeen(m.recentsSeenUpTo ?? 0);
+        // час, збережений лише локально (до появи синхронізації), віддаємо серверу
+        if (missedSeenAt.value > (m.recentsSeenUpTo ?? 0))
+          void deps.client.request('recents.seen', { upTo: missedSeenAt.value }).catch(() => {});
         restore(m.calls);
         ready.value = true;
         break;
@@ -449,6 +453,9 @@ export const useCallStore = defineStore('call', () => {
         if (c) c.online = m.online;
         break;
       }
+      case 'recents.seen': // інший пристрій переглянув історію
+        rememberSeen(m.upTo);
+        break;
       case 'settings.updated':
         settings.value = m.settings;
         break;
@@ -656,14 +663,22 @@ export const useCallStore = defineStore('call', () => {
     if (ack.type === 'ack' && ack.user) me.value = ack.user;
   }
 
-  /** Вкладку «Історія» переглянуто: лічильник обнуляється. */
-  function markMissedSeen() {
-    missedSeenAt.value = Math.max(missedSeenAt.value, ...missedCalls.value.map(r => r.startedAt));
+  /** Запам'ятовує час перегляду історії (лише зростає): у `localStorage` на випадок, коли сервера немає. */
+  function rememberSeen(upTo: number) {
+    if (upTo <= missedSeenAt.value) return false;
+    missedSeenAt.value = upTo;
     try {
-      localStorage.setItem(SEEN_KEY, String(missedSeenAt.value));
+      localStorage.setItem(SEEN_KEY, String(upTo));
     } catch {
       // приватний режим: лічильник обнулиться лише до перезавантаження
     }
+    return true;
+  }
+
+  /** Вкладку «Історія» переглянуто: час іде на сервер (`recents.seen`), і лічильник скидається на всіх пристроях. */
+  function markMissedSeen() {
+    const upTo = Math.max(missedSeenAt.value, ...missedCalls.value.map(r => r.startedAt));
+    if (rememberSeen(upTo)) void deps.client.request('recents.seen', { upTo }).catch(() => {});
   }
 
   return {

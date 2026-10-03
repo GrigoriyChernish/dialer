@@ -145,6 +145,35 @@ describe('дзвінок через WebSocket', () => {
     for (const c of [d1, d2, again]) c.client.close();
   });
 
+  it('recents.seen: час лише зростає, майбутній обрізається, інші пристрої отримують recents.seen, hello.ok віддає збережене', async () => {
+    const p = phone();
+    const d1 = await connectUser(server, 'Ілона', p, 'phone');
+    const d2 = await connectUser(server, 'Ілона', p, 'laptop');
+    expect(d1.hello.recentsSeenUpTo).toBe(0);
+
+    d1.client.send({ type: 'recents.seen', id: 'r1', upTo: 5_000 });
+    expect(await d1.client.next('ack')).toMatchObject({ reqId: 'r1' });
+    expect((await d2.client.next('recents.seen')).upTo).toBe(5_000);
+    expect(d1.client.frames.filter(f => f.type === 'recents.seen')).toEqual([]);
+
+    d1.client.send({ type: 'recents.seen', id: 'r2', upTo: 1_000 }); // назад не йдемо
+    await d1.client.next('ack');
+    expect((await d2.client.next('recents.seen')).upTo).toBe(5_000);
+
+    d1.client.send({ type: 'recents.seen', id: 'r3', upTo: Date.now() + 10 * 86_400_000 });
+    await d1.client.next('ack');
+    expect((await d2.client.next('recents.seen')).upTo).toBeLessThanOrEqual(Date.now());
+
+    d1.client.send({ type: 'recents.seen', id: 'r4', upTo: 'вчора' });
+    expect((await d1.client.next('error')).code).toBe('bad_request');
+    d1.client.send({ type: 'recents.seen', id: 'r5', upTo: -1 });
+    expect((await d1.client.next('error')).code).toBe('bad_request');
+
+    const again = await connectUser(server, 'Ілона', p, 'tablet');
+    expect(again.hello.recentsSeenUpTo).toBeGreaterThan(5_000);
+    for (const c of [d1, d2, again]) c.client.close();
+  });
+
   it("profile.update: ack з новим ім'ям, інші пристрої отримують profile.updated, контакти — contacts.update", async () => {
     const p = phone();
     const d1 = await connectUser(server, 'Мирон', p, 'phone');

@@ -20,7 +20,11 @@ function mountPage(recents: RecentEntry[]) {
   setActivePinia(createPinia());
   let handler: (m: never) => void = () => {};
   const deps = {
-    client: { request: vi.fn(), on: (f: typeof handler) => ((handler = f), () => {}), onStatus: () => () => {} },
+    client: {
+      request: vi.fn(async () => ({})),
+      on: (f: typeof handler) => ((handler = f), () => {}),
+      onStatus: () => () => {},
+    },
     media: { join: vi.fn(), leave: vi.fn(), setMic: vi.fn(), setDeaf: vi.fn(), attach: vi.fn(), onChange: vi.fn() },
     sounds: { play: vi.fn() },
   } as unknown as CallDeps;

@@ -73,9 +73,9 @@ apps/server/
 | Таблиця | Що зберігає |
 |---|---|
 | `sites` | сайти-господарі: `id`, назва, секрет, `allowed_origins`; окремий запис `demo` |
-| `users` | ключ `(site_id, id)`, де `id` це E.164 у демо (а в демо-ботів `bot:olena`, `bot:andriy`, `bot:support`), ім'я, `disabled`, `is_bot`, `settings` (JSON: `waiting`, `dnd`) |
+| `users` | ключ `(site_id, id)`, де `id` це E.164 у демо (а в демо-ботів `bot:olena`, `bot:andriy`, `bot:support`), ім'я, `disabled`, `is_bot`, `recents_seen_up_to` (мс, до якого історію переглянуто, `005_recents_seen.sql`), `settings` (JSON: `waiting`, `dnd`) |
 | `calls` | дзвінки: `id`, учасники, стан, `created_at`, `answered_at`, `ended_at`, `reason` |
-| `recents` | історія: чий запис, `call_id`, співрозмовник, напрям, результат, `silent`, тривалість, `seen` |
+| `recents` | історія: чий запис, `call_id`, співрозмовник, напрям, результат, `silent`, тривалість |
 | `push_subscriptions` | підписка Web Push на пристрій: `user_id`, `device_id`, дані підписки |
 
 - Зараз у БД `sites`, `users` (`001_init.sql`), `calls` і `recents` (`002_calls.sql`); `push_subscriptions` з'явиться з кроком 6.

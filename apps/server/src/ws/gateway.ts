@@ -159,6 +159,7 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
         calls: deps.calls.callsFor(user.siteId, user.id, deviceId),
         contacts: deps.hub.contactsFor(user.siteId, user.id),
         recents: deps.recents.list(user.siteId, user.id),
+        recentsSeenUpTo: user.recentsSeenUpTo,
       });
       scheduleExpiring(verified.expiresAt);
     }
@@ -250,6 +251,24 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       ]);
     }
 
+    /** Історію переглянуто: зберігаємо (час лише зростає, майбутній обрізаємо) і повідомляємо інші пристрої. */
+    function onRecentsSeen(msg: Record<string, unknown>, id: string | undefined) {
+      if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
+      const upTo = msg.upTo;
+      if (typeof upTo !== 'number' || !Number.isFinite(upTo) || upTo < 0)
+        return respond(id, errorFrame('bad_request', id, 'recents.seen: upTo має бути невід’ємним числом'));
+      const seen = deps.users.markRecentsSeen(conn.siteId, conn.userId, Math.min(upTo, Date.now()));
+      respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
+      deps.deliver([
+        {
+          siteId: conn.siteId,
+          userId: conn.userId,
+          exceptDeviceId: conn.deviceId,
+          msg: { v: PROTOCOL_VERSION, type: 'recents.seen', upTo: seen },
+        },
+      ]);
+    }
+
     /** Нове ім'я: зберігає, повідомляє інші пристрої (`profile.updated`) і решту користувачів (`contacts.update`). */
     function onProfile(msg: Record<string, unknown>, id: string | undefined) {
       if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
@@ -318,8 +337,10 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
           return onSettings(msg, id);
         case 'profile.update':
           return onProfile(msg, id);
+        case 'recents.seen':
+          return onRecentsSeen(msg, id);
         default:
-          // recents.*, push.* з'являться на наступних кроках
+          // push.* з'явиться на наступному кроці
           return respond(id, errorFrame('unknown_type', id));
       }
     }

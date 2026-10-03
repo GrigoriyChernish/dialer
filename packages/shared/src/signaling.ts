@@ -99,7 +99,7 @@ export interface RecentEntry {
   startedAt: number;
   /** Секунди розмови. */
   duration?: number;
-  /** Тихий пропущений: видно в «Недавніх», але не збільшує лічильник. */
+  /** Тихий пропущений: видно в «Історії», але не збільшує лічильник. */
   silent?: boolean;
 }
 
@@ -128,6 +128,7 @@ export type CallHoldRequest = Request<'call.hold', { callId: CallId; hold: boole
 export type SettingsUpdateRequest = Request<'settings.update', { settings: Partial<Settings> }>;
 /** Нове ім'я користувача: 2–40 символів після обрізання пробілів. */
 export type ProfileUpdateRequest = Request<'profile.update', { name: string }>;
+/** Історію переглянуто до `upTo` (мс від епохи); сервер бере більше з наявного й нового, а майбутній час обрізає до «зараз». */
 export type RecentsSeenRequest = Request<'recents.seen', { upTo: number }>;
 export type PushSubscribeRequest = Request<'push.subscribe', { subscription: unknown }>;
 export type PushUnsubscribeRequest = Request<'push.unsubscribe', object>;
@@ -163,6 +164,8 @@ export type HelloOk = Reply<
     calls: CallInfo[];
     contacts: Contact[];
     recents: RecentEntry[];
+    /** До якого часу історію переглянуто (мс): пропущені новіші за нього рахуються в лічильнику. */
+    recentsSeenUpTo: number;
   }
 >;
 /** Порожній ack, або з `call` (на `call.invite`), або з повними `settings` (на `settings.update`). */
@@ -197,6 +200,8 @@ export type ContactsUpdate = Frame<'contacts.update'> & {
 export type RecentsAdd = Frame<'recents.add'> & { entry: RecentEntry };
 export type SettingsUpdated = Frame<'settings.updated'> & { settings: Settings };
 export type ProfileUpdated = Frame<'profile.updated'> & { user: Peer };
+/** Інший пристрій переглянув історію: лічильник пропущених скидається і тут. */
+export type RecentsSeen = Frame<'recents.seen'> & { upTo: number };
 
 export type ServerMessage =
   | HelloOk
@@ -214,7 +219,8 @@ export type ServerMessage =
   | ContactsUpdate
   | RecentsAdd
   | SettingsUpdated
-  | ProfileUpdated;
+  | ProfileUpdated
+  | RecentsSeen;
 
 export type ClientMessageType = ClientMessage['type'];
 export type ServerMessageType = ServerMessage['type'];

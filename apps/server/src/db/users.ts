@@ -12,6 +12,8 @@ export interface UserRow {
   settings: Settings;
   /** Коли номер підтверджено кодом; `null`: ще ні (наступний вхід питає код). */
   verifiedAt: number | null;
+  /** До якого часу (мс) історію переглянуто: лічильник пропущених рахується від нього. */
+  recentsSeenUpTo: number;
 }
 
 interface RawUser {
@@ -22,6 +24,7 @@ interface RawUser {
   is_bot: number;
   settings: string;
   verified_at: number | null;
+  recents_seen_up_to: number;
 }
 
 const toUser = (r: RawUser): UserRow => ({
@@ -32,6 +35,7 @@ const toUser = (r: RawUser): UserRow => ({
   isBot: r.is_bot === 1,
   settings: { ...DEFAULT_SETTINGS, ...JSON.parse(r.settings) },
   verifiedAt: r.verified_at ?? null,
+  recentsSeenUpTo: r.recents_seen_up_to ?? 0,
 });
 
 /** Демо-співрозмовники зі сценаріями з docs/demo.md; поведінка в `bots/scenarios.ts`. */
@@ -54,6 +58,9 @@ export function createUsers(db: Db) {
     'UPDATE users SET verified_at = ? WHERE site_id = ? AND id = ? AND verified_at IS NULL',
   );
   const updateSettingsStmt = db.prepare('UPDATE users SET settings = ? WHERE site_id = ? AND id = ?');
+  const markSeenStmt = db.prepare(
+    'UPDATE users SET recents_seen_up_to = MAX(recents_seen_up_to, ?) WHERE site_id = ? AND id = ?',
+  );
   const renameStmt = db.prepare('UPDATE users SET name = ? WHERE site_id = ? AND id = ?');
   const selectOthers = db.prepare(
     'SELECT * FROM users WHERE site_id = ? AND id != ? AND disabled = 0 ORDER BY is_bot, name',
@@ -81,6 +88,11 @@ export function createUsers(db: Db) {
       const stored = { ...JSON.parse(row.settings), ...patch };
       updateSettingsStmt.run(JSON.stringify(stored), siteId, id);
       return { ...DEFAULT_SETTINGS, ...stored };
+    },
+    /** Історію переглянуто до `upTo` (мс); час лише зростає. Повертає актуальне значення. */
+    markRecentsSeen(siteId: string, id: string, upTo: number): number {
+      markSeenStmt.run(Math.floor(upTo), siteId, id);
+      return get(siteId, id)!.recentsSeenUpTo;
     },
     /** Нове ім'я (уже перевірене `normalizeName`); повертає оновлений запис. */
     rename(siteId: string, id: string, name: string): UserRow {

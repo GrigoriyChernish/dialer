@@ -16,8 +16,9 @@ const info = (p: Partial<CallInfo> = {}): CallInfo => ({
   ...p,
 });
 
-function setup() {
+function setup(opts: { seen?: number } = {}) {
   localStorage.clear(); // локальні налаштування (usePrefsStore) не переходять між тестами
+  if (opts.seen) localStorage.setItem('dialer.missedSeen', String(opts.seen));
   setActivePinia(createPinia());
   let handler: (m: ServerMessage) => void = () => {};
   let onLink: (p: Partial<LinkState>) => void = () => {};
@@ -57,6 +58,7 @@ function setup() {
     calls: [],
     contacts: [{ ...olena, online: true }],
     recents: [],
+    recentsSeenUpTo: 0,
   });
   return {
     store,
@@ -393,6 +395,49 @@ describe('call store', () => {
     expect(store.unseenMissed).toBe(0);
   });
 
+  it('syncs the viewed time: sends recents.seen, and another device or hello.ok resets the counter', () => {
+    const { store, send, request } = setup();
+    const t = Date.now();
+    const missed = (callId: string, startedAt: number) => ({
+      v: V,
+      type: 'recents.add' as const,
+      entry: { callId, peer: olena.userId, direction: 'in' as const, result: 'missed' as const, startedAt },
+    });
+    send(missed('m1', t));
+    send(missed('m2', t + 1));
+    expect(store.unseenMissed).toBe(2);
+    store.markMissedSeen();
+    expect(request).toHaveBeenCalledWith('recents.seen', { upTo: t + 1 });
+    request.mockClear();
+    store.markMissedSeen(); // нічого нового: на сервер не йдемо
+    expect(request).not.toHaveBeenCalled();
+
+    send(missed('m3', t + 5));
+    expect(store.unseenMissed).toBe(1);
+    send({ v: V, type: 'recents.seen', upTo: t + 5 }); // переглянули на іншому пристрої
+    expect(store.unseenMissed).toBe(0);
+  });
+
+  it('takes the viewed time from hello.ok and gives the server a newer local one', () => {
+    const { store, send, request } = setup({ seen: 500 });
+    expect(request).toHaveBeenCalledWith('recents.seen', { upTo: 500 }); // сервер знає 0
+    request.mockClear();
+    send({
+      v: V,
+      type: 'hello.ok',
+      reqId: 'h2',
+      user: { userId: 'me', name: 'Я' },
+      serverTime: Date.now(),
+      settings: { waiting: true, dnd: false },
+      calls: [],
+      contacts: [],
+      recents: [{ callId: 'a', peer: olena.userId, direction: 'in', result: 'missed', startedAt: 800 }],
+      recentsSeenUpTo: 900,
+    });
+    expect(store.unseenMissed).toBe(0);
+    expect(request).not.toHaveBeenCalled();
+  });
+
   it('is busy while on a call', async () => {
     const { store } = setup();
     expect(store.busySelf).toBe(false);
@@ -553,6 +598,7 @@ describe('call store', () => {
         settings: { waiting: true, dnd: false },
         contacts: [],
         recents: [],
+        recentsSeenUpTo: 0,
         calls: [
           info({ state: 'connected', hold: true, startedAt: 1 }),
           info({ callId: 'c2', direction: 'in', peer: andriy, state: 'connected', startedAt: 2 }),
