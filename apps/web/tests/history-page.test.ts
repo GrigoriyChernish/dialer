@@ -6,12 +6,13 @@ import { i18n } from '@/app/i18n';
 import { useCallStore, type CallDeps } from '@/features/call/store';
 import HistoryPage from '@/pages/HistoryPage.vue';
 
-const entry = (p: Partial<RecentEntry>): RecentEntry => ({
-  callId: 'c',
+// час явний і спадний за номером: сторінка сортує за `startedAt`, а однакові чи зростаючі мілісекунди міняли б порядок рядків
+const base = Date.now();
+const entry = (p: Partial<RecentEntry> & { callId: string }): RecentEntry => ({
   peer: '+380501111111',
   direction: 'out',
   result: 'completed',
-  startedAt: Date.now(),
+  startedAt: base - Number(p.callId) * 1000,
   ...p,
 });
 
