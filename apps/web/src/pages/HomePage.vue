@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import { useCallStore } from '@/features/call/store';
+import ReturnCall from '@/features/call/ReturnCall.vue';
 import { useLoadState } from '@/features/contacts/loadState';
 import ContactsPage from '@/pages/ContactsPage.vue';
 import HistoryPage from '@/pages/HistoryPage.vue';
@@ -72,6 +73,9 @@ const badge = computed(() => (tab.value === 'history' ? 0 : call.unseenMissed));
         <Icon name="chevronRight" class="size-4.5 shrink-0 text-mute" />
       </RouterLink>
     </Card>
+
+    <!-- розмову згорнуто: плашка «Повернутися до дзвінка» (дизайн: Return Call) -->
+    <ReturnCall v-if="call.minimized" />
 
     <component :is="PAGES[tab]" class="min-h-0 flex-1" />
 

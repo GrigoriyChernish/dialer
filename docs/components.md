@@ -39,7 +39,7 @@
 | Екрани | `Outgoing Call`, `Incoming Call`, `In Call`, `Result · *`, `Ended · *`, усі стани розмови | `features/call/CallScreen.vue` | є |
 | Banners | `Self Banner / held-call`, `Self Banner / active-call`, `Pool Badge` | `features/call/CallScreen.vue` (пул), `features/call/NotificationPool.vue`, `features/call/WaitingScreen.vue` (на `Banner`) | є |
 | Екрани | `Incoming · waiting`, `In Call · held call` (`Flow · Call waiting`) | `features/call/WaitingScreen.vue`, `CallScreen.vue` | є |
-| Екрани | `Home · Contacts`, `Home · History`, `Home · Search` і їхні `· empty`, `· loading`, `Home · Contacts · offline`, `Home · History · offline`, `Home · Contacts · connection lost` | `pages/HomePage.vue` + `ContactsPage`, `HistoryPage`, `SearchPage` | є |
+| Екрани | `Home · Contacts`, `Home · History`, `Home · Search`, `Home · Contacts · in call` (+ `· hold`) і їхні `· empty`, `· loading`, `Home · Contacts · offline`, `Home · History · offline`, `Home · Contacts · connection lost` | `pages/HomePage.vue` + `ContactsPage`, `HistoryPage`, `SearchPage` | є |
 
 ## Базові: `shared/ui`
 
@@ -160,6 +160,9 @@
 - **Шапка** (`Home Header`; до першого `hello.ok` — `Home Header / loading`: коло й смужка замість аватара й імені, без `Presence`): уся картка —
   посилання на `#/settings`: аватар 36, наше ім'я з `hello.ok` одним рядком (задовге обрізається з «…»), мітка `Presence` за `presence`:
   «вільний» (зелена), «зайнятий» (жовта, на дзвінку), «не турбувати» (червона, `settings.dnd`); текст мітки `ok-text`, `warn-text`, `bad-text`, і `chevron-right`.
+- **Плашка «Повернутися до дзвінка»** (`ReturnCall`, дизайн `Return Call`, `Return Call / hold`, екрани `Home · Contacts · in call`, `· in call · hold`): між шапкою й вмістом, поки розмову згорнуто (`call.minimized`).
+  Уся картка кнопка: ім'я співрозмовника, таймер (`mm:ss`, іде далі) чи «на утриманні» (іконка `pause`, тон `warn`), `chevron-up`; натискання викликає `call.restoreCall()`. Плашка лише на головному:
+  зі сторінки налаштувань повертаються через головний.
 - **Вміст вкладки** займає решту висоти: `HistoryPage`, `ContactsPage` (за замовчуванням) чи `SearchPage`.
 - **Вкладки** (`Tab Bar`): лише іконки `history`, `users`, `search`; активна `accent-icon`, решта `mute`. На «Історії» червоний лічильник
   нових пропущених (`unseenMissed`), поки вкладка не відкрита.
@@ -207,7 +210,7 @@
 - Стан: `status` (`idle` / `ringing` / `incoming` / `connected`), `peer`, `hold`, `peerHold`, `mic`, `link` (стан зв'язку з кімнати LiveKit), `missed` (екран результату з `reason` і `duration`), `left`, `seconds`;
   `me` і `settings` з `hello.ok`, `recents` (історія, `recents.add` додає), `missedCalls`, `unseenMissed`, `busySelf`;
   `presence` (`free` / `busy` / `dnd` для мітки в шапці); `waiting` (другий вхідний під час розмови, `CallInfo`) і `held` (утримуваний дзвінок: `callId`, `peer`, `startedAt`, `peerHold`, `livekit`).
-- Дії: `call`, `accept`, `end` (відхилити, скасувати чи завершити залежно від стану), `toggleHold`, `toggleMic`, `dismissMissed`, `markMissedSeen`;
+- Дії: `call`, `accept`, `end` (відхилити, скасувати чи завершити залежно від стану), `toggleHold`, `toggleMic`, `minimize` / `restoreCall`, `dismissMissed`, `markMissedSeen`;
   `acceptWaiting('hold' | 'end')`, `rejectWaiting`, `swapHeld`; `updateSettings(patch)` (`settings.update`, одразу локально, при помилці назад),
   `rename(name)` (`profile.update`). Події `settings.updated` і `profile.updated` з інших пристроїв оновлюють `settings` і `me`.
 - **Другий вхідний** ([signaling.md](signaling.md#другий-вхідний-під-час-розмови)): `call.incoming` з `waiting` під час розмови кладеться у `waiting`
@@ -252,6 +255,9 @@
   `watchPermissions` блокує пристрій, коли дозвіл відкликали, і знімає блок, коли повернули (лише той, що заблокувала сама підписка, а не відсутність пристрою).
 - Під час утримання камера й мікрофон вимкнені.
 - Після кінця розмови (і для утримуваної кімнати) `CallMedia` явно зупиняє треки камери й мікрофона (`release`). Якщо камера ще вмикалась, коли дзвінок скінчився (`setCameraEnabled` завершується вже після `disconnect`), трек зупиняється одразу після завершення, тож Chrome не показує «камера використовується» без розмови.
+- **Згортання розмови.** Кнопка `chevron-down` ліворуч у шапці (`aria-label` «Згорнути розмову») викликає `call.minimize()`: лише для активної розмови (`connected`, без другого вхідного), `minimized = true`.
+  `App.vue` ховає шар `CallScreen`, на головному з'являється `ReturnCall`; розмова, звук і таймер тривають, нашу камеру на час згортання вимкнено (на екрані її не видно), `restoreCall()` вмикає її за вибором користувача.
+  Екран розмови повертається сам, коли: прийшов другий вхідний (`waiting`), розмова скінчилась (з екраном результату) або користувач натиснув плашку. `minimized` скидається в `reset()`.
 - **Результат** (`idle` із `missed`): сірий аватар без кілець, «Зайнято» (`phone-off`, жовтий), «Без відповіді» й «Пропущений дзвінок» (`phone-missed`), «Відхилено» (`phone-off`), решта червоні,
   причина, кнопки без підписів: зелена «Передзвонити» ліворуч, червона «Закрити» праворуч.
 - **Кінець розмови:** співрозмовник поклав слухавку (`hangup`) → «Дзвінок завершено» (`phone-off`, `fg`, фон `stage-glow`), «Тривалість 03:42»,

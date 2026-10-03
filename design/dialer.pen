@@ -572,6 +572,20 @@
                   ]
                 }
               ]
+            },
+            {
+              "id": "HCIve",
+              "type": "ref",
+              "reusable": true,
+              "ref": "Q0E8CG",
+              "name": "Self View / stalled",
+              "context": "Камера не віддала кадр за 10 с: індикатор змінюється значком video-off. Один раз перезапускаємо трек; якщо кадру немає й після цього, у пулі з'являється Self Banner / camera-stalled.",
+              "descendants": {
+                "B2qW2L": {
+                  "icon": "video-off",
+                  "fill": "$mute"
+                }
+              }
             }
           ]
         },
@@ -3109,6 +3123,18 @@
                   "icon": "volume-2"
                 }
               }
+            },
+            {
+              "id": "Re1vW",
+              "type": "ref",
+              "reusable": true,
+              "ref": "rAJ2L",
+              "name": "Self Banner / camera-stalled",
+              "descendants": {
+                "W4Fv08": {
+                  "content": "Камера не відповідає"
+                }
+              }
             }
           ]
         },
@@ -3407,6 +3433,22 @@
                 },
                 "W4Fv08": {
                   "content": "Відео не завантажується"
+                }
+              }
+            },
+            {
+              "id": "davzw",
+              "type": "ref",
+              "reusable": true,
+              "ref": "aWQeg",
+              "name": "Peer Banner / weak-signal",
+              "context": "У співрозмовника слабкий канал (Poor/Lost у LiveKit): його відео фризить, тому не качаємо лише його, а звук і наша камера працюють. Відео повертається, коли канал 15 с нормальний.",
+              "descendants": {
+                "s1KBV": {
+                  "icon": "signal-low"
+                },
+                "W4Fv08": {
+                  "content": "Олена: слабкий сигнал · без відео"
                 }
               }
             }

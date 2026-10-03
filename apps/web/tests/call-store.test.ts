@@ -438,6 +438,52 @@ describe('call store', () => {
     expect(request).not.toHaveBeenCalled();
   });
 
+  describe('minimized call', () => {
+    const connect = async (ctx: ReturnType<typeof setup>) => {
+      await ctx.store.call(olena.userId);
+      ctx.send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    };
+
+    it('minimizes only an active call, turns the camera off meanwhile and brings it back on restore', async () => {
+      const ctx = setup();
+      ctx.store.minimize();
+      expect(ctx.store.minimized).toBe(false); // розмови ще нема
+
+      await ctx.store.call(olena.userId);
+      ctx.store.minimize();
+      expect(ctx.store.minimized).toBe(false); // дзвонимо, не розмова
+
+      ctx.send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+      ctx.store.minimize();
+      expect(ctx.store.minimized).toBe(true);
+      expect(ctx.deps.media.setCamera).toHaveBeenLastCalledWith(false);
+      expect(ctx.store.status).toBe('connected'); // розмова триває
+
+      ctx.store.restoreCall();
+      expect(ctx.store.minimized).toBe(false);
+      expect(ctx.deps.media.setCamera).toHaveBeenLastCalledWith(ctx.store.cam);
+    });
+
+    it('brings the call screen back when a second call comes in, and when the call ends', async () => {
+      const ctx = setup();
+      await connect(ctx);
+      ctx.store.minimize();
+      ctx.send({ v: V, type: 'call.incoming', call: info({ callId: 'c2', direction: 'in', waiting: true }) });
+      expect(ctx.store.waiting?.callId).toBe('c2');
+      expect(ctx.store.minimized).toBe(false);
+
+      ctx.store.minimize(); // з очікуванням згортати не можна
+      expect(ctx.store.minimized).toBe(false);
+
+      const other = setup();
+      await connect(other);
+      other.store.minimize();
+      other.send({ v: V, type: 'call.ended', callId: 'c1', reason: 'hangup', duration: 5 });
+      expect(other.store.minimized).toBe(false);
+      expect(other.store.missed).toMatchObject({ reason: 'ended' });
+    });
+  });
+
   it('is busy while on a call', async () => {
     const { store } = setup();
     expect(store.busySelf).toBe(false);

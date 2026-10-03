@@ -92,6 +92,9 @@ export const messages = {
       mute: 'Вимкнути мікрофон',
       unmute: 'Увімкнути мікрофон',
       hold: 'Утримання',
+      minimize: 'Згорнути розмову',
+      returnTo: 'Повернутися до дзвінка: {name}',
+      onHold: 'на утриманні',
       resume: 'Продовжити',
       notice: {
         cameraUnavailable: 'Камера недоступна',

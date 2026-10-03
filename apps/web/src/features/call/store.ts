@@ -106,6 +106,8 @@ export const useCallStore = defineStore('call', () => {
   const hold = ref(false);
   const peerHold = ref(false);
   const mic = ref(true);
+  /** Розмову згорнуто: екран розмови сховано, на головному плашка «Повернутися до дзвінка». */
+  const minimized = ref(false);
   const NO_LINK: LinkState = {
     reconnecting: false,
     poor: false,
@@ -147,6 +149,12 @@ export const useCallStore = defineStore('call', () => {
   const missed = ref<{ peer: Peer; reason: MissedReason; note?: string; duration?: number } | null>(null);
   /** Другий вхідний під час розмови (docs/signaling.md, «Другий вхідний під час розмови»). */
   const waiting = ref<CallInfo | null>(null);
+  // другий вхідний під час згорнутої розмови: повертаємо екран, щоб його побачили
+  watch(
+    () => waiting.value,
+    w => w && restoreCall(),
+    { flush: 'sync' },
+  );
   const held = ref<HeldCall | null>(null);
   let livekit: LiveKitAccess | undefined;
   /** Розмова, яку завершуємо самі через «Завершити й прийняти»: її кінець без екрана результату. */
@@ -211,6 +219,7 @@ export const useCallStore = defineStore('call', () => {
     hint.value = null;
     clearTimeout(hintTimer);
     selfHidden.value = false;
+    minimized.value = false;
     syncTimer();
   }
 
@@ -594,6 +603,20 @@ export const useCallStore = defineStore('call', () => {
   }
 
   /** «Перемкнути»: утримуваний дзвінок стає поточним, а поточний — утримуваним (сервер робить це однією командою). */
+  /** Згортає розмову до плашки на головному. Лише для активної розмови; камеру на цей час вимикаємо (preview немає), звук триває. */
+  function minimize() {
+    if (status.value !== 'connected' || waiting.value) return;
+    minimized.value = true;
+    deps.media.setCamera?.(false);
+  }
+
+  /** Повертає екран розмови й камеру за вибором користувача. */
+  function restoreCall() {
+    if (!minimized.value) return;
+    minimized.value = false;
+    deps.media.setCamera?.(cam.value);
+  }
+
   /** «Увімкнути звук»: викликається з натискання кнопки у сповіщенні (жест користувача потрібен браузеру). */
   function enableAudio() {
     void deps.media.enableAudio?.();
@@ -703,6 +726,9 @@ export const useCallStore = defineStore('call', () => {
     rejectWaiting,
     swapHeld,
     enableAudio,
+    minimized,
+    minimize,
+    restoreCall,
     restartCamera,
     callId,
     peer,

@@ -49,6 +49,9 @@ const dimmed = computed(() => call.hold || call.peerState === 'lost');
 const heldSecs = computed(() =>
   call.held ? Math.max(0, Math.floor((call.serverNow - call.held.startedAt) / 1000)) : 0,
 );
+// наша камера не віддала кадр: оголошено до `pool`, бо `usePool` читає джерело одразу при створенні (інакше помилка ініціалізації)
+const selfStalled = ref(false);
+const stalls = ref(0);
 const pool = usePool(() => {
   if (!connected.value) return [];
   const list: PoolSource[] = [];
@@ -115,8 +118,6 @@ const selfStatuses = computed<{ status: SelfStatus; label: string }[]>(() => {
 });
 const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold && !call.peerHold);
 // наша камера не віддала кадр за 10 с: перший раз перезапускаємо трек, якщо й після цього кадру немає, сповіщення «Камера не відповідає» (беклог 21)
-const selfStalled = ref(false);
-const stalls = ref(0);
 watch(selfVideo, on => on || (selfStalled.value = false));
 watch(
   () => call.callId,
@@ -198,7 +199,18 @@ watch(selfStalled, on => {
     </template>
 
     <header v-if="connected" class="relative z-10 flex h-10 shrink-0 items-center justify-between px-4">
-      <b class="text-base font-semibold">{{ name }}</b>
+      <div class="flex min-w-0 items-center gap-2">
+        <!-- згорнути розмову до плашки на головному (дизайн: Call Header / Minimize Button) -->
+        <button
+          type="button"
+          :aria-label="t('call.minimize')"
+          class="grid size-7 shrink-0 cursor-pointer place-items-center rounded-full bg-surface transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:bg-surface-strong active:scale-95 focus-visible:outline-2 focus-visible:outline-accent"
+          @click="call.minimize()"
+        >
+          <Icon name="chevronDown" class="size-4" />
+        </button>
+        <b class="truncate text-base font-semibold">{{ name }}</b>
+      </div>
       <div class="flex items-center gap-2">
         <SelfStatusChip v-for="s in selfStatuses" :key="s.status" :status="s.status" :label="s.label" />
         <span class="rounded-[14px] bg-surface px-2.5 py-1 text-[13px] font-medium tabular-nums">{{

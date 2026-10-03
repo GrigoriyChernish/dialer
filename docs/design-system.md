@@ -416,6 +416,7 @@
 
 | Група компонентів | Що в ній |
 | --- | --- |
+| `Components · Contacts` (додатково) | `Return Call` і `Return Call / hold`: плашка «Повернутися до дзвінка» під шапкою головного (картка, відступи 8 14 8 10: коло 32 `ok-soft` з `phone` 16 `ok`, «Олена Коваль» 14 / 600, «· 02:14» 13 / 500 `mute`, `chevron-up` 18 `mute`; на утриманні коло `warn-soft`, `pause` `warn`, «· на утриманні» `warn-text`) |
 | `Components · Base` | Контейнер у колонку: підгрупи `Bars` (`Status Bar`, `Call Header`), `Controls` (`Call Controls`, `Self View`, `Show Self`), `Actions` (`Action Button` і варіанти `/ active, danger, success, subtle, disabled`, `Labeled Action`), `Card` (`Card`) |
 | `Components · Contacts` | Контейнер у колонку: підгрупи `Headers` (`Home Header`, `Home Header / loading`, `Presence`, `Presence / busy`), `Rows` (`Contact Meta`, `Contact Row`, `Contact Row / history`, `Contact Row / skeleton`), `Navigation` (`Tab`, `Tab / active`, `Tab Bar`, `Tab Bar / history`, `Tab Bar / search`), `Elements` (`Section Label`, `Search Field`, `Empty State`) |
 | `Components · Self Status` | `Self Status / mic-off`, `mic-unavailable`, `camera-off`, `camera-unavailable`, `hold` |
@@ -490,7 +491,7 @@
 ## Базові компоненти екрана розмови
 
 - **`Status Bar`** 375 × 62: час (16 / 600) і індикатори (13 / 600), відступи 0 28. Це системна смуга телефона для макета, у віджеті її немає.
-- **`Call Header`** 375 × 40, відступи 8 24: ім'я співрозмовника (16 / 600) зліва, справа група `Right` з `Status Slot` (слот для значків `Self Status`,
+- **`Call Header`** 375 × 40, відступи 8 24: зліва група `Left`: кнопка `Minimize Button` (коло 28, `surface-2`, `chevron-down` 16, «Згорнути розмову») і ім'я співрозмовника (16 / 600), справа група `Right` з `Status Slot` (слот для значків `Self Status`,
   проміжок 6) і `Timer`. У коді це `<header>` екрана розмови.
 - **`Call Controls`** 266 × 74, радіус 40, відступи 10, проміжок 10: чотири `Action Button` (мікрофон, камера, утримання, завершити).
 - **`Self View`** 92 × 122, радіус 16: мініатюра нашого відео без підписів. Лише з увімкненою камерою: вимкнули самі чи камери немає — мініатюри й `Show Self` немає. Бейджа мікрофона немає:
