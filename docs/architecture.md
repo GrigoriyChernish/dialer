@@ -25,37 +25,40 @@ Vue-застосунок один: віджет. Демо — окрема не�
 | Мова | TypeScript | типізовані стани дзвінка й події сервера |
 | Збірка | Vite | швидкий dev-сервер, HTTPS для доступу до камери |
 | Стилі | Tailwind CSS 4 | утиліти в шаблонах, дизайн-токени в CSS через `@theme`, світла й темна теми |
-| Маршрутизація | Vue Router, `createMemoryHistory` | екрани всередині віджета, не чіпаючи URL сайту-господаря |
+| Маршрутизація | Vue Router: `createWebHashHistory` у застосунку, `createMemoryHistory` у віджеті | застосунок на Pages (hash-маршрути), віджет не чіпає URL сайту-господаря |
 | Стан | Pinia | спільний стан дзвінка для всіх екранів |
 | Медіа | `livekit-client` | аудіо й відео через LiveKit |
 | Переклади | vue-i18n | українська за замовчуванням, рід у текстах («вимкнула»/«вимкнув») |
-| Тести | Vitest, Vue Test Utils, Playwright | юніт-тести сторів і e2e-сценарії з демо |
+| Тести | Vitest, Vue Test Utils (e2e на Playwright у планах) | юніт-тести сторів, компонентів і клієнта сигналізації |
 | Якість коду | ESLint, Prettier | єдиний стиль |
 
 ### Структура папок
 
-Код SPA лежить у `web/` (після міграції в `apps/web`, див. [project-structure.md](project-structure.md)):
+Код SPA лежить в `apps/web` (див. [project-structure.md](project-structure.md)):
 
 ``` text
-web/
-  demo/           # сторінка демо: вхід за ім'ям і номером, підключає віджет через embed.js (без Vue)
+apps/web/
+  index.html      # застосунок (Pages): вхід, контакти, історія, налаштування, дзвінок
+  widget.html     # віджет для iframe з demo/embed.js
+  public/         # manifest.webmanifest, іконки PWA, sw.js (Web Push)
   src/
-    app/          # App.vue, router, i18n
+    app/          # App.vue, i18n; styles/: main.css (Tailwind) і tokens.css (дизайн-токени)
     entries/
+      app.ts      # точка входу застосунку: сесія, сигналізація, роутер, push
       widget.ts   # точка входу віджета: токен і налаштування від сайту-господаря
-    embed/        # embed.js: невеликий завантажувач, який сайт-господар підключає до себе
-      styles/     # main.css: підключення Tailwind і дизайн-токени
-    pages/        # екрани-маршрути: Contacts, Recents, Settings
+    pages/        # екрани-маршрути: Login, Home, Contacts, History, Search, Settings
     features/
-      call/       # екрани дзвінка, стор, машина станів
-      contacts/
-      recents/
+      auth/       # сесія (вхід, оновлення токена, вихід)
+      call/       # екрани дзвінка, стор, пул сповіщень
+      contacts/   # рядки контактів і стан завантаження
+      settings/   # налаштування пристрою (prefs) і Web Push (push)
     shared/
-      ui/         # кнопки, аватари, іконки
-      media/      # обгортка над livekit-client, пристрої, камера
+      ui/         # кнопки, аватари, іконки, банери, перемикач
+      media/      # обгортка над livekit-client, дозволи, завантаження відео
       sounds/     # гудки й мелодії через Web Audio
-      api/        # HTTP-клієнт і WebSocket сигналізації
-  tests/e2e/
+      api/        # HTTP-вхід, адреса сервера, WebSocket сигналізації
+      theme.ts    # тема й колір статус-бару
+  tests/          # Vitest
 ```
 
 ### Стилі
@@ -64,7 +67,7 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
 у v4 налаштування пишуться прямо в CSS.
 
 ```css
-/* web/src/app/styles/main.css */
+/* apps/web/src/app/styles/main.css */
 @import "tailwindcss";
 
 /* варіант dark: спрацьовує за атрибутом, а не лише за системною темою */
@@ -272,7 +275,7 @@ Tailwind CSS 4 підключається через Vite-плагін `@tailwin
   і `VITE_SERVER_URL=https://dialer-chat-server.fly.dev`. Маршрути в hash (`#/login`), бо Pages не віддає `index.html` для довільних шляхів.
 - `apps/web` збирає дві сторінки: `index.html` (застосунок) і `widget.html` (віджет для iframe з `embed.js`). На Pages лише застосунок;
   віджет, `embed.js` і сторінка демо працюють локально (див. [demo.md](demo.md)).
-- `sw.js` з'явиться разом із пушами (беклог, «Пуш-сповіщення про вхідні»).
+- `sw.js` (`apps/web/public`) — сервіс-воркер Web Push застосунку, реєструється при вмиканні сповіщень, див. [pwa-and-push.md](pwa-and-push.md). Віджет на чужих сайтах поки без пушів (план вище).
 - Pages віддає сайт по HTTPS, тож камера й мікрофон працюють.
 - Обмеження: не можна задати свої HTTP-заголовки (CSP, `Permissions-Policy`), а сторінка демо
   лежить на тому самому домені, що й віджет. Роботу з чужого домену треба окремо перевірити з іншого хостингу

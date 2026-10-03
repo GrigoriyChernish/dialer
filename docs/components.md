@@ -45,7 +45,7 @@
 
 ### `Icon`
 
-Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `history`, `volume2`, `volumeX`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
+Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneCall`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `history`, `arrowLeftRight`, `volume2`, `volumeX`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `chevronRight`, `chevronUp`, `chevronDown`, `bell`, `bellRing`, `moon`, `sun`, `monitorSmartphone`, `pencil`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
 
 - **Розмір:** за замовчуванням 24; менші задає викликач класом `size-*` (16 у підписах і плашках, 18 у результаті, 12 у бейджі). Власного розміру компонент не нав'язує.
 - **Доступність:** декоративна (`aria-hidden`), підпис дає кнопка.
@@ -175,7 +175,7 @@
 - **«Мелодія вхідних»**, **«Камера на початку дзвінка»** і **тема** («Авто / Світла / Темна», `role="radiogroup"`) — `usePrefsStore`
   (`features/settings/prefs.ts`, `localStorage` `dialer.prefs`): лише цей пристрій. Без мелодії мовчать і мелодія вхідного, і сигнал другого вхідного.
 - **«Сповіщення про дзвінки»** — `usePush` (`features/settings/push.ts`), деталі в `pwa-and-push.md`; поки підписка зберігається, попап зі спінером під затемненням (`role="dialog"`, `aria-modal`).
-- **«Вийти»** — окрема картка внизу (`session.logout()`).
+- **«Вийти»** — окрема картка внизу (`session.logout()`). Увімкнені сповіщення перед цим відв'язуються на сервері (`usePush().release`), у браузері підписка лишається за користувачем і повертається після його повторного входу.
 
 ### `Toggle` (`shared/ui/Toggle.vue`)
 

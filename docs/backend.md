@@ -16,7 +16,7 @@
 | Хостинг | Fly.io | WebSocket і HTTPS з коробки, публічна адреса для вебхуків LiveKit, томи для SQLite |
 | Тести | Vitest | юніт-тести логіки дзвінків, інтеграційні з двома WebSocket-клієнтами |
 
-Залежності мінімальні: `ws`, `fastify`, `better-sqlite3`, `jose` (JWT), `livekit-server-sdk`, `pino`; `web-push` додамо з кроком 6 (Web Push).
+Залежності мінімальні: `ws`, `fastify`, `better-sqlite3`, `jose` (JWT), `livekit-server-sdk`, `pino`, `web-push` (Web Push).
 
 ## Запуск
 
@@ -80,12 +80,13 @@ apps/server/
 | Таблиця | Що зберігає |
 | --- | --- |
 | `sites` | сайти-господарі: `id`, назва, секрет, `allowed_origins`; окремий запис `demo` |
-| `users` | ключ `(site_id, id)`, де `id` це E.164 у демо (а в демо-ботів `bot:olena`, `bot:andriy`, `bot:support`), ім'я, `disabled`, `is_bot`, `recents_seen_up_to` (мс, до якого історію переглянуто, `005_recents_seen.sql`), `settings` (JSON: `waiting`, `dnd`) |
+| `users` | ключ `(site_id, id)`, де `id` це E.164 у демо (а в демо-ботів `bot:olena`, `bot:andriy`, `bot:support`), ім'я, `disabled`, `is_bot`, `verified_at` (номер підтверджено кодом, `004_verified.sql`), `recents_seen_up_to` (мс, до якого історію переглянуто, `005_recents_seen.sql`), `settings` (JSON: `waiting`, `dnd`) |
 | `calls` | дзвінки: `id`, учасники, стан, `created_at`, `answered_at`, `ended_at`, `reason` |
 | `recents` | історія: чий запис, `call_id`, співрозмовник, напрям, результат, `silent`, тривалість |
+| `sessions` | сесії входу (`003_sessions.sql`): `id` (sha256 refresh-токена), користувач, `created_at`, `expires_at`; каскадне видалення разом з користувачем |
 | `push_subscriptions` | підписка Web Push на пристрій (`006_push_subscriptions.sql`): ключ `endpoint`, `site_id`, `user_id`, `device_id`, `p256dh`, `auth`; каскадне видалення разом з користувачем |
 
-- Зараз у БД `sites`, `users` (`001_init.sql`), `calls` і `recents` (`002_calls.sql`); `push_subscriptions` (`006`). Підписки зберігаються командами `push.subscribe`/`push.unsubscribe`; `push/dispatch.ts` обгортає `deliver` і шле Web Push на вхідний та його завершення пристроям без WebSocket або з прихованим вікном (`Connection.hidden`, кадр `device.visibility`).
+- Зараз у БД `sites`, `users` (`001_init.sql`), `calls` і `recents` (`002_calls.sql`), `sessions` (`003`), `push_subscriptions` (`006`); `004` і `005` додають стовпці `users`. Підписки зберігаються командами `push.subscribe`/`push.unsubscribe`; `push/dispatch.ts` обгортає `deliver` і шле Web Push на вхідний та його завершення пристроям без WebSocket або з прихованим вікном (`Connection.hidden`, кадр `device.visibility`).
 - Міграції простими SQL-файлами, що застосовуються за порядком при старті. Окремих ORM не беремо.
 - `better-sqlite3` синхронний, що для одного інстансу прийнятно, а код простіший. Режим WAL увімкнений.
 - Активні дзвінки пишемо в `calls` одразу (write-through) і читаємо при старті: так перезапуск чи деплой не губить
@@ -249,7 +250,7 @@ Job `deploy` у `.github/workflows/ci.yml` іде після зеленого jo
 3. ✅ Дзвінок без медіа: `call.invite`/`accept`/`reject`/`cancel`/`hangup`/`hold`, таймаут, історія, боти, відновлення після перезапуску.
 4. ✅ `waiting`, `dnd`, `settings`.
 5. ✅ LiveKit: токени кімнат, вебхук, правило `lost`.
-6. ⏸ Web Push і `POST /tokens` для справжніх сайтів-господарів: поки пропущено (пункт 15 беклогу).
+6. ✅ Web Push для застосунку (див. [pwa-and-push.md](pwa-and-push.md)); ⏸ `POST /tokens` для справжніх сайтів-господарів поки пропущено (пункт 15 беклогу).
 7. ✅ Розгортання на Fly.io: `Dockerfile`, `fly.toml`, автодеплой (job `deploy` у `.github/workflows/ci.yml`) (перший деплой робиться вручну, див. «Розгортання на Fly.io»).
 
 ## Логи
