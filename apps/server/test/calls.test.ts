@@ -614,6 +614,7 @@ describe('LiveKit і правило lost', () => {
     t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(bohdan) });
     t.clock.advance(300_000);
     expect(t.delivered).toEqual([]);
+    expect(t.lk.removed).toEqual([]); // учасників розмови не чіпаємо
 
     t.calls.onMedia({ kind: 'left', callId: 'call1', identity: id(bohdan) });
     t.clock.advance(20_000);
@@ -627,10 +628,15 @@ describe('LiveKit і правило lost', () => {
     expect(find(t.delivered, 'call.ended').map(e => e.msg.reason)).toEqual(['lost', 'lost']);
   });
 
-  it('сторонні ідентичності не рахуються, room_finished запускає відлік', async () => {
+  it('сторонні ідентичності не рахуються й викидаються з кімнати, room_finished запускає відлік', async () => {
     connected();
     t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: id(anna) });
     t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: `${bohdan.userId}:інший` });
+    t.calls.onMedia({ kind: 'joined', callId: 'call1', identity: '+380509999999:d1' });
+    expect(t.lk.removed).toEqual([
+      ['call1', `${bohdan.userId}:інший`],
+      ['call1', '+380509999999:d1'],
+    ]);
     t.clock.advance(30_000);
     await flush();
     expect(find(t.delivered, 'call.ended')).toHaveLength(2);

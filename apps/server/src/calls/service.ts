@@ -363,10 +363,21 @@ export function createCallService(deps: CallServiceDeps) {
     callsFor: (siteId: string, userId: string, deviceId?: string): CallInfo[] =>
       store.activeFor(siteId, userId).map(c => info(c, userId, deviceId)),
 
-    /** Подія з вебхука LiveKit: хто зайшов у кімнату чи вийшов з неї. */
+    /**
+     * Подія з вебхука LiveKit: хто зайшов у кімнату чи вийшов з неї. Токен кімнати отримують лише два пристрої розмови,
+     * але LiveKit пустить будь-кого з дійсним токеном (наприклад, пересланим), тож сторонню ідентичність одразу викидаємо.
+     */
     onMedia(event: MediaEvent): void {
       const call = store.get(event.callId);
       if (!call || call.state !== 'connected' || !tracked(call)) return;
+      if (event.kind === 'joined' && event.identity && !expectedIdentities(call).includes(event.identity)) {
+        const identity = event.identity;
+        log.warn({ callId: call.id, identity }, 'сторонній у кімнаті дзвінка, викидаємо');
+        deps
+          .livekit!.removeParticipant(call.id, identity)
+          .catch(err => log.warn({ err, callId: call.id, identity }, 'не вдалося викинути стороннього з кімнати'));
+        return;
+      }
       const present = media.get(call.id) ?? new Set<string>();
       media.set(call.id, present);
       if (event.kind === 'joined' && event.identity) present.add(event.identity);

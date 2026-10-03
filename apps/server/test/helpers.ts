@@ -49,6 +49,7 @@ export async function startServer(
       if (lk.roomsDown) throw new Error('livekit down');
       return roomParticipants.get(room) ?? [];
     },
+    removeParticipant: async () => {},
   };
   const server = await createServer({
     config,

@@ -3,6 +3,7 @@ import type { LiveKit } from '../src/livekit';
 /** LiveKit без мережі: токени-рядки й записи про закриті кімнати. */
 export function createFakeLiveKit() {
   const closed: string[] = [];
+  const removed: [string, string][] = [];
   const participants = new Map<string, string[]>();
   let failList = false;
   const livekit: LiveKit = {
@@ -13,6 +14,7 @@ export function createFakeLiveKit() {
       if (failList) throw new Error('LiveKit недоступний');
       return participants.get(callId) ?? [];
     },
+    removeParticipant: async (callId, identity) => void removed.push([callId, identity]),
   };
-  return { livekit, closed, participants, failListing: () => void (failList = true) };
+  return { livekit, closed, removed, participants, failListing: () => void (failList = true) };
 }

@@ -20,6 +20,7 @@ export interface MediaEvent {
 export interface RoomApi {
   deleteRoom(room: string): Promise<void>;
   listParticipants(room: string): Promise<string[]>;
+  removeParticipant(room: string, identity: string): Promise<void>;
 }
 
 export interface LiveKit {
@@ -30,6 +31,8 @@ export interface LiveKit {
   /** Закриває кімнату, щоб завершений дзвінок не лишався в медіа. */
   closeRoom(callId: string): Promise<void>;
   listParticipants(callId: string): Promise<string[]>;
+  /** Викидає учасника з кімнати (сторонній із чужим токеном). */
+  removeParticipant(callId: string, identity: string): Promise<void>;
 }
 
 /** Термін життя токена кімнати, с. */
@@ -69,6 +72,7 @@ export function createRoomApi(cfg: LiveKitConfig): RoomApi {
   return {
     deleteRoom: room => client.deleteRoom(room),
     listParticipants: async room => (await client.listParticipants(room)).map(p => p.identity),
+    removeParticipant: (room, identity) => client.removeParticipant(room, identity),
   };
 }
 
@@ -96,5 +100,6 @@ export function createLiveKit(cfg: LiveKitConfig, rooms: RoomApi = createRoomApi
     },
     closeRoom: callId => rooms.deleteRoom(callId),
     listParticipants: callId => rooms.listParticipants(callId),
+    removeParticipant: (callId, identity) => rooms.removeParticipant(callId, identity),
   };
 }

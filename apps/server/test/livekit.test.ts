@@ -31,7 +31,11 @@ describe('токен кімнати', () => {
 });
 
 describe('вебхук', () => {
-  const lk = createLiveKit(LIVEKIT_TEST, { deleteRoom: async () => {}, listParticipants: async () => [] });
+  const lk = createLiveKit(LIVEKIT_TEST, {
+    deleteRoom: async () => {},
+    listParticipants: async () => [],
+    removeParticipant: async () => {},
+  });
   const room = { name: 'call1' };
 
   it.each([
