@@ -34,6 +34,7 @@ export interface CallDeps {
     setDeaf(d: boolean): void;
     onChange?(fn: (patch: Partial<LinkState>) => void): void;
     setCamera?(on: boolean): void;
+    enableAudio?(): Promise<void>;
     hasCamera?(): Promise<boolean>;
     hasMicrophone?(): Promise<boolean>;
     attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void;
@@ -113,6 +114,7 @@ export const useCallStore = defineStore('call', () => {
     peerCam: false,
     localCam: false,
     audioOnly: false,
+    audioBlocked: false,
     micError: false,
     camError: false,
   };
@@ -583,6 +585,11 @@ export const useCallStore = defineStore('call', () => {
   }
 
   /** «Перемкнути»: утримуваний дзвінок стає поточним, а поточний — утримуваним (сервер робить це однією командою). */
+  /** «Увімкнути звук»: викликається з натискання кнопки у сповіщенні (жест користувача потрібен браузеру). */
+  function enableAudio() {
+    void deps.media.enableAudio?.();
+  }
+
   function swapHeld() {
     const h = held.value;
     if (!h || status.value !== 'connected' || !callId.value) return;
@@ -673,6 +680,7 @@ export const useCallStore = defineStore('call', () => {
     acceptWaiting,
     rejectWaiting,
     swapHeld,
+    enableAudio,
     callId,
     peer,
     hold,

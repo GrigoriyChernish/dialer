@@ -23,6 +23,8 @@ const KINDS = {
   activeCall: { tone: 'ok', icon: 'phone' },
   // Self Banner: утримуваний дзвінок у пулі сповіщень (CallScreen, з кнопкою «Перемкнути»)
   heldCall: { tone: 'warn', icon: 'pause' },
+  // Self Banner: браузер заблокував відтворення звуку (користувацька група пулу, з кнопкою «Увімкнути звук»)
+  audioBlocked: { tone: 'warn', icon: 'volumeX' },
 } as const satisfies Record<string, Omit<BannerItem, 'id' | 'text'>>;
 
 export type BannerKind = keyof typeof KINDS;

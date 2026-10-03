@@ -45,7 +45,7 @@
 
 ### `Icon`
 
-Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `history`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
+Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `history`, `volume2`, `volumeX`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
 
 - **Розмір:** за замовчуванням 24; менші задає викликач класом `size-*` (16 у підписах і плашках, 18 у результаті, 12 у бейджі). Власного розміру компонент не нав'язує.
 - **Доступність:** декоративна (`aria-hidden`), підпис дає кнопка.
@@ -77,7 +77,7 @@
 ### `BannerStack`
 
 Стек смужок із анімацією. **Props:** `items: { id, tone, icon, text, spin?, srLabel?, action? }[]`, `fade?: boolean` (режим слота: сповіщення міняються прозорістю й зсувом без зміни висоти) (`srLabel`: підпис для читачів екрана, коли видимий текст змінюється, наприклад таймер;
-`action`: кнопка-іконка «Перемкнути» праворуч). Батько ставить його абсолютно (`NotificationPool`: `absolute inset-x-4 top-[46px]`) чи у слот `Peer`, стек не бере місця в розкладці.
+`action: { label, title?, icon?, run }`: кнопка-іконка праворуч, типово `arrowLeftRight` «Перемкнути», для «Увімкнути звук» `volume2`). Батько ставить його абсолютно (`NotificationPool`: `absolute inset-x-4 top-[46px]`) чи у слот `Peer`, стек не бере місця в розкладці.
 
 - Нове сповіщення додається елементом масиву з унікальним `id`, зникає, коли його прибрано; кожне анімується окремо:
   поява 220 мс `ease-out`, зникнення 180 мс `ease-in` (висота, прозорість, зсув 4 px). `prefers-reduced-motion` вимикає анімацію.

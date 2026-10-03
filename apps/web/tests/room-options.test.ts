@@ -4,7 +4,9 @@ interface MockRoom {
   options: Record<string, unknown>;
   stopped: string[];
   handlers: Map<string, (...a: unknown[]) => void>;
-  localParticipant: { setCameraEnabled: ReturnType<typeof vi.fn> };
+  localParticipant: { setCameraEnabled: ReturnType<typeof vi.fn>; setMicrophoneEnabled: ReturnType<typeof vi.fn> };
+  startAudio: ReturnType<typeof vi.fn>;
+  canPlaybackAudio: boolean;
 }
 const created: MockRoom[] = [];
 
@@ -30,6 +32,7 @@ vi.mock('livekit-client', () => {
       return this;
     }
     connect = vi.fn(async () => {});
+    canPlaybackAudio = true;
     startAudio = vi.fn(async () => {});
     disconnect = vi.fn();
   }
@@ -121,6 +124,37 @@ describe('CallMedia room options', () => {
       vi.advanceTimersByTime(15_000);
       expect(cam).toHaveBeenLastCalledWith(false);
       vi.useRealTimers();
+    });
+  });
+
+  describe('audio autoplay', () => {
+    it('still publishes the microphone and reports a block when startAudio is rejected', async () => {
+      const media = new CallMedia();
+      const patches: Record<string, boolean>[] = [];
+      media.onChange(p => patches.push(p as Record<string, boolean>));
+      const orig = created.length;
+      const p = media.join({ url: 'wss://lk.example', token: 't' });
+      const room = created[orig]!;
+      room.startAudio.mockRejectedValueOnce(new Error('NotAllowedError'));
+      room.canPlaybackAudio = false;
+      await p;
+      expect(room.localParticipant.setMicrophoneEnabled).toHaveBeenCalled();
+      expect(patches).toContainEqual({ audioBlocked: true });
+    });
+
+    it('reports the block from the room event and clears it after enableAudio', async () => {
+      const media = new CallMedia();
+      const patches: Record<string, boolean>[] = [];
+      media.onChange(p => patches.push(p as Record<string, boolean>));
+      await media.join({ url: 'wss://lk.example', token: 't' });
+      const room = created.at(-1)!;
+      room.canPlaybackAudio = false;
+      room.handlers.get('AudioPlaybackStatusChanged')!(false);
+      expect(patches.at(-1)).toEqual({ audioBlocked: true });
+      room.canPlaybackAudio = true;
+      await media.enableAudio();
+      expect(room.startAudio).toHaveBeenCalledTimes(2);
+      expect(patches.at(-1)).toEqual({ audioBlocked: false });
     });
   });
 });

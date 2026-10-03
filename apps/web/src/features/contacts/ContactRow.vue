@@ -11,7 +11,14 @@ import Icon, { type IconName } from '@/shared/ui/Icon.vue';
  * (`bad` пропущений, `warn` не додзвонились) і статус того ж кольору; без `tone` звичайний аватар, а значок і статус за `direction`
  * (вхідний зелений `ok`, вихідний синій `accent`, як кільця виклику в Peer).
  */
-const props = defineProps<{ name: string; status: string; dot?: string; icon?: IconName; tone?: 'bad' | 'warn'; direction?: 'in' | 'out' }>();
+const props = defineProps<{
+  name: string;
+  status: string;
+  dot?: string;
+  icon?: IconName;
+  tone?: 'bad' | 'warn';
+  direction?: 'in' | 'out';
+}>();
 defineEmits<{ call: [] }>();
 const { t } = useI18n();
 const TONES = {

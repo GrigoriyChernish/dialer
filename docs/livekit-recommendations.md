@@ -15,7 +15,7 @@
 | 3 | `echoCancellation`, `noiseSuppression`, `autoGainControl` | **є** | задано явно в `audioCaptureDefaults` (збігається з типовими значеннями браузера) |
 | 4 | Фільтр шуму Krisp / RNNoise | не робимо | Krisp лише для LiveKit Cloud; окремий пункт у беклозі |
 | 5 | `room.prepareConnection(url, token)` до відповіді | не можемо | `livekit.url` і `token` приходять лише в `call.connected` (немає під час гудків); потрібен `url` раніше в протоколі, пункт у беклозі |
-| 6 | Політика автовідтворення (`canPlaybackAudio`, `startAudio`) | частково | `startAudio()` викликаємо після `connect`; підказки «Увімкнути звук» немає, пункт у беклозі |
+| 6 | Політика автовідтворення (`canPlaybackAudio`, `startAudio`) | **є** | `startAudio()` після `connect`, відмову не вважаємо збоєм; `AudioPlaybackStatusChanged` → `link.audioBlocked` → сповіщення «Звук вимкнено браузером» із кнопкою «Увімкнути звук» |
 | 7 | Очищення елементів у `close()` | **є** | `el.remove()`, `remoteVideo = undefined`; зайвий `srcObject = null` не додаємо (користі не підтверджено) |
 | 8 | Вимкнення публікації на утриманні | **є** | `setDeaf(hold \|\| peerHold)` → `apply()` |
 
@@ -41,9 +41,12 @@ audioCaptureDefaults: { echoCancellation: true, noiseSuppression: true, autoGain
 
 ## 6. Автовідтворення звуку
 
-Браузери (особливо Safari) можуть не відтворити вхідне аудіо без жесту користувача. `room.startAudio()` викликаємо після `connect`. Для надійності: підписатись на `RoomEvent.AudioPlaybackStatusChanged`,
-і коли `room.canPlaybackAudio === false`, показати користувачеві сповіщення «Увімкнути звук» (користувацька група пулу, [notifications.md](notifications.md)) із кнопкою, що викликає `startAudio()`.
-Не зроблено, див. беклог.
+Браузери (особливо Safari) можуть не відтворити вхідне аудіо без жесту користувача. Що робить `CallMedia`:
+
+- `room.startAudio()` викликаємо після `connect`. У `livekit-client` він **кидає помилку**, якщо відтворення заблоковане, тому відмову ловимо (`catch`): раніше вона обривала `join` до `apply()`, і мікрофон не вмикався.
+- Після цього `link.audioBlocked = !room.canPlaybackAudio`; далі стан оновлює подія `RoomEvent.AudioPlaybackStatusChanged`. При `swap` стан береться з кімнати, що стала поточною.
+- Інтерфейс: `CallScreen` додає в користувацьку групу пулу сповіщення `audioBlocked` «Звук вимкнено браузером» з кнопкою-іконкою `volume-2` «Увімкнути звук» ([notifications.md](notifications.md)). Кнопка викликає `call.enableAudio()` → `CallMedia.enableAudio()` → `room.startAudio()` просто з жесту користувача; успіх знімає блок.
+- Перевірити на реальному Safari/iOS: у Chrome на Android звук зазвичай відтворюється після натискання «Прийняти»/«Подзвонити».
 
 ## 7. Слабкий канал: лише звук
 

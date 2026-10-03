@@ -14,6 +14,8 @@ export interface LinkState {
   peerCam: boolean;
   /** Наша камера справді публікується. */
   localCam: boolean;
+  /** Браузер заблокував відтворення звуку співрозмовника (автовідтворення), потрібне натискання «Увімкнути звук». */
+  audioBlocked: boolean;
   /** Слабкий канал: свою камеру вимкнено, відео співрозмовника не качаємо, лишився звук (повертається, коли канал стабільний). */
   audioOnly: boolean;
   /** Мікрофон не вдалося ввімкнути (немає пристрою чи дозволу). */
@@ -122,6 +124,7 @@ export class CallMedia {
     });
     room.on(RoomEvent.LocalTrackPublished, pub => pub.source === Track.Source.Camera && emit({ localCam: true }));
     room.on(RoomEvent.LocalTrackUnpublished, pub => pub.source === Track.Source.Camera && emit({ localCam: false }));
+    room.on(RoomEvent.AudioPlaybackStatusChanged, ok => emit({ audioBlocked: !ok }));
     room.on(RoomEvent.Reconnecting, () => emit({ reconnecting: true }));
     room.on(RoomEvent.Reconnected, () => emit({ reconnecting: false }));
     room.on(RoomEvent.ConnectionQualityChanged, (q, p) => {
@@ -147,7 +150,9 @@ export class CallMedia {
       await room.connect(access.url, access.token);
       // поки підключались, дзвінок завершили; якщо його лише утримали (park), кімната лишається
       if (s !== this.cur && s !== this.parked) return void room.disconnect();
-      await room.startAudio();
+      // без жесту користувача startAudio відхиляється: це не привід не вмикати мікрофон, а сигнал показати «Увімкнути звук»
+      await room.startAudio().catch(() => {});
+      emit({ audioBlocked: !room.canPlaybackAudio });
       if (s === this.cur) this.apply();
       else this.silence(s);
     } catch (e) {
@@ -191,6 +196,14 @@ export class CallMedia {
     this.degraded = false;
   }
 
+  /** Кнопка «Увімкнути звук»: `startAudio` має викликатись із жесту користувача. */
+  async enableAudio() {
+    const room = this.cur?.room;
+    if (!room) return;
+    await room.startAudio().catch(() => {});
+    this.emit({ audioBlocked: !room.canPlaybackAudio });
+  }
+
   setMic(on: boolean) {
     this.micOn = on;
     this.apply();
@@ -231,7 +244,13 @@ export class CallMedia {
     this.resetDegraded();
     [this.cur, this.parked] = [this.parked, this.cur];
     if (this.parked) this.silence(this.parked);
-    this.emit({ peerCam: !!this.cur?.remoteVideo, peerAway: false, peerMuted: false, audioOnly: false });
+    this.emit({
+      peerCam: !!this.cur?.remoteVideo,
+      peerAway: false,
+      peerMuted: false,
+      audioOnly: false,
+      audioBlocked: !!this.cur && !this.cur.room.canPlaybackAudio,
+    });
     this.apply();
     return true;
   }

@@ -34,7 +34,8 @@ const TONE: Partial<Record<RecentResult, 'bad' | 'warn'>> = {
   no_answer: 'warn',
   failed: 'warn',
 };
-const icon = (r: RecentEntry) => (r.result === 'missed' ? 'phoneMissed' : r.direction === 'in' ? 'phoneIncoming' : 'phoneOutgoing');
+const icon = (r: RecentEntry) =>
+  r.result === 'missed' ? 'phoneMissed' : r.direction === 'in' ? 'phoneIncoming' : 'phoneOutgoing';
 const status = (r: RecentEntry) => {
   const label = r.result === 'completed' ? t(`history.${r.direction}`) : t(`history.result.${r.result}`);
   return [label, time(r.startedAt), r.result === 'completed' && r.duration !== undefined && mmss(r.duration)]

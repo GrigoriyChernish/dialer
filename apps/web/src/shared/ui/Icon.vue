@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {
   ArrowLeftRight,
+  Volume2,
+  VolumeX,
   Bell,
   History,
   ChevronLeft,
@@ -36,6 +38,8 @@ import {
 const ICONS = {
   phone: Phone,
   arrowLeftRight: ArrowLeftRight,
+  volume2: Volume2,
+  volumeX: VolumeX,
   phoneCall: PhoneCall,
   chevronRight: ChevronRight,
   bell: Bell,

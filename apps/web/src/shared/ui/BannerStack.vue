@@ -17,7 +17,7 @@ export interface BannerItem {
   /** Підпис для читачів екрана, коли видимий текст змінюється (таймер): текст ховаємо через `aria-hidden`. */
   srLabel?: string;
   /** Кнопка-іконка праворуч (Self Banner / held-call: «Перемкнути»), клікабельна, на відміну від смужки. */
-  action?: { label: string; title?: string; run: () => void };
+  action?: { label: string; title?: string; icon?: IconName; run: () => void };
 }
 defineProps<{
   items: BannerItem[];
@@ -106,7 +106,7 @@ function leaveFade(el: Element, done: () => void) {
           :title="b.action.title"
           @click="b.action.run()"
         >
-          <Icon name="arrowLeftRight" class="size-3.5" />
+          <Icon :name="b.action.icon ?? 'arrowLeftRight'" class="size-3.5" />
         </button>
       </template>
     </Banner>

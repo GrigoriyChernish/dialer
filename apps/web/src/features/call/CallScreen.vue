@@ -56,6 +56,17 @@ const pool = usePool(() => {
       group: 'system',
       ...banner('poorSignal', t(call.link.audioOnly ? 'call.network.poorSignalAudio' : 'call.network.poorSignal')),
     });
+  if (call.link.audioBlocked)
+    list.push({
+      group: 'user',
+      ...banner('audioBlocked', t('call.notice.audioBlocked')),
+      action: {
+        label: t('call.notice.enableAudio'),
+        title: t('call.notice.enableAudio'),
+        icon: 'volume2',
+        run: () => call.enableAudio(),
+      },
+    });
   if (call.hint === 'cam')
     list.push({ group: 'user', ...banner('cameraUnavailable', t('call.notice.cameraUnavailable')) });
   if (call.hint === 'mic') list.push({ group: 'user', ...banner('micUnavailable', t('call.notice.micUnavailable')) });
