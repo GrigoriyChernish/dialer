@@ -142,6 +142,30 @@ export function usePush() {
   return { available, enabled, model, denied, busy, saving, error, refresh, enable, disable, release };
 }
 
+/** Як часто при поверненні на екран перевіряти нову версію `sw.js`. */
+const UPDATE_EVERY_MS = 10 * 60_000;
+let lastUpdate = 0;
+
+/**
+ * Оновлення сервіс-воркера (лише якщо його вже зареєстровано, тобто сповіщення вмикали). Сам браузер перевіряє `sw.js` при
+ * відкритті застосунку й при push (раз на добу), а PWA, яку не закривають, без цього лишалась би на старій версії.
+ * - `start`: при старті застосунку реєструє воркер повторно: так до параметра `server` доходить нова адреса сервера.
+ * - інакше (повернення на екран): `registration.update()`, не частіше ніж раз на `UPDATE_EVERY_MS`.
+ * Нова версія вмикається одразу (`skipWaiting` і `clients.claim` у `sw.js`), перезавантаження не треба.
+ */
+export async function updateWorker(start = false) {
+  if (!supported() || (!start && Date.now() - lastUpdate < UPDATE_EVERY_MS)) return;
+  lastUpdate = Date.now();
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (!reg) return;
+    if (start) await register();
+    else await reg.update();
+  } catch {
+    // немає мережі: перевіримо наступного разу
+  }
+}
+
 /**
  * Закриває сповіщення «Вхідний дзвінок» (у них є `rejectToken`), коли застосунок на екрані: дзвінок видно в ньому самому.
  * «Пропущений» лишається.

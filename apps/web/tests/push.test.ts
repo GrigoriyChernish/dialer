@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCallStore } from '@/features/call/store';
-import { resyncPush, usePush } from '@/features/settings/push';
+import { resyncPush, updateWorker, usePush } from '@/features/settings/push';
 
 const BYTES = new Uint8Array([4, 1, 3, 0, 1]);
 const KEY = btoa(String.fromCharCode(...BYTES))
@@ -25,7 +25,7 @@ function setup({ permission = 'default', existing = null as FakeSub | null } = {
     };
     return sub;
   });
-  const reg = { pushManager: { getSubscription: async () => sub, subscribe } };
+  const reg = { pushManager: { getSubscription: async () => sub, subscribe }, update: vi.fn(async () => {}) };
   const nav = {
     register: vi.fn(async () => reg),
     ready: Promise.resolve(reg),
@@ -46,7 +46,7 @@ function setup({ permission = 'default', existing = null as FakeSub | null } = {
   call.me = { userId: '+380501111111', name: 'Оля' } as typeof call.me;
   const request = vi.spyOn(call, 'pushSubscribe').mockResolvedValue();
   const unsubscribe = vi.spyOn(call, 'pushUnsubscribe').mockResolvedValue();
-  return { call, push: usePush(), request, unsubscribe, subscribe, nav, getSub: () => sub };
+  return { call, push: usePush(), request, unsubscribe, subscribe, nav, reg, getSub: () => sub };
 }
 
 beforeEach(() => {
@@ -200,6 +200,33 @@ describe('вихід і повторний вхід', () => {
     expect(localStorage.getItem('dialer.push.owner')).toBe('+380501111111');
     await push.disable();
     expect(localStorage.getItem('dialer.push.owner')).toBeNull();
+  });
+});
+
+describe('updateWorker', () => {
+  it('старт: повторна реєстрація з поточною адресою сервера; на екрані update не частіше ніж раз на 10 хв', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      const { nav, reg } = setup();
+      await updateWorker(true);
+      expect(nav.register).toHaveBeenCalledWith(expect.stringMatching(/^sw\.js\?server=/));
+      expect(reg.update).not.toHaveBeenCalled();
+
+      await updateWorker();
+      expect(reg.update).not.toHaveBeenCalled(); // щойно перевіряли
+      vi.advanceTimersByTime(10 * 60_000);
+      await updateWorker();
+      expect(reg.update).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('без реєстрації (сповіщення не вмикали) воркер не з’являється', async () => {
+    const { nav } = setup();
+    nav.getRegistration = async () => undefined as never;
+    await updateWorker(true);
+    expect(nav.register).not.toHaveBeenCalled();
   });
 });
 
