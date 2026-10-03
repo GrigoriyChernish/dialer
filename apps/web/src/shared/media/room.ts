@@ -1,5 +1,6 @@
 import type { LiveKitAccess } from '@dialer/shared';
 import { ConnectionQuality, Room, RoomEvent, Track, type RemoteTrack } from 'livekit-client';
+import { requestMediaPermissions, watchMediaPermissions, type PermissionStatusResult } from './permissions';
 
 /** Стан зв'язку, який видно з кімнати: показується плашками Call State. */
 export interface LinkState {
@@ -65,7 +66,17 @@ export class CallMedia {
 
   async join(access: LiveKitAccess) {
     this.leave();
-    const s: Session = { room: new Room(), els: [] };
+    const s: Session = {
+      room: new Room({
+        // явно, щоб не залежати від типових значень браузера: ехо, шум і гучність обробляє WebRTC (не Krisp чи RNNoise)
+        audioCaptureDefaults: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      }),
+      els: [],
+    };
     this.cur = s;
     const room = s.room;
     // події утримуваної кімнати не показуємо: стан зв'язку належить поточній розмові
@@ -203,5 +214,15 @@ export class CallMedia {
     void lp?.setMicrophoneEnabled(wantMic).catch(() => wantMic && this.emit({ micError: true }));
     void lp?.setCameraEnabled(this.camOn && !this.deaf).catch(() => this.emit({ camError: true }));
     this.cur?.els.forEach(el => (el.muted = this.deaf));
+  }
+
+  /** Запит дозволів на аудіо та відео до першого дзвінка. */
+  async requestPermissions() {
+    return requestMediaPermissions();
+  }
+
+  /** Підписка на статус дозволів браузера та стан пристроїв. */
+  watchPermissions(fn: (res: PermissionStatusResult) => void) {
+    return watchMediaPermissions(fn);
   }
 }

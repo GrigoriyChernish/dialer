@@ -40,6 +40,8 @@ export interface CallDeps {
     park?(): void;
     swap?(): boolean;
     dropParked?(): void;
+    requestPermissions?(): Promise<{ audio: boolean; video: boolean }>;
+    watchPermissions?(fn: (res: { micDenied: boolean; camDenied: boolean }) => void): () => void;
   };
   sounds: { play(kind: SoundKind | null, ms?: number): void };
 }
@@ -230,7 +232,7 @@ export const useCallStore = defineStore('call', () => {
   /** Спільне для розмови, що почалась чи повернулась з утримання: медіа за станом стору, перевірка пристроїв. */
   function enterConnected() {
     play(peerHold.value ? 'hold' : null);
-    deps.media.setDeaf(hold.value);
+    deps.media.setDeaf(hold.value || peerHold.value);
     deps.media.setMic(mic.value);
     deps.media.setCamera?.(cam.value);
     void deps.media.hasCamera?.().then(ok => ok || blockCamera());
@@ -418,6 +420,7 @@ export const useCallStore = defineStore('call', () => {
         if (m.callId === callId.value) {
           peerHold.value = m.hold;
           play(m.hold ? 'hold' : null);
+          deps.media.setDeaf(hold.value || m.hold);
         } else if (m.callId === held.value?.callId) held.value.peerHold = m.hold;
         break;
       case 'call.updated':
@@ -431,7 +434,7 @@ export const useCallStore = defineStore('call', () => {
         }
         if (m.callId === callId.value && m.hold !== undefined) {
           hold.value = m.hold;
-          deps.media.setDeaf(m.hold);
+          deps.media.setDeaf(m.hold || peerHold.value);
         }
         break;
       case 'presence': {
@@ -452,6 +455,9 @@ export const useCallStore = defineStore('call', () => {
         break;
     }
   }
+
+  const permBlocked = { mic: false, cam: false };
+  let stopPermWatch: (() => void) | undefined;
 
   function blockMic() {
     micBlocked.value = true;
@@ -478,12 +484,36 @@ export const useCallStore = defineStore('call', () => {
       if (patch.micError) blockMic();
       if (patch.camError) blockCamera(); // камеру не вдалося ввімкнути (немає пристрою чи дозволу)
     });
+    stopPermWatch?.();
+    stopPermWatch = d.media.watchPermissions?.(res => {
+      // блокуємо, коли дозвіл відкликали, і знімаємо блок, коли його повернули (лише те, що заблокували ми, а не відсутність пристрою)
+      if (res.micDenied) {
+        permBlocked.mic = true;
+        blockMic();
+      } else if (permBlocked.mic) {
+        permBlocked.mic = false;
+        micBlocked.value = false;
+      }
+      if (res.camDenied) {
+        permBlocked.cam = true;
+        blockCamera();
+      } else if (permBlocked.cam) {
+        permBlocked.cam = false;
+        camBlocked.value = false;
+      }
+    });
     d.client.on(handle);
     d.client.onStatus((open, error) => {
       online.value = open;
       netError.value = error ?? '';
       busy = false;
     });
+  }
+
+  /** Один запит дозволів за життя сторінки; наступні виклики повертають той самий результат. */
+  let permsAsked: Promise<{ audio: boolean; video: boolean }> | undefined;
+  function requestPermissions() {
+    return (permsAsked ??= deps.media.requestPermissions?.() ?? Promise.resolve({ audio: false, video: false }));
   }
 
   async function call(userId: string) {
@@ -493,6 +523,7 @@ export const useCallStore = defineStore('call', () => {
     setMissed(null);
     busy = true;
     try {
+      await requestPermissions(); // перший дзвінок: запит до набору, щоб підключення до кімнати не чекало на вікно браузера
       const ack = await deps.client.request('call.invite', { to: userId, video: true });
       if (ack.type === 'ack' && ack.call) applyCall(ack.call);
     } catch (e) {
@@ -509,6 +540,7 @@ export const useCallStore = defineStore('call', () => {
 
   function accept() {
     if (!callId.value) return;
+    void requestPermissions(); // відповідь не чекає: після першого запиту повертається те саме
     deps.client.request('call.accept', { callId: callId.value }).catch(() => {
       reset();
       play(null);
@@ -560,10 +592,10 @@ export const useCallStore = defineStore('call', () => {
     if (!id || status.value !== 'connected') return;
     const next = !hold.value;
     hold.value = next;
-    deps.media.setDeaf(next);
+    deps.media.setDeaf(next || peerHold.value);
     deps.client.request('call.hold', { callId: id, hold: next }).catch(() => {
       hold.value = !next;
-      deps.media.setDeaf(!next);
+      deps.media.setDeaf(!next || peerHold.value);
     });
   }
 
@@ -665,5 +697,6 @@ export const useCallStore = defineStore('call', () => {
     attach,
     dismissMissed,
     markMissedSeen,
+    requestPermissions,
   };
 });

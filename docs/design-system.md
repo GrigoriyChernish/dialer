@@ -254,6 +254,7 @@
 | `Peer Banner / hold` | `pause` | `warn` | {Ім'я} поставила на утримання | співрозмовник поставив на утримання |
 | `Peer Banner / connection-lost` | `wifi-off` | `bad` `#F0626B` | {Ім'я} втратила з'єднання · до 30 с | співрозмовник втратив зв'язок |
 | `Peer Banner / mic-off` | `mic-off` | `neutral` (`mute`) | {Ім'я} вимкнула мікрофон | співрозмовник вимкнув мікрофон |
+| `Peer Banner / video-stalled` | `video-off` | `neutral` (`mute`) | Відео не завантажується | відео співрозмовника не стартувало за 10 с: екран повертається до аватара |
 | `Self Banner / poor-signal` | `signal-low` | `warn` `#F5B84B` | Слабкий сигнал | наша мережа слабка |
 | `Self Banner / reconnecting` | `loader` | `accent` `#6366F1` (іконка `accent-icon`) | Відновлюємо ваше з'єднання | ми перепідключаємось |
 | `Self Banner / camera-unavailable` | `video-off` | `warn` | Камера недоступна | натиснули приглушену кнопку камери |
@@ -415,7 +416,7 @@
 | `Components · Settings` | `Toggle`, `Toggle / on`, `Settings Row`, `Segmented`, `Presence / dnd` |
 | `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` |
 | `Components · Banners` | `Banner` (база); контейнери `Self Banners` (`Self Banner / *`), `Peer Banners` (`Peer Banner / *`) і `Pool Badges` (`Pool Badge`, `/ warn`, `/ ok`, `/ bad`) |
-| `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring` (варіанти за напрямом виклику й за станом співрозмовника), `Call Label`, `Result Label`, `Peer Video`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `speaking`, `result`) |
+| `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring` (варіанти за напрямом виклику й за станом співрозмовника), `Call Label`, `Result Label`, `Peer Video`, `Video Loader`, `Self View / loading`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `speaking`, `result`) |
 
 | Флоу | Екрани |
 | --- | --- |
@@ -423,11 +424,11 @@
 | `Flow · Contacts` | `Home · Contacts`, `Home · Missed`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · Missed · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · Missed · loading`, `Home · Contacts · offline`; обрив зв'язку `Home · Contacts · connection lost` |
 | `Flow · Outgoing call` | `Outgoing Call`, `Result · Busy`, `Result · No Answer`, `Result · Rejected` |
 | `Flow · Incoming call` | `Incoming Call`, `Result · Missed` |
-| `Flow · In call · base` | `In Call`, `In Call · self-hold` |
+| `Flow · In call · base` | `In Call`, `In Call · self-hold`, `In Call · self-view-loading` |
 | `Flow · In call · peer` | `peer-hold`, `peer-connection-lost`, `peer-mic-off` |
 | `Flow · In call · self devices` | `self-status`, `self-mic-camera-off`, `self-camera-unavailable`, `self-view-hidden` |
 | `Flow · In call · self network` | `self-poor-signal`, `self-reconnecting`, `self-notifications-pool`, `self-pool · expanded` |
-| `Flow · In call · video` | `video`, `video · peer-mic-off` |
+| `Flow · In call · video` | `video`, `video · peer-mic-off`, `video · loading`, `video · unavailable` |
 | `Flow · Call ended` | `Ended · peer hangup`, `Ended · lost`, `Ended · error` |
 | `Flow · Settings` | `Settings`, `Settings · edit name`, `Home · Contacts · dnd` |
 | `Flow · Light theme` | світлі копії `Home · Contacts`, `Settings`, `Incoming Call`, `In Call · self-reconnecting`, `In Call · held call`, `Auth · Phone` |
@@ -507,6 +508,14 @@
   З неї зібрані шапка, списки й вкладки головної; список тягнеться на всю висоту, прокрутка всередині картки.
 - **`Show Self`** 44 × 44, коло, скло `surface-2`, рамка `line`, іконка `video` 20: кнопка «показати себе», коли мініатюру згорнуто; стоїть на місці мініатюри (`y` 156, праворуч 20).
 - **`Peer Video`** 375 × 844: відео співрозмовника на весь екран (у дизайні фото-заглушка), лежить у `Components · Peer`.
+- **`Video Loader`** 375 × 844: індикатор завантаження відео співрозмовника (`Components · Peer`). Затемнення `scrim-mid` (`bg` 60%) на весь екран і по центру коло 32 (`surface-2`) з `loader` 16 (`accent-icon`), що обертається.
+  Правила: поки немає першого кадру, відео прозоре (поява 300 мс), індикатор з'являється **через 400 мс** (короткі паузи не блимають).
+  Пауза буферизації під час розмови знову ховає кадр і за 400 мс показує індикатор. Якщо кадру немає **10 с**, екран повертається до аватара `Peer` зі смужкою `Peer Banner / video-stalled`
+  (відео лишається змонтованим невидимим: коли потік оживе, екран знову стає відео). Для скрінрідерів індикатор має `role="status"` і підпис «Завантажуємо відео…», під `prefers-reduced-motion` не обертається.
+  Екрани: `In Call · video · loading`, `In Call · video · unavailable`.
+- **`Self View / loading`** 92 × 122: мініатюра себе, поки немає першого кадру нашої камери (`Components · Peer`). Та сама плитка `surface-tile` з рамкою `line`, без затемнення; по центру менше коло 24
+  (`surface-2`) з `loader` 14 (`accent-icon`). Правила ті самі: індикатор через 400 мс, поява відео 300 мс. Таймаут 10 с на мініатюрі нічого не змінює (стан не виносимо, плитка просто лишається порожньою).
+  Екран: `In Call · self-view-loading`.
 
 ## Токени в коді й перевірка
 

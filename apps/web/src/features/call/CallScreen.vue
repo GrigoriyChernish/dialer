@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Icon from '@/shared/ui/Icon.vue';
 import BannerStack, { type BannerItem } from '@/shared/ui/BannerStack.vue';
@@ -21,8 +21,12 @@ const first = computed(() => name.value.split(' ')[0]);
 // рід співрозмовника: сервер його не віддає, тож як у прототипі: жіночий лише для Олени (беклог, пункт 6)
 const g = computed(() => ((call.peer ?? call.missed?.peer)?.userId === 'bot:olena' ? 'f' : 'm'));
 const connected = computed(() => call.status === 'connected');
+// відео співрозмовника є (розмова не на утриманні); потік може не стартувати (`videoStalled`), тоді повертаємось до аватара
+const peerVideoOn = computed(() => connected.value && call.link.peerCam && !call.peerHold && !call.hold);
+const videoStalled = ref(false);
+watch(peerVideoOn, on => on || (videoStalled.value = false));
 // екран «In Call · video»: на весь екран відео співрозмовника
-const video = computed(() => connected.value && call.link.peerCam && !call.peerHold);
+const video = computed(() => peerVideoOn.value && !videoStalled.value);
 
 // смужка співрозмовника внизу над панеллю керування (дизайн: Peer Banner): одна, за станом, що настав останнім (як обводка й колір аватара в Peer)
 const peerBanners = computed<BannerItem[]>(() => {
@@ -31,6 +35,7 @@ const peerBanners = computed<BannerItem[]>(() => {
   if (call.peerState === 'hold') return [banner('peerHold', t(`call.peer.hold.${g.value}`, who))];
   if (call.peerState === 'lost') return [banner('connectionLost', t(`call.peer.connectionLost.${g.value}`, who))];
   if (call.peerState === 'mic') return [banner('peerMicOff', t(`call.peer.micOff.${g.value}`, who))];
+  if (videoStalled.value) return [banner('videoStalled', t('call.peer.videoStalled'))];
   return [];
 });
 // дизайн: аватар тьмянішає (прозорість .6), коли розмова призупинена нами чи співрозмовник втратив зв'язок
@@ -87,7 +92,7 @@ const selfStatuses = computed<{ status: SelfStatus; label: string }[]>(() => {
   else if (!call.cam) list.push({ status: 'camOff', label: t('call.self.camOff') });
   return list;
 });
-const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
+const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold && !call.peerHold);
 </script>
 
 <template>
@@ -137,8 +142,16 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
     style="background: linear-gradient(180deg, var(--stage-glow), var(--bg))"
     aria-live="polite"
   >
+    <!-- відео лишається змонтованим і під час `stalled` (невидиме), щоб помітити, що потік ожив -->
+    <VideoSurface
+      v-if="peerVideoOn"
+      kind="remote"
+      :track="peerVideoOn"
+      class="absolute inset-0"
+      :class="videoStalled && 'invisible'"
+      @stalled="videoStalled = $event"
+    />
     <template v-if="video">
-      <VideoSurface kind="remote" :track="video" class="absolute inset-0" />
       <!-- градієнти під відео: згори 180, знизу 220 -->
       <div
         class="absolute inset-x-0 top-0 h-[180px]"
@@ -226,7 +239,7 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
           :label="call.micBlocked ? t('call.micUnavailable') : call.mic ? t('call.mute') : t('call.unmute')"
           :active="!call.mic && !call.micBlocked"
           :unavailable="call.micBlocked"
-          :disabled="call.hold"
+          :disabled="call.hold || call.peerHold"
           @click="call.toggleMic()"
           ><Icon :name="call.mic ? 'mic' : 'micOff'"
         /></RoundButton>
@@ -234,13 +247,14 @@ const selfVideo = computed(() => call.cam && call.link.localCam && !call.hold);
           :label="call.camBlocked ? t('call.cameraUnavailable') : call.cam ? t('call.camera') : t('call.cameraOn')"
           :active="!call.cam && !call.camBlocked"
           :unavailable="call.camBlocked"
-          :disabled="call.hold"
+          :disabled="call.hold || call.peerHold"
           @click="call.toggleCam()"
           ><Icon :name="call.cam ? 'video' : 'videoOff'"
         /></RoundButton>
         <RoundButton
           :label="call.hold ? t('call.resume') : t('call.hold')"
           :active="call.hold"
+          :disabled="call.peerHold"
           @click="call.toggleHold()"
           ><Icon name="pause"
         /></RoundButton>

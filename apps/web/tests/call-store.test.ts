@@ -21,6 +21,7 @@ function setup() {
   setActivePinia(createPinia());
   let handler: (m: ServerMessage) => void = () => {};
   let onLink: (p: Partial<LinkState>) => void = () => {};
+  let onPerm: (r: { micDenied: boolean; camDenied: boolean }) => void = () => {};
   const request = vi.fn(async (type: string): Promise<ServerMessage> =>
     type === 'call.invite' ? { v: V, type: 'ack', reqId: 'r', call: info() } : { v: V, type: 'ack', reqId: 'r' },
   );
@@ -39,6 +40,8 @@ function setup() {
       park: vi.fn(),
       swap: vi.fn(() => true),
       dropParked: vi.fn(),
+      requestPermissions: vi.fn(async () => ({ audio: true, video: true })),
+      watchPermissions: f => ((onPerm = f), () => {}),
     },
     sounds: { play: vi.fn() },
   };
@@ -55,7 +58,14 @@ function setup() {
     contacts: [{ ...olena, online: true }],
     recents: [],
   });
-  return { store, deps, request, send: handler, link: (p: Partial<LinkState>) => onLink(p) };
+  return {
+    store,
+    deps,
+    request,
+    send: handler,
+    link: (p: Partial<LinkState>) => onLink(p),
+    perm: (r: { micDenied: boolean; camDenied: boolean }) => onPerm(r),
+  };
 }
 
 describe('call store', () => {
@@ -133,6 +143,27 @@ describe('call store', () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(store.hold).toBe(false);
+  });
+
+  it('mutes and pauses media with setDeaf when placed on hold or peer hold', async () => {
+    const { store, deps, send } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    expect(deps.media.setDeaf).toHaveBeenLastCalledWith(false);
+
+    // Співрозмовник ставить нас на утримання
+    send({ v: V, type: 'call.peer', callId: 'c1', hold: true });
+    expect(store.peerHold).toBe(true);
+    expect(deps.media.setDeaf).toHaveBeenLastCalledWith(true);
+
+    // Співрозмовник повертає з утримання
+    send({ v: V, type: 'call.peer', callId: 'c1', hold: false });
+    expect(store.peerHold).toBe(false);
+    expect(deps.media.setDeaf).toHaveBeenLastCalledWith(false);
+
+    // Ми ставимо на утримання
+    store.toggleHold();
+    expect(deps.media.setDeaf).toHaveBeenLastCalledWith(true);
   });
 
   it('starts the call with the camera on and toggles it through the media layer', async () => {
@@ -557,6 +588,65 @@ describe('call store', () => {
       t.send({ v: V, type: 'call.connected', call: info({ callId: 'c9', direction: 'in', state: 'connected' }) });
       expect(t.store.cam).toBe(false);
       expect(t.deps.media.setCamera).toHaveBeenLastCalledWith(false);
+    });
+  });
+
+  describe('media permissions', () => {
+    it('asks once per page and before the first invite', async () => {
+      const { store, deps, request } = setup();
+      const order: string[] = [];
+      (deps.media.requestPermissions as ReturnType<typeof vi.fn>).mockImplementation(async () => {
+        order.push('permissions');
+        return { audio: true, video: true };
+      });
+      request.mockImplementation(async (type: string) => {
+        order.push(type);
+        return { v: V, type: 'ack', reqId: 'r', call: info() } as ServerMessage;
+      });
+      await store.call(olena.userId);
+      expect(order).toEqual(['permissions', 'call.invite']);
+      await store.requestPermissions();
+      expect(deps.media.requestPermissions).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not delay the answer on an incoming call', () => {
+      const { store, deps, request, send } = setup();
+      send({ v: V, type: 'call.incoming', call: info({ callId: 'c2', direction: 'in' }) });
+      store.accept();
+      expect(request).toHaveBeenCalledWith('call.accept', { callId: 'c2' });
+      expect(deps.media.requestPermissions).toHaveBeenCalledTimes(1);
+    });
+
+    it('blocks a device when the permission is revoked and unblocks it when it is granted again', () => {
+      const { store, perm } = setup();
+      perm({ micDenied: true, camDenied: true });
+      expect(store.micBlocked).toBe(true);
+      expect(store.camBlocked).toBe(true);
+      perm({ micDenied: false, camDenied: true });
+      expect(store.micBlocked).toBe(false);
+      expect(store.camBlocked).toBe(true);
+      perm({ micDenied: false, camDenied: false });
+      expect(store.camBlocked).toBe(false);
+    });
+
+    it('does not unblock a camera that is missing for another reason', async () => {
+      const { store, link, perm } = setup();
+      link({ camError: true });
+      expect(store.camBlocked).toBe(true);
+      perm({ micDenied: false, camDenied: false });
+      expect(store.camBlocked).toBe(true);
+    });
+
+    it('keeps the microphone off while the peer is on hold, even after we resume', async () => {
+      const { store, deps, send } = setup();
+      await store.call(olena.userId);
+      send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+      store.toggleHold();
+      send({ v: V, type: 'call.peer', callId: 'c1', hold: true });
+      store.toggleHold(); // ми повертаємось, співрозмовник ще тримає
+      expect(deps.media.setDeaf).toHaveBeenLastCalledWith(true);
+      send({ v: V, type: 'call.peer', callId: 'c1', hold: false });
+      expect(deps.media.setDeaf).toHaveBeenLastCalledWith(false);
     });
   });
 });

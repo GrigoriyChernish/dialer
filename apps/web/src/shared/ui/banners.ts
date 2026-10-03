@@ -14,6 +14,8 @@ const KINDS = {
   peerHold: { tone: 'warn', icon: 'pause' },
   connectionLost: { tone: 'bad', icon: 'wifiOff' },
   peerMicOff: { tone: 'neutral', icon: 'micOff' },
+  // відео співрозмовника не стартувало за 10 с: екран повертається до аватара
+  videoStalled: { tone: 'neutral', icon: 'videoOff' },
   // Self Banner: наші пристрої
   cameraUnavailable: { tone: 'warn', icon: 'videoOff' },
   micUnavailable: { tone: 'warn', icon: 'micOff' },

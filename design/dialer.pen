@@ -496,6 +496,82 @@
                   "opacity": 0.55
                 }
               }
+            },
+            {
+              "type": "frame",
+              "id": "GwroP",
+              "name": "Video Loader",
+              "reusable": true,
+              "width": 375,
+              "height": 844,
+              "fill": "$scrim-mid",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BmQJE",
+                  "name": "Spinner Disc",
+                  "width": 32,
+                  "height": 32,
+                  "fill": "$surface-2",
+                  "cornerRadius": 16,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "AIxmy",
+                      "name": "Spinner",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "loader",
+                      "library": "lucide",
+                      "fill": "$accent-icon"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Q0E8CG",
+              "name": "Self View / loading",
+              "reusable": true,
+              "clip": true,
+              "width": 92,
+              "height": 122,
+              "fill": "$surface-tile",
+              "cornerRadius": "$radius-md",
+              "stroke": "$line",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OWL68",
+                  "name": "Spinner Disc",
+                  "width": 24,
+                  "height": 24,
+                  "fill": "$surface-2",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "B2qW2L",
+                      "name": "Spinner",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "loader",
+                      "library": "lucide",
+                      "fill": "$accent-icon"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -3278,6 +3354,21 @@
                 },
                 "W4Fv08": {
                   "content": "Олена вимкнула мікрофон"
+                }
+              }
+            },
+            {
+              "id": "aWQeg",
+              "type": "ref",
+              "reusable": true,
+              "ref": "f7nmk",
+              "name": "Peer Banner / video-stalled",
+              "descendants": {
+                "s1KBV": {
+                  "icon": "video-off"
+                },
+                "W4Fv08": {
+                  "content": "Відео не завантажується"
                 }
               }
             }
@@ -6867,6 +6958,192 @@
                   }
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "K6LvaC",
+              "name": "In Call · self-view-loading",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "uTKjy",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "slA2A",
+                  "type": "ref",
+                  "ref": "dCVmN",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "P6ptR9": {
+                      "content": "Олена Коваль"
+                    },
+                    "Lm6Lv": {
+                      "content": "00:42"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "z7elgq",
+                  "name": "Self Zone",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    6,
+                    16,
+                    0,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "nZu5w",
+                      "name": "Self Banner Slot",
+                      "width": "fill_container",
+                      "height": 40
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HOng1",
+                      "name": "Self Row",
+                      "width": "fill_container",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "id": "qfegr",
+                          "type": "ref",
+                          "ref": "Q0E8CG",
+                          "name": "Self View"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xu7SS",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "RLGjn",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        118,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xWVE1",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "u6tVwo",
+                          "type": "ref",
+                          "ref": "zKP5v",
+                          "name": "Controls Pill",
+                          "descendants": {
+                            "iSBAx": {
+                              "fill": "$surface-3"
+                            },
+                            "iSBAx/gcrxy": {
+                              "icon": "mic"
+                            },
+                            "G51U2F": {
+                              "fill": "$surface-3"
+                            },
+                            "G51U2F/gcrxy": {
+                              "icon": "video"
+                            },
+                            "G0zgSx": {
+                              "fill": "$surface-3"
+                            },
+                            "G0zgSx/gcrxy": {
+                              "icon": "pause"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "l2n1j",
+                  "type": "ref",
+                  "ref": "b76euv",
+                  "name": "Peer",
+                  "layoutPosition": "absolute",
+                  "x": 24,
+                  "y": 220,
+                  "descendants": {
+                    "wBaK6": {
+                      "id": "WKmJt",
+                      "type": "ref",
+                      "ref": "Lm0a8",
+                      "name": "Ring",
+                      "descendants": {
+                        "jbPVz": {
+                          "content": "ОК"
+                        }
+                      }
+                    },
+                    "kcNR8": {
+                      "content": "Олена Коваль"
+                    }
+                  }
+                }
+              ]
             }
           ]
         }
@@ -9477,6 +9754,416 @@
                   "layoutPosition": "absolute",
                   "x": 16,
                   "y": 682
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rCVgE",
+              "name": "In Call · video · loading",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "A4GvpP",
+                  "type": "ref",
+                  "ref": "tLLor",
+                  "name": "Peer Video",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "enabled": false
+                },
+                {
+                  "id": "vidR9",
+                  "type": "ref",
+                  "ref": "GwroP",
+                  "name": "Video Loader",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "type": "frame",
+                  "id": "SsPp6",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Top Scrim",
+                  "width": 375,
+                  "height": 180,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 180,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$video-scrim",
+                        "position": 0
+                      },
+                      {
+                        "color": "$clear",
+                        "position": 1
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "W8s5q",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 624,
+                  "name": "Bottom Scrim",
+                  "width": 375,
+                  "height": 220,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 0,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$video-scrim",
+                        "position": 0
+                      },
+                      {
+                        "color": "$clear",
+                        "position": 1
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "cEeK6",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "oi8oN",
+                  "type": "ref",
+                  "ref": "dCVmN",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "P6ptR9": {
+                      "content": "Олена Коваль"
+                    },
+                    "Lm6Lv": {
+                      "content": "00:42"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "CneT9",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "gKlWS",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "id": "W4uuE",
+                          "type": "ref",
+                          "ref": "zKP5v",
+                          "name": "Controls Pill",
+                          "descendants": {
+                            "iSBAx": {
+                              "fill": "$surface-3"
+                            },
+                            "iSBAx/gcrxy": {
+                              "icon": "mic"
+                            },
+                            "G51U2F": {
+                              "fill": "$surface-3"
+                            },
+                            "G51U2F/gcrxy": {
+                              "icon": "video"
+                            },
+                            "G0zgSx": {
+                              "fill": "$surface-3"
+                            },
+                            "G0zgSx/gcrxy": {
+                              "icon": "pause"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "yWkqU",
+                  "type": "ref",
+                  "ref": "BEE1F",
+                  "name": "Self View",
+                  "layoutPosition": "absolute",
+                  "x": 267,
+                  "y": 156,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "https://images.unsplash.com/photo-1752090660139-48333a48990c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4NjE1NDJ8&ixlib=rb-4.1.0&q=80&w=1080",
+                    "mode": "cover"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$shadow-tile",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 24
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BIr15",
+              "name": "In Call · video · unavailable",
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "ZptxI",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "V9pST",
+                  "type": "ref",
+                  "ref": "dCVmN",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "P6ptR9": {
+                      "content": "Олена Коваль"
+                    },
+                    "Lm6Lv": {
+                      "content": "00:42"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "V8M6W",
+                  "name": "Self Zone",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    6,
+                    16,
+                    0,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "zzBFC",
+                      "name": "Self Banner Slot",
+                      "width": "fill_container",
+                      "height": 40
+                    },
+                    {
+                      "type": "frame",
+                      "id": "H9OpMU",
+                      "name": "Self Row",
+                      "width": "fill_container",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "id": "usyR3",
+                          "type": "ref",
+                          "ref": "BEE1F",
+                          "name": "Self View"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "S6c0N",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "h8qLy",
+                      "name": "Stage",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        118,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "t80x27",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "CRQRC",
+                          "type": "ref",
+                          "ref": "zKP5v",
+                          "name": "Controls Pill",
+                          "descendants": {
+                            "iSBAx": {
+                              "fill": "$surface-3"
+                            },
+                            "iSBAx/gcrxy": {
+                              "icon": "mic"
+                            },
+                            "G51U2F": {
+                              "fill": "$surface-3"
+                            },
+                            "G51U2F/gcrxy": {
+                              "icon": "video"
+                            },
+                            "G0zgSx": {
+                              "fill": "$surface-3"
+                            },
+                            "G0zgSx/gcrxy": {
+                              "icon": "pause"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "g0Pqu",
+                  "type": "ref",
+                  "ref": "b76euv",
+                  "name": "Peer",
+                  "layoutPosition": "absolute",
+                  "x": 24,
+                  "y": 220,
+                  "descendants": {
+                    "wBaK6": {
+                      "id": "h8JH7v",
+                      "type": "ref",
+                      "ref": "n8jnj",
+                      "name": "Ring",
+                      "descendants": {
+                        "jbPVz": {
+                          "content": "ОК"
+                        }
+                      }
+                    },
+                    "kcNR8": {
+                      "content": "Олена Коваль"
+                    },
+                    "fAYS0": {
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "id": "R6WZT",
+                          "type": "ref",
+                          "ref": "aWQeg",
+                          "name": "Peer Banner",
+                          "width": "fill_container"
+                        }
+                      ]
+                    }
+                  }
                 }
               ]
             }

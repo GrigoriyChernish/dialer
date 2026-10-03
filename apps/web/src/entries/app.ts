@@ -31,7 +31,7 @@ const pinia = createPinia();
 const session = useSessionStore(pinia);
 session.configure(createAuthApi(server));
 
-const client = new SignalingClient({
+const client: SignalingClient = new SignalingClient({
   url: server.replace(/^http/, 'ws').replace(/\/+$/, '') + '/ws',
   deviceId,
   getToken: () => session.token,
@@ -82,7 +82,11 @@ watch(
       return;
     }
     refreshTimer = setTimeout(() => void refreshSoon(), Math.max(5_000, s.expiresAt - Date.now() - 60_000));
-    if (!prev) client.connect();
+    if (!prev) {
+      client.connect();
+      // один раз за вхід (оновлення токена змінює session, але не `prev`); якщо дозвіл уже є, пристрої не відкриваються
+      void call.requestPermissions();
+    }
   },
   { immediate: true },
 );
