@@ -103,6 +103,7 @@
 
 - **Props:** `kind`, `track` — прапорець, що потік з'явився чи зник (за ним відео підключається знову). **Події:** `stalled(boolean)` — потік не стартував за 10 с (`true`) чи ожив (`false`).
 - Без звуку: аудіо йде окремими елементами в `CallMedia`.
+- Позиція: корінь без `relative`, батько задає `absolute inset-0` (з `relative` у тому ж елементі Tailwind віддає перевагу `relative`, відео виходить з екрана в потік, а шапка й кнопки з'їжджають вниз). Коментарі в шаблоні не ставимо перед коренем: у dev корінь стає фрагментом.
 - Завантаження (дизайн `Video Loader`, логіка `useVideoLoading` у `shared/media/videoLoading.ts`): до першого кадру відео прозоре; індикатор (`role="status"`, «Завантажуємо відео…») через 400 мс: на `remote` із затемненням 60% і колом 32,
   на `local` (дизайн `Self View / loading`) менше коло 24 без затемнення. Буферизація (`waiting`, `emptied`) починає відлік знову, не перезапускаючи таймери під час очікування. Через 10 с без кадру `stalled`: `CallScreen` повертає аватар і смужку
   `Peer Banner / video-stalled`, але лишає `VideoSurface` змонтованим невидимим, тож пізніший `playing` повертає відео.
@@ -275,7 +276,7 @@
 - `media/permissions.ts` — `requestMediaPermissions` (запит дозволів, тимчасові треки одразу зупиняються; fallback на лише аудіо) і `watchMediaPermissions`
   (Permissions API та `devicechange`, повертає функцію відписки).
 - `media/videoLoading.ts` — `useVideoLoading`: стани `loading`, `spinner` (через 400 мс), `stalled` (через 10 с) для `VideoSurface`.
-- Захоплення аудіо: `echoCancellation`, `noiseSuppression` і `autoGainControl` задано явно в `audioCaptureDefaults` кімнати (обробка WebRTC браузера; Krisp чи RNNoise не підключено).
+- Налаштування кімнати: `adaptiveStream` і `dynacast` увімкнено (відео не качається, поки `<video>` відмонтований чи прихований; шари симулкасту без глядачів не кодуються); `echoCancellation`, `noiseSuppression` і `autoGainControl` задано явно в `audioCaptureDefaults` (обробка WebRTC браузера; Krisp чи RNNoise не підключено). Деталі: [livekit-recommendations.md](livekit-recommendations.md).
 - `sounds/sounds.ts` — гудки й мелодії через Web Audio; `waiting` — два тихі сигнали раз на 3 с для другого вхідного.
 
 ## Ще не зроблено (є в дизайні)
