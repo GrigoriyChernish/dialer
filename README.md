@@ -27,21 +27,25 @@ python3 -m http.server 8080
 Оболонка на Tauri 2 з інтерфейсом `apps/web` та дозволами WebRTC:
 
 - **Запуск у вікні на комп'ютері (macOS/десктоп):**
+
   ```bash
   corepack pnpm --filter @dialer/mobile dev
   ```
+
   Відкриває нативне вікно з пропорціями екрана телефону (390 × 844) та гарячим оновленням (HMR).
 
 - **Збірка Android APK:**
+
   ```bash
   corepack pnpm --filter @dialer/mobile exec tauri android build -d --apk -t aarch64
   ```
+
   Готовий APK: `apps/mobile/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk`.
 
 - **Встановлення на телефон через USB (`adb`):**
+
   ```bash
   adb install apps/mobile/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk
   ```
 
 Онлайн: <https://grigoriychernish.github.io/dialer/> (публікується з гілки `dev`).
-

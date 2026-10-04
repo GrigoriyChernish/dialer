@@ -23,6 +23,7 @@ export function createOriginPolicy(config: Pick<Config, 'demoOrigin' | 'producti
   return (origin: string | undefined): boolean => {
     if (!origin) return true;
     if (origin === config.demoOrigin) return true;
+    if (origin === 'tauri://localhost' || /^https?:\/\/tauri\.localhost$/.test(origin)) return true;
     if (!config.production && /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin)) return true;
     return siteOrigins().has(origin);
   };

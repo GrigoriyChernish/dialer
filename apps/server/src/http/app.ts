@@ -27,6 +27,7 @@ export interface HttpDeps {
   clock: Clock;
   deliver(effects: Effect[]): void;
   rejectTokens: RejectTokens;
+  originAllowed?: (origin: string | undefined) => boolean;
 }
 
 export function buildHttp({
@@ -42,17 +43,21 @@ export function buildHttp({
   clock,
   deliver,
   rejectTokens,
+  originAllowed,
 }: HttpDeps) {
   const app = Fastify({ loggerInstance: logger.child({ module: 'http' }) });
 
-  // CORS лише для застосунку (GitHub Pages)
+  // CORS для застосунку (GitHub Pages), локальної розробки та Tauri клієнтів
   app.addHook('onRequest', async (req, reply) => {
-    if (!config.demoOrigin || req.headers.origin !== config.demoOrigin) return;
-    reply.header('access-control-allow-origin', config.demoOrigin).header('vary', 'Origin');
+    const origin = req.headers.origin;
+    if (!origin) return;
+    const allowed = originAllowed ? originAllowed(origin) : origin === config.demoOrigin;
+    if (!allowed) return;
+    reply.header('access-control-allow-origin', origin).header('vary', 'Origin');
     if (req.method === 'OPTIONS') {
       return reply
-        .header('access-control-allow-methods', 'POST, OPTIONS')
-        .header('access-control-allow-headers', 'content-type')
+        .header('access-control-allow-methods', 'GET, POST, OPTIONS')
+        .header('access-control-allow-headers', 'content-type, authorization')
         .header('access-control-max-age', '600')
         .code(204)
         .send();

@@ -2,11 +2,14 @@ import { computed, ref } from 'vue';
 import { useCallStore } from '@/features/call/store';
 import { serverUrl } from '@/shared/api/server';
 
+import { isNotifyGranted, isTauri, requestNotifyPermission } from '@/shared/native/notify';
+
 /** Ключ VAPID приходить у base64url, `pushManager.subscribe` чекає байти. */
-function keyBytes(key: string): Uint8Array<ArrayBuffer> {
+function keyBytes(key: string): Uint8Array {
   const raw = atob(key.replace(/-/g, '+').replace(/_/g, '/'));
   return Uint8Array.from(raw, c => c.charCodeAt(0));
 }
+
 
 const sameKey = (a: ArrayBuffer | null | undefined, b: Uint8Array) => {
   if (!a || a.byteLength !== b.length) return false;
@@ -14,7 +17,8 @@ const sameKey = (a: ArrayBuffer | null | undefined, b: Uint8Array) => {
   return b.every((v, i) => v === x[i]);
 };
 
-const supported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+const supported = () => isTauri() || ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window);
+
 
 /**
  * Реєстрація сервіс-воркера (відносний шлях: за будь-якою адресою, на Pages це `/dialer/`). Адреса сервера передається в
@@ -63,22 +67,38 @@ export function usePush() {
   const saving = ref(false);
   const error = ref(false);
 
-  /** Тумблер показуємо, лише коли браузер вміє push і сервер віддав ключ VAPID. */
-  const available = computed(() => supported() && !!call.vapidKey);
+  /** Тумблер показуємо, коли це Tauri або коли браузер вміє Web Push і сервер віддав ключ VAPID. */
+  const available = computed(() => isTauri() || (supported() && !!call.vapidKey));
   const enabled = computed(() => subscribed.value && !denied.value);
 
   async function current() {
+    if (isTauri()) return null;
     const reg = await navigator.serviceWorker.getRegistration();
     return (await reg?.pushManager.getSubscription()) ?? null;
   }
 
   async function refresh() {
+    if (isTauri()) {
+      const granted = await isNotifyGranted();
+      subscribed.value = granted && localStorage.getItem('dialer.tauri_notify') !== '0';
+      return;
+    }
     if (!supported()) return;
     denied.value = Notification.permission === 'denied';
     subscribed.value = !denied.value && !!(await current()) && ownedBy(call.me?.userId);
   }
 
   async function enable() {
+    if (isTauri()) {
+      const ok = await requestNotifyPermission();
+      if (ok) {
+        localStorage.setItem('dialer.tauri_notify', '1');
+        subscribed.value = true;
+      } else {
+        denied.value = true;
+      }
+      return;
+    }
     const key = call.vapidKey;
     if (!key || busy.value) return;
     busy.value = true;
@@ -97,7 +117,11 @@ export function usePush() {
         await sub.unsubscribe();
         sub = null;
       }
-      sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: bytes });
+      sub ??= await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: bytes as BufferSource,
+      });
+
       await call.pushSubscribe(sub.toJSON());
       writeOwner(call.me?.userId ?? null);
       subscribed.value = true;
@@ -113,6 +137,11 @@ export function usePush() {
 
   /** Знімає підписку на пристрої й на сервері; на сервері не чекає довше за секунду (вихід не має зависати без мережі). */
   async function disable() {
+    if (isTauri()) {
+      localStorage.setItem('dialer.tauri_notify', '0');
+      subscribed.value = false;
+      return;
+    }
     if (busy.value) return;
     busy.value = true;
     try {

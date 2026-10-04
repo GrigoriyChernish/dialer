@@ -108,6 +108,7 @@ export async function createServer({
 
   const otp = createOtp(otpSender, clock);
   const sessions = createSessions(db, clock);
+  const originAllowed = createOriginPolicy(config, db);
   const app = buildHttp({
     config,
     users,
@@ -121,6 +122,7 @@ export async function createServer({
     clock,
     deliver,
     rejectTokens,
+    originAllowed,
   });
   const gateway = attachGateway(app.server, {
     users,
@@ -130,7 +132,7 @@ export async function createServer({
     deliver,
     hub,
     tokens,
-    originAllowed: createOriginPolicy(config, db),
+    originAllowed,
     logger,
     timeouts,
   });

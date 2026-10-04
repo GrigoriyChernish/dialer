@@ -17,6 +17,9 @@ import { SignalingClient } from '@/shared/api/signaling';
 import { applyTheme } from '@/shared/theme';
 import { CallMedia } from '@/shared/media/room';
 import { Sounds } from '@/shared/sounds/sounds';
+import { focusWindow, isTauri, sendNotification } from '@/shared/native/notify';
+
+
 
 // Окремий застосунок (GitHub Pages): вхід за номером, далі контакти й дзвінки. Віджет для iframe — entries/widget.ts.
 const server = serverUrl;
@@ -56,6 +59,38 @@ watch(
   ready => ready && void resyncPush(call),
   { immediate: true },
 );
+
+// системні сповіщення та CallStyle реакція при вхідному дзвінку (Tauri / десктоп)
+watch(
+  () => call.status,
+  (st, prev) => {
+    if (st === 'incoming' && prev !== 'incoming') {
+      void focusWindow();
+      const allowed = localStorage.getItem('dialer.tauri_notify') !== '0';
+      if (allowed && (isTauri() || document.visibilityState === 'hidden')) {
+        const callerName = call.peer?.name || call.peer?.userId || 'Невідомий';
+        void sendNotification('Вхідний дзвінок', `${callerName} телефонує вам`);
+      }
+    }
+  },
+);
+
+// Гарячі клавіші CallStyle: Enter — прийняти, Esc — відхилити вхідний виклик
+window.addEventListener('keydown', e => {
+  if (call.status === 'incoming') {
+    const active = document.activeElement;
+    const isInput = active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement;
+    if (e.key === 'Enter' && !isInput) {
+      e.preventDefault();
+      void call.accept();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      void call.end();
+    }
+  }
+});
+
+
 
 // токен доступу живе 30 хв: оновлюємо за хвилину до кінця (і за запитом сервера `token.expiring`)
 let refreshTimer: ReturnType<typeof setTimeout> | undefined;
