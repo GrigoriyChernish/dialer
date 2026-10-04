@@ -2,7 +2,7 @@ import { createOtp, lastDigitsOtp, type OtpSender } from './auth/otp';
 import { createSessions } from './auth/sessions';
 import { createTokens } from './auth/tokens';
 import { ulid } from './calls/id';
-import { createEchoBots } from './bots/echo';
+import { createBotMedia } from './bots/media';
 import { createCallService } from './calls/service';
 import { realClock, type Clock, type Effect } from './calls/types';
 import type { Config } from './config';
@@ -95,7 +95,7 @@ export async function createServer({
     recents,
     clock,
     livekit,
-    echo: livekit ? createEchoBots(logger) : null,
+    botMedia: livekit ? createBotMedia(logger, config.botVideo) : null,
     isOnline: presence.isOnline,
     isReachable: (siteId, userId) => presence.isOnline(siteId, userId) || push.hasSubscriptions(siteId, userId),
     deliver,

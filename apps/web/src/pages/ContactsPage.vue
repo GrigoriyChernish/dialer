@@ -22,9 +22,10 @@ const BOTS: Record<string, { dot: string; text: string }> = {
   'bot:olena': { dot: 'bg-call-ok', text: 'contacts.bot.answers' },
   'bot:andriy': { dot: 'bg-warn', text: 'contacts.bot.ignores' },
   'bot:support': { dot: 'bg-call-bad', text: 'contacts.bot.busy' },
+  'bot:video': { dot: 'bg-call-ok', text: 'contacts.bot.video' },
 };
-// порядок з дизайну: спершу демо-боти (Олена, Андрій, Support), далі люди: досяжні (не `offline`) вище
-const ORDER = ['bot:olena', 'bot:andriy', 'bot:support'];
+// порядок з дизайну: спершу демо-боти (Олена, Андрій, Support, Відео-тест), далі люди: досяжні (не `offline`) вище
+const ORDER = ['bot:olena', 'bot:andriy', 'bot:support', 'bot:video'];
 const sorted = computed(() =>
   [...call.contacts].sort((a, b) => {
     const ia = ORDER.indexOf(a.userId),

@@ -16,17 +16,10 @@ import {
 } from '@livekit/rtc-node';
 import type { Logger } from '../logger';
 
-/** Ехо-бот: заходить у кімнату дзвінка й повертає співрозмовнику його ж звук і відео (docs/demo.md). */
-export interface EchoBots {
-  start(callId: string, access: LiveKitAccess): Promise<void>;
-  /** Виходить із кімнати дзвінка; без запущеного бота нічого не робить. */
-  stop(callId: string): Promise<void>;
-}
-
-const SAMPLE_RATE = 48000;
+export const SAMPLE_RATE = 48000;
 
 /** Читає потік до кінця й віддає кожен елемент; помилка чи закриття потоку просто завершують цикл. */
-async function pump<T>(stream: ReadableStream<T>, onItem: (item: T) => void | Promise<void>) {
+export async function pump<T>(stream: ReadableStream<T>, onItem: (item: T) => void | Promise<void>) {
   const reader = stream.getReader();
   try {
     for (;;) {
@@ -41,8 +34,8 @@ async function pump<T>(stream: ReadableStream<T>, onItem: (item: T) => void | Pr
   }
 }
 
-/** Ехо одного дзвінка: чужі треки перепублікуються з тими самими кадрами. */
-async function runEcho(access: LiveKitAccess, log: Logger): Promise<() => Promise<void>> {
+/** Ехо-бот (Олена): заходить у кімнату й повертає співрозмовнику його ж звук і відео. Ехо одного дзвінка: чужі треки перепублікуються з тими самими кадрами. */
+export async function runEcho(access: LiveKitAccess, log: Logger): Promise<() => Promise<void>> {
   const room = new Room();
   const audio = new AudioSource(SAMPLE_RATE, 1);
   const audioTrack = LocalAudioTrack.createAudioTrack('echo-audio', audio);
@@ -95,35 +88,13 @@ async function runEcho(access: LiveKitAccess, log: Logger): Promise<() => Promis
   });
 
   await room.connect(access.url, access.token, { autoSubscribe: true, dynacast: false });
-  await room.localParticipant!.publishTrack(audioTrack, new TrackPublishOptions({ source: TrackSource.SOURCE_MICROPHONE }));
+  await room.localParticipant!.publishTrack(
+    audioTrack,
+    new TrackPublishOptions({ source: TrackSource.SOURCE_MICROPHONE }),
+  );
   log.info('ехо-бот у кімнаті');
   return async () => {
     for (const stop of stops.values()) stop();
     await room.disconnect();
-  };
-}
-
-/** Справжній бот на `@livekit/rtc-node`. Тести підставляють підміну з тим самим інтерфейсом. */
-export function createEchoBots(logger: Logger): EchoBots {
-  const log = logger.child({ module: 'echo' });
-  const running = new Map<string, Promise<() => Promise<void>>>();
-  return {
-    async start(callId, access) {
-      const run = runEcho(access, log.child({ callId }));
-      running.set(callId, run);
-      try {
-        await run;
-      } catch (err) {
-        running.delete(callId);
-        throw err;
-      }
-    },
-    async stop(callId) {
-      const run = running.get(callId);
-      running.delete(callId);
-      if (!run) return;
-      const stop = await run.catch(() => null);
-      await stop?.().catch(() => {});
-    },
   };
 }

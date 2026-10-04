@@ -15,7 +15,7 @@ const bohdan: Actor = { siteId: SITE, userId: '+380500000002', deviceId: 'b1' };
 const bohdan2: Actor = { ...bohdan, deviceId: 'b2' };
 const clara: Actor = { siteId: SITE, userId: '+380500000003', deviceId: 'c1' };
 
-function setup(opts: { livekit?: boolean; echo?: boolean } = {}) {
+function setup(opts: { livekit?: boolean; botMedia?: boolean } = {}) {
   const db = openDb(':memory:');
   const lk = createFakeLiveKit();
   const users = createUsers(db);
@@ -27,9 +27,10 @@ function setup(opts: { livekit?: boolean; echo?: boolean } = {}) {
   ] as const)
     users.upsertDemoUser(a.userId, name);
   /** Ехо-боти без мережі: які дзвінки запущено й зупинено. */
-  const echoCalls = { started: [] as { callId: string; token: string }[], stopped: [] as string[] };
-  const echo = {
-    start: async (callId: string, a: { token: string }) => void echoCalls.started.push({ callId, token: a.token }),
+  const echoCalls = { started: [] as { callId: string; token: string; kind: string }[], stopped: [] as string[] };
+  const botMedia = {
+    start: async (callId: string, a: { token: string }, kind: string) =>
+      void echoCalls.started.push({ callId, token: a.token, kind }),
     stop: async (callId: string) => void echoCalls.stopped.push(callId),
   };
   const clock = createFakeClock();
@@ -46,7 +47,7 @@ function setup(opts: { livekit?: boolean; echo?: boolean } = {}) {
       recents,
       clock,
       livekit: opts.livekit ? lk.livekit : null,
-      echo: opts.echo ? echo : null,
+      botMedia: opts.botMedia ? botMedia : null,
       isOnline: (_s, u) => online.has(u),
       isReachable: (_s, u) => online.has(u) || pushable.has(u),
       deliver: e => void delivered.push(...e),
@@ -602,19 +603,26 @@ describe('LiveKit і правило lost', () => {
   });
 
   it('Олена з ехо-ботом: токен кімнати, бот запускається й зупиняється разом з дзвінком', async () => {
-    const e = setup({ livekit: true, echo: true });
+    const e = setup({ livekit: true, botMedia: true });
     e.calls.invite(anna, { to: 'bot:olena', video: true });
     e.clock.advance(3_500);
     const connectedMsg = find(e.delivered, 'call.connected').find(m => m.user === anna.userId)!;
     expect(connectedMsg.msg.call.livekit).toEqual({ url: 'wss://lk.test', token: `call1|${id(anna)}|Анна` });
-    expect(e.echoCalls.started).toEqual([{ callId: 'call1', token: 'call1|bot:olena:bot|Олена' }]);
+    expect(e.echoCalls.started).toEqual([{ callId: 'call1', token: 'call1|bot:olena:bot|Олена', kind: 'echo' }]);
     e.calls.hangup(anna, { callId: 'call1' });
     expect(e.echoCalls.stopped).toEqual(['call1']);
     expect(e.lk.closed).toEqual(['call1']);
   });
 
-  it('Андрій і Support ехо-бота не запускають', () => {
-    const e = setup({ livekit: true, echo: true });
+  it('Відео-тест запускає плеєр', () => {
+    const e = setup({ livekit: true, botMedia: true });
+    e.calls.invite(anna, { to: 'bot:video', video: true });
+    e.clock.advance(2_000);
+    expect(e.echoCalls.started).toEqual([{ callId: 'call1', token: 'call1|bot:video:bot|Відео-тест', kind: 'play' }]);
+  });
+
+  it('Андрій і Support медіа бота не запускають', () => {
+    const e = setup({ livekit: true, botMedia: true });
     e.calls.invite(anna, { to: 'bot:andriy', video: false });
     e.clock.advance(8_000);
     expect(e.echoCalls.started).toEqual([]);
