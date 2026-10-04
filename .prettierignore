@@ -1,0 +1,9 @@
+node_modules
+dist
+.pnpm-store
+*.pen
+data
+pnpm-lock.yaml
+index.html
+demo/
+.claude/
