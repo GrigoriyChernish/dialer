@@ -43,6 +43,7 @@ export const DEMO_BOTS = [
   { id: 'bot:olena', name: 'Олена' },
   { id: 'bot:andriy', name: 'Андрій' },
   { id: 'bot:support', name: 'Support' },
+  { id: 'bot:video', name: 'Відео-тест' },
 ];
 
 export function createUsers(db: Db) {

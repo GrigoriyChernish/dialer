@@ -9,6 +9,7 @@ import {
   type ErrorCode,
   type RecentResult,
 } from '@dialer/shared';
+import type { BotMedia } from '../bots/media';
 import { botScenario } from '../bots/scenarios';
 import type { Recents } from '../db/recents';
 import type { Users } from '../db/users';
@@ -39,6 +40,8 @@ export interface CallServiceDeps {
   clock: Clock;
   /** `null`: медіа вимкнено, дзвінки без токенів кімнат. */
   livekit: LiveKit | null;
+  /** Медіа ботів (Олена, Відео-тест): без нього, як і без LiveKit, бот відповідає лише в сигналізації. */
+  botMedia?: BotMedia | null;
   isOnline(siteId: string, userId: string): boolean;
   /** Адресата можна сповістити: він у мережі або має підписку Web Push. */
   isReachable(siteId: string, userId: string): boolean;
@@ -88,11 +91,17 @@ export function createCallService(deps: CallServiceDeps) {
     }
   };
 
-  /** Медіа відстежуємо, якщо є LiveKit і це дзвінок між людьми (боти в кімнату не заходять). */
+  /** Бот заходить у кімнату, якщо його сценарій має медіа й є `botMedia`. */
+  const hasMedia = (userId: string, siteId: string): boolean => {
+    const user = users.get(siteId, userId);
+    if (!user?.isBot) return true;
+    const scenario = botScenario(userId);
+    return deps.botMedia != null && scenario.kind === 'answer' && scenario.media !== undefined;
+  };
+
+  /** Медіа відстежуємо, якщо є LiveKit і обидві сторони мають медіа: люди або бот із медіа. */
   const tracked = (call: Call): boolean =>
-    deps.livekit !== null &&
-    !users.get(call.siteId, call.callerId)?.isBot &&
-    !users.get(call.siteId, call.calleeId)?.isBot;
+    deps.livekit !== null && hasMedia(call.callerId, call.siteId) && hasMedia(call.calleeId, call.siteId);
 
   /** Ідентичності, які мають бути в кімнаті, щоб розмова жила. */
   const expectedIdentities = (call: Call): string[] => [
@@ -165,6 +174,7 @@ export function createCallService(deps: CallServiceDeps) {
     store.save(call);
     clock.after(ENDED_CALL_TTL_MS, () => store.remove(call.id));
     if (wasConnected && tracked(call)) {
+      void deps.botMedia?.stop(call.id);
       deps.livekit!.closeRoom(call.id).catch(err => log.warn({ err, callId: call.id }, 'не вдалося закрити кімнату'));
     }
 
@@ -263,6 +273,15 @@ export function createCallService(deps: CallServiceDeps) {
     if (tracked(call)) {
       media.set(call.id, new Set());
       refreshLost(call.id);
+      if (users.get(call.siteId, call.calleeId)?.isBot) {
+        const name = users.get(call.siteId, call.calleeId)?.name ?? call.calleeId;
+        const access = deps.livekit!.accessFor(call.id, liveKitIdentity(call.calleeId, deviceId), name);
+        const scenario = botScenario(call.calleeId);
+        if (scenario.kind === 'answer' && scenario.media)
+          deps.botMedia
+            ?.start(call.id, access, scenario.media)
+            .catch(err => log.warn({ err, callId: call.id }, 'бот не зайшов у кімнату'));
+      }
     }
 
     const callerMsg = (device?: string) =>

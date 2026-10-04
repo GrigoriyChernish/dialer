@@ -1,4 +1,5 @@
 import type { LiveKitConfig } from './livekit';
+import type { PlayerConfig } from './bots/player';
 import type { VapidConfig } from './push/sender';
 
 export interface Config {
@@ -17,6 +18,8 @@ export interface Config {
   livekit: LiveKitConfig | null;
   /** Ключі VAPID для Web Push; `null`: push вимкнено (див. docs/pwa-and-push.md). */
   vapid: VapidConfig | null;
+  /** Що грає бот «Відео-тест»: `BOT_VIDEO_FILE` (файл у циклі, без нього тестова картинка), `BOT_VIDEO_HEIGHT` (типово 1080, 2160 це 4K). */
+  botVideo: PlayerConfig;
 }
 
 const DEV_SECRET = 'dev-only-secret-change-me-0123456789';
@@ -49,6 +52,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     production,
     livekit: lkSet === 3 ? (lk as LiveKitConfig) : null,
     vapid: vapidSet === 3 ? (vapid as VapidConfig) : null,
+    botVideo: { file: env.BOT_VIDEO_FILE || null, height: Number(env.BOT_VIDEO_HEIGHT) || 1080 },
   };
 }
 
