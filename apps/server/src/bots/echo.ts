@@ -18,6 +18,10 @@ import type { Logger } from '../logger';
 
 export const SAMPLE_RATE = 48000;
 
+/** Стеля відео-ехо: бот кодує відео на самому сервері, а там одне спільне ядро. */
+const ECHO_VIDEO_BITRATE = 600_000n;
+const ECHO_VIDEO_FPS = 20;
+
 /** Читає потік до кінця й віддає кожен елемент; помилка чи закриття потоку просто завершують цикл. */
 export async function pump<T>(stream: ReadableStream<T>, onItem: (item: T) => void | Promise<void>) {
   const reader = stream.getReader();
@@ -53,9 +57,15 @@ export async function runEcho(access: LiveKitAccess, log: Logger): Promise<() =>
     const epoch = videoEpoch;
     const source = new VideoSource(w, h);
     const track = LocalVideoTrack.createVideoTrack('echo-video', source);
+    // одна копія замість трьох шарів simulcast і потолок бітрейту та частоти кадрів: програмне кодування на одному ядрі Fly.io
+    // інакше забиває процесор і сервер перестає відповідати (в логах немає записів, health check падає)
     const pub = await room.localParticipant!.publishTrack(
       track,
-      new TrackPublishOptions({ source: TrackSource.SOURCE_CAMERA }),
+      new TrackPublishOptions({
+        source: TrackSource.SOURCE_CAMERA,
+        simulcast: false,
+        videoEncoding: { maxBitrate: ECHO_VIDEO_BITRATE, maxFramerate: ECHO_VIDEO_FPS },
+      }),
     );
     // поки публікували, відео зняли (камеру вимкнули чи трек відписано)
     if (epoch !== videoEpoch) return void (await unpublishPub(pub));
