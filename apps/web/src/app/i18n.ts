@@ -122,6 +122,8 @@ export const messages = {
       resume: 'Продовжити',
       notice: {
         cameraUnavailable: 'Камера недоступна',
+        cameraDenied: 'Немає дозволу на камеру',
+        cameraBusy: 'Камеру використовує інша програма',
         cameraStalled: 'Камера не відповідає',
         micUnavailable: 'Мікрофон недоступний',
         audioBlocked: 'Звук вимкнено браузером',

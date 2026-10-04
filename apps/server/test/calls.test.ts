@@ -614,6 +614,18 @@ describe('LiveKit і правило lost', () => {
     expect(e.lk.closed).toEqual(['call1']);
   });
 
+  it('Олену можна поставити на утримання й зняти з нього', () => {
+    const e = setup({ livekit: true, botMedia: true });
+    e.calls.invite(anna, { to: 'bot:olena', video: true });
+    e.clock.advance(1_500);
+    e.calls.hold(anna, { callId: 'call1', hold: true });
+    expect(e.calls.callsFor(SITE, anna.userId)[0]).toMatchObject({ state: 'connected', hold: true });
+    e.clock.advance(60_000);
+    expect(find(e.delivered, 'call.ended').filter(m => m.msg.reason !== 'answered_elsewhere')).toEqual([]);
+    e.calls.hold(anna, { callId: 'call1', hold: false });
+    expect(e.calls.callsFor(SITE, anna.userId)[0]).toMatchObject({ state: 'connected', hold: false });
+  });
+
   it('Відео-тест запускає плеєр', () => {
     const e = setup({ livekit: true, botMedia: true });
     e.calls.invite(anna, { to: 'bot:video', video: true });

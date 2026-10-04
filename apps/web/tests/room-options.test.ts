@@ -21,6 +21,8 @@ vi.mock('livekit-client', () => {
     localParticipant = {
       setMicrophoneEnabled: vi.fn(async () => {}),
       setCameraEnabled: vi.fn(async () => {}),
+      getTrackPublication: (source: string) =>
+        this.localParticipant.trackPublications.get(source === 'camera' ? 'cam' : 'mic'),
       trackPublications: new Map([
         ['cam', { track: { stop: () => this.stopped.push('cam') } }],
         ['mic', { track: { stop: () => this.stopped.push('mic') } }],
@@ -52,6 +54,11 @@ vi.mock('livekit-client', () => {
 
 import { CallMedia } from '@/shared/media/room';
 
+/** Пристрої вмикаються по черзі через проміси: даємо їм відпрацювати. */
+const tick = async () => {
+  for (let i = 0; i < 20; i++) await Promise.resolve();
+};
+
 describe('CallMedia room options', () => {
   beforeEach(() => (created.length = 0));
 
@@ -80,11 +87,53 @@ describe('CallMedia room options', () => {
     let done!: () => void;
     room.localParticipant.setCameraEnabled.mockImplementationOnce(() => new Promise<void>(r => (done = r)));
     media.setCamera(true);
+    await tick(); // черга дійшла до камери й чекає на `done`
     media.leave();
     room.stopped.length = 0;
     done();
-    await Promise.resolve();
-    await Promise.resolve();
+    await tick();
+    expect(room.stopped).toContain('cam');
+  });
+
+  it('starts the microphone and the camera one after another, not in parallel', async () => {
+    const media = new CallMedia();
+    await media.join({ url: 'wss://lk.example', token: 't' });
+    await tick(); // вмикання після підключення вже відпрацювало
+    const lp = created[0]!.localParticipant;
+    const order: string[] = [];
+    let finishMic!: () => void;
+    lp.setMicrophoneEnabled.mockImplementationOnce(() => {
+      order.push('mic');
+      return new Promise<void>(r => (finishMic = r));
+    });
+    lp.setCameraEnabled.mockImplementationOnce(async () => void order.push('cam'));
+    media.setMic(true);
+    await tick();
+    expect(order).toEqual(['mic']); // камера чекає, поки мікрофон завершить getUserMedia
+    finishMic();
+    await tick();
+    expect(order).toEqual(['mic', 'cam']);
+  });
+
+  it.each([
+    ['NotAllowedError', 'denied'],
+    ['NotReadableError', 'busy'],
+    ['NotFoundError', 'none'],
+    ['Error', ''],
+  ])('reports camera failure %s as reason "%s" and stops the captured camera', async (name, reason) => {
+    const media = new CallMedia();
+    const patches: Record<string, unknown>[] = [];
+    media.onChange(p => patches.push(p));
+    await media.join({ url: 'wss://lk.example', token: 't' });
+    await tick();
+    const room = created[0]!;
+    room.localParticipant.setCameraEnabled.mockImplementationOnce(async () => {
+      throw Object.assign(new Error('x'), { name });
+    });
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    media.setCamera(true);
+    await tick();
+    expect(patches).toContainEqual({ camError: true, camReason: reason });
     expect(room.stopped).toContain('cam');
   });
 
@@ -131,6 +180,7 @@ describe('CallMedia room options', () => {
       cam.mockClear();
 
       quality(created[0]!, 'poor');
+      await tick();
       expect(cam).toHaveBeenLastCalledWith(false);
       expect(patches).toContainEqual({ audioOnly: true });
 
@@ -142,6 +192,7 @@ describe('CallMedia room options', () => {
       vi.advanceTimersByTime(14_999);
       expect(patches).not.toContainEqual({ audioOnly: false });
       vi.advanceTimersByTime(1);
+      await tick();
       expect(patches).toContainEqual({ audioOnly: false });
       expect(cam).toHaveBeenLastCalledWith(true);
       vi.useRealTimers();
@@ -152,10 +203,12 @@ describe('CallMedia room options', () => {
       const media = new CallMedia();
       await media.join({ url: 'wss://lk.example', token: 't' });
       media.setCamera(false);
+      await tick();
       const cam = created[0]!.localParticipant.setCameraEnabled;
       quality(created[0]!, 'poor');
       quality(created[0]!, 'good');
       vi.advanceTimersByTime(15_000);
+      await tick();
       expect(cam).toHaveBeenLastCalledWith(false);
       vi.useRealTimers();
     });

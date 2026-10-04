@@ -127,6 +127,7 @@ export const useCallStore = defineStore('call', () => {
     audioBlocked: false,
     micError: false,
     camError: false,
+    camReason: '',
   };
   const link = ref<LinkState>({ ...NO_LINK });
   // коли настав кожен стан співрозмовника: показуємо той, що настав останнім (смужка, обводка й колір аватара в `Peer`)

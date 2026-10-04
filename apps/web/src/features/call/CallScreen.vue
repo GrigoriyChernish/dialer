@@ -98,7 +98,19 @@ const pool = usePool(() => {
       },
     });
   if (call.hint === 'cam')
-    list.push({ group: 'user', ...banner('cameraUnavailable', t('call.notice.cameraUnavailable')) });
+    list.push({
+      group: 'user',
+      ...banner(
+        'cameraUnavailable',
+        t(
+          call.link.camReason === 'denied'
+            ? 'call.notice.cameraDenied'
+            : call.link.camReason === 'busy'
+              ? 'call.notice.cameraBusy'
+              : 'call.notice.cameraUnavailable',
+        ),
+      ),
+    });
   if (selfStalled.value && stalls.value > 1)
     list.push({ group: 'user', ...banner('cameraStalled', t('call.notice.cameraStalled')) });
   if (call.hint === 'mic') list.push({ group: 'user', ...banner('micUnavailable', t('call.notice.micUnavailable')) });

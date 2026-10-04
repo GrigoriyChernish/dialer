@@ -24,6 +24,19 @@ export interface LinkState {
   micError: boolean;
   /** Камеру не вдалося ввімкнути (немає пристрою чи дозволу). */
   camError: boolean;
+  /** Чому камера не ввімкнулась: `denied` (немає дозволу), `busy` (її тримає інша програма чи вкладка), `none` (пристрою немає), порожньо (інше). */
+  camReason: CamReason;
+}
+
+export type CamReason = '' | 'denied' | 'busy' | 'none';
+
+/** Причина збою `getUserMedia` за назвою помилки браузера. */
+export function camReasonOf(e: unknown): CamReason {
+  const name = e instanceof Error ? e.name : '';
+  if (name === 'NotAllowedError' || name === 'SecurityError' || name === 'PermissionDenied') return 'denied';
+  if (name === 'NotReadableError' || name === 'AbortError' || name === 'TrackStartError') return 'busy';
+  if (name === 'NotFoundError' || name === 'OverconstrainedError' || name === 'DevicesNotFoundError') return 'none';
+  return '';
 }
 
 /** Пристрій звуку для меню вибору (`label` порожній, поки браузер не дав дозвіл на мікрофон). */
@@ -407,29 +420,37 @@ export class CallMedia {
     return this.camOn && !this.deaf && !this.own.active;
   }
 
+  /** Черга вмикань пристроїв: кожен запуск читає актуальні побажання, тож запізніле вмикання не переживе вимкнення. */
+  private queue: Promise<void> = Promise.resolve();
+
   private apply() {
+    this.cur?.els.forEach(el => (el.muted = this.deaf));
+    this.queue = this.queue.then(() => this.applyDevices()).catch(() => {});
+  }
+
+  /**
+   * Мікрофон і камера вмикаються по черзі: паралельні `getUserMedia` на Android Chrome ламають один із пристроїв.
+   * Якщо камера не ввімкнулась, її захоплення знімаємо, щоб індикатор камери не горів без публікації.
+   */
+  private async applyDevices() {
     const s = this.cur;
     const lp = s?.room.localParticipant;
-    // якщо поки пристрій вмикався, сесія вже не поточна (завершена чи утримана), знімаємо захоплення;
-    // якщо вона поточна, але побажання змінилось (на телефоні камера вмикається секунди), повторюємо за актуальним станом,
-    // інакше запізніле вмикання лишило б камеру працювати після вимкнення
-    const settled = (kind: 'mic' | 'cam') => {
-      if (!s) return;
-      if (s !== this.cur) return this.release(s);
-      if (kind === 'mic' ? !this.wantMic : !this.wantCam) {
-        const off = kind === 'mic' ? lp?.setMicrophoneEnabled(false) : lp?.setCameraEnabled(false);
-        void off?.catch(() => {}).then(() => s !== this.cur && this.release(s));
-      }
-    };
-    void lp
-      ?.setMicrophoneEnabled(this.wantMic)
-      .catch(() => this.wantMic && this.emit({ micError: true }))
-      .then(() => settled('mic'));
-    void lp
-      ?.setCameraEnabled(this.wantCam)
-      .catch(() => this.emit({ camError: true }))
-      .then(() => settled('cam'));
-    this.cur?.els.forEach(el => (el.muted = this.deaf));
+    if (!s || !lp) return;
+    try {
+      await lp.setMicrophoneEnabled(this.wantMic);
+    } catch (e) {
+      console.warn('microphone', e);
+      if (this.wantMic) this.emit({ micError: true });
+    }
+    try {
+      await lp.setCameraEnabled(this.wantCam);
+    } catch (e) {
+      console.warn('camera', e);
+      lp.getTrackPublication(Track.Source.Camera)?.track?.stop();
+      this.emit({ camError: true, camReason: camReasonOf(e) });
+    }
+    // поки пристрої вмикались, сесія вже не поточна (завершена чи утримана): знімаємо захоплення
+    if (s !== this.cur) this.release(s);
   }
 
   /** Запит дозволів на аудіо та відео до першого дзвінка. */
