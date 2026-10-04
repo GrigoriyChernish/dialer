@@ -45,3 +45,28 @@ corepack pnpm dev
 `pnpm dev` перезапускається при змінах у коді, але не при змінах `.env`: після правки перезапустіть процес.
 
 Тести й перевірка типів: `pnpm test` та `pnpm typecheck` у `apps/server`.
+
+## Мобільний застосунок (`apps/mobile`)
+
+Застосунок на базі Tauri 2, що пакує інтерфейс `apps/web` у WebView з підтримкою WebRTC:
+
+- **Запуск у вікні на комп'ютері:**
+  ```bash
+  corepack pnpm --filter @dialer/mobile dev
+  ```
+  Автоматично піднімає Vite dev-сервер та відкриває нативне десктопне вікно з пропорціями екрана телефону (390 × 844 px).
+
+- **Збірка Debug APK (Android):**
+  ```bash
+  corepack pnpm --filter @dialer/mobile exec tauri android build -d --apk -t aarch64
+  ```
+  Файл APK створюється у папці `apps/mobile/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk`.
+
+- **Встановлення на реальний телефон через USB:**
+  1. Увімкніть «Налагодження по USB» в налаштуваннях розробника Android.
+  2. Виконайте:
+     ```bash
+     adb install apps/mobile/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk
+     ```
+  3. Для зв'язку з локальним сервером на комп'ютері відкрийте застосунок за адресою `?server=http://<IP_КОМП'ЮТЕРА>:8787` (пристрій і ПК мають бути в одній Wi-Fi мережі).
+

@@ -5,3 +5,11 @@ node_modules
 dist
 .env
 data/
+target/
+**/target/
+**/gen/schemas/
+**/.gradle/
+**/build/
+**/local.properties
+**/.cxx/
+

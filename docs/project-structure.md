@@ -38,6 +38,7 @@ dialer/
   pnpm-workspace.yaml
   tsconfig.base.json # спільні налаштування TypeScript
   apps/
+    mobile/          # Android/мобільна оболонка на Tauri 2: WebView з apps/web, нативні дозволи й сервіси дзвінків
     server/          # бекенд: Node + TypeScript, Fastify + ws + SQLite, LiveKit; Dockerfile і fly.toml (є), див. backend.md
   packages/
     shared/          # спільні типи й константи сигналізації, `src/signaling.ts` (є)

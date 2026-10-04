@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-cli/schema.json",
+  "productName": "Dialer",
+  "version": "0.1.0",
+  "identifier": "com.dialer.app",
+  "build": {
+    "beforeDevCommand": "pnpm --filter @dialer/web dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm --filter @dialer/web build",
+    "frontendDist": "../../web/dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "title": "Dialer",
+        "width": 390,
+        "height": 844
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon-512.png"
+    ]
+  }
+}
