@@ -19,7 +19,11 @@ import type { Logger } from '../logger';
 export const SAMPLE_RATE = 48000;
 
 /** Читає потік до кінця й віддає кожен елемент; помилка чи закриття потоку просто завершують цикл. */
-export async function pump<T>(stream: ReadableStream<T>, onItem: (item: T) => void | Promise<void>) {
+export async function pump<T>(
+  stream: ReadableStream<T>,
+  onItem: (item: T) => void | Promise<void>,
+  onError: (err: unknown) => void = () => {},
+) {
   const reader = stream.getReader();
   try {
     for (;;) {
@@ -27,8 +31,8 @@ export async function pump<T>(stream: ReadableStream<T>, onItem: (item: T) => vo
       if (done) return;
       await onItem(value);
     }
-  } catch {
-    // трек відписано або кімнату закрито
+  } catch (err) {
+    onError(err);
   } finally {
     reader.releaseLock();
   }
@@ -51,6 +55,7 @@ export async function runEcho(access: LiveKitAccess, log: Logger): Promise<() =>
       new TrackPublishOptions({ source: TrackSource.SOURCE_CAMERA }),
     );
     video = { source, track, pub, w, h };
+    log.info({ w, h }, 'ехо-бот публікує відео');
   };
   const unpublishVideo = async () => {
     const v = video;
@@ -62,25 +67,37 @@ export async function runEcho(access: LiveKitAccess, log: Logger): Promise<() =>
     let live = true;
     stops.set(track.sid ?? '', () => (live = false));
     if (track.kind === TrackKind.KIND_AUDIO) {
-      void pump(new AudioStream(track, SAMPLE_RATE, 1), frame => (live ? audio.captureFrame(frame) : undefined));
+      void pump(
+        new AudioStream(track, SAMPLE_RATE, 1),
+        frame => (live ? audio.captureFrame(frame) : undefined),
+        err => log.warn({ err }, 'ехо звуку перервано'),
+      );
     } else if (track.kind === TrackKind.KIND_VIDEO) {
       let busy = false;
-      void pump(new VideoStream(track), async ({ frame, timestampUs, rotation }) => {
-        if (!live || busy) return;
-        busy = true;
-        try {
-          // розмір кадру змінився (адаптивна якість): публікуємо відео наново з новим джерелом
-          if (video && (video.w !== frame.width || video.h !== frame.height)) await unpublishVideo();
-          if (!video) await publishVideo(frame.width, frame.height);
-          video!.source.captureFrame(frame, timestampUs, rotation);
-        } finally {
-          busy = false;
-        }
-      });
+      void pump(
+        new VideoStream(track),
+        async ({ frame, timestampUs, rotation }) => {
+          if (!live || busy) return;
+          busy = true;
+          try {
+            // розмір кадру змінився (адаптивна якість): публікуємо відео наново з новим джерелом
+            if (video && (video.w !== frame.width || video.h !== frame.height)) await unpublishVideo();
+            if (!video) await publishVideo(frame.width, frame.height);
+            video!.source.captureFrame(frame, timestampUs, rotation);
+          } finally {
+            busy = false;
+          }
+        },
+        err => log.warn({ err }, 'ехо відео перервано'),
+      );
     }
   };
 
-  room.on(RoomEvent.TrackSubscribed, track => echoTrack(track));
+  room.on(RoomEvent.TrackSubscribed, track => {
+    log.info({ kind: track.kind, sid: track.sid }, 'ехо-бот отримав трек');
+    echoTrack(track);
+  });
+  room.on(RoomEvent.Disconnected, reason => log.warn({ reason }, 'ехо-бот відключився від кімнати'));
   room.on(RoomEvent.TrackUnsubscribed, track => {
     stops.get(track.sid ?? '')?.();
     stops.delete(track.sid ?? '');
