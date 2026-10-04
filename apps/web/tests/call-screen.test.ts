@@ -70,4 +70,71 @@ describe('CallScreen', () => {
     await flushPromises();
     expect(w.text()).toContain('Слабкий сигнал · лише звук');
   });
+
+  it('hides «Ще» when there is nothing extra to do, and opens the extra row and the audio menu otherwise', async () => {
+    const store = connectedCall();
+    const w = mount(CallScreen, { global: { plugins: [i18n] } });
+    await flushPromises();
+    expect(w.find('button[aria-label="Ще"]').exists()).toBe(false);
+    store.audioDevices = {
+      canPickOutput: true,
+      outputs: [
+        { id: 'default', label: 'Динамік телефона' },
+        { id: 'bt', label: 'AirPods' },
+      ],
+      inputs: [{ id: 'default', label: 'Мікрофон' }],
+      cameras: [{ id: 'front', label: 'Front' }],
+    };
+    await flushPromises();
+    expect(w.find('button[aria-label="Звук"]').exists()).toBe(false); // ряд згорнуто
+    await w.find('button[aria-label="Ще"]').trigger('click');
+    expect(w.find('button[aria-label="Перемкнути камеру"]').exists()).toBe(false); // одна камера
+    await w.find('button[aria-label="Звук"]').trigger('click');
+    expect(w.text()).toContain('AirPods');
+    expect(w.text()).not.toContain('Мікрофон'); // з одного мікрофона вибирати нема що
+    await w.findAll('button[role="menuitemradio"]')[1]!.trigger('click');
+    expect(store.audioPick.output).toBe('bt');
+  });
+
+  it('switches the camera from the extra row when there are several cameras', async () => {
+    const store = connectedCall();
+    const switchCamera = vi.fn(async () => {});
+    store.audioDevices = {
+      canPickOutput: false,
+      outputs: [],
+      inputs: [],
+      cameras: [
+        { id: 'front', label: 'Front' },
+        { id: 'back', label: 'Back' },
+      ],
+    };
+    (store as unknown as { switchCamera: typeof switchCamera }).switchCamera = switchCamera;
+    const w = mount(CallScreen, { global: { plugins: [i18n] } });
+    await flushPromises();
+    await w.find('button[aria-label="Ще"]').trigger('click');
+    expect(w.find('button[aria-label="Звук"]').exists()).toBe(false);
+    await w.find('button[aria-label="Перемкнути камеру"]').trigger('click');
+    expect(switchCamera).toHaveBeenCalled();
+  });
+
+  it('collapses the extra row on Escape', async () => {
+    const store = connectedCall();
+    store.audioDevices = {
+      canPickOutput: false,
+      outputs: [],
+      inputs: [],
+      cameras: [
+        { id: 'a', label: '' },
+        { id: 'b', label: '' },
+      ],
+    };
+    const w = mount(CallScreen, { global: { plugins: [i18n] }, attachTo: document.body });
+    await flushPromises();
+    await w.find('button[aria-label="Ще"]').trigger('click');
+    expect(w.find('button[aria-label="Перемкнути камеру"]').exists()).toBe(true);
+    dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await flushPromises();
+    expect(w.find('button[aria-label="Перемкнути камеру"]').exists()).toBe(false);
+    w.unmount();
+  });
 });

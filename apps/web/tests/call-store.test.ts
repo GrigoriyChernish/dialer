@@ -74,6 +74,34 @@ function setup(opts: { seen?: number } = {}) {
 describe('call store', () => {
   beforeEach(() => vi.useRealTimers());
 
+  it('lists audio choices only for sections with something to choose and falls back when the pick disappears', async () => {
+    const { store, deps } = setup();
+    const dev = (id: string) => ({ id, label: id });
+    let list = {
+      canPickOutput: true,
+      outputs: [dev('default'), dev('bt')],
+      inputs: [dev('default')],
+      cameras: [dev('a')],
+    };
+    deps.media.audioDevices = vi.fn(async () => list);
+    deps.media.pickAudio = vi.fn(async () => {});
+    deps.media.onDevicesChange = undefined;
+    await store.call(olena.userId);
+    expect(store.canPickAudio).toBe(false);
+    store.audioDevices = list;
+    expect(store.audioChoices.outputs).toHaveLength(2);
+    expect(store.audioChoices.inputs).toHaveLength(0);
+    expect(store.canPickAudio).toBe(true);
+    await store.pickAudio('output', 'bt');
+    expect(deps.media.pickAudio).toHaveBeenLastCalledWith('output', 'bt');
+    list = { ...list, outputs: [dev('default')] }; // навушники відключили
+    store.audioDevices = list;
+    expect(store.canPickAudio).toBe(false);
+    expect(store.canSwitchCamera).toBe(false);
+    store.audioDevices = { ...list, cameras: [dev('a'), dev('b')] };
+    expect(store.canSwitchCamera).toBe(true);
+  });
+
   it('loads contacts from hello.ok', () => {
     expect(setup().store.contacts).toHaveLength(1);
   });

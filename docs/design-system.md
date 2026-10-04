@@ -158,7 +158,7 @@
 | Рядок контакту | висота 70, радіус 18, відступи 11 10, проміжок 14 |
 | Кнопки в рядку контакту (чат, виклик) | 36 × 36, коло |
 | Крапка статусу | 7 × 7 |
-| Панель керування розмовою | 266 × 74, радіус 40, відступи 10, проміжок 10, рамка `line` |
+| Панель керування розмовою | 266 × 74 (330 × 74 з кнопкою «Ще»), радіус 40, відступи 10, проміжок 10, рамка `line` |
 | Шапка розмови | висота 40, відступи 8 24 |
 | Таймер | радіус 14, відступи 4 10 |
 | Мініатюра себе | 92 × 122, радіус 16, рамка `line`, праворуч 16 px, зверху 156 px від краю екрана (під слотом пулу сповіщень, див. «Пул сповіщень»); слот резервується завжди, тож мініатюра не рухається |
@@ -244,6 +244,9 @@
 | `wifi-off` | смужка «втратив з'єднання» (у колі 24, іконка 14); результат «З'єднання втрачено» (18) | 14 / 18 |
 | `loader` | смужка «Відновлюємо з'єднання» (у колі 24, іконка 14) | 14 |
 | `signal-low` | смужка «Слабкий сигнал» (у колі 24, іконка 14) | 14 |
+| `check`, `headphones` | меню `Audio Menu`: позначка вибраного, значок навушників | 16 |
+| `ellipsis` | кнопка «Ще» в `Call Controls / more` | 24 |
+| `switch-camera` | «Перемкнути камеру» в `Extra Actions` | 20 |
 | `message-circle` | кнопка чату в рядку контакту | 16 |
 
 ## Смужки сповіщень (Banner)
@@ -389,6 +392,8 @@
 | `RoundButton / ghost` (неактивний) | скло `surface-3` (`#FFFFFF1F`) | світліше скло `hover:bg-white/20` | `scale(.95)` |
 | `RoundButton / ghost` (активний) | фон `fg` (`#F3F5FA`), іконка `bg` | `hover:bg-fg/90` | `scale(.95)`, `brightness-95` |
 | `RoundButton / subtle` | скло `surface-2` (`#FFFFFF1A`) | скло `surface-3` (`hover:bg-surface-strong`) | `scale(.95)` |
+| `Extra Button` («Звук», «Перемкнути камеру») | скло `surface-2`, рамка `line` | скло `surface-3` (`hover:bg-surface-strong`) | `scale(.95)` |
+| `Extra Button` («Звук», «Перемкнути камеру») | скло `surface-2`, рамка `line` | скло `surface-3` (`hover:bg-surface-strong`) | `scale(.95)` |
 | `Show Self` | скло `surface-2`, рамка `line` | скло `surface-3`, рамка `hover:border-white/30` | `scale(.95)` |
 | `Self View` (мініатюра) | фон `pip`, рамка `line` | світліша рамка `hover:border-white/30` | `scale-[0.98]` |
 | Рядок контакту (`Contact Row`) | прозорий | підсвітка `hover:bg-surface` | `scale-[0.99]` |
@@ -417,8 +422,8 @@
 | Група компонентів | Що в ній |
 | --- | --- |
 | `Components · Contacts` (додатково) | `Return Call` і `Return Call / hold`: плашка «Повернутися до дзвінка» під шапкою головного (картка, відступи 8 14 8 10: коло 32 `ok-soft` з `phone` 16 `ok`, «Олена Коваль» 14 / 600, «· 02:14» 13 / 500 `mute`, `chevron-up` 18 `mute`; на утриманні коло `warn-soft`, `pause` `warn`, «· на утриманні» `warn-text`) |
-| `Components · Base` | Контейнер у колонку: підгрупи `Bars` (`Status Bar`, `Call Header`), `Controls` (`Call Controls`, `Self View`, `Show Self`), `Actions` (`Action Button` і варіанти `/ active, danger, success, subtle, disabled`, `Labeled Action`), `Card` (`Card`) |
-| `Components · Contacts` | Контейнер у колонку: підгрупи `Headers` (`Home Header`, `Home Header / loading`, `Presence`, `Presence / busy`), `Rows` (`Contact Meta`, `Contact Row`, `Contact Row / history`, `Contact Row / skeleton`), `Navigation` (`Tab`, `Tab / active`, `Tab Bar`, `Tab Bar / history`, `Tab Bar / search`), `Elements` (`Section Label`, `Search Field`, `Empty State`) |
+| `Components · Base` | Контейнер у колонку: підгрупи `Bars` (`Status Bar`, `Call Header`), `Controls` (`Call Controls`, `Self View`, `Show Self`, `Call Controls / more`, `Extra Button` (+ `/ active`), `Extra Actions`, `Audio Menu`, `Audio Option`, `Audio Option / selected`), `Actions` (`Action Button` і варіанти `/ active, danger, success, subtle, disabled`, `Labeled Action`), `Card` (`Card`) |
+| `Components · Contacts` | Контейнер у колонку: підгрупи `Headers` (`Home Header`, `Home Header / loading`, `Presence`, `Presence / busy`), `Rows` (`Contact Meta`, `Contact Row`, `Contact Row / busy`, `/ dnd`, `/ offline`, `Contact Row / history`, `Contact Row / skeleton`), `Navigation` (`Tab`, `Tab / active`, `Tab Bar`, `Tab Bar / history`, `Tab Bar / search`), `Elements` (`Section Label`, `Search Field`, `Empty State`) |
 | `Components · Self Status` | `Self Status / mic-off`, `mic-unavailable`, `camera-off`, `camera-unavailable`, `hold` |
 | `Components · Settings` | `Toggle`, `Toggle / on`, `Settings Row`, `Segmented`, `Presence / dnd` |
 | `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` |
@@ -431,13 +436,13 @@
 | `Flow · Contacts` | `Home · Contacts`, `Home · History`, `Home · Search` і порожні `Home · Contacts · empty`, `Home · History · empty`, `Home · Search · empty`; перше завантаження `Home · Contacts · loading`, `Home · History · loading`, `Home · Contacts · offline`, `Home · History · offline`; обрив зв'язку `Home · Contacts · connection lost` |
 | `Flow · Outgoing call` | `Outgoing Call`, `Result · Busy`, `Result · No Answer`, `Result · Rejected` |
 | `Flow · Incoming call` | `Incoming Call`, `Result · Missed` |
-| `Flow · In call · base` | `In Call`, `In Call · self-hold`, `In Call · self-view-loading` |
+| `Flow · In call · base` | `In Call`, `In Call · self-hold`, `In Call · self-view-loading`, `In Call · more`, `In Call · more · open`, `In Call · more · audio-menu` |
 | `Flow · In call · peer` | `peer-hold`, `peer-connection-lost`, `peer-mic-off` |
 | `Flow · In call · self devices` | `self-status`, `self-mic-camera-off`, `self-camera-unavailable`, `self-view-hidden` |
 | `Flow · In call · self network` | `self-poor-signal`, `self-reconnecting`, `self-notifications-pool`, `self-pool · expanded` |
 | `Flow · In call · video` | `video`, `video · peer-mic-off`, `video · loading`, `video · unavailable` |
 | `Flow · Call ended` | `Ended · peer hangup`, `Ended · lost`, `Ended · error` |
-| `Flow · Settings` | `Settings`, `Settings · edit name`, `Home · Contacts · dnd` |
+| `Flow · Settings` | `Settings`, `Settings · notifications on`, `Settings · notifications blocked`, `Settings · notifications saving`, `Settings · edit name`, `Home · Contacts · dnd` |
 | `Flow · Light theme` | світлі копії `Home · Contacts`, `Settings`, `Incoming Call`, `In Call · self-reconnecting`, `In Call · held call`, `Auth · Phone` |
 | `Flow · Call waiting` | `Incoming · waiting` (другий вхідний під час розмови, три дії без підписів), `In Call · held call` (смужка `Self Banner / held-call` у слоті пулу сповіщень) |
 
@@ -493,7 +498,14 @@
 - **`Status Bar`** 375 × 62: час (16 / 600) і індикатори (13 / 600), відступи 0 28. Це системна смуга телефона для макета, у віджеті її немає.
 - **`Call Header`** 375 × 40, відступи 8 24: зліва група `Left`: кнопка `Minimize Button` (коло 28, `surface-2`, `chevron-down` 16, «Згорнути розмову») і ім'я співрозмовника (16 / 600), справа група `Right` з `Status Slot` (слот для значків `Self Status`,
   проміжок 6) і `Timer`. У коді це `<header>` екрана розмови.
-- **`Call Controls`** 266 × 74, радіус 40, відступи 10, проміжок 10: чотири `Action Button` (мікрофон, камера, утримання, завершити).
+- **`Call Controls`** 266 × 74, радіус 40, відступи 10, проміжок 10: чотири `Action Button` (мікрофон, камера, утримання, завершити); з додатковими діями панель 330 × 74 з кнопкою «Ще» (`Call Controls / more`).
+- **`Call Controls / more`** 330 × 74: `Call Controls` з п'ятою кнопкою «Ще» (`ellipsis`) перед «Завершити»; відкрита — біла, іконка `on-light` (як активний перемикач). Показуємо, лише коли є додаткові дії.
+- **`Extra Actions`** (додаткові дії дзвінка) — ряд круглих `Extra Button` 44 × 44 (скло `surface-2`, рамка `line`, іконка 20 `fg`, без підписів), проміжок 16, по центру екрана на 14 над панеллю (`y` 672): «Звук» (`volume-2`), «Перемкнути камеру» (`switch-camera`). `Extra Button / active` — біла (меню звуку відкрито).
+  Правила: ряд абсолютний (нічого не зсуває, лише смужка співрозмовника на відео піднімається над ним, `y` 626) і з'являється по натисканню «Ще»; недоступну дію (немає з чого вибирати звук, камера одна чи недоступна) не показуємо, коли недоступні всі, немає й кнопки «Ще».
+  Закривається повторним натисканням «Ще», кліком поза рядом, `Esc` і сам через 5 с без дій (поки відкрите меню звуку, таймер стоїть). Нова додаткова дія: кнопка в ряд, умова показу в код і `Extra Button` у дизайні.
+- **`Audio Menu`** 327 завширшки, радіус `radius-2xl`, градієнт 160° `card-top → card-bottom`, рамка `line`, відступи 8 8 10 8, проміжок 2: над рядом `Extra Actions` (відступ 8, `y` 418), під затемненням `scrim-mid` на весь екран, ряд лишається над затемненням (`In Call · more · audio-menu`). Секції «Динамік» (`volume-2`) і «Мікрофон» (`mic`): `Section Label` є, але прозорий (`opacity` 0): місце лишено, поки не будуть відгуки користувачів (за потреби повернути видимим; у коді `invisible`, назва секції в `aria-label` групи);
+  `Audio Option` — рядок 311 × `radius-md`, відступи 11 12, проміжок 12: значок 16 `mute`, назва 14 / 500 `fg`, праворуч `check` 16 `accent-icon` лише у `/ selected` (фон `surface-2`; вага тексту та сама 500, щоб текст не стрибав при виборі). Секцію з одним пристроєм не показуємо.
+  Закривається натисканням поза меню чи `Esc`.
 - **`Self View`** 92 × 122, радіус 16: мініатюра нашого відео без підписів. Лише з увімкненою камерою: вимкнули самі чи камери немає — мініатюри й `Show Self` немає. Бейджа мікрофона немає:
   стан нашого мікрофона показує лише значок `Self Status` у шапці.
 - **`Action Button`** 54 × 54, коло: основа кнопок керування й відповіді. База нейтральна (скло `surface-3`, іконка `on-solid`, без тіні),
@@ -557,6 +569,7 @@
   `/ dnd` «не турбувати»: `bad-soft` / `bad` (лише для себе, дзвінок сильніший за «не турбувати»). Текст мітки: `ok-text`, `warn-text`, `bad-text`.
 - **`Tab Bar`**: картка з трьома `Tab` без підписів (іконка 22, `mute`; `Tab / active` — `accent-icon`). Лічильник на «Історії»:
   `bad`, висота 16, текст 10 / 700. Варіанти `/ history`, `/ search` — та сама панель з іншою активною вкладкою.
+- **`Contact Row` і статус від сервера** (`Contact.status`, [signaling.md](signaling.md#статус-контакта)): крапка 7 і підпис «номер · статус» 12 `mute`. `free` і `away` — `ok` «онлайн» (базовий рядок), `Contact Row / busy` — `warn` «зайнятий», `/ dnd` — `bad` «не турбувати», `/ offline` — `mute` «не в мережі». Кольори крапок збігаються з `Presence`; рядок лишається кнопкою виклику в усіх станах.
 - **`Section Label`**: заголовок групи 12 / 600 `mute` («Сьогодні», «Вчора»).
 - **`Contact Row / history`**: `Contact Row` без кнопки чату; замість крапки значок напряму 14 (`phone-incoming`, `phone-outgoing`, `phone-missed`), «вхідний · 21:18 · 12:05», «пропущений · 14:32». Пропущений: аватар `bg` + `bad-soft`, ініціали, значок і статус `bad-text`; «не додзвонились» так само з `warn`; решта звичайний аватар, значок і статус за напрямом: вхідний `ok-text`, вихідний `accent-icon`.
 - **`Search Field`**: 48 заввишки, радіус `radius-md`, фон `bg` (як у сторінки), рамка `accent`, іконка `search` і `circle-x` 18, текст 16 / 500.
@@ -580,6 +593,7 @@
 - **`Toggle`** 44 × 26, кругляк 22: вимкнений — доріжка `surface-3`, кругляк `mute`; `/ on` — `accent` і `on-solid`.
 - **`Segmented`** (тема): підкладка `surface-2`, радіус `radius-md`, відступ 3; три сегменти 38 заввишки з іконкою 15 і текстом 13
   («Авто» `monitor-smartphone`, «Світла» `sun`, «Темна» `moon`); активний — `surface-3`, рамка `line`, текст `fg` 600.
+- **Попап збереження сповіщень** (`Settings · notifications saving`): після дозволу браузера до відповіді сервера, під затемненням `scrim-mid` на весь екран по центру `Card` 280 (відступи 24 20, проміжок 8): `loader` 28 `accent` (крутиться, під `prefers-reduced-motion` ні), заголовок «Вмикаємо сповіщення…» 15 / 600 `fg`, підпис «Зберігаємо підписку на цьому пристрої» 12 `mute`. Поява 220 мс `ease-out`, зникнення 180 мс `ease-in`, лише прозорість.
 - **«Вийти»**: окрема картка, значок `log-out` у колі `bad-soft`, текст 15 / 500 `bad`.
 
 ### Колір статус-бару (`theme-color`)

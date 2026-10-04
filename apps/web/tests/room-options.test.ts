@@ -6,6 +6,7 @@ interface MockRoom {
   handlers: Map<string, (...a: unknown[]) => void>;
   localParticipant: { setCameraEnabled: ReturnType<typeof vi.fn>; setMicrophoneEnabled: ReturnType<typeof vi.fn> };
   startAudio: ReturnType<typeof vi.fn>;
+  switchActiveDevice: ReturnType<typeof vi.fn>;
   remoteVideo: { setEnabled: ReturnType<typeof vi.fn> };
   canPlaybackAudio: boolean;
 }
@@ -35,6 +36,7 @@ vi.mock('livekit-client', () => {
       return this;
     }
     connect = vi.fn(async () => {});
+    switchActiveDevice = vi.fn(async () => true);
     canPlaybackAudio = true;
     startAudio = vi.fn(async () => {});
     disconnect = vi.fn();
@@ -84,6 +86,35 @@ describe('CallMedia room options', () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(room.stopped).toContain('cam');
+  });
+
+  it('switches audio devices in the current room and reuses the choice in the next one', async () => {
+    const media = new CallMedia();
+    await media.join({ url: 'wss://lk.example', token: 't' });
+    await media.pickAudio('output', 'bt');
+    await media.pickAudio('input', 'usb');
+    expect(created[0]!.switchActiveDevice).toHaveBeenCalledWith('audiooutput', 'bt');
+    expect(created[0]!.switchActiveDevice).toHaveBeenCalledWith('audioinput', 'usb');
+    await media.join({ url: 'wss://lk.example', token: 't2' });
+    expect(created[1]!.options.audioCaptureDefaults).toMatchObject({ deviceId: 'usb' });
+    expect(created[1]!.switchActiveDevice).toHaveBeenCalledWith('audiooutput', 'bt');
+  });
+
+  it('cycles through the cameras and keeps the choice for the next room', async () => {
+    const media = new CallMedia();
+    const devices = [
+      { kind: 'videoinput', deviceId: 'front', label: '' },
+      { kind: 'videoinput', deviceId: 'back', label: '' },
+    ];
+    vi.stubGlobal('navigator', { mediaDevices: { enumerateDevices: async () => devices } });
+    await media.join({ url: 'wss://lk.example', token: 't' });
+    await media.switchCamera();
+    expect(created[0]!.switchActiveDevice).toHaveBeenLastCalledWith('videoinput', 'front');
+    await media.switchCamera();
+    expect(created[0]!.switchActiveDevice).toHaveBeenLastCalledWith('videoinput', 'back');
+    await media.join({ url: 'wss://lk.example', token: 't2' });
+    expect(created[1]!.options.videoCaptureDefaults).toMatchObject({ deviceId: 'back' });
+    vi.unstubAllGlobals();
   });
 
   describe('weak signal', () => {

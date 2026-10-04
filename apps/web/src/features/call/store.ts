@@ -12,7 +12,7 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { usePrefsStore } from '@/features/settings/prefs';
-import type { LinkState } from '@/shared/media/room';
+import type { CallDevices, LinkState } from '@/shared/media/room';
 import type { SoundKind } from '@/shared/sounds/sounds';
 import { holdFlag, latestPeerState, trackSince, type PeerSince } from './peerState';
 
@@ -38,6 +38,10 @@ export interface CallDeps {
     restartCamera?(): Promise<void>;
     hasCamera?(): Promise<boolean>;
     hasMicrophone?(): Promise<boolean>;
+    audioDevices?(): Promise<CallDevices>;
+    pickAudio?(kind: 'output' | 'input', id: string): Promise<void>;
+    switchCamera?(): Promise<void>;
+    onDevicesChange?(fn: () => void): () => void;
     attach?(kind: 'local' | 'remote', el: HTMLVideoElement): void;
     park?(): void;
     swap?(): boolean;
@@ -141,6 +145,20 @@ export const useCallStore = defineStore('call', () => {
   const peerSpeaking = holdFlag(() => status.value === 'connected' && link.value.peerSpeaking, 250);
   const cam = ref(prefs.camOnStart);
   const selfHidden = ref(false);
+  const audioDevices = ref<CallDevices>({ outputs: [], inputs: [], cameras: [], canPickOutput: false });
+  /** Вибрані пристрої звуку (`default`: типовий). */
+  const audioPick = ref({ output: 'default', input: 'default' });
+  /** Секції меню «Звук»: вивід лише там, де браузер дає його обирати; у секції має бути з чого обирати. */
+  const audioChoices = computed(() => ({
+    outputs:
+      audioDevices.value.canPickOutput && audioDevices.value.outputs.length > 1 ? audioDevices.value.outputs : [],
+    inputs: audioDevices.value.inputs.length > 1 ? audioDevices.value.inputs : [],
+  }));
+  // підписи пристроїв з'являються після дозволу на мікрофон: оновлюємо список, коли розмова з'єдналась
+  watch(status, st => st === 'connected' && void refreshAudio());
+  /** «Перемкнути камеру» є, коли камер понад одна й камера не заблокована. */
+  const canSwitchCamera = computed(() => audioDevices.value.cameras.length > 1 && !camBlocked.value);
+  const canPickAudio = computed(() => audioChoices.value.outputs.length > 0 || audioChoices.value.inputs.length > 0);
   /** Камери немає чи немає дозволу: мініатюру себе не показуємо, кнопка камери неактивна. */
   const camBlocked = ref(false);
   /** Мікрофона немає чи немає дозволу: кнопка мікрофона приглушена. */
@@ -504,8 +522,31 @@ export const useCallStore = defineStore('call', () => {
     deps.media.setCamera?.(false);
   }
 
+  /** Оновлює список пристроїв звуку; якщо вибраний зник (відключили навушники), повертаємось до типового. */
+  async function refreshAudio() {
+    if (!deps.media.audioDevices) return;
+    audioDevices.value = await deps.media.audioDevices();
+    for (const [kind, list] of [
+      ['output', audioDevices.value.outputs],
+      ['input', audioDevices.value.inputs],
+    ] as const) {
+      const id = audioPick.value[kind];
+      if (id !== 'default' && !list.some(d => d.id === id)) await pickAudio(kind, 'default');
+    }
+  }
+
+  async function switchCamera() {
+    await deps.media.switchCamera?.();
+  }
+
+  async function pickAudio(kind: 'output' | 'input', id: string) {
+    audioPick.value = { ...audioPick.value, [kind]: id };
+    await deps.media.pickAudio?.(kind, id);
+  }
+
   function init(d: CallDeps) {
     deps = d;
+    d.media.onDevicesChange?.(() => void refreshAudio());
     d.media.onChange?.(patch => {
       Object.assign(link.value, patch);
       if (patch.micError) blockMic();
@@ -777,6 +818,13 @@ export const useCallStore = defineStore('call', () => {
     camBlocked,
     hint,
     selfHidden,
+    audioDevices,
+    audioChoices,
+    audioPick,
+    canPickAudio,
+    canSwitchCamera,
+    switchCamera,
+    pickAudio,
     link,
     missed,
     left,

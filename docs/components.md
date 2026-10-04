@@ -15,6 +15,7 @@
 | Base | `Status Bar` | немає (системна смуга телефона, у віджеті її не малюємо) | не потрібен |
 | Base | `Call Header` | `<header>` у `features/call/CallScreen.vue` | є |
 | Base | `Call Controls` | панель кнопок у `CallScreen.vue` | є |
+| Base | `Extra Actions`, `Extra Button`, `Audio Menu`, `Audio Option` (+ `/ selected`) | `features/call/AudioMenu.vue` | є; на реальних пристроях з Bluetooth не перевірено |
 | Base | `Self View` | мініатюра у `CallScreen.vue` + `shared/ui/VideoSurface.vue` | є; відео з реальним потоком не перевірено на двох пристроях |
 | Base | `Action Button` і варіанти `/ active`, `/ danger`, `/ success`, `/ subtle`, `/ disabled` | `shared/ui/RoundButton.vue`: `ghost`, `ghost` + `active`, `bad`, `ok`, `subtle`, `unavailable` | є |
 | Base | `Labeled Action` | кнопка в обгортці 88 у `CallScreen.vue` (підпис вимкнено, лишився `aria-label`) | є |
@@ -45,7 +46,7 @@
 
 ### `Icon`
 
-Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneCall`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `history`, `arrowLeftRight`, `volume2`, `volumeX`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `chevronRight`, `chevronUp`, `chevronDown`, `bell`, `bellRing`, `moon`, `sun`, `monitorSmartphone`, `pencil`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
+Іконка lucide за ім'ям: `video`, `videoOff`, `phone`, `phoneCall`, `phoneOutgoing`, `phoneIncoming`, `phoneOff`, `phoneMissed`, `history`, `arrowLeftRight`, `volume2`, `volumeX`, `check`, `ellipsis`, `switchCamera`, `headphones`, `x`, `pause`, `mic`, `micOff`, `wifiOff`, `loader`, `signalLow`, `chevronLeft`, `chevronRight`, `chevronUp`, `chevronDown`, `bell`, `bellRing`, `moon`, `sun`, `monitorSmartphone`, `pencil`, `logOut`, `users`, `search`, `searchX`, `circleX`, `triangleAlert`.
 
 - **Розмір:** за замовчуванням 24; менші задає викликач класом `size-*` (16 у підписах і плашках, 18 у результаті, 12 у бейджі). Власного розміру компонент не нав'язує.
 - **Доступність:** декоративна (`aria-hidden`), підпис дає кнопка.
@@ -242,7 +243,16 @@
 - **`ringing` / `incoming`:** кільця 200/152 (вихідний синє, вхідний зелене, разом з аватаром), аватар 104, ім'я 26/700, підпис «Вихідний/Вхідний виклик» з іконкою, «Залишилось 00:08».
   Вихідний: «Скасувати». Вхідний: «Відхилити» й «Прийняти» з підписами.
 - **`connected`:** шапка з ім'ям, нашими статусами (`SelfStatusChip`) і таймером, мініатюра себе 92 × 122 (лише з увімкненою камерою), аватар (кола голосу, коли співрозмовник говорить, або обводка стану), плашка стану співрозмовника (одна, внизу над панеллю),
-  панель керування (мікрофон, камера, утримання, завершити).
+  панель керування (мікрофон, камера, утримання, «Ще», завершити; «Ще» лише коли є додаткові дії, див. нижче).
+- **Додаткові дії** (дизайн: `Call Controls / more`, `Extra Actions`, `Extra Button`, екрани `In Call · more`, `· open`, `· audio-menu` у `Flow · In call · base`): кнопка «Ще» (`ellipsis`) у панелі керування розкриває над нею (`bottom-[128px]`) ряд круглих кнопок 44 без підписів: «Звук» (`volume2`) і «Перемкнути камеру» (`switchCamera`).
+  Недоступну дію не показуємо (стор: `canPickAudio`, `canSwitchCamera`), коли недоступні обидві, немає й кнопки «Ще». Ряд згортається повторним натисканням «Ще», кліком поза ним, `Esc` і сам через 5 с без дій (поки відкрите меню звуку, таймер стоїть); меню звуку закриває себе разом із рядом.
+- **Звук** (`Audio Menu`, екран `In Call · more · audio-menu`): кнопка «Звук» відкриває над рядом меню з секціями «Динамік» (вивід) і «Мікрофон» (вхід), вибраний пристрій позначено `check`.
+  `audioChoices` лишає секцію, лише якщо в ній понад один пристрій, а вивід ще й коли браузер уміє `setSinkId` (Chromium; Safari й Firefox ні, тож там доступний лише вибір мікрофона).
+  Список оновлюється, коли розмова з'єдналась (підписи з'являються після дозволу на мікрофон) і на `devicechange`; якщо вибраний пристрій зник (відключили навушники), повертаємось до `default`.
+  Вибір іде в `CallMedia.pickAudio` (`room.switchActiveDevice`), запам'ятовується до перезавантаження сторінки й діє на наступні розмови. Закриття меню: натискання поза ним чи `Esc`.
+  Обмеження: на телефонах вебсторінка не може перемкнути слухавку на гучний зв'язок, лише обрати окремий пристрій (навушники, Bluetooth), який показує браузер.
+- **Перемкнути камеру:** `CallMedia.switchCamera` перебирає камери по колу (фронтальна ↔ задня) через `switchActiveDevice('videoinput')`, вибір діє на наступні розмови; кнопка є, коли камер понад одна й камера не заблокована.
+  З відео співрозмовника смужка його стану, поки ряд відкритий, піднімається над ним (`bottom-[180px]`).
 - **З відео співрозмовника** (`peerVideoOn` = `link.peerCam`, розмова не на утриманні ні з нашого, ні з його боку): відео на весь екран із градієнтами згори (180) і знизу (220), без аватара й імені,
   смужка співрозмовника лишається внизу. Поки немає першого кадру, видно індикатор (див. `VideoSurface`); якщо потоку немає 10 с (`videoStalled`), екран повертається до аватара зі смужкою «Відео не завантажується».
 - **Утримання з будь-якого боку** (`hold` або `peerHold`): повноекранне відео ховається, лишається блок `Peer` (наше утримання: аватар .6; його утримання: жовта обводка), мініатюра себе без відео;

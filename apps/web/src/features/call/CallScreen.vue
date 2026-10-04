@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Icon from '@/shared/ui/Icon.vue';
 import BannerStack, { type BannerItem } from '@/shared/ui/BannerStack.vue';
@@ -7,6 +7,7 @@ import { banner } from '@/shared/ui/banners';
 import RoundButton from '@/shared/ui/RoundButton.vue';
 import SelfStatusChip, { type SelfStatus } from '@/shared/ui/SelfStatusChip.vue';
 import VideoSurface from '@/shared/ui/VideoSurface.vue';
+import AudioMenu from './AudioMenu.vue';
 import NotificationPool from './NotificationPool.vue';
 import { usePool, type PoolSource } from './notifications';
 import Peer from './Peer.vue';
@@ -26,6 +27,30 @@ const peerVideoOn = computed(
   () =>
     connected.value && call.link.peerCam && !call.link.audioOnly && !call.link.peerWeak && !call.peerHold && !call.hold,
 );
+// «Ще» (дизайн: Call Controls / more) розкриває ряд додаткових дій над панеллю (Extra Actions): «Звук» і «Перемкнути камеру».
+// Недоступну дію не показуємо; коли немає жодної, немає й кнопки «Ще»
+const extra = ref(false);
+const audioMenu = ref(false);
+const hasExtra = computed(() => connected.value && (call.canPickAudio || call.canSwitchCamera));
+const EXTRA_MS = 5000;
+let extraTimer: ReturnType<typeof setTimeout> | undefined;
+// ряд згортається сам через 5 с без дій; поки відкрите меню звуку, таймер стоїть
+function armExtra() {
+  clearTimeout(extraTimer);
+  if (extra.value && !audioMenu.value) extraTimer = setTimeout(() => (extra.value = false), EXTRA_MS);
+}
+watch([extra, audioMenu], armExtra);
+watch([connected, () => call.canPickAudio, () => call.canSwitchCamera], () => {
+  if (!hasExtra.value) extra.value = false;
+  if (!connected.value || !call.canPickAudio) audioMenu.value = false;
+});
+watch(extra, on => on || (audioMenu.value = false));
+const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !audioMenu.value && (extra.value = false);
+watch(extra, on => (on ? addEventListener('keydown', onKey) : removeEventListener('keydown', onKey)));
+onBeforeUnmount(() => {
+  clearTimeout(extraTimer);
+  removeEventListener('keydown', onKey);
+});
 const videoStalled = ref(false);
 watch(peerVideoOn, on => on || (videoStalled.value = false));
 // екран «In Call · video»: на весь екран відео співрозмовника
@@ -221,7 +246,12 @@ watch(selfStalled, on => {
     <!-- пул сповіщень Self-зони: слот 40 під шапкою (дизайн: Self Banner Slot), поверх екрана, вміст не зсуває -->
     <NotificationPool v-if="connected" :items="pool" />
     <!-- з відео співрозмовника блок Peer ховається, тож смужка його стану лишається внизу над панеллю керування -->
-    <BannerStack v-if="video" class="pointer-events-none absolute inset-x-4 bottom-[122px] z-20" :items="peerBanners" />
+    <BannerStack
+      v-if="video"
+      class="pointer-events-none absolute inset-x-4 z-20"
+      :class="extra ? 'bottom-[180px]' : 'bottom-[122px]'"
+      :items="peerBanners"
+    />
 
     <div class="relative flex min-h-0 flex-1 flex-col">
       <!-- мініатюра себе (дизайн: Self View) і кнопка «показати себе» (Show Self); камери немає чи її вимкнули — їх не показуємо -->
@@ -285,6 +315,51 @@ watch(selfStalled, on => {
       <BannerStack v-if="connected" class="my-auto w-full translate-y-1" :items="peerBanners" />
     </Peer>
 
+    <!-- меню «Звук» над панеллю керування (дизайн: In Call · audio-menu) -->
+    <AudioMenu
+      v-if="audioMenu && connected && call.canPickAudio"
+      :outputs="call.audioChoices.outputs"
+      :inputs="call.audioChoices.inputs"
+      :output="call.audioPick.output"
+      :input="call.audioPick.input"
+      @pick="(kind, id) => call.pickAudio(kind, id)"
+      @close="audioMenu = false"
+    />
+
+    <!-- клік поза рядом додаткових дій згортає його (під панеллю й рядом, над рештою екрана) -->
+    <button
+      v-if="extra"
+      type="button"
+      tabindex="-1"
+      class="absolute inset-0 z-[5] cursor-default"
+      :aria-label="t('call.moreClose')"
+      @click="extra = false"
+    />
+    <!-- ряд додаткових дій над панеллю (дизайн: Extra Actions, Extra Button): круглі кнопки без підписів -->
+    <div v-if="extra" class="absolute inset-x-0 bottom-[128px] z-40 flex justify-center gap-4" @pointerdown="armExtra">
+      <button
+        v-if="call.canPickAudio"
+        type="button"
+        aria-haspopup="dialog"
+        :aria-expanded="audioMenu"
+        :aria-label="t('call.audio.button')"
+        class="grid size-11 cursor-pointer place-items-center rounded-full border border-line transition duration-[var(--duration-press)] ease-[var(--ease-out)] active:scale-95 focus-visible:outline-2 focus-visible:outline-accent"
+        :class="audioMenu ? 'bg-fg text-bg' : 'bg-surface text-fg hover:bg-surface-strong'"
+        @click="audioMenu = !audioMenu"
+      >
+        <Icon name="volume2" class="size-5" />
+      </button>
+      <button
+        v-if="call.canSwitchCamera"
+        type="button"
+        :aria-label="t('call.switchCamera')"
+        class="grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-fg transition duration-[var(--duration-press)] ease-[var(--ease-out)] hover:bg-surface-strong active:scale-95 focus-visible:outline-2 focus-visible:outline-accent"
+        @click="call.switchCamera()"
+      >
+        <Icon name="switchCamera" class="size-5" />
+      </button>
+    </div>
+
     <div class="relative z-10 flex justify-center pb-10">
       <div v-if="connected" class="flex gap-2.5 rounded-[40px] border border-line bg-surface p-2.5">
         <RoundButton
@@ -309,6 +384,15 @@ watch(selfStalled, on => {
           :disabled="call.peerHold"
           @click="call.toggleHold()"
           ><Icon name="pause"
+        /></RoundButton>
+        <RoundButton
+          v-if="hasExtra"
+          :label="t('call.more')"
+          :active="extra"
+          aria-haspopup="true"
+          :aria-expanded="extra"
+          @click="extra = !extra"
+          ><Icon name="ellipsis"
         /></RoundButton>
         <RoundButton variant="bad" :label="t('call.hangup')" @click="call.end()"><Icon name="x" /></RoundButton>
       </div>

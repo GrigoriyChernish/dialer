@@ -26,6 +26,20 @@ export interface LinkState {
   camError: boolean;
 }
 
+/** Пристрій звуку для меню вибору (`label` порожній, поки браузер не дав дозвіл на мікрофон). */
+export interface AudioDevice {
+  id: string;
+  label: string;
+}
+
+/** Пристрої розмови: `cameras` — камери для «Перемкнути камеру»; `canPickOutput` — чи дозволяє браузер обирати вивід (`setSinkId`: Chromium; Safari і Firefox ні). */
+export interface CallDevices {
+  outputs: AudioDevice[];
+  inputs: AudioDevice[];
+  cameras: AudioDevice[];
+  canPickOutput: boolean;
+}
+
 /** Скільки канал має бути нормальним, щоб після слабкого сигналу повернути відео. */
 const RECOVER_MS = 15_000;
 
@@ -80,6 +94,10 @@ export class CallMedia {
   private micOn = true;
   private camOn = true;
   private deaf = false;
+  /** Вибрані пристрої звуку (`default`: типовий); діють на всі наступні розмови, поки сторінка відкрита. */
+  private outId = 'default';
+  private inId = 'default';
+  private camId = 'default';
   /** Наш канал слабкий: камеру вимкнено, відео співрозмовника не качаємо. */
   private own = new WeakLink(() => this.syncOwn());
   /** Канал співрозмовника слабкий: його відео фризить, не качаємо лише його (наша камера працює). */
@@ -103,6 +121,46 @@ export class CallMedia {
     }
   }
 
+  /** Пристрої звуку для меню вибору (дублі `communications` ховаємо). */
+  async audioDevices(): Promise<CallDevices> {
+    const canPickOutput = typeof HTMLMediaElement !== 'undefined' && 'setSinkId' in HTMLMediaElement.prototype;
+    try {
+      const all = await navigator.mediaDevices.enumerateDevices();
+      const pick = (kind: MediaDeviceKind) =>
+        all
+          .filter(d => d.kind === kind && d.deviceId !== 'communications')
+          .map(d => ({ id: d.deviceId, label: d.label }));
+      return { outputs: pick('audiooutput'), inputs: pick('audioinput'), cameras: pick('videoinput'), canPickOutput };
+    } catch {
+      return { outputs: [], inputs: [], cameras: [], canPickOutput };
+    }
+  }
+
+  /** Зміна списку пристроїв (підключили чи відключили навушники); повертає відписку. */
+  onDevicesChange(fn: () => void) {
+    const md = navigator.mediaDevices;
+    md?.addEventListener?.('devicechange', fn);
+    return () => md?.removeEventListener?.('devicechange', fn);
+  }
+
+  /** Вибір пристрою виводу чи входу: запам'ятовуємо для наступних розмов і застосовуємо до поточної. */
+  async pickAudio(kind: 'output' | 'input', id: string) {
+    if (kind === 'output') this.outId = id;
+    else this.inId = id;
+    await this.cur?.room
+      .switchActiveDevice(kind === 'output' ? 'audiooutput' : 'audioinput', id)
+      .catch(e => console.warn('audio device', e));
+  }
+
+  /** «Перемкнути камеру»: наступна з камер по колу (фронтальна ↔ задня), запам'ятовується для наступних розмов. */
+  async switchCamera() {
+    const { cameras } = await this.audioDevices();
+    if (cameras.length < 2) return;
+    const i = cameras.findIndex(c => c.id === this.camId);
+    this.camId = cameras[(i + 1) % cameras.length]!.id;
+    await this.cur?.room.switchActiveDevice('videoinput', this.camId).catch(e => console.warn('camera', e));
+  }
+
   async hasMicrophone() {
     try {
       return (await navigator.mediaDevices.enumerateDevices()).some(d => d.kind === 'audioinput');
@@ -122,8 +180,12 @@ export class CallMedia {
         dynacast: true,
         // явно, щоб не залежати від типових значень браузера: ехо, шум і гучність обробляє WebRTC (не Krisp чи RNNoise)
         // мобільний канал: камера 640 × 360 (типово 720p) і simulcast з нижчими шарами, щоб відео не гальмувало на 3G
-        videoCaptureDefaults: { resolution: VideoPresets.h360.resolution },
+        videoCaptureDefaults: {
+          resolution: VideoPresets.h360.resolution,
+          ...(this.camId !== 'default' && { deviceId: this.camId }),
+        },
         audioCaptureDefaults: {
+          ...(this.inId !== 'default' && { deviceId: this.inId }),
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true,
@@ -192,6 +254,7 @@ export class CallMedia {
       // без жесту користувача startAudio відхиляється: це не привід не вмикати мікрофон, а сигнал показати «Увімкнути звук»
       await room.startAudio().catch(() => {});
       emit({ audioBlocked: !room.canPlaybackAudio });
+      if (this.outId !== 'default') await room.switchActiveDevice('audiooutput', this.outId).catch(() => {});
       if (s === this.cur) this.apply();
       else this.silence(s);
     } catch (e) {
