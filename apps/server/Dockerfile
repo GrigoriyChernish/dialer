@@ -23,6 +23,7 @@ COPY package.json pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/shared packages/shared
 COPY apps/server/package.json apps/server/tsconfig.json apps/server/
 COPY apps/server/migrations apps/server/migrations
+COPY apps/server/media apps/server/media
 COPY apps/server/src apps/server/src
 WORKDIR /app/apps/server
 EXPOSE 8080
