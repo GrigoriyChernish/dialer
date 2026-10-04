@@ -293,9 +293,9 @@ describe('демо-боти', () => {
   let t: ReturnType<typeof setup>;
   beforeEach(() => void (t = setup()));
 
-  it('Олена відповідає через 3,5 с', () => {
+  it('Олена відповідає через 1,5 с', () => {
     t.calls.invite(anna, { to: 'bot:olena', video: false });
-    t.clock.advance(3_499);
+    t.clock.advance(1_499);
     expect(find(t.delivered, 'call.connected')).toEqual([]);
     t.clock.advance(1);
     expect(find(t.delivered, 'call.connected').filter(e => e.user === anna.userId)).toMatchObject([
@@ -550,7 +550,7 @@ describe('другий вхідний (waiting)', () => {
 
   it('боти не мають очікування: зайнятий бот дає busy', () => {
     t.calls.invite(anna, { to: 'bot:olena', video: false });
-    t.clock.advance(3_500);
+    t.clock.advance(1_500);
     const r = t.calls.invite(clara, { to: 'bot:olena', video: false });
     expect(find(r.effects, 'call.ended')[0]!.msg.reason).toBe('busy');
   });
@@ -595,7 +595,7 @@ describe('LiveKit і правило lost', () => {
 
   it('дзвінки з ботами без токенів кімнати', () => {
     t.calls.invite(anna, { to: 'bot:olena', video: false });
-    t.clock.advance(3_500);
+    t.clock.advance(1_500);
     const connectedMsg = find(t.delivered, 'call.connected').find(e => e.user === anna.userId)!;
     expect(connectedMsg.msg.call.livekit).toBeUndefined();
     t.clock.advance(120_000); // і lost не спрацьовує
@@ -605,7 +605,7 @@ describe('LiveKit і правило lost', () => {
   it('Олена з ехо-ботом: токен кімнати, бот запускається й зупиняється разом з дзвінком', async () => {
     const e = setup({ livekit: true, botMedia: true });
     e.calls.invite(anna, { to: 'bot:olena', video: true });
-    e.clock.advance(3_500);
+    e.clock.advance(1_500);
     const connectedMsg = find(e.delivered, 'call.connected').find(m => m.user === anna.userId)!;
     expect(connectedMsg.msg.call.livekit).toEqual({ url: 'wss://lk.test', token: `call1|${id(anna)}|Анна` });
     expect(e.echoCalls.started).toEqual([{ callId: 'call1', token: 'call1|bot:olena:bot|Олена', kind: 'echo' }]);

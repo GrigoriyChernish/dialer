@@ -73,12 +73,12 @@ describe('дзвінок через WebSocket', () => {
     a.client.close();
   });
 
-  it('Олена відповідає через 3,5 с, Support зайнятий', async () => {
+  it('Олена відповідає через 1,5 с, Support зайнятий', async () => {
     const a = await connectUser(server, 'Олег', phone());
     a.client.send({ type: 'call.invite', id: 'b1', to: 'bot:olena', video: false });
     const { call } = await a.client.next('ack');
     await a.client.next('call.ringing');
-    clock.advance(3_500);
+    clock.advance(1_500);
     expect((await a.client.next('call.connected')).call.peer.name).toBe('Олена');
     a.client.send({ type: 'call.hangup', id: 'b2', callId: call!.callId });
     expect(await a.client.next('call.ended')).toMatchObject({ reason: 'hangup' });

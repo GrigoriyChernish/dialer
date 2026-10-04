@@ -399,20 +399,36 @@ export class CallMedia {
     s.els.forEach(el => (el.muted = true));
   }
 
+  private get wantMic() {
+    return this.micOn && !this.deaf;
+  }
+
+  private get wantCam() {
+    return this.camOn && !this.deaf && !this.own.active;
+  }
+
   private apply() {
     const s = this.cur;
     const lp = s?.room.localParticipant;
-    const wantMic = this.micOn && !this.deaf;
-    // якщо поки пристрій вмикався, сесія вже не поточна (завершена чи утримана), знімаємо захоплення
-    const settled = () => s && s !== this.cur && this.release(s);
+    // якщо поки пристрій вмикався, сесія вже не поточна (завершена чи утримана), знімаємо захоплення;
+    // якщо вона поточна, але побажання змінилось (на телефоні камера вмикається секунди), повторюємо за актуальним станом,
+    // інакше запізніле вмикання лишило б камеру працювати після вимкнення
+    const settled = (kind: 'mic' | 'cam') => {
+      if (!s) return;
+      if (s !== this.cur) return this.release(s);
+      if (kind === 'mic' ? !this.wantMic : !this.wantCam) {
+        const off = kind === 'mic' ? lp?.setMicrophoneEnabled(false) : lp?.setCameraEnabled(false);
+        void off?.catch(() => {}).then(() => s !== this.cur && this.release(s));
+      }
+    };
     void lp
-      ?.setMicrophoneEnabled(wantMic)
-      .catch(() => wantMic && this.emit({ micError: true }))
-      .then(settled);
+      ?.setMicrophoneEnabled(this.wantMic)
+      .catch(() => this.wantMic && this.emit({ micError: true }))
+      .then(() => settled('mic'));
     void lp
-      ?.setCameraEnabled(this.camOn && !this.deaf && !this.own.active)
+      ?.setCameraEnabled(this.wantCam)
       .catch(() => this.emit({ camError: true }))
-      .then(settled);
+      .then(() => settled('cam'));
     this.cur?.els.forEach(el => (el.muted = this.deaf));
   }
 
