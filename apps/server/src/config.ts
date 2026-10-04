@@ -1,4 +1,5 @@
 import type { LiveKitConfig } from './livekit';
+import { existsSync } from 'node:fs';
 import type { PlayerConfig } from './bots/player';
 import type { VapidConfig } from './push/sender';
 
@@ -18,9 +19,12 @@ export interface Config {
   livekit: LiveKitConfig | null;
   /** Ключі VAPID для Web Push; `null`: push вимкнено (див. docs/pwa-and-push.md). */
   vapid: VapidConfig | null;
-  /** Що грає бот «Відео-тест»: `BOT_VIDEO_FILE` (файл у циклі, без нього тестова картинка), `BOT_VIDEO_HEIGHT` (типово 1080, 2160 це 4K). */
+  /** Що грає бот «Відео-тест»: `BOT_VIDEO_FILE` (файл у циклі, типово `media/video-test.mp4`, без файлу тестова картинка), `BOT_VIDEO_HEIGHT` (типово 720, 2160 це 4K). */
   botVideo: PlayerConfig;
 }
+
+/** Ролик, що лежить у репозиторії; `BOT_VIDEO_FILE` його замінює (наприклад, на 4K). */
+const DEFAULT_BOT_VIDEO = './media/video-test.mp4';
 
 const DEV_SECRET = 'dev-only-secret-change-me-0123456789';
 
@@ -52,7 +56,10 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     production,
     livekit: lkSet === 3 ? (lk as LiveKitConfig) : null,
     vapid: vapidSet === 3 ? (vapid as VapidConfig) : null,
-    botVideo: { file: env.BOT_VIDEO_FILE || null, height: Number(env.BOT_VIDEO_HEIGHT) || 1080 },
+    botVideo: {
+      file: env.BOT_VIDEO_FILE || (existsSync(DEFAULT_BOT_VIDEO) ? DEFAULT_BOT_VIDEO : null),
+      height: Number(env.BOT_VIDEO_HEIGHT) || 720,
+    },
   };
 }
 
