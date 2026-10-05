@@ -1,6 +1,9 @@
+import { isTauri, tauriInvoke } from './notify';
+
 /**
- * Нативне сповіщення про вхідний (CallStyle) у Tauri на Android: Kotlin-плагін `apps/mobile/src-tauri/plugins/callstyle`
- * додає у WebView міст `window.DialerNative`. Поза Android моста немає, і все нижче нічого не робить.
+ * Нативний вхідний дзвінок у Tauri. Android: Kotlin-плагін `apps/mobile/src-tauri/plugins/callstyle`
+ * додає у WebView міст `window.DialerNative` (CallStyle). Десктоп (macOS): Rust-команди `apps/mobile/src-tauri/src/incoming.rs`
+ * (міні-вікно поверх усіх вікон і системна мелодія), дії повертаються тією ж подією `callstyle`. У браузері нічого не робить.
  */
 interface NativeBridge {
   show(json: string): void;
@@ -23,23 +26,30 @@ export interface CallAction {
 const bridge = (): NativeBridge | undefined =>
   typeof window === 'undefined' ? undefined : (window as unknown as { DialerNative?: NativeBridge }).DialerNative;
 
-export const hasNativeCallStyle = (): boolean => !!bridge();
+/** Десктопний Tauri: вхідний показує міні-вікно (Rust), а не Android-міст. */
+export const isDesktopCallStyle = (): boolean => isTauri() && !bridge();
+
+export const hasNativeCallStyle = (): boolean => !!bridge() || isDesktopCallStyle();
 
 export function showIncomingCall(callId: string, name: string, expiresAt: number): void {
-  bridge()?.show(JSON.stringify({ callId, name, expiresAt }));
+  if (isDesktopCallStyle()) void tauriInvoke('show_incoming', { callId, name, expiresAt });
+  else bridge()?.show(JSON.stringify({ callId, name, expiresAt }));
 }
 
 export function cancelIncomingCall(callId: string): void {
-  bridge()?.cancel(callId);
+  if (isDesktopCallStyle()) void tauriInvoke('hide_incoming', { callId });
+  else bridge()?.cancel(callId);
 }
 
 /** Системна мелодія дзвінка замість вбудованої (Android): звучить, поки вхідний на екрані застосунку. */
 export function startNativeRingtone(): void {
-  bridge()?.startRingtone();
+  if (isDesktopCallStyle()) void tauriInvoke('start_ringtone');
+  else bridge()?.startRingtone();
 }
 
 export function stopNativeRingtone(): void {
-  bridge()?.stopRingtone();
+  if (isDesktopCallStyle()) void tauriInvoke('stop_ringtone');
+  else bridge()?.stopRingtone();
 }
 
 /** Адреса сервера для нативного «Відхилити», коли застосунок не запущено. */

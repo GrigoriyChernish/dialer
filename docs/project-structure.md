@@ -26,6 +26,7 @@ dialer/
     local-development.md # локальний запуск
     notifications.md #   пул сповіщень екрана розмови
     project-structure.md
+    desktop-app.md   #   вхідний дзвінок на десктопі (Tauri)
     pwa-and-push.md  #   PWA і Web Push
     signaling.md     #   контракт WebSocket
   design/            # дизайн: dialer.pen (головний, лише через Pencil) і tokens.json (токени для перевірки коду)
@@ -39,6 +40,7 @@ dialer/
   tsconfig.base.json # спільні налаштування TypeScript
   apps/
     mobile/          # Android/мобільна оболонка на Tauri 2: WebView з apps/web, нативні дозволи й сервіси дзвінків
+                     #   src-tauri/src/incoming.rs: міні-вікно вхідного й мелодія на десктопі, див. desktop-app.md
                      #   src-tauri/plugins/callstyle: Kotlin-плагін вхідного (CallStyle, служба з мелодією, FCM), див. pwa-and-push.md
     server/          # бекенд: Node + TypeScript, Fastify + ws + SQLite, LiveKit; Dockerfile і fly.toml (є), див. backend.md
   packages/

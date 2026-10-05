@@ -1,4 +1,7 @@
 #[cfg(desktop)]
+mod incoming;
+
+#[cfg(desktop)]
 use tauri::Manager;
 
 #[tauri::command]
@@ -15,7 +18,7 @@ fn focus_window(_app: tauri::AppHandle, window: tauri::WebviewWindow) {
 }
 
 #[cfg(desktop)]
-fn show_main_window(app: &tauri::AppHandle) {
+pub(crate) fn show_main_window(app: &tauri::AppHandle) {
     #[cfg(target_os = "macos")]
     let _ = app.set_activation_policy(tauri::ActivationPolicy::Regular);
 
@@ -40,14 +43,31 @@ pub fn run() {
     #[allow(unused_mut)]
     let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_callstyle::init())
-        .invoke_handler(tauri::generate_handler![focus_window]);
+        .plugin(tauri_plugin_callstyle::init());
+
+    #[cfg(mobile)]
+    {
+        builder = builder.invoke_handler(tauri::generate_handler![focus_window]);
+    }
 
     #[cfg(desktop)]
     {
         builder = builder
+            .manage(incoming::Incoming::default())
+            .invoke_handler(tauri::generate_handler![
+                focus_window,
+                incoming::show_incoming,
+                incoming::hide_incoming,
+                incoming::start_ringtone,
+                incoming::stop_ringtone,
+                incoming::incoming_action
+            ])
             .on_window_event(|window, event| {
                 if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                    // інші вікна (міні-вікно вхідного) закриваються як звичайно
+                    if window.label() != "main" {
+                        return;
+                    }
                     // Замість виходу ховаємо вікно і прибираємо з Dock (залишається лише в треї)
                     hide_main_window(window.app_handle());
                     api.prevent_close();

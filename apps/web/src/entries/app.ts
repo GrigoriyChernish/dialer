@@ -21,6 +21,7 @@ import { Sounds } from '@/shared/sounds/sounds';
 import {
   cancelIncomingCall,
   hasNativeCallStyle,
+  isDesktopCallStyle,
   onCallAction,
   requestNativeFcmToken,
   setNativeServer,
@@ -85,6 +86,8 @@ watch(
 // системне сповіщення про вхідний лише в Tauri: у браузері прихованій вкладці його шле сервер через Web Push, власне було б другим.
 // На Android це нативний CallStyle (кнопки «Відповісти» / «Відхилити»), поки вікно приховане; він зникає, щойно вхідний перестав дзвонити
 let incomingId: string | null = null;
+/** Застосунок не перед очима: вікно приховане чи (десктоп) без фокусу. Android вважає «поза екраном» лише приховане вікно. */
+const away = () => document.visibilityState === 'hidden' || (isDesktopCallStyle() && !document.hasFocus());
 watch(
   () => call.status,
   (st, prev) => {
@@ -95,19 +98,31 @@ watch(
     }
     if (st === 'incoming' && prev !== 'incoming') {
       incomingId = call.callId;
-      void focusWindow();
       if (hasNativeCallStyle()) {
         if (!call.callId) return;
-        if (document.visibilityState === 'hidden') {
+        if (away()) {
           const name = call.peer?.name || call.peer?.userId || i18n.global.t('call.notify.unknown');
           showIncomingCall(call.callId, name, Date.now() + call.left * 1000);
         } else cancelIncomingCall(call.callId); // дзвінок уже на екрані (застосунок відкрила FCM-сповіщення)
-      } else if (isTauri() && tauriNotifyEnabled()) {
-        const { t } = i18n.global;
-        const name = call.peer?.name || call.peer?.userId || t('call.notify.unknown');
-        void sendNotification(t('call.notify.title'), t('call.notify.body', { name }));
+      } else {
+        void focusWindow();
+        if (isTauri() && tauriNotifyEnabled()) {
+          const { t } = i18n.global;
+          const name = call.peer?.name || call.peer?.userId || t('call.notify.unknown');
+          void sendNotification(t('call.notify.title'), t('call.notify.body', { name }));
+        }
       }
     }
+  },
+);
+
+// десктоп: пропущений вхідний, поки застосунок не перед очима, дає системне сповіщення; екран «Ви не відповіли» чекає у вікні
+watch(
+  () => call.missed,
+  m => {
+    if (!isDesktopCallStyle() || m?.reason !== 'incoming' || !away() || !tauriNotifyEnabled()) return;
+    const { t } = i18n.global;
+    void sendNotification(t('call.notify.missed'), m.peer.name || m.peer.userId);
   },
 );
 
@@ -133,13 +148,16 @@ watch(
   ready => ready && requestNativeFcmToken(),
   { immediate: true },
 );
-// вікно відкрили: сповіщення про вхідний більше не потрібне, дзвінок уже на екрані
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && incomingId) {
+// вікно відкрили чи воно отримало фокус: сповіщення про вхідний більше не потрібне, дзвінок уже на екрані
+const onActive = () => {
+  if (away()) return;
+  if (incomingId) {
     cancelIncomingCall(incomingId);
     if (call.status === 'incoming') startNativeRingtone(); // сповіщення знято, мелодію далі грає застосунок
   }
-});
+};
+document.addEventListener('visibilitychange', onActive);
+window.addEventListener('focus', onActive);
 
 // гарячі клавіші вхідного: Enter — прийняти, Esc — відхилити (не під час утримання клавіші й не з фокусом на кнопці чи полі)
 window.addEventListener('keydown', e => {

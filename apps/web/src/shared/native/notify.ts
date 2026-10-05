@@ -6,6 +6,15 @@ interface TauriInternals {
   invoke: (cmd: string, args?: Record<string, unknown>) => Promise<unknown>;
 }
 
+/** Виклик команди Tauri із вебу (поза Tauri чи при помилці нічого не робить). */
+export async function tauriInvoke(cmd: string, args?: Record<string, unknown>): Promise<void> {
+  try {
+    await getInternals()?.invoke(cmd, args);
+  } catch (e) {
+    console.warn(`tauri ${cmd}:`, e);
+  }
+}
+
 const getInternals = (): TauriInternals | null =>
   typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
     ? (window as unknown as { __TAURI_INTERNALS__: TauriInternals }).__TAURI_INTERNALS__
@@ -72,7 +81,6 @@ export async function focusWindow(): Promise<void> {
     }
   }
 }
-
 
 const TAURI_NOTIFY_KEY = 'dialer.tauri_notify';
 
