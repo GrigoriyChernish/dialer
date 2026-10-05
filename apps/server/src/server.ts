@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { createOtp, lastDigitsOtp, type OtpSender } from './auth/otp';
 import { createSessions } from './auth/sessions';
 import { createTokens } from './auth/tokens';
@@ -16,6 +17,7 @@ import type { Logger } from './logger';
 import { createPush } from './push';
 import { createPushDispatch } from './push/dispatch';
 import { createRejectTokens } from './push/reject-token';
+import { createFcmSender, type FcmServiceAccount } from './push/fcm';
 import { createPushSender, type PushSender } from './push/sender';
 import { createCallStore } from './store/calls';
 import { createMemoryPresence } from './store/presence';
@@ -37,9 +39,19 @@ export interface ServerOptions {
   otpSender?: OtpSender;
   /** Підміна відправника Web Push у тестах. */
   pushSender?: PushSender;
+  /** Підміна відправника FCM у тестах. */
+  fcmSender?: PushSender;
 }
 
 /** Збирає сервер: БД, токени, присутність, HTTP і WebSocket. */
+/** Ключ сервісного акаунта Firebase з файлу; помилка читання зупиняє запуск, щоб FCM не вимкнувся мовчки. */
+function readServiceAccount(path: string): FcmServiceAccount {
+  const sa = JSON.parse(readFileSync(path, 'utf8')) as Partial<FcmServiceAccount>;
+  if (!sa.project_id || !sa.client_email || !sa.private_key)
+    throw new Error('FCM_SERVICE_ACCOUNT_FILE: потрібні project_id, client_email і private_key');
+  return sa as FcmServiceAccount;
+}
+
 export async function createServer({
   config,
   logger,
@@ -49,6 +61,7 @@ export async function createServer({
   livekitRooms,
   otpSender = lastDigitsOtp,
   pushSender,
+  fcmSender,
 }: ServerOptions) {
   const db = openDb(config.dbPath);
   const users = createUsers(db);
@@ -65,6 +78,9 @@ export async function createServer({
   const push = createPush({
     subs: createPushSubs(db),
     sender: pushSender ?? (config.vapid ? createPushSender(config.vapid) : null),
+    fcmSender:
+      fcmSender ??
+      (config.fcmServiceAccountFile ? createFcmSender(readServiceAccount(config.fcmServiceAccountFile)) : null),
     vapidPublicKey: config.vapid?.publicKey ?? null,
     logger,
     now: () => clock.now(),

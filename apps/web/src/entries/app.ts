@@ -18,6 +18,16 @@ import { SignalingClient } from '@/shared/api/signaling';
 import { applyTheme } from '@/shared/theme';
 import { CallMedia } from '@/shared/media/room';
 import { Sounds } from '@/shared/sounds/sounds';
+import {
+  cancelIncomingCall,
+  hasNativeCallStyle,
+  onCallAction,
+  requestNativeFcmToken,
+  setNativeServer,
+  showIncomingCall,
+  startNativeRingtone,
+  stopNativeRingtone,
+} from '@/shared/native/callstyle';
 import { focusWindow, isTauri, sendNotification, tauriNotifyEnabled } from '@/shared/native/notify';
 
 // Окремий застосунок (GitHub Pages): вхід за номером, далі контакти й дзвінки. Віджет для iframe — entries/widget.ts.
@@ -51,7 +61,20 @@ watch(
   th => applyTheme(th),
   { immediate: true },
 );
-call.init({ client, media: new CallMedia(), sounds: new Sounds() });
+// Android: мелодію вхідного грає система (сповіщення CallStyle, а коли застосунок на екрані, системна мелодія через міст), не вбудована
+const webSounds = new Sounds();
+const sounds = hasNativeCallStyle()
+  ? {
+      play(kind: Parameters<Sounds['play']>[0], ms?: number) {
+        stopNativeRingtone();
+        if (kind === 'ringtone') {
+          if (document.visibilityState === 'visible') startNativeRingtone();
+          webSounds.play(null);
+        } else webSounds.play(kind, ms);
+      },
+    }
+  : webSounds;
+call.init({ client, media: new CallMedia(), sounds });
 // після кожного hello.ok віддаємо серверу підписку пристрою на сповіщення, якщо вона є
 watch(
   () => call.ready,
@@ -59,13 +82,27 @@ watch(
   { immediate: true },
 );
 
-// системне сповіщення про вхідний лише в Tauri: у браузері прихованій вкладці його шле сервер через Web Push, власне було б другим
+// системне сповіщення про вхідний лише в Tauri: у браузері прихованій вкладці його шле сервер через Web Push, власне було б другим.
+// На Android це нативний CallStyle (кнопки «Відповісти» / «Відхилити»), поки вікно приховане; він зникає, щойно вхідний перестав дзвонити
+let incomingId: string | null = null;
 watch(
   () => call.status,
   (st, prev) => {
+    if (prev === 'incoming' && st !== 'incoming' && incomingId) {
+      // і сповіщення, яке показав FCM, коли застосунок не працював: власного прапорця на нього немає
+      cancelIncomingCall(incomingId);
+      incomingId = null;
+    }
     if (st === 'incoming' && prev !== 'incoming') {
+      incomingId = call.callId;
       void focusWindow();
-      if (isTauri() && tauriNotifyEnabled()) {
+      if (hasNativeCallStyle()) {
+        if (!call.callId) return;
+        if (document.visibilityState === 'hidden') {
+          const name = call.peer?.name || call.peer?.userId || i18n.global.t('call.notify.unknown');
+          showIncomingCall(call.callId, name, Date.now() + call.left * 1000);
+        } else cancelIncomingCall(call.callId); // дзвінок уже на екрані (застосунок відкрила FCM-сповіщення)
+      } else if (isTauri() && tauriNotifyEnabled()) {
         const { t } = i18n.global;
         const name = call.peer?.name || call.peer?.userId || t('call.notify.unknown');
         void sendNotification(t('call.notify.title'), t('call.notify.body', { name }));
@@ -77,6 +114,32 @@ watch(
 /** Фокус на елементі, який сам реагує на Enter чи пробіл: його натискання не можна перехоплювати. */
 const isInteractive = (el: Element | null) =>
   !!el?.closest('input, textarea, select, button, a[href], [role="button"], [contenteditable="true"]');
+
+// дії зі сповіщення CallStyle: «Відповісти» приймає дзвінок, щойно він з'явиться, «Відхилити» завершує вхідний
+onCallAction(a => {
+  if (a.type === 'answer') call.answerFromPush(a.callId);
+  else if (a.type === 'decline') {
+    if (call.status === 'incoming' && call.callId === a.callId) call.end();
+  } else if (a.type === 'open') {
+    // тап по «Пропущений дзвінок»: вкладка історії на головній (роутера ще може не бути на холодному запуску, тож через hash)
+    if (a.token === 'history') homeTab.value = 'history';
+    if (location.hash !== '#/' && location.hash !== '') location.hash = '#/';
+  } else if (a.token && call.ready) void call.pushSubscribeFcm(a.token).catch(() => {});
+});
+// FCM: адреса сервера для нативного «Відхилити», після кожного hello.ok просимо токен (пристрій віддає його серверу заново)
+setNativeServer(server);
+watch(
+  () => call.ready,
+  ready => ready && requestNativeFcmToken(),
+  { immediate: true },
+);
+// вікно відкрили: сповіщення про вхідний більше не потрібне, дзвінок уже на екрані
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && incomingId) {
+    cancelIncomingCall(incomingId);
+    if (call.status === 'incoming') startNativeRingtone(); // сповіщення знято, мелодію далі грає застосунок
+  }
+});
 
 // гарячі клавіші вхідного: Enter — прийняти, Esc — відхилити (не під час утримання клавіші й не з фокусом на кнопці чи полі)
 window.addEventListener('keydown', e => {

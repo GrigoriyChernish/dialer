@@ -16,3 +16,6 @@ target/
 
 # APK для локального тестування Android
 apps/web/public/dialer.apk
+
+# ключ проєкту Firebase для FCM
+apps/mobile/src-tauri/gen/android/app/google-services.json

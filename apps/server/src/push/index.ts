@@ -2,6 +2,7 @@ import type { PushPayload } from '@dialer/shared';
 import type { PushSubs } from '../db/push';
 import type { Logger } from '../logger';
 import { isAllowedPushEndpoint } from './endpoint';
+import { FCM_PREFIX, isFcmEndpoint } from './fcm';
 import type { PushOptions, PushSender } from './sender';
 
 export interface Subscription {
@@ -31,25 +32,35 @@ export function parseSubscription(raw: unknown): Subscription | null {
 export function createPush(deps: {
   subs: PushSubs;
   sender: PushSender | null;
+  /** Відправник FCM для застосунку Android; `null`: підписки `fcm:` не приймаємо. */
+  fcmSender?: PushSender | null;
   vapidPublicKey: string | null;
   logger: Logger;
   now(): number;
 }) {
   const { subs, sender, logger } = deps;
+  const fcm = deps.fcmSender ?? null;
+  const senderFor = (endpoint: string) => (isFcmEndpoint(endpoint) ? fcm : sender);
   return {
     /** Публічний ключ для `pushManager.subscribe`; `null`: push вимкнено. */
     vapidPublicKey: deps.vapidPublicKey,
-    enabled: sender !== null,
+    enabled: sender !== null || fcm !== null,
+    fcmEnabled: fcm !== null,
     subscribe(siteId: string, userId: string, deviceId: string, sub: Subscription): void {
       // на пристрої одна підписка: стара (інший endpoint) замінюється
       subs.removeDevice(siteId, userId, deviceId);
       subs.save({ endpoint: sub.endpoint, siteId, userId, deviceId, ...sub.keys }, deps.now());
     },
+    /** Токен FCM застосунку Android (`push.subscribe` з `fcmToken`). */
+    subscribeFcm(siteId: string, userId: string, deviceId: string, token: string): void {
+      subs.removeDevice(siteId, userId, deviceId);
+      subs.save({ endpoint: FCM_PREFIX + token, siteId, userId, deviceId, p256dh: '', auth: '' }, deps.now());
+    },
     unsubscribe(siteId: string, userId: string, deviceId: string): void {
       subs.removeDevice(siteId, userId, deviceId);
     },
     hasSubscriptions(siteId: string, userId: string): boolean {
-      return sender !== null && subs.forUser(siteId, userId).length > 0;
+      return subs.forUser(siteId, userId).some(s => senderFor(s.endpoint) !== null);
     },
     /** Надсилає push на підписки користувача (окрім `exceptDevices`); недійсні підписки видаляє. */
     async notify(
@@ -59,13 +70,14 @@ export function createPush(deps: {
       opts: PushOptions,
       exceptDevices: ReadonlySet<string> = new Set(),
     ): Promise<void> {
-      if (!sender) return;
       await Promise.all(
         subs
           .forUser(siteId, userId)
           .filter(s => !exceptDevices.has(s.deviceId))
           .map(async s => {
-            const result = await sender.send(s, payload, opts);
+            const via = senderFor(s.endpoint);
+            if (!via) return;
+            const result = await via.send(s, payload, opts);
             if (result === 'gone') subs.removeEndpoint(s.endpoint);
             else if (result === 'error') logger.warn({ userId, deviceId: s.deviceId }, 'не вдалося надіслати push');
           }),

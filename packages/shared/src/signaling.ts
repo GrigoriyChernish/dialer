@@ -138,10 +138,13 @@ export type SettingsUpdateRequest = Request<'settings.update', { settings: Parti
 export type ProfileUpdateRequest = Request<'profile.update', { name: string }>;
 /** Історію переглянуто до `upTo` (мс від епохи); сервер бере більше з наявного й нового, а майбутній час обрізає до «зараз». */
 export type RecentsSeenRequest = Request<'recents.seen', { upTo: number }>;
-/** `subscription` це `PushSubscription.toJSON()` браузера. Пристрій має одну підписку: нова замінює стару. */
+/**
+ * `subscription` це `PushSubscription.toJSON()` браузера; `fcmToken` токен Firebase Cloud Messaging застосунку Android (Tauri).
+ * Пристрій має одну підписку: нова замінює стару.
+ */
 export type PushSubscribeRequest = Request<
   'push.subscribe',
-  { subscription: { endpoint: string; keys: { p256dh: string; auth: string } } }
+  { subscription: { endpoint: string; keys: { p256dh: string; auth: string } } } | { fcmToken: string }
 >;
 export type PushUnsubscribeRequest = Request<'push.unsubscribe', object>;
 /**

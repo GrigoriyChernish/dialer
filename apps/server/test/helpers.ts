@@ -28,7 +28,14 @@ export async function signedWebhook(body: object, cfg = LIVEKIT_TEST) {
 
 export async function startServer(
   timeouts?: Partial<GatewayTimeouts>,
-  extra: { clock?: Clock; dbPath?: string; livekit?: boolean; config?: Partial<Config>; pushSender?: PushSender } = {},
+  extra: {
+    clock?: Clock;
+    dbPath?: string;
+    livekit?: boolean;
+    config?: Partial<Config>;
+    pushSender?: PushSender;
+    fcmSender?: PushSender;
+  } = {},
 ) {
   const config = {
     ...loadConfig({ JWT_SECRET: 's'.repeat(32) }),
@@ -58,6 +65,7 @@ export async function startServer(
     clock: extra.clock,
     livekitRooms,
     pushSender: extra.pushSender,
+    fcmSender: extra.fcmSender,
   });
   const port = await server.listen();
   return {

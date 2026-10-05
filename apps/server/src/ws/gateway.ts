@@ -23,6 +23,7 @@ import type { Recents } from '../db/recents';
 import type { Users } from '../db/users';
 import type { Logger } from '../logger';
 import { parseSubscription, type Push } from '../push';
+import { parseFcmToken } from '../push/fcm';
 import type { Connection } from '../store/presence';
 import type { Hub } from './hub';
 import type { OriginPolicy } from './origin';
@@ -289,6 +290,14 @@ export function attachGateway(server: HttpServer, deps: GatewayDeps) {
       if (!id || !conn) return respond(id, errorFrame('bad_request', id, 'потрібен id'));
       if (!deps.push.enabled)
         return respond(id, errorFrame('bad_request', id, 'push.subscribe: push вимкнено на сервері'));
+      if (msg.fcmToken !== undefined) {
+        const token = parseFcmToken(msg.fcmToken);
+        if (!token || !deps.push.fcmEnabled)
+          return respond(id, errorFrame('bad_request', id, 'push.subscribe: FCM вимкнено чи токен некоректний'));
+        deps.push.subscribeFcm(conn.siteId, conn.userId, conn.deviceId, token);
+        deps.hub.refresh(conn.siteId, conn.userId);
+        return respond(id, { v: PROTOCOL_VERSION, type: 'ack', reqId: id });
+      }
       const sub = parseSubscription(msg.subscription);
       if (!sub) return respond(id, errorFrame('bad_request', id, 'push.subscribe: некоректна підписка'));
       deps.push.subscribe(conn.siteId, conn.userId, conn.deviceId, sub);

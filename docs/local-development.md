@@ -77,3 +77,5 @@ corepack pnpm dev
   3. Для зв'язку з локальним сервером на комп'ютері задайте адресу при збірці: `VITE_SERVER_URL=http://<IP_КОМП'ЮТЕРА>:8787` перед командою збірки (пристрій і ПК мають бути в одній Wi-Fi мережі). Без неї застосунок звертається до `localhost`, тобто до самого телефону.
 
 - **Завантаження APK з телефона:** запустіть сервер із `DEV_APK_PATH=apps/mobile/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk`, тоді файл доступний за `http://<IP_КОМП'ЮТЕРА>:8787/dialer.apk`. Без змінної маршруту немає, на Fly її не задаємо. Копію APK у `apps/web/public/` не кладемо (`.gitignore`).
+
+- **Push на Android (FCM).** Для вхідних на закритий застосунок потрібен Firebase-проєкт: `google-services.json` для пакета `com.dialer.app` кладемо в `apps/mobile/src-tauri/gen/android/app/` (у git не потрапляє), а сервер запускаємо з `FCM_SERVICE_ACCOUNT_FILE=<шлях до JSON-ключа сервісного акаунта>` (ключ зберігаємо поза репозиторієм). Без них усе працює, але без push у закритий застосунок. Деталі: [pwa-and-push.md](pwa-and-push.md#android-застосунок-tauri-callstyle-і-fcm).

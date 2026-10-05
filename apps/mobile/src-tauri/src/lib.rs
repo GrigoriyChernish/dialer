@@ -40,6 +40,7 @@ pub fn run() {
     #[allow(unused_mut)]
     let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_callstyle::init())
         .invoke_handler(tauri::generate_handler![focus_window]);
 
     #[cfg(desktop)]

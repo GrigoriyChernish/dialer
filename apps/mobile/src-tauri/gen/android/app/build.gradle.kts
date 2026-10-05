@@ -81,3 +81,8 @@ dependencies {
 }
 
 apply(from = file("tauri.build.gradle.kts"))
+
+// FCM: ключ проєкту Firebase (`google-services.json`, у git не потрапляє); без нього застосунок збирається, але без push
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
