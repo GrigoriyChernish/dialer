@@ -21,6 +21,8 @@ export interface Config {
   vapid: VapidConfig | null;
   /** `FCM_SERVICE_ACCOUNT_FILE`: шлях до JSON-ключа сервісного акаунта Firebase для push на Android; `null`: FCM вимкнено. */
   fcmServiceAccountFile: string | null;
+  /** `FCM_SERVICE_ACCOUNT_JSON`: той самий ключ вмістом (секрет Fly.io, де файлу немає); має перевагу над файлом. */
+  fcmServiceAccountJson: string | null;
   /** Що грає бот «Відео-тест»: `BOT_VIDEO_FILE` (файл у циклі, типово `media/video-test.mp4`, без файлу тестова картинка), `BOT_VIDEO_HEIGHT` (типово 720, 2160 це 4K). */
   botVideo: PlayerConfig;
   /** `DEV_APK_PATH`: файл APK для `GET /dialer.apk` (тестування Android у локальній мережі); `null`: маршруту немає. */
@@ -62,6 +64,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     vapid: vapidSet === 3 ? (vapid as VapidConfig) : null,
     devApk: env.DEV_APK_PATH || null,
     fcmServiceAccountFile: env.FCM_SERVICE_ACCOUNT_FILE || null,
+    fcmServiceAccountJson: env.FCM_SERVICE_ACCOUNT_JSON || null,
     botVideo: {
       file: env.BOT_VIDEO_FILE || (existsSync(DEFAULT_BOT_VIDEO) ? DEFAULT_BOT_VIDEO : null),
       height: Number(env.BOT_VIDEO_HEIGHT) || 720,

@@ -43,15 +43,26 @@ export interface ServerOptions {
   fcmSender?: PushSender;
 }
 
-/** Збирає сервер: БД, токени, присутність, HTTP і WebSocket. */
-/** Ключ сервісного акаунта Firebase з файлу; помилка читання зупиняє запуск, щоб FCM не вимкнувся мовчки. */
-function readServiceAccount(path: string): FcmServiceAccount {
-  const sa = JSON.parse(readFileSync(path, 'utf8')) as Partial<FcmServiceAccount>;
+/** Ключ сервісного акаунта Firebase з вмісту (`FCM_SERVICE_ACCOUNT_JSON`) чи файлу; помилка зупиняє запуск, щоб FCM не вимкнувся мовчки. */
+function readServiceAccount(
+  config: Pick<Config, 'fcmServiceAccountJson' | 'fcmServiceAccountFile'>,
+): FcmServiceAccount | null {
+  const raw =
+    config.fcmServiceAccountJson ??
+    (config.fcmServiceAccountFile ? readFileSync(config.fcmServiceAccountFile, 'utf8') : null);
+  if (raw === null) return null;
+  const sa = JSON.parse(raw) as Partial<FcmServiceAccount>;
   if (!sa.project_id || !sa.client_email || !sa.private_key)
-    throw new Error('FCM_SERVICE_ACCOUNT_FILE: потрібні project_id, client_email і private_key');
+    throw new Error('FCM_SERVICE_ACCOUNT_*: потрібні project_id, client_email і private_key');
   return sa as FcmServiceAccount;
 }
 
+function fcmFromConfig(config: Config) {
+  const sa = readServiceAccount(config);
+  return sa ? createFcmSender(sa) : null;
+}
+
+/** Збирає сервер: БД, токени, присутність, HTTP і WebSocket. */
 export async function createServer({
   config,
   logger,
@@ -78,9 +89,7 @@ export async function createServer({
   const push = createPush({
     subs: createPushSubs(db),
     sender: pushSender ?? (config.vapid ? createPushSender(config.vapid) : null),
-    fcmSender:
-      fcmSender ??
-      (config.fcmServiceAccountFile ? createFcmSender(readServiceAccount(config.fcmServiceAccountFile)) : null),
+    fcmSender: fcmSender ?? fcmFromConfig(config),
     vapidPublicKey: config.vapid?.publicKey ?? null,
     logger,
     now: () => clock.now(),

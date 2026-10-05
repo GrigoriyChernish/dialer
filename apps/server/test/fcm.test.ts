@@ -2,6 +2,7 @@ import { generateKeyPairSync } from 'node:crypto';
 import type { PushPayload } from '@dialer/shared';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { PushSub } from '../src/db/push';
+import { loadConfig } from '../src/config';
 import { createFcmSender, fcmData, parseFcmToken } from '../src/push/fcm';
 import type { PushResult, PushSender } from '../src/push/sender';
 import { connectUser, startServer, type TestServer } from './helpers';
@@ -113,5 +114,14 @@ describe('push.subscribe з fcmToken', () => {
     await server.push.notify('demo', '+380970000002', { type: 'call.ended', callId: 'c9' }, { ttl: 30 });
     expect(server.db.prepare('SELECT COUNT(*) AS n FROM push_subscriptions').get()).toEqual({ n: 0 });
     a.client.close();
+  });
+});
+
+describe('конфігурація FCM', () => {
+  it('ключ можна задати файлом чи вмістом (секрет Fly.io); без них FCM вимкнено', () => {
+    const base = { JWT_SECRET: 's'.repeat(32) };
+    expect(loadConfig(base)).toMatchObject({ fcmServiceAccountFile: null, fcmServiceAccountJson: null });
+    expect(loadConfig({ ...base, FCM_SERVICE_ACCOUNT_FILE: '/k.json' }).fcmServiceAccountFile).toBe('/k.json');
+    expect(loadConfig({ ...base, FCM_SERVICE_ACCOUNT_JSON: '{"a":1}' }).fcmServiceAccountJson).toBe('{"a":1}');
   });
 });

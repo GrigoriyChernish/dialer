@@ -25,6 +25,18 @@ android {
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
         versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
     }
+    // підпис release: keystore поза репозиторієм, шлях і паролі в ~/.gradle/gradle.properties (docs/stage-builds.md)
+    val keystorePath = providers.gradleProperty("DIALER_KEYSTORE").orNull
+    signingConfigs {
+        create("release") {
+            if (keystorePath != null) {
+                storeFile = file(keystorePath)
+                storePassword = providers.gradleProperty("DIALER_KEYSTORE_PASSWORD").get()
+                keyAlias = providers.gradleProperty("DIALER_KEY_ALIAS").get()
+                keyPassword = providers.gradleProperty("DIALER_KEY_PASSWORD").get()
+            }
+        }
+    }
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["usesCleartextTraffic"] = "true"
@@ -39,6 +51,7 @@ android {
             }
         }
         getByName("release") {
+            if (keystorePath != null) signingConfig = signingConfigs.getByName("release")
             optimization {
                enable = true
             }

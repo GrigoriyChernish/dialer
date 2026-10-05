@@ -13,6 +13,7 @@
 - [Сигналізація](signaling.md): контракт WebSocket між віджетом і сервером: команди, події, стани дзвінка, помилки.
 - [Рекомендації LiveKit](../work/backlog/livekit-recommendations.md): налаштування кімнати `livekit-client` (`adaptiveStream`, `dynacast`, обробка аудіо), що вже зроблено й що ні.
 - [PWA та Web Push](pwa-and-push.md): маніфест, `theme-color`, підписка на сповіщення, дзвінок без мережі через Web Push (лише Android).
+- [Стейд-збірки](stage-builds.md): збірка Android і macOS-десктопа для сервера на Fly.io: keystore, секрет FCM, команди.
 - [Десктопний застосунок](desktop-app.md): вхідний дзвінок у Tauri на macOS: міні-вікно, системна мелодія, трей і досяжність.
 - [Як влаштоване демо](demo.md): демо-боти, сторінка демо з входом у `demo/`.
 - [Локальний запуск](local-development.md): як підняти демо на :8080 і сервер на :8787, зібрати Android-застосунок і підключити телефон по Wi-Fi (`adb pair`).
