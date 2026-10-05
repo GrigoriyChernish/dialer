@@ -257,6 +257,23 @@ describe('call store', () => {
     vi.useRealTimers();
   });
 
+  it('does not report «mic off» while either side holds the call (the hold itself mutes the microphone)', async () => {
+    const { store, send, link } = setup();
+    await store.call(olena.userId);
+    send({ v: V, type: 'call.connected', call: info({ state: 'connected', startedAt: Date.now() }) });
+    store.toggleHold(); // ми тримаємо, клієнт співрозмовника глушить мікрофон
+    link({ peerMuted: true });
+    expect(store.peerState).toBeNull();
+    store.toggleHold();
+    link({ peerMuted: false });
+    send({ v: V, type: 'call.peer', callId: 'c1', hold: true });
+    link({ peerMuted: true });
+    expect(store.peerState).toBe('hold');
+    send({ v: V, type: 'call.peer', callId: 'c1', hold: false });
+    link({ peerMuted: false });
+    expect(store.peerState).toBeNull();
+  });
+
   it('keeps the voice indicator for 250 ms after the peer stops speaking and clears it with the call', async () => {
     vi.useFakeTimers();
     const { store, send, link } = setup();

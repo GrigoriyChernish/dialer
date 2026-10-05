@@ -130,17 +130,19 @@ export const useCallStore = defineStore('call', () => {
     camReason: '',
   };
   const link = ref<LinkState>({ ...NO_LINK });
+  // на утриманні (нашому чи співрозмовника) клієнт сам глушить мікрофон, і LiveKit шле `TrackMuted`: це не «вимкнув мікрофон»
+  const peerMicOff = computed(() => link.value.peerMuted && !hold.value && !peerHold.value);
   // коли настав кожен стан співрозмовника: показуємо той, що настав останнім (смужка, обводка й колір аватара в `Peer`)
   const peerSince = ref<PeerSince>({});
   watch(
-    () => [peerHold.value, link.value.peerAway, link.value.peerMuted] as const,
+    () => [peerHold.value, link.value.peerAway, peerMicOff.value] as const,
     ([hold, lost, mic]) => {
       peerSince.value = trackSince(peerSince.value, { hold, lost, mic }, Date.now());
     },
     { flush: 'sync' },
   );
   const peerState = computed(() =>
-    latestPeerState({ hold: peerHold.value, lost: link.value.peerAway, mic: link.value.peerMuted }, peerSince.value),
+    latestPeerState({ hold: peerHold.value, lost: link.value.peerAway, mic: peerMicOff.value }, peerSince.value),
   );
   // індикатор голосу: тримається 250 мс після останнього звуку, щоб не блимати на паузах між словами
   const peerSpeaking = holdFlag(() => status.value === 'connected' && link.value.peerSpeaking, 250);
@@ -781,6 +783,11 @@ export const useCallStore = defineStore('call', () => {
     await deps.client.request('push.subscribe', { subscription });
   }
 
+  /** Токен FCM застосунку Android (`push.subscribe` з `fcmToken`); нова підписка замінює стару. */
+  async function pushSubscribeFcm(fcmToken: string) {
+    await deps.client.request('push.subscribe', { fcmToken });
+  }
+
   async function pushUnsubscribe() {
     await deps.client.request('push.unsubscribe');
   }
@@ -790,6 +797,7 @@ export const useCallStore = defineStore('call', () => {
     ready,
     vapidKey,
     pushSubscribe,
+    pushSubscribeFcm,
     pushUnsubscribe,
     netError,
     contacts,
