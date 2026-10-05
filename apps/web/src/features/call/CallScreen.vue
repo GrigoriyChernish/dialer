@@ -212,6 +212,7 @@ watch(selfStalled, on => {
     v-else
     class="relative flex h-full flex-col overflow-hidden"
     style="background: linear-gradient(180deg, var(--stage-glow), var(--bg))"
+    :data-on-video="video || undefined"
     aria-live="polite"
   >
     <!-- відео лишається змонтованим і під час `stalled` (невидиме), щоб помітити, що потік ожив -->

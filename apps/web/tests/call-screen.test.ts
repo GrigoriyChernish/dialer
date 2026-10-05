@@ -62,6 +62,19 @@ describe('CallScreen', () => {
     expect(store.minimized).toBe(true);
   });
 
+  it('uses the dark palette only while the peer video fills the screen', async () => {
+    const store = connectedCall();
+    const w = mount(CallScreen, { global: { plugins: [i18n] } });
+    await flushPromises();
+    expect(w.find('section').attributes('data-on-video')).toBeUndefined();
+    store.link.peerCam = true;
+    await flushPromises();
+    expect(w.find('section').attributes('data-on-video')).toBeDefined();
+    store.link.audioOnly = true; // слабкий канал: відео не качаємо, повертаються звичайні кольори теми
+    await flushPromises();
+    expect(w.find('section').attributes('data-on-video')).toBeUndefined();
+  });
+
   it('shows the weak-signal pool notification', async () => {
     const store = connectedCall();
     store.link.poor = true;

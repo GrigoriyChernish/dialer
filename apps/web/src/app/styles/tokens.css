@@ -65,6 +65,8 @@
     color-scheme: dark;
   }
 }
+/* темна палітра також на екрані розмови з відео на весь екран (`data-on-video`): поверх відео світла тема не читається */
+[data-on-video],
 :root[data-theme='dark'] {
   --bg: #0a0c14;
   --fg: #f3f5fa;
