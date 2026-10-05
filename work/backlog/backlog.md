@@ -86,3 +86,11 @@
 ## 45. Android-застосунок і PWA: лише портретна орієнтація
 
 Інтерфейс розрахований на портрет (екран розмови, відступи від макета 375 × 844), а в ландшафті на телефоні він ламається. Зафіксувати портрет: у Tauri-застосунку `android:screenOrientation="portrait"` для `MainActivity` в `apps/mobile/src-tauri/gen/android/app/src/main/AndroidManifest.xml`, у PWA `"orientation": "portrait"` у `apps/web/public/manifest.webmanifest` (у браузері вкладка орієнтацію не блокує, тож лише для встановленої PWA). Перевірити, що поворот телефона не перезапускає розмову й камеру.
+
+## 46. Android: надійність доставки вхідного (батарея й діагностика)
+
+FCM не гарантує доставку: Samsung та інші виробники вбивають фонові застосунки, «Примусова зупинка» глушить push. Просити в налаштуваннях застосунку виключити його з оптимізації батареї (`ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` чи перехід до налаштувань батареї) і пояснити навіщо; логувати на сервері, чи прийшов `hello` пристрою після відправленого push (метрика «push → підключення за N с»); повідомляти в журналі помилки `gone`/`error` FCM. Решта дзвінків і так іде на всі пристрої користувача, а таймаут дає «пропущений».
+
+## 47. Збірки Android і десктопа для справжнього бекенду
+
+Зараз застосунок ходить на локальний сервер (`VITE_SERVER_URL=http://192.168.0.190:8787`, debug-APK, `tauri dev`). Підготувати збірки під сервер на Fly.io: адреса сервера в збірці (`https`/`wss`), `usesCleartextTraffic` лише для debug; Android: release-APK/AAB із підписом (keystore поза репозиторієм), `versionCode`/`versionName`, `google-services.json` для production-проєкту Firebase, `FCM_SERVICE_ACCOUNT_FILE` секретом Fly (`FLY_*`, файл як секрет); десктоп: `tauri build` для macOS (підпис і нотаризація, ім'я й ідентифікатор без `Dev`), іконки, оновлення версії, Windows пізніше; CORS/Origin на сервері для `tauri://localhost`, `https://tauri.localhost`; спосіб розповсюдження (прямі посилання, потім Play/TestFlight за потреби) і інструкція в `docs/`.
