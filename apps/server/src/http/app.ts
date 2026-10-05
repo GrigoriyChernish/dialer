@@ -10,6 +10,7 @@ import type { Config } from '../config';
 import type { Effect } from '../calls/types';
 import { DEMO_SITE_ID, type Users } from '../db/users';
 import { CallError, type CallService } from '../calls/service';
+import type { Downloads } from '../downloads';
 import type { LiveKit } from '../livekit';
 import type { Logger } from '../logger';
 import type { RejectTokens } from '../push/reject-token';
@@ -29,6 +30,7 @@ export interface HttpDeps {
   clock: Clock;
   deliver(effects: Effect[]): void;
   rejectTokens: RejectTokens;
+  downloads: Downloads;
   originAllowed?: (origin: string | undefined) => boolean;
 }
 
@@ -45,6 +47,7 @@ export function buildHttp({
   clock,
   deliver,
   rejectTokens,
+  downloads,
   originAllowed,
 }: HttpDeps) {
   const app = Fastify({ loggerInstance: logger.child({ module: 'http' }) });
@@ -79,6 +82,32 @@ export function buildHttp({
         .send(createReadStream(apkPath));
     });
   }
+
+  // Збірки застосунку для тих, хто увійшов (docs/stage-builds.md): список і підписане посилання на 60 с, файл віддає Tigris.
+  const downloadLimit = createRateLimit(30, 10 * 60_000, clock);
+  const downloadUser = async (req: { headers: { authorization?: string } }) => {
+    const m = /^Bearer (.+)$/.exec(req.headers.authorization ?? '');
+    if (!m) return null;
+    try {
+      return await tokens.verify(m[1]!);
+    } catch {
+      return null;
+    }
+  };
+  app.get('/downloads', async (req, reply) => {
+    if (!(await downloadUser(req))) return reply.code(401).send({ error: 'token_invalid' });
+    return { builds: await downloads.list() };
+  });
+  app.post<{ Params: { platform: string } }>('/downloads/:platform/link', async (req, reply) => {
+    const user = await downloadUser(req);
+    if (!user) return reply.code(401).send({ error: 'token_invalid' });
+    const wait = downloadLimit(user.sub);
+    if (wait) return tooMany(reply, wait);
+    const url = await downloads.link(req.params.platform);
+    if (!url) return reply.code(404).send({ error: 'build_not_found' });
+    req.log.info({ userId: user.sub, platform: req.params.platform }, 'завантаження збірки');
+    return { url };
+  });
 
   // «Відхилити» зі сповіщення: сервіс-воркер без сесії, лише з токеном із push (docs/pwa-and-push.md).
   // Пристрій `push` не підключений, тож інші пристрої адресата отримають `answered_elsewhere` і закриють сповіщення.

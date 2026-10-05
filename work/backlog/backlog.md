@@ -89,4 +89,8 @@ FCM не гарантує доставку: Samsung та інші виробни
 
 ## 47. Збірки для справжнього бекенду: що лишилось
 
-Стейд-збірки Android і macOS описано в `docs/stage-builds.md`. Лишилось: нотаризація macOS і підпис для розповсюдження, Windows, ім'я й ідентифікатор без `Dev` (`tauri.conf.json`), версії за релізами (`versionCode`/`versionName`), Play Market чи інший канал розповсюдження, окреме production-середовище з власним Firebase-проєктом.
+Стейд-збірки Android і macOS описано в `docs/stage-builds.md` (для стейджу налаштовано назву `Dialer Stage` через `tauri.stage.conf.json`). Лишилось: нотаризація macOS і підпис для розповсюдження, Windows, production-ідентифікатор, версії за релізами (`versionCode`/`versionName`), Play Market чи інший канал розповсюдження, окреме production-середовище з власним Firebase-проєктом.
+
+## 48. Завантаження застосунків: Windows, iOS і автооновлення
+
+Менеджер завантажень (Налаштування → «Застосунки») знає лише Android і macOS, один останній файл на платформу. Додати Windows (`.msi`/`.exe`) та iOS (TestFlight), історію версій і автооновлення всередині застосунку (`tauri-plugin-updater`) з підписом оновлень.

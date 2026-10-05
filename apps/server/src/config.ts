@@ -2,6 +2,7 @@ import type { LiveKitConfig } from './livekit';
 import { existsSync } from 'node:fs';
 import type { PlayerConfig } from './bots/player';
 import type { VapidConfig } from './push/sender';
+import type { S3Config } from './downloads/s3';
 
 export interface Config {
   port: number;
@@ -27,6 +28,8 @@ export interface Config {
   botVideo: PlayerConfig;
   /** `DEV_APK_PATH`: файл APK для `GET /dialer.apk` (тестування Android у локальній мережі); `null`: маршруту немає. */
   devApk: string | null;
+  /** Бакет Tigris зі збірками для користувачів (`GET /downloads`); `null`: роздачі немає. Змінні ставить `fly storage create`. */
+  downloads: S3Config | null;
 }
 
 /** Ролик, що лежить у репозиторії; `BOT_VIDEO_FILE` його замінює (наприклад, на 4K). */
@@ -63,6 +66,16 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     livekit: lkSet === 3 ? (lk as LiveKitConfig) : null,
     vapid: vapidSet === 3 ? (vapid as VapidConfig) : null,
     devApk: env.DEV_APK_PATH || null,
+    downloads:
+      env.AWS_ENDPOINT_URL_S3 && env.BUCKET_NAME && env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY
+        ? {
+            endpoint: env.AWS_ENDPOINT_URL_S3,
+            bucket: env.BUCKET_NAME,
+            accessKeyId: env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+            region: env.AWS_REGION || 'auto',
+          }
+        : null,
     fcmServiceAccountFile: env.FCM_SERVICE_ACCOUNT_FILE || null,
     fcmServiceAccountJson: env.FCM_SERVICE_ACCOUNT_JSON || null,
     botVideo: {

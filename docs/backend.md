@@ -104,6 +104,8 @@ apps/server/
 | `POST /tokens` | бекенд сайту-господаря просить токен користувача. Автентифікація: `siteId` + секрет сайту. Тіло: `{ userId, name }` |
 | `POST /livekit/webhook` | події LiveKit (`participant_joined`, `participant_left`, `room_finished`) для правила `lost` і викидання сторонніх. Підпис перевіряє `WebhookReceiver` |
 | `POST /push/reject` | `{ token }`: кнопка «Відхилити» зі сповіщення (токен із push), див. [сигналізацію](signaling.md#post-pushreject) |
+| `GET /downloads` | `Authorization: Bearer <токен>` → `{ builds: DownloadInfo[] }`: опубліковані збірки застосунку (Android, macOS) із `manifest.json` у бакеті Tigris; без бакета `[]` ([stage-builds.md](stage-builds.md#роздача-користувачам)) |
+| `POST /downloads/:platform/link` | `Authorization: Bearer <токен>`, `platform` це `android` чи `macos` → `{ url }`: підписане посилання на файл у Tigris на 60 с, `404`, якщо збірки немає; ліміт 30 на 10 хв на користувача |
 | `GET /health` | для Fly.io |
 
 CORS для `/auth/*` і `/demo/login` обмежений origin застосунку (`DEMO_ORIGIN`, на Fly.io це GitHub Pages).
@@ -183,7 +185,7 @@ WebSocket `/ws` перевіряє `Origin` рукостискання (`ws/orig
 ## Конфігурація
 
 Змінні середовища (Fly.io secrets): `JWT_SECRET`, `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`,
-`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (задаються разом; пару створює `npx web-push generate-vapid-keys`, а `VAPID_SUBJECT` це `mailto:` власника; без них Web Push вимкнено й `hello.ok` не містить `vapidPublicKey`; генерувати на льоту не можна, бо після перезапуску всі підписки стали б недійсними), `FCM_SERVICE_ACCOUNT_FILE` або `FCM_SERVICE_ACCOUNT_JSON` (ключ сервісного акаунта Firebase для push в Android-застосунок: файл чи вміст, на Fly секретом; [docs/pwa-and-push.md](pwa-and-push.md#android-застосунок-tauri-callstyle-і-fcm); без нього FCM вимкнено), `DEV_APK_PATH` (лише розробка: файл APK для `GET /dialer.apk`), `LOG_LEVEL` (за замовчуванням `info`), `DB_PATH` (за замовчуванням `/data/dialer.db`), `DEMO_ORIGIN`, `DEMO_LOGIN` (`on` вмикає `/demo/login` у production), `PORT`.
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (задаються разом; пару створює `npx web-push generate-vapid-keys`, а `VAPID_SUBJECT` це `mailto:` власника; без них Web Push вимкнено й `hello.ok` не містить `vapidPublicKey`; генерувати на льоту не можна, бо після перезапуску всі підписки стали б недійсними), `FCM_SERVICE_ACCOUNT_FILE` або `FCM_SERVICE_ACCOUNT_JSON` (ключ сервісного акаунта Firebase для push в Android-застосунок: файл чи вміст, на Fly секретом; [docs/pwa-and-push.md](pwa-and-push.md#android-застосунок-tauri-callstyle-і-fcm); без нього FCM вимкнено), `AWS_ENDPOINT_URL_S3`, `BUCKET_NAME`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` (бакет Tigris зі збірками застосунку для `GET /downloads`; секрети виставляє `fly storage create`; без них роздачі немає), `DEV_APK_PATH` (лише розробка: файл APK для `GET /dialer.apk`), `LOG_LEVEL` (за замовчуванням `info`), `DB_PATH` (за замовчуванням `/data/dialer.db`), `DEMO_ORIGIN`, `DEMO_LOGIN` (`on` вмикає `/demo/login` у production), `PORT`.
 У репозиторії лежить лише `.env.example` без значень.
 
 ## Розгортання на Fly.io

@@ -443,7 +443,7 @@
 | `Flow · In call · self network` | `self-poor-signal`, `self-reconnecting`, `self-notifications-pool`, `self-pool · expanded` |
 | `Flow · In call · video` | `video`, `video · peer-mic-off`, `video · loading`, `video · unavailable` |
 | `Flow · Call ended` | `Ended · peer hangup`, `Ended · lost`, `Ended · error` |
-| `Flow · Settings` | `Settings`, `Settings · notifications on`, `Settings · notifications blocked`, `Settings · notifications saving`, `Settings · edit name`, `Home · Contacts · dnd` |
+| `Flow · Settings` | `Settings`, `Settings · notifications on`, `Settings · notifications blocked`, `Settings · notifications saving`, `Settings · edit name`, `Settings · apps`, `Home · Contacts · dnd` |
 | `Flow · Light theme` | світлі копії `Home · Contacts`, `Settings`, `Incoming Call`, `In Call · self-reconnecting`, `In Call · held call`, `Auth · Phone` |
 | `Flow · Incoming call · desktop` | `Incoming Window · desktop` і `· light` (екземпляри компонента `Incoming Window`; світлий має `theme: light`): міні-вікно вхідного на десктопі, 392 × 148, аватар 56, «Олена Коваль» 16 / 600, мітка `phone-incoming` + «ВХІДНИЙ ВИКЛИК» 12 / 600 `ok-text`, кнопки `Action Button / danger` і `/ success` |
 | `Flow · Call waiting` | `Incoming · waiting` (другий вхідний під час розмови, три дії без підписів), `In Call · held call` (смужка `Self Banner / held-call` у слоті пулу сповіщень) |
@@ -596,6 +596,7 @@
 - **`Segmented`** (тема): підкладка `surface-2`, радіус `radius-md`, відступ 3; три сегменти 38 заввишки з іконкою 15 і текстом 13
   («Авто» `monitor-smartphone`, «Світла» `sun`, «Темна» `moon`); активний — `surface-3`, рамка `line`, текст `fg` 600.
 - **Попап збереження сповіщень** (`Settings · notifications saving`): після дозволу браузера до відповіді сервера, під затемненням `scrim-mid` на весь екран по центру `Card` 280 (відступи 24 20, проміжок 8): `loader` 28 `accent` (крутиться, під `prefers-reduced-motion` ні), заголовок «Вмикаємо сповіщення…» 15 / 600 `fg`, підпис «Зберігаємо підписку на цьому пристрої» 12 `mute`. Поява 220 мс `ease-out`, зникнення 180 мс `ease-in`, лише прозорість.
+- **«Застосунки»** (`Settings · apps`, прокручений екран): `Section Label` і `Card` із двома `Settings Row` без `Toggle`: «Android · APK» (`smartphone`) і «macOS · DMG» (`laptop`), підпис `версія · розмір`, праворуч `download` 18 `mute`; тап качає файл. Розділ є лише у веб-версії для тих, хто увійшов, і лише для опублікованих збірок.
 - **«Вийти»**: окрема картка, значок `log-out` у колі `bad-soft`, текст 15 / 500 `bad`.
 
 ### Колір статус-бару (`theme-color`)

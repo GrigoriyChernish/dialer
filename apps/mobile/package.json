@@ -9,8 +9,8 @@
     "android:init": "tauri android init",
     "android:dev": "tauri android dev",
     "android:build": "tauri android build",
-    "stage:android": "VITE_SERVER_URL=https://dialer-chat-server.fly.dev tauri android build --apk -t aarch64",
-    "stage:desktop": "VITE_SERVER_URL=https://dialer-chat-server.fly.dev tauri build --bundles app,dmg"
+    "stage:android": "tauri android build --apk -t aarch64 -c src-tauri/tauri.stage.conf.json && ../../scripts/publish-build.sh android 'src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk'",
+    "stage:desktop": "tauri build --bundles app,dmg -c src-tauri/tauri.stage.conf.json && ../../scripts/publish-build.sh macos 'src-tauri/target/release/bundle/dmg/*.dmg'"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.3.0"

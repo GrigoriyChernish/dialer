@@ -80,8 +80,11 @@ pub fn run() {
                     Manager,
                 };
 
-                let show_i = MenuItem::with_id(app, "show", "Показати Dialer Dev", true, None::<&str>)?;
-                let quit_i = MenuItem::with_id(app, "quit", "Вийти з Dialer Dev", true, None::<&str>)?;
+                let app_name = app.package_info().name.as_str();
+                let show_label = format!("Показати {app_name}");
+                let quit_label = format!("Вийти з {app_name}");
+                let show_i = MenuItem::with_id(app, "show", &show_label, true, None::<&str>)?;
+                let quit_i = MenuItem::with_id(app, "quit", &quit_label, true, None::<&str>)?;
                 let menu = Menu::with_items(app, &[&show_i, &quit_i])?;
 
                 let mut tray = TrayIconBuilder::new()

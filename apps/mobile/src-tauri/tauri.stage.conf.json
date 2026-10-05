@@ -1,0 +1,19 @@
+{
+  "productName": "Dialer Stage",
+  "build": {
+    "beforeBuildCommand": "pnpm --filter @dialer/web build:stage"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "title": "Dialer Stage",
+        "width": 390,
+        "height": 844
+      }
+    ]
+  }
+}

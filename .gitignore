@@ -4,6 +4,8 @@
 node_modules
 dist
 .env
+.env.stage
+.env*.local
 data/
 target/
 **/target/

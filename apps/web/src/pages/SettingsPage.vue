@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSessionStore } from '@/features/auth/session';
 import { useCallStore } from '@/features/call/store';
+import { formatSize, useDownloads } from '@/features/settings/downloads';
 import { usePrefsStore, type Theme } from '@/features/settings/prefs';
 import { usePush } from '@/features/settings/push';
 import Avatar from '@/shared/ui/Avatar.vue';
@@ -21,7 +22,11 @@ const session = useSessionStore();
 const call = useCallStore();
 const prefs = usePrefsStore();
 const push = usePush();
-onMounted(() => void push.refresh());
+const downloads = useDownloads();
+onMounted(() => {
+  void push.refresh();
+  void downloads.load();
+});
 const fmt = (p: string) => p.replace(/^\+380(\d\d)(\d{3})(\d\d)(\d\d)$/, '+380 $1 $2 $3 $4');
 
 // редагування імені (дизайн: Settings · edit name)
@@ -78,6 +83,19 @@ const rows = computed(() => [
       ]
     : []),
 ]);
+
+// збірки застосунків: лише ті, що опубліковані; у Tauri список порожній
+const APPS = {
+  android: { icon: 'smartphone' as IconName, title: 'settings.appAndroid' },
+  macos: { icon: 'laptop' as IconName, title: 'settings.appMacos' },
+};
+const apps = computed(() =>
+  downloads.builds.value.map(b => ({
+    platform: b.platform,
+    ...APPS[b.platform],
+    meta: `${b.version} · ${formatSize(b.size)}`,
+  })),
+);
 
 /**
  * Вихід: підписку на сповіщення відв'язуємо на сервері, щоб після виходу дзвінки не приходили; у браузері вона лишається за
@@ -214,6 +232,32 @@ const THEMES: { id: Theme; icon: IconName }[] = [
         </button>
       </div>
     </Card>
+
+    <template v-if="apps.length">
+      <h2 class="px-2.5 pb-1.5 pt-3 text-xs font-semibold text-mute">{{ t('settings.apps') }}</h2>
+      <Card class="py-1">
+        <button
+          v-for="a in apps"
+          :key="a.platform"
+          type="button"
+          class="flex w-full cursor-pointer items-center gap-3 rounded-[28px] px-3.5 py-3 text-left focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-60"
+          :disabled="downloads.busy.value !== null"
+          @click="downloads.download(a.platform)"
+        >
+          <span class="grid size-8 shrink-0 place-items-center rounded-full bg-surface"
+            ><Icon :name="a.icon" class="size-4"
+          /></span>
+          <span class="grid min-w-0 flex-1 gap-0.5">
+            <b class="text-[15px] font-medium">{{ t(a.title) }}</b>
+            <small class="text-xs text-mute">{{ a.meta }}</small>
+          </span>
+          <Icon name="download" class="size-[18px] text-mute" />
+        </button>
+      </Card>
+      <p v-if="downloads.error.value" class="px-2.5 pt-1.5 text-[13px] text-call-bad" role="alert">
+        {{ t('settings.appsError') }}
+      </p>
+    </template>
 
     <Card class="mt-3.5">
       <button

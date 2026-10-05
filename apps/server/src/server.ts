@@ -8,6 +8,7 @@ import { createCallService } from './calls/service';
 import { realClock, type Clock, type Effect } from './calls/types';
 import type { Config } from './config';
 import { openDb } from './db';
+import { createDownloads } from './downloads';
 import { createLiveKit, type RoomApi } from './livekit';
 import { createPushSubs } from './db/push';
 import { createRecents } from './db/recents';
@@ -147,6 +148,7 @@ export async function createServer({
     clock,
     deliver,
     rejectTokens,
+    downloads: createDownloads(config.downloads, fetch, () => clock.now()),
     originAllowed,
   });
   const gateway = attachGateway(app.server, {
