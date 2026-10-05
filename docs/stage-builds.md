@@ -65,9 +65,9 @@ corepack pnpm --filter @dialer/mobile stage:desktop
 Одноразово:
 
 1. Бакет для сервера: `fly storage create --app dialer-chat-server` (додає секрети `AWS_*` і `BUCKET_NAME`, сервер сам їх підхопить; машина перезапуститься).
-2. Ключі для публікації з Mac: `brew install awscli` і файл `~/.gradle/dialer/tigris.env` (поза репозиторієм; ключі взяти з `fly storage dashboard` чи створити окремі) із рядками `BUCKET_NAME=…`, `AWS_ACCESS_KEY_ID=…`, `AWS_SECRET_ACCESS_KEY=…`, `AWS_ENDPOINT_URL_S3=https://fly.storage.tigris.dev`, `AWS_REGION=auto`.
+2. Ключі для публікації з Mac: файл `~/.gradle/dialer/tigris.env` (поза репозиторієм, формат `KEY=value`; ключі з виводу `fly storage create` чи `fly storage dashboard`) із рядками `BUCKET_NAME=…`, `AWS_ACCESS_KEY_ID=…`, `AWS_SECRET_ACCESS_KEY=…`, `AWS_ENDPOINT_URL_S3=https://fly.storage.tigris.dev`, `AWS_REGION=auto`.
 
-Далі `stage:android` і `stage:desktop` у кінці збірки самі запускають `scripts/publish-build.sh`: вантажать файл у бакет і оновлюють `manifest.json` (версія з `tauri.conf.json`, `sha256`, розмір). Без ключів чи `aws` крок пропускається з повідомленням, збірка не падає. Вручну: `scripts/publish-build.sh <android|macos> <файл>`.
+Далі `stage:android` і `stage:desktop` у кінці збірки самі запускають `scripts/publish-build.sh`: вантажать файл у бакет і оновлюють `manifest.json` (версія з `tauri.conf.json`, `sha256`, розмір). Файл вантажиться через `curl` за підписаним посиланням на запис (`scripts/tigris-url.ts`, той самий SigV4, що й для завантажень), aws CLI не потрібен. Без ключів крок пропускається з повідомленням, збірка не падає. Вручну: `scripts/publish-build.sh <android|macos> <файл>`.
 
 Підказки користувачам: Android просить дозволити встановлення з браузера («Невідомі джерела»), macOS без нотаризації відкривається через контекстне меню → «Відкрити» (беклог 47).
 
