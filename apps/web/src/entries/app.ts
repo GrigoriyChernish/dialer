@@ -31,6 +31,12 @@ import {
 } from '@/shared/native/callstyle';
 import { focusWindow, isTauri, sendNotification, tauriNotifyEnabled } from '@/shared/native/notify';
 
+// нативна оболонка (Tauri): масштабування щипком і подвійним тапом вимкнено, інтерфейс розрахований на фіксований масштаб (у браузері й PWA лишається для доступності)
+if (isTauri())
+  document
+    .querySelector('meta[name="viewport"]')
+    ?.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover');
+
 // Окремий застосунок (GitHub Pages): вхід за номером, далі контакти й дзвінки. Віджет для iframe — entries/widget.ts.
 const server = serverUrl;
 
