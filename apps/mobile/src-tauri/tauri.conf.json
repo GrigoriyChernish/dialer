@@ -2,11 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-cli/schema.json",
   "productName": "Dialer Dev",
   "version": "0.1.0",
-  "identifier": "com.dialer.dev",
+  "identifier": "com.dialer.app",
   "build": {
     "beforeDevCommand": "pnpm --filter @dialer/web dev",
     "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "VITE_SERVER_URL=http://localhost:8787 pnpm --filter @dialer/web build",
+    "beforeBuildCommand": "pnpm --filter @dialer/web build",
     "frontendDist": "../../web/dist"
 
   },

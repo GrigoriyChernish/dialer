@@ -2,13 +2,15 @@
 use tauri::Manager;
 
 #[tauri::command]
-fn focus_window(app: tauri::AppHandle, window: tauri::WebviewWindow) {
+fn focus_window(_app: tauri::AppHandle, window: tauri::WebviewWindow) {
     #[cfg(target_os = "macos")]
-    let _ = app.set_activation_policy(tauri::ActivationPolicy::Regular);
+    let _ = _app.set_activation_policy(tauri::ActivationPolicy::Regular);
 
+    #[cfg(desktop)]
     let _ = window.unminimize();
     let _ = window.show();
     let _ = window.set_focus();
+    #[cfg(desktop)]
     let _ = window.request_user_attention(Some(tauri::UserAttentionType::Critical));
 }
 

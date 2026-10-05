@@ -1,3 +1,5 @@
+import { createReadStream, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import Fastify from 'fastify';
 import type { Otp } from '../auth/otp';
 import { normalizeName, normalizePhone } from '../auth/phone';
@@ -65,6 +67,18 @@ export function buildHttp({
   });
 
   app.get('/health', async () => ({ ok: true }));
+
+  // Завантаження APK для тестування Android у локальній мережі: лише коли задано `DEV_APK_PATH` (на Fly його немає)
+  if (config.devApk) {
+    const apkPath = resolve(config.devApk);
+    app.get('/dialer.apk', async (_req, reply) => {
+      if (!existsSync(apkPath)) return reply.code(404).send({ error: 'apk_not_found' });
+      return reply
+        .header('content-type', 'application/vnd.android.package-archive')
+        .header('content-disposition', 'attachment; filename="dialer.apk"')
+        .send(createReadStream(apkPath));
+    });
+  }
 
   // «Відхилити» зі сповіщення: сервіс-воркер без сесії, лише з токеном із push (docs/pwa-and-push.md).
   // Пристрій `push` не підключений, тож інші пристрої адресата отримають `answered_elsewhere` і закриють сповіщення.

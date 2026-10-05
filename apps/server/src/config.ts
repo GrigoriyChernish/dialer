@@ -21,6 +21,8 @@ export interface Config {
   vapid: VapidConfig | null;
   /** Що грає бот «Відео-тест»: `BOT_VIDEO_FILE` (файл у циклі, типово `media/video-test.mp4`, без файлу тестова картинка), `BOT_VIDEO_HEIGHT` (типово 720, 2160 це 4K). */
   botVideo: PlayerConfig;
+  /** `DEV_APK_PATH`: файл APK для `GET /dialer.apk` (тестування Android у локальній мережі); `null`: маршруту немає. */
+  devApk: string | null;
 }
 
 /** Ролик, що лежить у репозиторії; `BOT_VIDEO_FILE` його замінює (наприклад, на 4K). */
@@ -56,6 +58,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     production,
     livekit: lkSet === 3 ? (lk as LiveKitConfig) : null,
     vapid: vapidSet === 3 ? (vapid as VapidConfig) : null,
+    devApk: env.DEV_APK_PATH || null,
     botVideo: {
       file: env.BOT_VIDEO_FILE || (existsSync(DEFAULT_BOT_VIDEO) ? DEFAULT_BOT_VIDEO : null),
       height: Number(env.BOT_VIDEO_HEIGHT) || 720,

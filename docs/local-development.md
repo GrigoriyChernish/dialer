@@ -74,4 +74,6 @@ corepack pnpm dev
      adb install apps/mobile/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk
      ```
 
-  3. Для зв'язку з локальним сервером на комп'ютері відкрийте застосунок за адресою `?server=http://<IP_КОМП'ЮТЕРА>:8787` (пристрій і ПК мають бути в одній Wi-Fi мережі).
+  3. Для зв'язку з локальним сервером на комп'ютері задайте адресу при збірці: `VITE_SERVER_URL=http://<IP_КОМП'ЮТЕРА>:8787` перед командою збірки (пристрій і ПК мають бути в одній Wi-Fi мережі). Без неї застосунок звертається до `localhost`, тобто до самого телефону.
+
+- **Завантаження APK з телефона:** запустіть сервер із `DEV_APK_PATH=apps/mobile/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk`, тоді файл доступний за `http://<IP_КОМП'ЮТЕРА>:8787/dialer.apk`. Без змінної маршруту немає, на Fly її не задаємо. Копію APK у `apps/web/public/` не кладемо (`.gitignore`).

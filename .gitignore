@@ -13,3 +13,6 @@ target/
 **/local.properties
 **/.cxx/
 
+
+# APK для локального тестування Android
+apps/web/public/dialer.apk
