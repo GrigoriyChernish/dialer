@@ -73,3 +73,22 @@ export async function focusWindow(): Promise<void> {
   }
 }
 
+
+const TAURI_NOTIFY_KEY = 'dialer.tauri_notify';
+
+/** Чи користувач не вимикав системні сповіщення в застосунку Tauri (без сховища вважаємо ввімкненими). */
+export function tauriNotifyEnabled(): boolean {
+  try {
+    return localStorage.getItem(TAURI_NOTIFY_KEY) !== '0';
+  } catch {
+    return true;
+  }
+}
+
+export function setTauriNotify(on: boolean): void {
+  try {
+    localStorage.setItem(TAURI_NOTIFY_KEY, on ? '1' : '0');
+  } catch {
+    // без сховища вибір діє лише до перезавантаження
+  }
+}

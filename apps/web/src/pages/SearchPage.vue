@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { searchQuery as query } from '@/features/contacts/homeState';
 import { useI18n } from 'vue-i18n';
 import ContactsPage from '@/pages/ContactsPage.vue';
 import Icon from '@/shared/ui/Icon.vue';
 
 // Вкладка «Пошук» (дизайн: Home · Search): поле зверху, під ним знайдені контакти або Empty State.
 const { t } = useI18n();
-const query = ref('');
 const input = ref<HTMLInputElement>();
 onMounted(() => input.value?.focus());
 const clear = () => {

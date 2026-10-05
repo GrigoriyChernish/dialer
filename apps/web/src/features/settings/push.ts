@@ -2,7 +2,13 @@ import { computed, ref } from 'vue';
 import { useCallStore } from '@/features/call/store';
 import { serverUrl } from '@/shared/api/server';
 
-import { isNotifyGranted, isTauri, requestNotifyPermission } from '@/shared/native/notify';
+import {
+  isNotifyGranted,
+  isTauri,
+  requestNotifyPermission,
+  setTauriNotify,
+  tauriNotifyEnabled,
+} from '@/shared/native/notify';
 
 /** Ключ VAPID приходить у base64url, `pushManager.subscribe` чекає байти. */
 function keyBytes(key: string): Uint8Array {
@@ -80,7 +86,7 @@ export function usePush() {
   async function refresh() {
     if (isTauri()) {
       const granted = await isNotifyGranted();
-      subscribed.value = granted && localStorage.getItem('dialer.tauri_notify') !== '0';
+      subscribed.value = granted && tauriNotifyEnabled();
       return;
     }
     if (!supported()) return;
@@ -92,7 +98,7 @@ export function usePush() {
     if (isTauri()) {
       const ok = await requestNotifyPermission();
       if (ok) {
-        localStorage.setItem('dialer.tauri_notify', '1');
+        setTauriNotify(true);
         subscribed.value = true;
       } else {
         denied.value = true;
@@ -138,7 +144,7 @@ export function usePush() {
   /** Знімає підписку на пристрої й на сервері; на сервері не чекає довше за секунду (вихід не має зависати без мережі). */
   async function disable() {
     if (isTauri()) {
-      localStorage.setItem('dialer.tauri_notify', '0');
+      setTauriNotify(false);
       subscribed.value = false;
       return;
     }

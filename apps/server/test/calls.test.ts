@@ -246,7 +246,8 @@ describe('життєвий цикл', () => {
       { user: bohdan.userId, except: 'b1', msg: { reason: 'answered_elsewhere' } },
     ]);
     expect(() => t.calls.accept(bohdan2, { callId: 'call1' })).toThrow(expect.objectContaining({ code: 'call_ended' }));
-    expect(() => t.calls.accept(bohdan, { callId: 'call1' })).toThrow(expect.objectContaining({ code: 'not_allowed' }));
+    // повторне «Відповісти» з того ж пристрою (подвійний тап): без помилки й без повторних подій
+    expect(t.calls.accept(bohdan, { callId: 'call1' }).effects).toEqual([]);
   });
 
   it('таймаут 60 с: дзвінок завершується, обидва отримують історію', () => {

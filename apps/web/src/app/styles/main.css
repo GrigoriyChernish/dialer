@@ -48,6 +48,11 @@ body {
     sans-serif;
 }
 
+/* безпечні зони: системні панелі Android (статус-бар, навігація) і виріз не перекривають вміст; без `viewport-fit=cover` усі відступи нульові */
+.safe-area {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
 /* прокрутка списків у картках: тонкий напівпрозорий повзунок без доріжки, з відступом від скруглених кутів */
 .scroll {
   overflow-x: hidden;

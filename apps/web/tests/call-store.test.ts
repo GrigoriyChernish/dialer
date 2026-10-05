@@ -776,6 +776,16 @@ describe('call store', () => {
       expect(deps.media.requestPermissions).toHaveBeenCalledTimes(1);
     });
 
+    it('sends a single accept for a double tap and ignores accept outside an incoming call', () => {
+      const { store, request, send } = setup();
+      store.accept();
+      expect(request).not.toHaveBeenCalled();
+      send({ v: V, type: 'call.incoming', call: info({ callId: 'c2', direction: 'in' }) });
+      store.accept();
+      store.accept();
+      expect(request).toHaveBeenCalledTimes(1);
+    });
+
     it('blocks a device when the permission is revoked and unblocks it when it is granted again', () => {
       const { store, perm } = setup();
       perm({ micDenied: true, camDenied: true });

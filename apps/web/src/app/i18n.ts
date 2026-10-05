@@ -165,6 +165,7 @@ export const messages = {
         lost: "Не вдалося відновити зв'язок · {time}",
         dropped: 'Збій сервера, спробуйте ще раз · {time}',
       },
+      notify: { title: 'Вхідний дзвінок', body: '{name} телефонує вам', unknown: 'Невідомий' },
       err: {
         generic: 'Спробуйте ще раз',
         alreadyInCall: 'Ви вже на дзвінку',

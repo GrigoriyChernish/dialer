@@ -180,6 +180,8 @@ export const useCallStore = defineStore('call', () => {
   let livekit: LiveKitAccess | undefined;
   /** Розмова, яку завершуємо самі через «Завершити й прийняти»: її кінець без екрана результату. */
   let endingId: string | null = null;
+  /** Відповідь уже надіслана, `call.connected` ще не прийшов: подвійний тап чи утримана клавіша не шлють другий `call.accept`. */
+  let accepting: string | null = null;
   let endedTimer: ReturnType<typeof setTimeout> | undefined;
   const now = ref(Date.now());
   let offset = 0; // serverTime - локальний час
@@ -226,6 +228,7 @@ export const useCallStore = defineStore('call', () => {
   function reset(leaveMedia = true) {
     if (leaveMedia) deps.media.leave();
     livekit = undefined;
+    accepting = null;
     status.value = 'idle';
     callId.value = null;
     peer.value = null;
@@ -608,9 +611,13 @@ export const useCallStore = defineStore('call', () => {
   }
 
   function accept() {
-    if (!callId.value) return;
+    const id = callId.value;
+    if (!id || status.value !== 'incoming' || accepting === id) return;
+    accepting = id;
     void requestPermissions(); // відповідь не чекає: після першого запиту повертається те саме
-    deps.client.request('call.accept', { callId: callId.value }).catch(() => {
+    deps.client.request('call.accept', { callId: id }).catch(() => {
+      // запізніла помилка (таймаут) не має скидати вже інший дзвінок
+      if (callId.value !== id) return;
       reset();
       play(null);
     });

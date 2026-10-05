@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import { useCallStore } from '@/features/call/store';
 import ReturnCall from '@/features/call/ReturnCall.vue';
 import { useLoadState } from '@/features/contacts/loadState';
+import { homeTab as tab, type HomeTab as Tab } from '@/features/contacts/homeState';
 import ContactsPage from '@/pages/ContactsPage.vue';
 import HistoryPage from '@/pages/HistoryPage.vue';
 import SearchPage from '@/pages/SearchPage.vue';
@@ -21,13 +22,11 @@ const call = useCallStore();
 const { offline } = useLoadState();
 const lost = computed(() => call.ready && offline.value);
 
-type Tab = 'history' | 'contacts' | 'search';
 const TABS: { id: Tab; icon: IconName }[] = [
   { id: 'history', icon: 'history' },
   { id: 'contacts', icon: 'users' },
   { id: 'search', icon: 'search' },
 ];
-const tab = ref<Tab>('contacts');
 const PAGES = { history: HistoryPage, contacts: ContactsPage, search: SearchPage };
 // лічильник ховаємо, поки відкрита сама вкладка «Історія»
 // мітка присутності (дизайн: Presence, / busy, / dnd)

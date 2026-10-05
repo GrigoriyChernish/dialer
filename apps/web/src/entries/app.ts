@@ -6,6 +6,7 @@ import { i18n } from '@/app/i18n';
 import '@/app/styles/main.css';
 import { useSessionStore } from '@/features/auth/session';
 import { useCallStore } from '@/features/call/store';
+import { homeTab, searchQuery } from '@/features/contacts/homeState';
 import HomePage from '@/pages/HomePage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import SettingsPage from '@/pages/SettingsPage.vue';
@@ -17,9 +18,7 @@ import { SignalingClient } from '@/shared/api/signaling';
 import { applyTheme } from '@/shared/theme';
 import { CallMedia } from '@/shared/media/room';
 import { Sounds } from '@/shared/sounds/sounds';
-import { focusWindow, isTauri, sendNotification } from '@/shared/native/notify';
-
-
+import { focusWindow, isTauri, sendNotification, tauriNotifyEnabled } from '@/shared/native/notify';
 
 // Окремий застосунок (GitHub Pages): вхід за номером, далі контакти й дзвінки. Віджет для iframe — entries/widget.ts.
 const server = serverUrl;
@@ -60,37 +59,36 @@ watch(
   { immediate: true },
 );
 
-// системні сповіщення та CallStyle реакція при вхідному дзвінку (Tauri / десктоп)
+// системне сповіщення про вхідний лише в Tauri: у браузері прихованій вкладці його шле сервер через Web Push, власне було б другим
 watch(
   () => call.status,
   (st, prev) => {
     if (st === 'incoming' && prev !== 'incoming') {
       void focusWindow();
-      const allowed = localStorage.getItem('dialer.tauri_notify') !== '0';
-      if (allowed && (isTauri() || document.visibilityState === 'hidden')) {
-        const callerName = call.peer?.name || call.peer?.userId || 'Невідомий';
-        void sendNotification('Вхідний дзвінок', `${callerName} телефонує вам`);
+      if (isTauri() && tauriNotifyEnabled()) {
+        const { t } = i18n.global;
+        const name = call.peer?.name || call.peer?.userId || t('call.notify.unknown');
+        void sendNotification(t('call.notify.title'), t('call.notify.body', { name }));
       }
     }
   },
 );
 
-// Гарячі клавіші CallStyle: Enter — прийняти, Esc — відхилити вхідний виклик
+/** Фокус на елементі, який сам реагує на Enter чи пробіл: його натискання не можна перехоплювати. */
+const isInteractive = (el: Element | null) =>
+  !!el?.closest('input, textarea, select, button, a[href], [role="button"], [contenteditable="true"]');
+
+// гарячі клавіші вхідного: Enter — прийняти, Esc — відхилити (не під час утримання клавіші й не з фокусом на кнопці чи полі)
 window.addEventListener('keydown', e => {
-  if (call.status === 'incoming') {
-    const active = document.activeElement;
-    const isInput = active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement;
-    if (e.key === 'Enter' && !isInput) {
-      e.preventDefault();
-      void call.accept();
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      void call.end();
-    }
+  if (call.status !== 'incoming' || e.repeat) return;
+  if (e.key === 'Enter' && !isInteractive(document.activeElement)) {
+    e.preventDefault();
+    call.accept();
+  } else if (e.key === 'Escape') {
+    e.preventDefault();
+    call.end();
   }
 });
-
-
 
 // токен доступу живе 30 хв: оновлюємо за хвилину до кінця (і за запитом сервера `token.expiring`)
 let refreshTimer: ReturnType<typeof setTimeout> | undefined;
@@ -122,6 +120,9 @@ watch(
     clearTimeout(refreshTimer);
     if (!s) {
       client.close();
+      // вихід лише міняє фрагмент адреси, а не перезавантажує сторінку: вкладка й пошук попереднього користувача не мають лишатись
+      homeTab.value = 'contacts';
+      searchQuery.value = '';
       if (prev) restart();
       return;
     }

@@ -8,6 +8,8 @@ const CLOSE_UNAUTHORIZED = 4401;
 const FATAL_CLOSE = new Set([4403, 4426]);
 /** Скільки чекаємо відповіді на пінг-перевірку, перш ніж вважати сокет мертвим. */
 const PROBE_MS = 3_000;
+/** Скільки чекаємо відповіді на запит: далі `SignalingError('timeout')`, щоб кнопки не лишались заблокованими. */
+const REQUEST_MS = 10_000;
 
 export class SignalingError extends Error {
   constructor(readonly code: string) {
@@ -149,7 +151,14 @@ export class SignalingClient {
     return new Promise((resolve, reject) => {
       if (!this.open) return reject(new SignalingError('offline'));
       const id = crypto.randomUUID();
-      this.pending.set(id, { resolve, reject });
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        reject(new SignalingError('timeout'));
+      }, REQUEST_MS);
+      this.pending.set(id, {
+        resolve: m => (clearTimeout(timer), resolve(m)),
+        reject: e => (clearTimeout(timer), reject(e)),
+      });
       this.ws!.send(JSON.stringify({ v: PROTOCOL_VERSION, type, id, ...payload }));
     });
   }

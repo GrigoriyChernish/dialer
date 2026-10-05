@@ -51,6 +51,14 @@ beforeEach(() => vi.useFakeTimers());
 afterEach(() => vi.useRealTimers());
 
 describe('SignalingClient', () => {
+  it('запит без відповіді завершується помилкою timeout', async () => {
+    const { client } = setup();
+    const p = client.request('call.invite', { to: 'x' });
+    const failed = expect(p).rejects.toMatchObject({ code: 'timeout' });
+    vi.advanceTimersByTime(10_000);
+    await failed;
+  });
+
   it('повернення на екран: живий сокет відповів на пінг — лишається', () => {
     const { client, sockets } = setup();
     client.reconnectNow();

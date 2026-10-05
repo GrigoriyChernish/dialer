@@ -499,6 +499,8 @@ export function createCallService(deps: CallServiceDeps) {
       if (call.calleeId !== actor.userId) throw new CallError('not_allowed');
       // дзвінок уже прийнято на іншому пристрої
       if (call.state === 'connected' && call.answeredDevice !== actor.deviceId) throw new CallError('call_ended');
+      // повторне «Відповісти» з того ж пристрою (подвійний тап): уже прийнято, нічого не змінюємо
+      if (call.state === 'connected') return { effects: [] };
       if (call.state !== 'ringing') throw new CallError('not_allowed');
 
       const current = connectedCalls(actor.siteId, actor.userId, call.id)[0];
