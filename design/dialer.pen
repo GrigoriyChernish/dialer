@@ -18145,7 +18145,7 @@
           "id": "pVPH1",
           "name": "Note",
           "fill": "$mute",
-          "content": "Ті самі екрани у світлій темі (theme mode: light). Змінюються лише нейтральні змінні; кольори стану й аватари однакові в обох темах.",
+          "content": "Ті самі екрани у світлій темі (theme mode: light). Змінюються лише нейтральні змінні; кольори стану й аватари однакові в обох темах. Виняток: In Call · video — поверх відео завжди темна палітра (theme mode: dark на кадрі).",
           "fontFamily": "Inter",
           "fontSize": 12,
           "fontWeight": "normal"
@@ -19873,6 +19873,208 @@
                       }
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "u3Ftt7",
+              "name": "In Call · video · light",
+              "theme": {
+                "mode": "dark"
+              },
+              "clip": true,
+              "width": 375,
+              "height": 844,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "CYc4J",
+                  "type": "ref",
+                  "ref": "tLLor",
+                  "name": "Peer Video",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "type": "frame",
+                  "id": "WsGof",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Top Scrim",
+                  "width": 375,
+                  "height": 180,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 180,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$video-scrim",
+                        "position": 0
+                      },
+                      {
+                        "color": "$clear",
+                        "position": 1
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "e28Onu",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 624,
+                  "name": "Bottom Scrim",
+                  "width": 375,
+                  "height": 220,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 0,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$video-scrim",
+                        "position": 0
+                      },
+                      {
+                        "color": "$clear",
+                        "position": 1
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "aroFa",
+                  "type": "ref",
+                  "ref": "ITFvA",
+                  "name": "Status Bar",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "sDAXC",
+                  "type": "ref",
+                  "ref": "dCVmN",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Lm6Lv": {
+                      "content": "00:42"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "vslEi",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    24,
+                    40,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DGprK",
+                      "name": "Controls",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "id": "PEhdQ",
+                          "type": "ref",
+                          "ref": "zKP5v",
+                          "name": "Controls Pill",
+                          "descendants": {
+                            "iSBAx": {
+                              "fill": "$surface-3"
+                            },
+                            "iSBAx/gcrxy": {
+                              "icon": "mic"
+                            },
+                            "G51U2F": {
+                              "fill": "$surface-3"
+                            },
+                            "G51U2F/gcrxy": {
+                              "icon": "video"
+                            },
+                            "G0zgSx": {
+                              "fill": "$surface-3"
+                            },
+                            "G0zgSx/gcrxy": {
+                              "icon": "pause"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "YwjkA",
+                  "type": "ref",
+                  "ref": "BEE1F",
+                  "name": "Self View",
+                  "layoutPosition": "absolute",
+                  "x": 267,
+                  "y": 156,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "https://images.unsplash.com/photo-1752090660139-48333a48990c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4NjE1NDJ8&ixlib=rb-4.1.0&q=80&w=1080",
+                    "mode": "cover"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$shadow-tile",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 24
+                  }
                 }
               ]
             }
