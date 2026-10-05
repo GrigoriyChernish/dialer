@@ -423,13 +423,13 @@
 | Група компонентів | Що в ній |
 | --- | --- |
 | `Components · Contacts` (додатково) | `Return Call` і `Return Call / hold`: плашка «Повернутися до дзвінка» під шапкою головного (картка, відступи 8 14 8 10: коло 32 `ok-soft` з `phone` 16 `ok`, «Олена Коваль» 14 / 600, «· 02:14» 13 / 500 `mute`, `chevron-up` 18 `mute`; на утриманні коло `warn-soft`, `pause` `warn`, «· на утриманні» `warn-text`) |
-| `Components · Base` | Контейнер у колонку: підгрупи `Bars` (`Status Bar`, `Call Header`), `Controls` (`Call Controls`, `Self View`, `Show Self`, `Call Controls / more`, `Extra Button` (+ `/ active`), `Extra Actions`, `Audio Menu`, `Audio Option`, `Audio Option / selected`), `Actions` (`Action Button` і варіанти `/ active, danger, success, subtle, disabled`, `Labeled Action`), `Card` (`Card`) |
+| `Components · Base` | Контейнер у колонку: підгрупи `Bars` (`Status Bar`, `Call Header`), `Controls` (`Call Controls`, `Self View`, `Show Self`, `Call Controls / more`, `Extra Button` (+ `/ active`), `Extra Actions`, `Audio Menu`, `Audio Option`, `Audio Option / selected`), `Actions` (`Action Button` і варіанти `/ active, danger, success, subtle, disabled`, `Labeled Action`), `Card` (`Card`), `Desktop` (`Incoming Window`: міні-вікно вхідного на десктопі) |
 | `Components · Contacts` | Контейнер у колонку: підгрупи `Headers` (`Home Header`, `Home Header / loading`, `Presence`, `Presence / busy`), `Rows` (`Contact Meta`, `Contact Row`, `Contact Row / busy`, `/ dnd`, `/ offline`, `Contact Row / history`, `Contact Row / skeleton`), `Navigation` (`Tab`, `Tab / active`, `Tab Bar`, `Tab Bar / history`, `Tab Bar / search`), `Elements` (`Section Label`, `Search Field`, `Empty State`) |
 | `Components · Self Status` | `Self Status / mic-off`, `mic-unavailable`, `camera-off`, `camera-unavailable`, `hold` |
 | `Components · Settings` | `Toggle`, `Toggle / on`, `Settings Row`, `Segmented`, `Presence / dnd` |
 | `Components · Auth` | `Text Field` (+ `/ focused`, `/ error`), `Primary Button` (+ `/ disabled`), `Code Cell` (+ `/ focused`, `/ error`), `Icon Button` |
 | `Components · Banners` | `Banner` (база); контейнери `Self Banners` (`Self Banner / *`), `Peer Banners` (`Peer Banner / *`) і `Pool Badges` (`Pool Badge`, `/ warn`, `/ ok`, `/ bad`) |
-| `Components · Peer` | `Peer` (блок співрозмовника), `Peer Ring` (варіанти за напрямом виклику й за станом співрозмовника), `Call Label`, `Result Label`, `Peer Video`, `Video Loader`, `Self View / loading`, `Self View / stalled`; ряд `States` з прикладами станів (`Case · ringing`, `talking`, `speaking`, `result`) |
+| `Components · Peer` | Контейнер `Parts` у колонку з підгрупами: `Rings` (`Peer Ring` і варіанти `/ out`, `/ in`, `/ speaking`, `/ hold`, `/ lost`, `/ mic-off`, `/ result`), `Peer` (`Peer` блок співрозмовника, `Call Label`, `Result Label`), `Video` (`Peer Video`, `Video Loader`, `Self View / loading`, `Self View / stalled`); нижче ряд `States` з прикладами станів (`Case · ringing`, `talking`, `speaking`, `result`) |
 
 | Флоу | Екрани |
 | --- | --- |
@@ -445,6 +445,7 @@
 | `Flow · Call ended` | `Ended · peer hangup`, `Ended · lost`, `Ended · error` |
 | `Flow · Settings` | `Settings`, `Settings · notifications on`, `Settings · notifications blocked`, `Settings · notifications saving`, `Settings · edit name`, `Home · Contacts · dnd` |
 | `Flow · Light theme` | світлі копії `Home · Contacts`, `Settings`, `Incoming Call`, `In Call · self-reconnecting`, `In Call · held call`, `Auth · Phone` |
+| `Flow · Incoming call · desktop` | `Incoming Window · desktop` і `· light` (екземпляри компонента `Incoming Window`; світлий має `theme: light`): міні-вікно вхідного на десктопі, 392 × 148, аватар 56, «Олена Коваль» 16 / 600, мітка `phone-incoming` + «ВХІДНИЙ ВИКЛИК» 12 / 600 `ok-text`, кнопки `Action Button / danger` і `/ success` |
 | `Flow · Call waiting` | `Incoming · waiting` (другий вхідний під час розмови, три дії без підписів), `In Call · held call` (смужка `Self Banner / held-call` у слоті пулу сповіщень) |
 
 **Сторони дзвінка: `self` і `peer`.** Усе, що стосується нас, має префікс `self`, усе про співрозмовника — `peer`:

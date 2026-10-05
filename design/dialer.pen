@@ -29,76 +29,134 @@
           "type": "frame",
           "id": "ykAer",
           "name": "Parts",
-          "gap": 40,
-          "alignItems": "center",
+          "layout": "vertical",
+          "gap": 32,
           "children": [
             {
               "type": "frame",
-              "id": "n8jnj",
-              "name": "Peer Ring",
-              "reusable": true,
-              "width": 200,
-              "height": 200,
-              "fill": "$clear",
-              "cornerRadius": 100,
-              "justifyContent": "center",
+              "id": "G5icQ2",
+              "name": "Rings",
+              "gap": 24,
               "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "q3YfM",
-                  "layoutPosition": "absolute",
-                  "x": 24,
-                  "y": 24,
-                  "name": "Voice Outer",
-                  "width": 152,
-                  "height": 152,
+                  "id": "n8jnj",
+                  "name": "Peer Ring",
+                  "reusable": true,
+                  "width": 200,
+                  "height": 200,
                   "fill": "$clear",
-                  "cornerRadius": 76
-                },
-                {
-                  "type": "frame",
-                  "id": "j4nlP8",
-                  "layoutPosition": "absolute",
-                  "x": 36,
-                  "y": 36,
-                  "name": "Voice Inner",
-                  "width": 128,
-                  "height": 128,
-                  "fill": "$clear",
-                  "cornerRadius": 64
-                },
-                {
-                  "type": "frame",
-                  "id": "tquxd",
-                  "layoutPosition": "absolute",
-                  "x": 32,
-                  "y": 32,
-                  "name": "State Ring",
-                  "width": 136,
-                  "height": 136,
-                  "fill": "$clear",
-                  "cornerRadius": 68,
-                  "stroke": "$clear",
-                  "strokeWidth": 2
-                },
-                {
-                  "type": "frame",
-                  "id": "XBC2T",
-                  "name": "Ring Inner",
-                  "width": 152,
-                  "height": 152,
-                  "fill": "$clear",
-                  "cornerRadius": 76,
+                  "cornerRadius": 100,
                   "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "R7iiJ",
-                      "name": "Avatar",
-                      "width": 104,
-                      "height": 104,
+                      "id": "q3YfM",
+                      "layoutPosition": "absolute",
+                      "x": 24,
+                      "y": 24,
+                      "name": "Voice Outer",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "$clear",
+                      "cornerRadius": 76
+                    },
+                    {
+                      "type": "frame",
+                      "id": "j4nlP8",
+                      "layoutPosition": "absolute",
+                      "x": 36,
+                      "y": 36,
+                      "name": "Voice Inner",
+                      "width": 128,
+                      "height": 128,
+                      "fill": "$clear",
+                      "cornerRadius": 64
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tquxd",
+                      "layoutPosition": "absolute",
+                      "x": 32,
+                      "y": 32,
+                      "name": "State Ring",
+                      "width": 136,
+                      "height": 136,
+                      "fill": "$clear",
+                      "cornerRadius": 68,
+                      "stroke": "$clear",
+                      "strokeWidth": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XBC2T",
+                      "name": "Ring Inner",
+                      "width": 152,
+                      "height": 152,
+                      "fill": "$clear",
+                      "cornerRadius": 76,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "R7iiJ",
+                          "name": "Avatar",
+                          "width": 104,
+                          "height": 104,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "$accent",
+                                "position": 0
+                              },
+                              {
+                                "color": "$avatar-end",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 52,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "jbPVz",
+                              "name": "Initials",
+                              "fill": "$on-solid",
+                              "content": "ОК",
+                              "fontFamily": "Inter",
+                              "fontSize": 34,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "Br6wN",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "n8jnj",
+                  "name": "Peer Ring / out",
+                  "fill": "$accent-ring-outer",
+                  "descendants": {
+                    "XBC2T": {
+                      "fill": "$accent-ring-inner"
+                    },
+                    "R7iiJ": {
                       "fill": {
                         "type": "gradient",
                         "gradientType": "linear",
@@ -113,479 +171,739 @@
                             "position": 0
                           },
                           {
-                            "color": "$avatar-end",
+                            "color": "$avatar-blue",
+                            "position": 1
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "id": "XG8uI",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "n8jnj",
+                  "name": "Peer Ring / in",
+                  "fill": "$ok-ring-outer",
+                  "descendants": {
+                    "XBC2T": {
+                      "fill": "$ok-ring-inner"
+                    },
+                    "R7iiJ": {
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "$ok",
+                            "position": 0
+                          },
+                          {
+                            "color": "$avatar-teal",
+                            "position": 1
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "id": "Lm0a8",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "n8jnj",
+                  "name": "Peer Ring / speaking",
+                  "descendants": {
+                    "q3YfM": {
+                      "fill": "$voice-ring-outer"
+                    },
+                    "j4nlP8": {
+                      "fill": "$voice-ring-inner"
+                    }
+                  }
+                },
+                {
+                  "id": "w68su",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "n8jnj",
+                  "name": "Peer Ring / hold",
+                  "descendants": {
+                    "tquxd": {
+                      "stroke": "$warn-edge"
+                    },
+                    "R7iiJ": {
+                      "fill": [
+                        "$bg",
+                        "$warn-soft"
+                      ],
+                      "stroke": "$warn-edge",
+                      "strokeWidth": 1
+                    },
+                    "jbPVz": {
+                      "fill": "$warn-text"
+                    }
+                  }
+                },
+                {
+                  "id": "BqVa3",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "n8jnj",
+                  "name": "Peer Ring / lost",
+                  "descendants": {
+                    "tquxd": {
+                      "stroke": "$bad-edge"
+                    },
+                    "R7iiJ": {
+                      "fill": [
+                        "$bg",
+                        "$bad-soft"
+                      ],
+                      "opacity": 0.6,
+                      "stroke": "$bad-edge",
+                      "strokeWidth": 1
+                    },
+                    "jbPVz": {
+                      "fill": "$bad-text"
+                    }
+                  }
+                },
+                {
+                  "id": "Bb1Yu",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "n8jnj",
+                  "name": "Peer Ring / mic-off",
+                  "descendants": {
+                    "tquxd": {
+                      "stroke": "$mute-edge"
+                    },
+                    "R7iiJ": {
+                      "fill": [
+                        "$bg",
+                        "$mute-soft"
+                      ],
+                      "stroke": "$mute-edge",
+                      "strokeWidth": 1,
+                      "opacity": 1
+                    },
+                    "jbPVz": {
+                      "fill": "$mute"
+                    }
+                  }
+                },
+                {
+                  "id": "Ok2fa",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "n8jnj",
+                  "name": "Peer Ring / result",
+                  "descendants": {
+                    "R7iiJ": {
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "$avatar-muted-start",
+                            "position": 0
+                          },
+                          {
+                            "color": "$avatar-muted-end",
                             "position": 1
                           }
                         ]
                       },
-                      "cornerRadius": 52,
+                      "opacity": 0.55
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BYeFN",
+              "name": "Peer",
+              "gap": 40,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "b76euv",
+                  "name": "Peer",
+                  "reusable": true,
+                  "width": 327,
+                  "height": 336,
+                  "layout": "vertical",
+                  "gap": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "wBaK6",
+                      "type": "ref",
+                      "ref": "n8jnj",
+                      "name": "Ring"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r61uEi",
+                      "name": "Title",
+                      "width": "fill_container",
+                      "height": 32,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "jbPVz",
-                          "name": "Initials",
-                          "fill": "$on-solid",
-                          "content": "ОК",
+                          "id": "kcNR8",
+                          "name": "Name",
+                          "fill": "$fg",
+                          "content": "Олена Коваль",
                           "fontFamily": "Inter",
-                          "fontSize": 34,
-                          "fontWeight": "600"
+                          "fontSize": 26,
+                          "fontWeight": "700"
                         }
                       ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "d5Zxq",
-              "name": "Call Label",
-              "reusable": true,
-              "layout": "vertical",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "MV6CV",
-                  "name": "Row",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "TXH07",
-                      "name": "Icon",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "phone-outgoing",
-                      "library": "lucide",
-                      "fill": "$accent-icon"
                     },
                     {
-                      "type": "text",
-                      "id": "J7oIrS",
-                      "name": "Label",
-                      "fill": "$accent-icon",
-                      "content": "ВИХІДНИЙ ВИКЛИК",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "600",
-                      "letterSpacing": 0.6
+                      "type": "frame",
+                      "id": "fAYS0",
+                      "name": "Status",
+                      "slot": [
+                        "d5Zxq",
+                        "iLLnQ"
+                      ],
+                      "width": "fill_container",
+                      "height": 64,
+                      "layout": "vertical",
+                      "alignItems": "center"
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "pzOFN",
-                  "name": "Countdown",
-                  "fill": "$mute",
-                  "content": "Залишилось 00:58",
-                  "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "iLLnQ",
-              "name": "Result Label",
-              "reusable": true,
-              "layout": "vertical",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
                   "type": "frame",
-                  "id": "mCK3I",
-                  "name": "Row",
+                  "id": "d5Zxq",
+                  "name": "Call Label",
+                  "reusable": true,
+                  "layout": "vertical",
                   "gap": 8,
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "icon",
-                      "id": "NUY3Y",
-                      "name": "Icon",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "phone-off",
-                      "library": "lucide",
-                      "fill": "$bad"
+                      "type": "frame",
+                      "id": "MV6CV",
+                      "name": "Row",
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "TXH07",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "phone-outgoing",
+                          "library": "lucide",
+                          "fill": "$accent-icon"
+                        },
+                        {
+                          "type": "text",
+                          "id": "J7oIrS",
+                          "name": "Label",
+                          "fill": "$accent-icon",
+                          "content": "ВИХІДНИЙ ВИКЛИК",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.6
+                        }
+                      ]
                     },
                     {
                       "type": "text",
-                      "id": "gvZuH",
-                      "name": "Label",
-                      "fill": "$bad-text",
-                      "content": "Зайнято",
+                      "id": "pzOFN",
+                      "name": "Countdown",
+                      "fill": "$mute",
+                      "content": "Залишилось 00:58",
                       "fontFamily": "Inter",
-                      "fontSize": 18,
-                      "fontWeight": "600"
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
+                {
+                  "type": "frame",
+                  "id": "iLLnQ",
+                  "name": "Result Label",
+                  "reusable": true,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mCK3I",
+                      "name": "Row",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "NUY3Y",
+                          "name": "Icon",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "phone-off",
+                          "library": "lucide",
+                          "fill": "$bad"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gvZuH",
+                          "name": "Label",
+                          "fill": "$bad-text",
+                          "content": "Зайнято",
+                          "fontFamily": "Inter",
+                          "fontSize": 18,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "WAYFM",
+                      "name": "Reason",
+                      "fill": "$mute",
+                      "content": "Абонент зараз розмовляє",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "gUg45",
+              "name": "Components · Settings",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 24,
+              "children": [
                 {
                   "type": "text",
-                  "id": "WAYFM",
-                  "name": "Reason",
-                  "fill": "$mute",
-                  "content": "Абонент зараз розмовляє",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "b76euv",
-              "name": "Peer",
-              "reusable": true,
-              "width": 327,
-              "height": 336,
-              "layout": "vertical",
-              "gap": 20,
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "wBaK6",
-                  "type": "ref",
-                  "ref": "n8jnj",
-                  "name": "Ring"
-                },
-                {
-                  "type": "frame",
-                  "id": "r61uEi",
+                  "id": "f4de4q",
                   "name": "Title",
-                  "width": "fill_container",
-                  "height": 32,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "kcNR8",
-                      "name": "Name",
-                      "fill": "$fg",
-                      "content": "Олена Коваль",
-                      "fontFamily": "Inter",
-                      "fontSize": 26,
-                      "fontWeight": "700"
-                    }
-                  ]
+                  "fill": "$mute",
+                  "content": "Components · Settings",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
                 },
                 {
                   "type": "frame",
-                  "id": "fAYS0",
-                  "name": "Status",
-                  "slot": [
-                    "d5Zxq",
-                    "iLLnQ"
-                  ],
-                  "width": "fill_container",
-                  "height": 64,
-                  "layout": "vertical",
-                  "alignItems": "center"
+                  "id": "OpZE5",
+                  "name": "Row",
+                  "gap": 40,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "R7Iaa",
+                      "name": "Toggle",
+                      "context": "Перемикач (role=switch). Вимкнений: доріжка surface-3, кругляк mute зліва. Перехід 150 мс.",
+                      "reusable": true,
+                      "width": 44,
+                      "height": 26,
+                      "fill": "$surface-3",
+                      "cornerRadius": 13,
+                      "padding": 2,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "oPUv5",
+                          "name": "Knob",
+                          "fill": "$mute",
+                          "width": 22,
+                          "height": 22
+                        }
+                      ]
+                    },
+                    {
+                      "id": "U0wOm0",
+                      "type": "ref",
+                      "reusable": true,
+                      "ref": "R7Iaa",
+                      "name": "Toggle / on",
+                      "fill": "$accent",
+                      "justifyContent": "end",
+                      "descendants": {
+                        "oPUv5": {
+                          "fill": "$on-solid"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fTCLx",
+                      "name": "Settings Row",
+                      "context": "Рядок у картці налаштувань: значок у колі, назва й необов'язковий підпис, праворуч слот (Toggle, значення чи chevron). Увесь рядок натискається.",
+                      "reusable": true,
+                      "width": 327,
+                      "gap": 12,
+                      "padding": [
+                        12,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "DNvnX",
+                          "name": "Icon Badge",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$surface-2",
+                          "cornerRadius": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Oz0L6",
+                              "name": "Icon",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "moon",
+                              "library": "lucide",
+                              "fill": "$fg"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JGCHQ",
+                          "name": "Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "foXaR",
+                              "name": "Title",
+                              "fill": "$fg",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Не турбувати",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "GHuZr",
+                              "name": "Subtitle",
+                              "fill": "$mute",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Вхідні отримають «зайнято»",
+                              "lineHeight": 1.35,
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "IJDz5",
+                          "name": "Trailing",
+                          "slot": [
+                            "R7Iaa",
+                            "U0wOm0"
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "Ji5v9",
+                              "type": "ref",
+                              "ref": "R7Iaa",
+                              "name": "Toggle"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "M4QaA",
+                      "name": "Segmented",
+                      "context": "Вибір теми: Авто / Світла / Темна (radiogroup). Активний сегмент: surface-3, рамка line, текст fg 600.",
+                      "reusable": true,
+                      "width": 327,
+                      "fill": "$surface-2",
+                      "cornerRadius": "$radius-md",
+                      "gap": 3,
+                      "padding": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "G5f3jD",
+                          "name": "Авто",
+                          "width": "fill_container",
+                          "height": 38,
+                          "fill": "$surface-3",
+                          "cornerRadius": 11,
+                          "stroke": "$line",
+                          "strokeWidth": 1,
+                          "gap": 6,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "B4Pou5",
+                              "name": "Icon",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "monitor-smartphone",
+                              "library": "lucide",
+                              "fill": "$fg"
+                            },
+                            {
+                              "type": "text",
+                              "id": "gvGEz",
+                              "name": "Label",
+                              "fill": "$fg",
+                              "content": "Авто",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T1hB5",
+                          "name": "Світла",
+                          "width": "fill_container",
+                          "height": 38,
+                          "cornerRadius": 11,
+                          "gap": 6,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "qzoYS",
+                              "name": "Icon",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "sun",
+                              "library": "lucide",
+                              "fill": "$mute"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Z4MEd",
+                              "name": "Label",
+                              "fill": "$mute",
+                              "content": "Світла",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "J6tvaR",
+                          "name": "Темна",
+                          "width": "fill_container",
+                          "height": 38,
+                          "cornerRadius": 11,
+                          "gap": 6,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "H27BO",
+                              "name": "Icon",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "moon",
+                              "library": "lucide",
+                              "fill": "$mute"
+                            },
+                            {
+                              "type": "text",
+                              "id": "uwv2G",
+                              "name": "Label",
+                              "fill": "$mute",
+                              "content": "Темна",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "UgFRx",
+                      "type": "ref",
+                      "reusable": true,
+                      "ref": "V0mdUm",
+                      "name": "Presence / dnd",
+                      "fill": "$bad-soft",
+                      "descendants": {
+                        "JdWY2": {
+                          "fill": "$bad"
+                        },
+                        "AXbWD": {
+                          "content": "не турбувати",
+                          "fill": "$bad-text"
+                        }
+                      }
+                    }
+                  ]
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "tLLor",
-              "name": "Peer Video",
-              "reusable": true,
-              "metadata": {
-                "type": "unsplash",
-                "username": "silverkblack",
-                "link": "https://unsplash.com/@silverkblack",
-                "author": "Vitaly Gariev"
-              },
-              "width": 375,
-              "height": 844,
-              "fill": {
-                "type": "image",
-                "enabled": true,
-                "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
-                "mode": "cover"
-              }
-            },
-            {
-              "id": "Br6wN",
-              "type": "ref",
-              "reusable": true,
-              "ref": "n8jnj",
-              "name": "Peer Ring / out",
-              "fill": "$accent-ring-outer",
-              "descendants": {
-                "XBC2T": {
-                  "fill": "$accent-ring-inner"
-                },
-                "R7iiJ": {
-                  "fill": {
-                    "type": "gradient",
-                    "gradientType": "linear",
-                    "enabled": true,
-                    "rotation": 135,
-                    "size": {
-                      "height": 1
-                    },
-                    "colors": [
-                      {
-                        "color": "$accent",
-                        "position": 0
-                      },
-                      {
-                        "color": "$avatar-blue",
-                        "position": 1
-                      }
-                    ]
-                  }
-                }
-              }
-            },
-            {
-              "id": "XG8uI",
-              "type": "ref",
-              "reusable": true,
-              "ref": "n8jnj",
-              "name": "Peer Ring / in",
-              "fill": "$ok-ring-outer",
-              "descendants": {
-                "XBC2T": {
-                  "fill": "$ok-ring-inner"
-                },
-                "R7iiJ": {
-                  "fill": {
-                    "type": "gradient",
-                    "gradientType": "linear",
-                    "enabled": true,
-                    "rotation": 135,
-                    "size": {
-                      "height": 1
-                    },
-                    "colors": [
-                      {
-                        "color": "$ok",
-                        "position": 0
-                      },
-                      {
-                        "color": "$avatar-teal",
-                        "position": 1
-                      }
-                    ]
-                  }
-                }
-              }
-            },
-            {
-              "id": "Lm0a8",
-              "type": "ref",
-              "reusable": true,
-              "ref": "n8jnj",
-              "name": "Peer Ring / speaking",
-              "descendants": {
-                "q3YfM": {
-                  "fill": "$voice-ring-outer"
-                },
-                "j4nlP8": {
-                  "fill": "$voice-ring-inner"
-                }
-              }
-            },
-            {
-              "id": "w68su",
-              "type": "ref",
-              "reusable": true,
-              "ref": "n8jnj",
-              "name": "Peer Ring / hold",
-              "descendants": {
-                "tquxd": {
-                  "stroke": "$warn-edge"
-                },
-                "R7iiJ": {
-                  "fill": [
-                    "$bg",
-                    "$warn-soft"
-                  ],
-                  "stroke": "$warn-edge",
-                  "strokeWidth": 1
-                },
-                "jbPVz": {
-                  "fill": "$warn-text"
-                }
-              }
-            },
-            {
-              "id": "BqVa3",
-              "type": "ref",
-              "reusable": true,
-              "ref": "n8jnj",
-              "name": "Peer Ring / lost",
-              "descendants": {
-                "tquxd": {
-                  "stroke": "$bad-edge"
-                },
-                "R7iiJ": {
-                  "fill": [
-                    "$bg",
-                    "$bad-soft"
-                  ],
-                  "opacity": 0.6,
-                  "stroke": "$bad-edge",
-                  "strokeWidth": 1
-                },
-                "jbPVz": {
-                  "fill": "$bad-text"
-                }
-              }
-            },
-            {
-              "id": "Bb1Yu",
-              "type": "ref",
-              "reusable": true,
-              "ref": "n8jnj",
-              "name": "Peer Ring / mic-off",
-              "descendants": {
-                "tquxd": {
-                  "stroke": "$mute-edge"
-                },
-                "R7iiJ": {
-                  "fill": [
-                    "$bg",
-                    "$mute-soft"
-                  ],
-                  "stroke": "$mute-edge",
-                  "strokeWidth": 1,
-                  "opacity": 1
-                },
-                "jbPVz": {
-                  "fill": "$mute"
-                }
-              }
-            },
-            {
-              "id": "Ok2fa",
-              "type": "ref",
-              "reusable": true,
-              "ref": "n8jnj",
-              "name": "Peer Ring / result",
-              "descendants": {
-                "R7iiJ": {
-                  "fill": {
-                    "type": "gradient",
-                    "gradientType": "linear",
-                    "enabled": true,
-                    "rotation": 135,
-                    "size": {
-                      "height": 1
-                    },
-                    "colors": [
-                      {
-                        "color": "$avatar-muted-start",
-                        "position": 0
-                      },
-                      {
-                        "color": "$avatar-muted-end",
-                        "position": 1
-                      }
-                    ]
+              "id": "z5X1Z1",
+              "name": "Video",
+              "gap": 40,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tLLor",
+                  "name": "Peer Video",
+                  "reusable": true,
+                  "metadata": {
+                    "type": "unsplash",
+                    "username": "silverkblack",
+                    "link": "https://unsplash.com/@silverkblack",
+                    "author": "Vitaly Gariev"
                   },
-                  "opacity": 0.55
-                }
-              }
-            },
-            {
-              "type": "frame",
-              "id": "GwroP",
-              "name": "Video Loader",
-              "reusable": true,
-              "width": 375,
-              "height": 844,
-              "fill": "$scrim-mid",
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
+                  "width": 375,
+                  "height": 844,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "https://images.unsplash.com/photo-1758521541657-fd70465a5c54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3OTA4MDU5NTR8&ixlib=rb-4.1.0&q=80&w=1080",
+                    "mode": "cover"
+                  }
+                },
                 {
                   "type": "frame",
-                  "id": "BmQJE",
-                  "name": "Spinner Disc",
-                  "width": 32,
-                  "height": 32,
-                  "fill": "$surface-2",
-                  "cornerRadius": 16,
+                  "id": "GwroP",
+                  "name": "Video Loader",
+                  "reusable": true,
+                  "width": 375,
+                  "height": 844,
+                  "fill": "$scrim-mid",
                   "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "icon",
-                      "id": "AIxmy",
-                      "name": "Spinner",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "loader",
-                      "library": "lucide",
-                      "fill": "$accent-icon"
+                      "type": "frame",
+                      "id": "BmQJE",
+                      "name": "Spinner Disc",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$surface-2",
+                      "cornerRadius": 16,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "AIxmy",
+                          "name": "Spinner",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "loader",
+                          "library": "lucide",
+                          "fill": "$accent-icon"
+                        }
+                      ]
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Q0E8CG",
-              "name": "Self View / loading",
-              "reusable": true,
-              "clip": true,
-              "width": 92,
-              "height": 122,
-              "fill": "$surface-tile",
-              "cornerRadius": "$radius-md",
-              "stroke": "$line",
-              "strokeWidth": 1,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
+                },
                 {
                   "type": "frame",
-                  "id": "OWL68",
-                  "name": "Spinner Disc",
-                  "width": 24,
-                  "height": 24,
-                  "fill": "$surface-2",
-                  "cornerRadius": 12,
+                  "id": "Q0E8CG",
+                  "name": "Self View / loading",
+                  "reusable": true,
+                  "clip": true,
+                  "width": 92,
+                  "height": 122,
+                  "fill": "$surface-tile",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$line",
+                  "strokeWidth": 1,
                   "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "icon",
-                      "id": "B2qW2L",
-                      "name": "Spinner",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "loader",
-                      "library": "lucide",
-                      "fill": "$accent-icon"
+                      "type": "frame",
+                      "id": "OWL68",
+                      "name": "Spinner Disc",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "$surface-2",
+                      "cornerRadius": 12,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "B2qW2L",
+                          "name": "Spinner",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "loader",
+                          "library": "lucide",
+                          "fill": "$accent-icon"
+                        }
+                      ]
                     }
                   ]
+                },
+                {
+                  "id": "HCIve",
+                  "type": "ref",
+                  "reusable": true,
+                  "ref": "Q0E8CG",
+                  "name": "Self View / stalled",
+                  "context": "Камера не віддала кадр за 10 с: індикатор змінюється значком video-off. Один раз перезапускаємо трек; якщо кадру немає й після цього, у пулі з'являється Self Banner / camera-stalled.",
+                  "descendants": {
+                    "B2qW2L": {
+                      "icon": "video-off",
+                      "fill": "$mute"
+                    }
+                  }
                 }
               ]
-            },
-            {
-              "id": "HCIve",
-              "type": "ref",
-              "reusable": true,
-              "ref": "Q0E8CG",
-              "name": "Self View / stalled",
-              "context": "Камера не віддала кадр за 10 с: індикатор змінюється значком video-off. Один раз перезапускаємо трек; якщо кадру немає й після цього, у пулі з'являється Self Banner / camera-stalled.",
-              "descendants": {
-                "B2qW2L": {
-                  "icon": "video-off",
-                  "fill": "$mute"
-                }
-              }
             }
           ]
         },
@@ -814,7 +1132,7 @@
       "type": "frame",
       "id": "RA8lM",
       "x": -5200,
-      "y": 0,
+      "y": -285,
       "name": "Components · Base",
       "fill": "$bg",
       "cornerRadius": "$radius-md",
@@ -1630,6 +1948,158 @@
                       "fontWeight": "normal"
                     }
                   ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "v8Fqi",
+          "name": "Desktop",
+          "children": [
+            {
+              "type": "frame",
+              "id": "VVDdf",
+              "name": "Incoming Window",
+              "reusable": true,
+              "clip": true,
+              "width": 392,
+              "height": 148,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1.2,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "$stage-glow",
+                    "position": 0
+                  },
+                  {
+                    "color": "$bg",
+                    "position": 1
+                  }
+                ],
+                "center": {
+                  "y": 0
+                }
+              },
+              "stroke": "$line",
+              "strokeWidth": 1,
+              "gap": 14,
+              "padding": [
+                0,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sq78K",
+                  "name": "Avatar",
+                  "width": 56,
+                  "height": 56,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 135,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "$accent",
+                        "position": 0
+                      },
+                      {
+                        "color": "$avatar-end",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "cornerRadius": 28,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Ri4PS",
+                      "name": "Initials",
+                      "fill": "$on-solid",
+                      "content": "ОК",
+                      "fontFamily": "Inter",
+                      "fontSize": 20,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "a71M88",
+                  "name": "Caller",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "o1mEus",
+                      "name": "Name",
+                      "fill": "$fg",
+                      "content": "Олена Коваль",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kXUl3",
+                      "name": "Label",
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "q5I7D",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "phone-incoming",
+                          "library": "lucide",
+                          "fill": "$ok-text"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rOpHF",
+                          "name": "Text",
+                          "fill": "$ok-text",
+                          "content": "ВХІДНИЙ ВИКЛИК",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "g2IgVm",
+                  "type": "ref",
+                  "ref": "GruFA",
+                  "name": "Decline"
+                },
+                {
+                  "id": "hCTfT",
+                  "type": "ref",
+                  "ref": "Yk8rH",
+                  "name": "Accept"
                 }
               ]
             }
@@ -14078,7 +14548,7 @@
           "id": "SbMnP",
           "name": "Note",
           "fill": "$mute",
-          "content": "Другий вхідний під час розмови (docs/signaling.md). Три дії: Відхилити (call.reject), Утримати й прийняти (call.accept action: hold), Завершити й прийняти (action: end). Згори Self Banner / active-call (поточна розмова), після утримання — Self Banner / held-call під шапкою.",
+          "content": "Другий вхідний під час розмови (docs/signaling.md). Три дії: Відхилити (call.reject), Утримати й прийняти (call.accept action: hold), \nЗавершити й прийняти (action: end). Згори Self Banner / active-call (поточна розмова), після утримання — Self Banner / held-call під шапкою.",
           "fontFamily": "Inter",
           "fontSize": 12,
           "fontWeight": "normal"
@@ -14520,299 +14990,6 @@
                   }
                 }
               ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "gUg45",
-      "x": -5200,
-      "y": 3300,
-      "name": "Components · Settings",
-      "layout": "vertical",
-      "gap": 16,
-      "padding": 24,
-      "children": [
-        {
-          "type": "text",
-          "id": "f4de4q",
-          "name": "Title",
-          "fill": "$mute",
-          "content": "Components · Settings",
-          "fontFamily": "Inter",
-          "fontSize": 14,
-          "fontWeight": "600"
-        },
-        {
-          "type": "frame",
-          "id": "OpZE5",
-          "name": "Row",
-          "gap": 40,
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "R7Iaa",
-              "name": "Toggle",
-              "context": "Перемикач (role=switch). Вимкнений: доріжка surface-3, кругляк mute зліва. Перехід 150 мс.",
-              "reusable": true,
-              "width": 44,
-              "height": 26,
-              "fill": "$surface-3",
-              "cornerRadius": 13,
-              "padding": 2,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "ellipse",
-                  "id": "oPUv5",
-                  "name": "Knob",
-                  "fill": "$mute",
-                  "width": 22,
-                  "height": 22
-                }
-              ]
-            },
-            {
-              "id": "U0wOm0",
-              "type": "ref",
-              "reusable": true,
-              "ref": "R7Iaa",
-              "name": "Toggle / on",
-              "fill": "$accent",
-              "justifyContent": "end",
-              "descendants": {
-                "oPUv5": {
-                  "fill": "$on-solid"
-                }
-              }
-            },
-            {
-              "type": "frame",
-              "id": "fTCLx",
-              "name": "Settings Row",
-              "context": "Рядок у картці налаштувань: значок у колі, назва й необов'язковий підпис, праворуч слот (Toggle, значення чи chevron). Увесь рядок натискається.",
-              "reusable": true,
-              "width": 327,
-              "gap": 12,
-              "padding": [
-                12,
-                14
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "DNvnX",
-                  "name": "Icon Badge",
-                  "width": 32,
-                  "height": 32,
-                  "fill": "$surface-2",
-                  "cornerRadius": 16,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "Oz0L6",
-                      "name": "Icon",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "moon",
-                      "library": "lucide",
-                      "fill": "$fg"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "JGCHQ",
-                  "name": "Meta",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 2,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "foXaR",
-                      "name": "Title",
-                      "fill": "$fg",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Не турбувати",
-                      "fontFamily": "Inter",
-                      "fontSize": 15,
-                      "fontWeight": "500"
-                    },
-                    {
-                      "type": "text",
-                      "id": "GHuZr",
-                      "name": "Subtitle",
-                      "fill": "$mute",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Вхідні отримають «зайнято»",
-                      "lineHeight": 1.35,
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "IJDz5",
-                  "name": "Trailing",
-                  "slot": [
-                    "R7Iaa",
-                    "U0wOm0"
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "id": "Ji5v9",
-                      "type": "ref",
-                      "ref": "R7Iaa",
-                      "name": "Toggle"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "M4QaA",
-              "name": "Segmented",
-              "context": "Вибір теми: Авто / Світла / Темна (radiogroup). Активний сегмент: surface-3, рамка line, текст fg 600.",
-              "reusable": true,
-              "width": 327,
-              "fill": "$surface-2",
-              "cornerRadius": "$radius-md",
-              "gap": 3,
-              "padding": 3,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "G5f3jD",
-                  "name": "Авто",
-                  "width": "fill_container",
-                  "height": 38,
-                  "fill": "$surface-3",
-                  "cornerRadius": 11,
-                  "stroke": "$line",
-                  "strokeWidth": 1,
-                  "gap": 6,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "B4Pou5",
-                      "name": "Icon",
-                      "width": 15,
-                      "height": 15,
-                      "icon": "monitor-smartphone",
-                      "library": "lucide",
-                      "fill": "$fg"
-                    },
-                    {
-                      "type": "text",
-                      "id": "gvGEz",
-                      "name": "Label",
-                      "fill": "$fg",
-                      "content": "Авто",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "T1hB5",
-                  "name": "Світла",
-                  "width": "fill_container",
-                  "height": 38,
-                  "cornerRadius": 11,
-                  "gap": 6,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "qzoYS",
-                      "name": "Icon",
-                      "width": 15,
-                      "height": 15,
-                      "icon": "sun",
-                      "library": "lucide",
-                      "fill": "$mute"
-                    },
-                    {
-                      "type": "text",
-                      "id": "Z4MEd",
-                      "name": "Label",
-                      "fill": "$mute",
-                      "content": "Світла",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "J6tvaR",
-                  "name": "Темна",
-                  "width": "fill_container",
-                  "height": 38,
-                  "cornerRadius": 11,
-                  "gap": 6,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "H27BO",
-                      "name": "Icon",
-                      "width": 15,
-                      "height": 15,
-                      "icon": "moon",
-                      "library": "lucide",
-                      "fill": "$mute"
-                    },
-                    {
-                      "type": "text",
-                      "id": "uwv2G",
-                      "name": "Label",
-                      "fill": "$mute",
-                      "content": "Темна",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "UgFRx",
-              "type": "ref",
-              "reusable": true,
-              "ref": "V0mdUm",
-              "name": "Presence / dnd",
-              "fill": "$bad-soft",
-              "descendants": {
-                "JdWY2": {
-                  "fill": "$bad"
-                },
-                "AXbWD": {
-                  "content": "не турбувати",
-                  "fill": "$bad-text"
-                }
-              }
             }
           ]
         }
@@ -20077,6 +20254,63 @@
                   }
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "H4JEr",
+      "x": 918,
+      "y": 3000,
+      "name": "Flow · Incoming call · desktop",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "Z6CTcX",
+          "name": "Title",
+          "fill": "$mute",
+          "content": "Flow · Incoming call · desktop",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "p738C",
+          "name": "Note",
+          "fill": "$mute",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Міні-вікно вхідного на десктопі (Tauri, macOS): компонент Incoming Window (Components · Base / Desktop), 392 × 148, без рамки, поверх усіх вікон, правий верхній кут екрана, грає системна мелодія. Відкривається, коли основне вікно приховане чи без фокусу. Світлий екземпляр: theme mode light на екземплярі.",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "dcpXU",
+          "name": "Screens",
+          "gap": 40,
+          "children": [
+            {
+              "id": "wLYMS",
+              "type": "ref",
+              "ref": "VVDdf",
+              "name": "Incoming Window · desktop"
+            },
+            {
+              "id": "DfAY2",
+              "type": "ref",
+              "ref": "VVDdf",
+              "name": "Incoming Window · desktop · light",
+              "theme": {
+                "mode": "light"
+              }
             }
           ]
         }
